@@ -1,0 +1,1 @@
+from tamm._adapters_v1.model_adapters.model_adapter import ModelAdapter
