@@ -1,0 +1,46 @@
+[build-system]
+    build-backend = "setuptools.build_meta"
+    requires      = ["setuptools>=77.0.3"]
+
+[project]
+    authors = [
+        { name = "Blackteahamburger", email = "blackteahamburger@outlook.com" },
+    ]
+    classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: POSIX",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Topic :: Education",
+        "Topic :: Software Development :: Embedded Systems",
+    ]
+    dependencies = ["microfs2>=2.0.6", "nudatus>=0.0.2", "semver"]
+    description = "A module and utility to flash Python onto the BBC micro:bit."
+    license = "MIT"
+    license-files = ["AUTHORS", "LICENSE"]
+    maintainers = [
+        { name = "Blackteahamburger", email = "blackteahamburger@outlook.com" },
+    ]
+    name = "uflash3"
+    readme = "README.rst"
+    requires-python = ">=3.10"
+    version = "3.0.0"
+
+    [project.optional-dependencies]
+        dev = ["coverage", "pytest-cov", "pytest>=5", "ruff", "sphinx"]
+
+    [project.urls]
+        Homepage = "https://github.com/blackteahamburger/uflash"
+
+    [project.scripts]
+        uextract = "uflash.uextract:uextract"
+        uflash   = "uflash.main:main"
+
+[tool.coverage.run]
+    omit = ["uflash/__main__.py"]
