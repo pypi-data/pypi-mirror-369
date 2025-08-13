@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0", "capnpy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simpleros"
+version = "0.0.1"
+description = "A lightweight, Python-first ROS alternative using Zenoh and Cap'n Proto."
+requires-python = ">=3.8"
+dependencies = [
+    "eclipse-zenoh",
+    "capnpy"
+]
+license = "MIT"
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/g1y5x3/simpleROS"
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "mypy",
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"simpleros.msg" = ["*.capnp"]
+
+[tool.ruff]
+exclude = [
+    # these files are automatically generated
+    "src/simpleros/msg/*_msg.py",
+]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
