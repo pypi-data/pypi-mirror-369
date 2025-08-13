@@ -1,0 +1,270 @@
+Metadata-Version: 2.3
+Name: precisiondoc
+Version: 0.1.0
+Summary: Document processing and evidence extraction package for precision oncology
+License: MIT
+Author: Kay Chiao
+Author-email: kaychiao216@gmail.com
+Requires-Python: >=3.6
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+
+# PrecisionDoc - Medical Precision Document Processing Tool
+
+This project processes medical guideline PDF files, especially treatment guidelines from CSCO (Chinese Society of Clinical Oncology). It can:
+
+1. Process PDF files in a specified folder
+2. Split PDF files into individual pages
+3. Analyze each page using AI (OpenAI or Alibaba Cloud Qwen)
+4. Extract precision medicine evidence related to drug efficacy
+5. Save analysis results in JSON and Excel formats
+6. Generate Word reports containing precision medicine evidence
+
+## Installation
+
+### From Source
+
+1. Clone this repository
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Using pip
+
+```bash
+pip install precisiondoc
+```
+
+## Configuration
+
+Create a `.env` file (refer to `env.example`) and set API keys:
+
+```
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_MODEL=gpt-4
+
+QWEN_API_KEY=your_qwen_api_key
+QWEN_BASES_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+QWEN_TEXT_MODEL=qwen-max
+QWEN_MULTIMODAL_MODEL=qwen-vl-max
+
+LOG_LEVEL=INFO
+```
+
+### Dependencies
+
+The project requires the following main dependencies:
+- `PyMuPDF`: PDF processing
+- `openai`: OpenAI API client
+- `pandas` and `openpyxl`: Data processing and Excel file handling
+- `python-docx`: Word document generation
+- `python-dotenv`: Environment variable management
+- `numpy`: Numerical operations
+- `requests`: HTTP requests
+- `tqdm`: Progress bars
+
+All dependencies are listed in `requirements.txt`.
+
+## Usage
+
+### Command Line Interface
+
+After installation, you can use the `precisiondoc` command:
+
+```bash
+# Process PDF files
+precisiondoc process-pdf --folder /path/to/pdfs --output-folder ./output
+
+# Convert Excel to Word
+precisiondoc excel-to-word --excel-file /path/to/evidence.xlsx --multi-line --show-borders
+```
+
+### Python API
+
+You can also use PrecisionDoc as a Python package:
+
+```python
+# Import the package
+from precisiondoc import process_pdf, excel_to_word
+
+# Process PDF files
+results = process_pdf(
+    folder_path="/path/to/pdfs",
+    output_folder="./output",
+    api_key="your-api-key",  # Optional, will use env var if not provided
+    base_url="https://api.example.com/v1",  # Optional
+    model="gpt-4"  # Optional
+)
+
+# Convert Excel evidence to Word
+word_file = excel_to_word(
+    excel_file="/path/to/evidence.xlsx",
+    word_file="/path/to/output.docx",  # Optional
+    multi_line_text=True,  # Optional
+    show_borders=True  # Optional
+)
+```
+
+#### Advanced Usage
+
+For more advanced usage, you can directly use the classes provided by the package:
+
+```python
+from precisiondoc import PDFProcessor, WordUtils, DataUtils
+
+# Create a PDF processor
+processor = PDFProcessor(
+    folder_path="/path/to/pdfs",
+    output_folder="./output",
+    api_key="your-api-key",
+    base_url="https://api.example.com/v1",
+    model="gpt-4"
+)
+
+# Process all PDFs
+results = processor.process_all()
+
+# Save results
+processor.save_consolidated_results(results)
+
+# Work with data utilities
+data_utils = DataUtils()
+df = data_utils.load_excel_file("/path/to/evidence.xlsx")
+
+# Export to Word with custom formatting
+WordUtils.export_evidence_to_word(
+    excel_file=df,
+    word_file="/path/to/output.docx",
+    multi_line_text=True,
+    show_borders=False,
+    exclude_columns=["column1", "column2"]
+)
+```
+
+### Environment Variables
+
+The package uses the following environment variables:
+
+- `API_KEY`: API key for AI service
+- `BASE_URL`: Base URL for API endpoint
+- `TEXT_MODEL`: Model name for text processing
+- `MULTIMODAL_MODEL`: Model name for image processing
+- `LOG_LEVEL`: Logging level (default: INFO)
+
+You can set these variables in a `.env` file or directly in your environment.
+
+## Parameters
+
+### Command Line Parameters
+
+- `--folder`: Path to the folder containing PDF files (required)
+- `--api-key`: API key for OpenAI or Qwen (if not provided, will be read from environment variables)
+- `--use-qwen`: Use Qwen API instead of OpenAI (optional)
+- `--output-folder`: Output folder path (optional, default: "./output")
+
+### Excel to Word Parameters
+
+- `--excel-file`: Path to Excel file with evidence data (required)
+- `--word-file`: Path to output Word file (optional)
+- `--output-folder`: Output folder path, used to find images (optional)
+- `--multi-line`: Use multi-line text format (default: True)
+- `--show-borders`: Show table borders (default: True)
+- `--exclude-columns`: Columns to exclude from evidence text (optional)
+
+## Output
+
+The program creates the following in the output directory:
+
+- `pages/`: Contains split single-page PDF files
+- `images/`: (When using Qwen) Contains PDF page image files
+- `json/`: JSON files with structured data and AI processing results
+- `excel/`: Excel files with flattened analysis results
+- `word/`: Word files with extracted precision medicine evidence reports
+
+## Word Export Features
+
+The Word export functionality includes several advanced formatting options:
+
+- **Enhanced Table Layout**: 
+  - Left side displays multiple rows of text fields (one field per row)
+  - Right side shows images in a single vertically merged cell
+  - Customizable table borders (can be shown or hidden)
+  - Table continuation across pages for long evidence items
+
+- **Page Formatting**:
+  - Automatic page numbering in "Page X of Y" format
+  - Support for both portrait and landscape orientations
+  - Table continuation across page breaks
+
+- **Text Formatting**:
+  - Support for multi-line text display
+  - Consistent font styling
+
+- **Image Handling**:
+  - Automatic resizing and centering
+  - Fallback mechanism for missing images
+
+- **Customization Parameters**:
+  - `multi_line_text`: Controls text formatting in the left cell
+    - `True`: Creates multiple rows, one for each key-value pair
+    - `False`: Creates a single row with JSON-style dictionary
+  - `show_borders`: Controls table border visibility
+    - `True`: Shows all table borders
+    - `False`: Hides table borders for a cleaner look
+
+## Latest Features
+
+### 1:1 PDF Processing Mapping
+
+PrecisionDoc now ensures a strict 1:1 mapping between original PDF files and their output files (JSON, Excel, Word). This means:
+- Each original PDF generates exactly one output file of each type
+- Output files are initialized at the start of processing each PDF
+- No redundant data accumulation on repeated runs
+- Improved data organization and traceability
+
+### Page Metadata Enhancement
+
+Each processed page now includes additional metadata:
+- Current page number
+- Total page count in the document
+- Original PDF filename
+- This enriches the JSON output with useful pagination context for better organization and reference.
+
+### Modular PDF Processing
+
+The PDF processing pipeline has been refactored into smaller, more maintainable functions:
+- `_initialize_output_files`: Handles initialization of JSON, Excel, and Word output files
+- `_process_pdf_pages`: Processes individual PDF pages and saves intermediate results
+- `_save_final_results`: Saves final results to JSON, Excel, and Word files
+
+### Direct Excel-to-Word Conversion
+
+Users can now convert Excel files to formatted Word documents without needing to process PDF files first:
+- Supports various formatting options including multi-line text vs. JSON format
+- Provides table borders control and column exclusion options
+- Accessible via both command line and Python API
+
+## Future Plans
+
+- [ ] Add support for additional PDF processing libraries for better handling of complex layouts
+- [ ] Implement batch processing with multi-threading to improve performance
+- [ ] Create a web-based user interface for easier interaction
+- [ ] Add support for more languages and document types
+- [ ] Enhance evidence extraction with more detailed categorization
+- [ ] Improve image handling and OCR capabilities
+- [ ] Add support for custom templates for Word export
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- OpenAI and Alibaba Cloud for providing the AI APIs
+- The open-source community for the various libraries used in this project
+
