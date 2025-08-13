@@ -1,0 +1,161 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "coda-code-assistant"
+dynamic = ["version"]
+description = "A CLI-focused code assistant for AI-assisted development"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "litellm>=1.0.0",
+    "rich>=13.0.0",
+    "prompt-toolkit>=3.0.0",
+    "click>=8.0.0",
+    "httpx>=0.25.0",
+    "tomlkit>=0.12.0",
+    "pydantic>=2.0.0",
+    "sqlalchemy>=2.0.0",
+    "aiosqlite>=0.19.0",
+    "oci>=2.119.1",
+    "cryptography>=3.4.7",
+    "pygments>=2.19.2",
+    "pyyaml>=6.0.1",
+    "tiktoken>=0.5.0",
+    "tomli-w>=1.2.0",
+    # MCP SDK for Model Context Protocol support
+    "mcp>=1.0.0",
+    # Tree-sitter intelligence dependencies
+    "grep-ast>=0.9.0",
+    "tree-sitter-language-pack>=0.8.0",
+    # Vector search dependencies
+    "faiss-cpu>=1.7.4",
+    "numpy>=1.24.0",
+    # Web UI dependencies
+    "streamlit>=1.40.0",
+    "streamlit-ace>=0.1.1",
+    "plotly>=5.0.0",
+    "pandas>=2.0.0",
+    "requests>=2.32.4",
+    # Observability dependencies
+    "opentelemetry-api>=1.20.0",
+    "opentelemetry-sdk>=1.20.0",
+    "opentelemetry-exporter-otlp>=1.20.0",
+    "opentelemetry-instrumentation>=0.41b0",
+    "diagram-renderer>=2025.8.3.1111",
+]
+
+[project.scripts]
+coda = "coda.apps.cli.cli:cli"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.21.0,<1.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.5.0",
+    "pexpect>=4.8.0",
+]
+test-web = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-selenium>=4.0.0",
+    "pytest-timeout>=2.0.0",
+    "pytest-asyncio>=0.21.0",
+    "selenium>=4.0.0",
+    "requests>=2.32.0",
+]
+performance = [
+    "pytest-benchmark>=4.0.0",
+    "locust>=2.0.0",
+]
+embeddings = [
+    "sentence-transformers>=2.2.0",
+    "chromadb>=0.4.0",
+]
+oracle = [
+    "oracledb>=2.0.0",
+]
+
+[tool.uv]
+package = true
+
+[tool.hatch.version]
+path = "coda/__version__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["coda"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--tb=short",
+]
+markers = [
+    "unit: Unit tests (fast, no external dependencies)",
+    "integration: Integration tests (requires OCI credentials or browser)",
+    "functional: Functional/E2E tests (requires full setup)",
+    "slow: Slow running tests",
+    "requires_browser: Tests that require Selenium WebDriver",
+    "asyncio: Asynchronous tests",
+    "llm: LLM tests (requires real language model)",
+    "ollama: Ollama-specific tests (requires Ollama service)",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["coda"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+    "*/archive/*",
+]
+
+[tool.coverage.report]
+precision = 2
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py311', 'py312', 'py313']
+extend-exclude = '''
+(
+  archive/
+)
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["archive/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "B", "UP"]
+ignore = [
+    "E501",  # Line too long handled by black
+    "N802",  # Function name should be lowercase - we use ALL for constants
+]
+
+[tool.mypy]
+python_version = "3.11"
+exclude = ["archive/"]
