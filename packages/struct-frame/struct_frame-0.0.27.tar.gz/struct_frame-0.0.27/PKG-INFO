@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: struct-frame
+Version: 0.0.27
+Summary: A framework for serializing data with headers
+Project-URL: Homepage, https://github.com/mylonics/struct-frame
+Project-URL: Issues, https://github.com/mylonics/struct-frame/issues
+Author-email: Rijesh Augustine <rijesh@mylonics.com>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Requires-Dist: proto-schema-parser>=1.4.5
+Requires-Dist: structured-classes>=3.1.0
+Description-Content-Type: text/markdown
+
+
+# Struct Frame
+
+A framework for serializing data with headers
+
+## Quick Start
+
+### Python Usage
+```bash
+# Install dependencies
+pip install -e .
+
+# Generate code from proto file
+python src/main.py examples/myl_vehicle.proto --build_c --build_ts --build_py
+
+# Generated files will be in the generated/ directory
+```
+
+### TypeScript Example
+```bash
+# Install TypeScript dependencies
+npm i -D typescript typed-struct @types/node
+
+# Generate TypeScript code first
+python src/main.py examples/myl_vehicle.proto --build_ts
+
+# Compile and run the example
+npx tsc examples/index.ts --outDir generated/
+node generated/examples/index.js
+```
+
+### C Example
+```bash
+# Generate C code first  
+python src/main.py examples/myl_vehicle.proto --build_c
+
+# Compile the C example
+gcc examples/main.c -I generated/c -o main
+./main
+```
+
+## Project Structure
+
+- `src/` - Source code for the struct-frame library
+- `examples/` - Example usage and demo files
+- `generated/` - Generated output files (ignored by git)
