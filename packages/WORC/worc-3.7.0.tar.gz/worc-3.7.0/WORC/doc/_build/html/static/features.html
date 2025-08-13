@@ -1,0 +1,838 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Additional functionality" href="additionalfunctionality.html" /><link rel="prev" title="Configuration" href="configuration.html" />
+        <link rel="prefetch" href="../_static/WORC_Logo.svg" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>Radiomics Features - WORC 3.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=a591123b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">WORC 3.7.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/WORC_Logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">WORC 3.7.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Radiomics Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additionalfunctionality.html">Additional functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developerdocumentation.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developerdocumentation.html#references">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../autogen/WORC.html">WORC Package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of WORC Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.IOparser.html">IOparser Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.classification.html">classification Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.detectors.html">detectors Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.exampledata.html">exampledata Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.export.html">export Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../autogen/WORC.facade.html">facade Package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of facade Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../autogen/WORC.facade.helpers.html">helpers Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.fastrconfig.html">fastrconfig Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.featureprocessing.html">featureprocessing Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.plotting.html">plotting Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.processing.html">processing Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../autogen/WORC.resources.html">resources Package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of resources Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../autogen/WORC.resources.fastr_tests.html">fastr_tests Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autogen/WORC.resources.fastr_tools.html">fastr_tools Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.statistics.html">statistics Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.tests.html">tests Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.tools.html">tools Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.validators.html">validators Package</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/static/features.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="radiomics-features">
+<h1>Radiomics Features<a class="headerlink" href="#radiomics-features" title="Link to this heading">¶</a></h1>
+<p>WORC is not a feature extraction toolbox, but a workflow management and foremost workflow optimization method / toolbox.
+However, feature extraction is generally part of the workflow. Users can add their own feature toolbox, but the default
+used feature toolboxes are <a class="reference external" href="https://github.com/Svdvoort/PREDICTFastr/">PREDICT</a> and
+<a class="reference external" href="https://github.com/Svdvoort/https://github.com/Radiomics/pyradiomics/">PyRadiomics</a> . The options for feature extraction
+using these toolboxes within WORC and their defaults are described in this chapter, organized per
+feature group.</p>
+<p>Here, we provide an overview of all features and an explantion of what they
+quantify. For a comprehensive overview of all functions and parameters, please look at
+<a class="reference internal" href="configuration.html#config-chapter"><span class="std std-ref">the config chapter</span></a>.</p>
+<p>For all features, the feature labels reflect the descriptions named here. When parameters have to be set,
+the values of these parameters are included in the feature label.</p>
+<p>For all the features, you can determine whether PREDICT or PyRadiomics exctract these by changing the
+related parameters in <code class="docutils literal notranslate"><span class="pre">config['PyRadiomics']</span></code> and <code class="docutils literal notranslate"><span class="pre">config['ImageFeatures']</span></code> for PREDICT.</p>
+<p>Furthermore, we refer the user to the following literature:</p>
+<ul class="simple">
+<li><p>More information on PyRadiomics: <a class="reference external" href="https://cancerres.aacrjournals.org/content/77/21/e104?utm_source=170339&amp;utm_medium=convergence&amp;utm_campaign=sections">Van Griethuysen, Joost JM, et al. “Computational radiomics system to decode the radiographic phenotype.” Cancer research 77.21 (2017): e104-e107.</a></p></li>
+<li><p>More detailed description of many of the used features:  <a class="reference external" href="https://www.tandfonline.com/doi/abs/10.1080/23808993.2016.1164013">Parekh, Vishwa, and Michael A. Jacobs. “Radiomics: a new application from established techniques.” Expert review of precision medicine and drug development 1.2 (2016): 207-226.</a></p></li>
+<li><p>Overview of often used radiomics features: <a class="reference external" href="https://pubs.rsna.org/doi/full/10.1148/radiol.2020191145">Zwanenburg, Alex, et al. “The image biomarker standardization initiative: standardized quantitative radiomics for high-throughput image-based phenotyping.” Radiology 295.2 (2020): 328-338.</a></p></li>
+</ul>
+<p>In total, the defaults of WORC result in the following amount of features:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Number</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#features-histogram"><span class="std std-ref">Histogram</span></a></p></td>
+<td><p>13</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#features-shape"><span class="std std-ref">Shape</span></a></p></td>
+<td><p>35</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#features-orientation"><span class="std std-ref">Orientation</span></a></p></td>
+<td><p>9</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#features-glcm"><span class="std std-ref">GLCM(MS)</span></a></p></td>
+<td><p>144</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#features-glrlm"><span class="std std-ref">GLRLM</span></a></p></td>
+<td><p>16</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#features-glszm"><span class="std std-ref">GLSZM</span></a></p></td>
+<td><p>16</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#features-ngtdm"><span class="std std-ref">NGTDM</span></a></p></td>
+<td><p>5</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#features-gldm"><span class="std std-ref">GLDM</span></a></p></td>
+<td><p>14</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#features-gabor"><span class="std std-ref">Gabor filter</span></a></p></td>
+<td><p>156</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#features-log"><span class="std std-ref">LoG filter</span></a></p></td>
+<td><p>39</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#features-vessel"><span class="std std-ref">Vessel filter</span></a></p></td>
+<td><p>39</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#features-lbp"><span class="std std-ref">Local Binary Patterns</span></a></p></td>
+<td><p>39</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#features-phase"><span class="std std-ref">Local phase</span></a></p></td>
+<td><p>39</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Total</strong></p></td>
+<td><p><strong>564</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The settings for the parameters are included in the feature label. For example, tf_GLCM_contrastd1.0A1.57 is
+the contrast of the GLCM computed at a distance of 1 pixel and and angle of 1.57 radians ~ 90 degrees.</p>
+</div>
+<section id="histogram-features">
+<span id="features-histogram"></span><h2>Histogram features<a class="headerlink" href="#histogram-features" title="Link to this heading">¶</a></h2>
+<p>Histogram features are based on the image intensities themselves. Usually, a histogram of the intensities is made, after
+which several first order statistics are extracted. Therefore, these features are commonly also referred to as
+first order or intensity features.</p>
+<p>Both PREDICT and PyRadiomics include similar first order features. We have therefore chosen to only use PREDICT
+by default to avoid redundant features. PREDICT extracts the following features using a histogram with 50 bins:</p>
+<ol class="arabic simple">
+<li><p>Minimum (defined as the 2nd percentile for robustness)</p></li>
+<li><p>Maximum (defined as the 98nd percentile for robustness)</p></li>
+<li><p>Range</p></li>
+<li><p>Interquartile range</p></li>
+<li><p>Standard deviation</p></li>
+<li><p>Skewness</p></li>
+<li><p>Kurtosis</p></li>
+<li><p>Peak value</p></li>
+<li><p>Peak position</p></li>
+<li><p>Energy</p></li>
+<li><p>Entropy</p></li>
+<li><p>Mean</p></li>
+<li><p>Median</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The minimum, maximum, range and interquartile range are extracted from the raw data, as histogram creation may
+may result in a loss of needed information.</p>
+</div>
+</section>
+<section id="shape-features">
+<span id="features-shape"></span><h2>Shape features<a class="headerlink" href="#shape-features" title="Link to this heading">¶</a></h2>
+<p>Shape features describe morphological properties of the region of interest and are therefore solely based on the
+segmentation, not the image. As PREDICT and PyRadiomics offer complementary shape descriptors, both packages are used
+by default.</p>
+<p>In PREDICT, these descriptors are by default extracted per 2-D slice and aggregated over all slices,
+as in our experience the slice thickness is often too large to create sensible 3-D shape descriptors. For each
+aggregated descriptor, PREDICT extracts the mean and standard deviation.
+Most of the shape features are based on the following papers:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://link.springer.com/content/pdf/10.1007/s10278-011-9388-8.pdf">Xu, Jiajing, et al. “A comprehensive descriptor of shape: method and application to content-based retrieval of similar appearing lesions in medical images.” Journal of digital imaging 25.1 (2012): 121-128.</a></p>
+<p><a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.30.9018&amp;rep=rep1&amp;type=pdf">Peura, Markus, and Jukka Iivarinen. “Efficiency of simple shape descriptors.” Aspects of visual form (1997): 443-451.</a></p>
+</div></blockquote>
+<p>The mean and standard deviation of following shape features are extracted:</p>
+<ol class="arabic simple">
+<li><p>Compactness</p></li>
+<li><p>Radial distance</p></li>
+<li><p>Roughness</p></li>
+<li><p>Convexity</p></li>
+<li><p>Circular variance</p></li>
+<li><p>Principal axis ratio (PRAX)</p></li>
+<li><p>Elliptical variance</p></li>
+<li><p>Solidity</p></li>
+<li><p>Area</p></li>
+</ol>
+<p>Additional, the min and max area and, if pixel spacing is included in the image or metadata, the volume is computed for a total of 21 shape
+features.</p>
+<p>In PyRadiomics, the following shape features according to the defaults are extracted:</p>
+<ol class="arabic simple">
+<li><p>Elongation</p></li>
+<li><p>Flatness</p></li>
+<li><p>Least Axis Length</p></li>
+<li><p>Major Axis Length</p></li>
+<li><p>Maximum 2D diameter for columns</p></li>
+<li><p>Maximum 2D diameter for rows</p></li>
+<li><p>Maximum 2D diameter for slices</p></li>
+<li><p>Maximum 3D diameter</p></li>
+<li><p>Mesh Volume</p></li>
+<li><p>Minor Axis Length</p></li>
+<li><p>Sphericity</p></li>
+<li><p>Surface Area</p></li>
+<li><p>Surface Volume Ratio</p></li>
+<li><p>Voxel Volume</p></li>
+</ol>
+<p>Hence, the total number of shape features is 35.</p>
+</section>
+<section id="orientation-features">
+<span id="features-orientation"></span><h2>Orientation features<a class="headerlink" href="#orientation-features" title="Link to this heading">¶</a></h2>
+<p>Orientation features describe the orientation and location of the ROI. While these on itself
+may not be relevant for the prediction, these may serve as moderation features for orientation dependent features.
+As PREDICT and PyRadiomics again provide complementary features, by default WORC uses both toolboxes for
+orientation feature extraction</p>
+<p>The following orientation features are extracted from PREDICT:</p>
+<ol class="arabic simple">
+<li><p>X-angle</p></li>
+<li><p>Y-angle</p></li>
+<li><p>Z-angle</p></li>
+</ol>
+<p>The angles are extracted by fitting a 3D ellips to the ROI and using the orientations fo the three major axes.</p>
+<p>The following orientation features are extracted from PyRadiomics using the Center Of Mass (COM):</p>
+<ol class="arabic simple">
+<li><p>COM index x</p></li>
+<li><p>COM index y</p></li>
+<li><p>COM index z</p></li>
+<li><p>COM x</p></li>
+<li><p>COM y</p></li>
+<li><p>COM z</p></li>
+</ol>
+</section>
+<section id="texture-features">
+<span id="features-texture"></span><h2>Texture features<a class="headerlink" href="#texture-features" title="Link to this heading">¶</a></h2>
+<p>The last group is the largest and basically contains all features not within the other groups, as a feature
+quantifying a form of texture is a broad definition. Within the texture features, there are several sub-groups.
+If groupwise feature selection is used, each of these subgroups has an on/off hyperparameter.</p>
+<p>Note that we have decided to split several groups from the texture features. Within the texture features,
+we have included more commonly used texture features, as these are indeed commonly grouped under texture features.
+The less well-known features are described later on in this chapter.</p>
+<section id="gray-level-co-occurence-matrix-glcm">
+<span id="features-glcm"></span><h3>Gray-Level Co-occurence Matrix (GLCM)<a class="headerlink" href="#gray-level-co-occurence-matrix-glcm" title="Link to this heading">¶</a></h3>
+<p>The GLCM and other gray-level based matrix features are based on a discretized version of the image, i.e.
+the gray-level matrix. The <code class="docutils literal notranslate"><span class="pre">config['ImageFeatures']['GLCM_levels']</span></code> parameter determines the number of
+levels for the discretization. As default, WORC uses 16 levels, as this works in smaller ROIs containing
+fewer regions but does not throw away to much information in larger regions.</p>
+<p>The GLCM counts the co-occurences of neighbouring pixels of each gray level value using two parameters:
+the distance between pixels, and the angle in which co-occurences are counted. As generally beforehand it
+is not known which of these settings may lead to relevant features, the GLCM at multiple values is extracted:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;GLCM_angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0, 0.79, 1.57, 2.36&#39;</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;GLCM_distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1, 3&#39;</span>
+</pre></div>
+</div>
+<p>Boht PREDICT and PyRadiomics can extract GCLM features. Again, we would like to extract the GLCM per 2D slice, similar
+to the shape fetures, As a default, we use therefore PREDICT, as PREDICT provides two ways to do so: compute
+the GLCM and it’s features per slice and aggregate, or aggregate the GLCM’s of all slices and once compute features,
+which PREDICT calls GLCM Multi Slice (GLCMMS) features.
+re
+PREDICT extracts both for the GLCM and GLCMMS for all combinations of angles and distances the following features:</p>
+<ol class="arabic simple">
+<li><p>Contrast</p></li>
+<li><p>Dissimilarity</p></li>
+<li><p>Homogeneity</p></li>
+<li><p>Angular Second Momentum (ASM)</p></li>
+<li><p>Energy</p></li>
+<li><p>Correlation</p></li>
+</ol>
+<p>In total, computing these six features for both the GCLM and GLCMMS for all combinations of angles and degrees
+results in a total of 144 features.</p>
+</section>
+<section id="gray-level-run-length-matrix-glrlm">
+<span id="features-glrlm"></span><h3>Gray-Level Run Length Matrix (GLRLM)<a class="headerlink" href="#gray-level-run-length-matrix-glrlm" title="Link to this heading">¶</a></h3>
+<p>The GRLM counts how many lines of a certain gray level and length occur, in a specific direction. The only
+parameter of the GRLM is thus the direction, for which we use the PyRadiomics default. The GRLM is in PREDICT
+extracted using PyRadiomics, so WORC relies on directly using PyRadiomics.</p>
+<p>The following GRLM features are by default extracted:</p>
+<ol class="arabic simple">
+<li><p>Gray level non-uniformity</p></li>
+<li><p>Gray level non-uniformity normalized</p></li>
+<li><p>Gray level variance</p></li>
+<li><p>High gray level run emphasis</p></li>
+<li><p>Long run emphasis</p></li>
+<li><p>Long run high gray level emphasis</p></li>
+<li><p>Long run low gray level emphasis</p></li>
+<li><p>Low gray level run emphasis</p></li>
+<li><p>Run entropy</p></li>
+<li><p>Run length non-uniformity</p></li>
+<li><p>Run length non-uniformity normalized</p></li>
+<li><p>Run percentage</p></li>
+<li><p>Run variance</p></li>
+<li><p>Short run emphasis</p></li>
+<li><p>Short run high gray level emphasis</p></li>
+<li><p>Short run low gray level emphasis</p></li>
+</ol>
+</section>
+<section id="gray-level-size-zone-matrix-glszm">
+<span id="features-glszm"></span><h3>Gray-Level Size Zone Matrix (GLSZM)<a class="headerlink" href="#gray-level-size-zone-matrix-glszm" title="Link to this heading">¶</a></h3>
+<p>The GLSZM counts how many areas of a certain gray level and size occur. It therefore has no parameters.
+The GLSZM is in PREDICT extracted using PyRadiomics, so WORC relies on directly using PyRadiomics.</p>
+<p>The following GLSZM features are by default extracted:</p>
+<ol class="arabic simple">
+<li><p>Gray level non-uniformity</p></li>
+<li><p>Gray level non-uniformity normalized</p></li>
+<li><p>Gray level variance</p></li>
+<li><p>High gray level zone emphasis</p></li>
+<li><p>Large area emphasis</p></li>
+<li><p>Large area high gray level emphasis</p></li>
+<li><p>Large area low gray level emphasis</p></li>
+<li><p>Low gray level zone emphasis</p></li>
+<li><p>zone entropy</p></li>
+<li><p>Size zone non-uniformity</p></li>
+<li><p>Size zone non-uniformity normalized</p></li>
+<li><p>Zone percentage</p></li>
+<li><p>Zone variance</p></li>
+<li><p>Small area emphasis</p></li>
+<li><p>Small area high gray level emphasis</p></li>
+<li><p>Small area low gray level emphasis</p></li>
+</ol>
+</section>
+<section id="gray-level-dependence-matrix-gldm">
+<span id="features-gldm"></span><h3>Gray Level Dependence Matrix (GLDM)<a class="headerlink" href="#gray-level-dependence-matrix-gldm" title="Link to this heading">¶</a></h3>
+<p>The GLDM determines how much voxels in a neighborhood depend (e.g. are similar) to the centre
+voxel. Parameters include the distance to define the neighborhood and the similarity threshold.
+The GLDM is also extracted using PyRadiomics, and it’s default therefore used.</p>
+<p>The following GLDM features are used:</p>
+<ol class="arabic simple">
+<li><p>Dependence Entropy</p></li>
+<li><p>Dependence Non-Uniformity</p></li>
+<li><p>Dependence Non-Uniformity Normalized</p></li>
+<li><p>Dependence Variance</p></li>
+<li><p>Gray Level Non-Uniformity</p></li>
+<li><p>Gray Level Variance</p></li>
+<li><p>High Gray Level Emphasis</p></li>
+<li><p>Large Dependence Emphasis</p></li>
+<li><p>Large Dependence High Gray Level Emphasis</p></li>
+<li><p>Large Dependence Low Gray Level Emphasis</p></li>
+<li><p>Low Gray Level Emphasis</p></li>
+<li><p>Small Dependence Emphasis</p></li>
+<li><p>Small Dependence High Gray Level Emphasis</p></li>
+<li><p>Small Dependence Low Gray Level Emphasis</p></li>
+</ol>
+</section>
+<section id="neighborhood-gray-tone-difference-matrix-ngtdm">
+<span id="features-ngtdm"></span><h3>Neighborhood Gray Tone Difference Matrix (NGTDM)<a class="headerlink" href="#neighborhood-gray-tone-difference-matrix-ngtdm" title="Link to this heading">¶</a></h3>
+<p>The NGTDM looks at the difference between a pixel’s gray value and that of it’s neighborhood within a distance,
+which is the only parameter. The NGTDM is also extracted using PyRadiomics, and it’s default therefore used.</p>
+<p>The following NGTDM features are extracted:</p>
+<ol class="arabic simple">
+<li><p>Busyness</p></li>
+<li><p>Coarseness</p></li>
+<li><p>Complexity</p></li>
+<li><p>Contrast</p></li>
+<li><p>Strength</p></li>
+</ol>
+</section>
+<section id="gabor-filter-features">
+<span id="features-gabor"></span><h3>Gabor filter features<a class="headerlink" href="#gabor-filter-features" title="Link to this heading">¶</a></h3>
+<p>These features are extracted through PREDICT by first applying a set of Gabor filters to the image with the following
+parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;gabor_frequencies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0.05, 0.2, 0.5&#39;</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;gabor_angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0, 45, 90, 135&#39;</span>
+</pre></div>
+</div>
+<p>The angles are equal to the GLCM angles, but are given in degrees. For each unique combination of angle and frequency,
+the image is filtered per 2-D axial slice, after which the PREDICT histogram features
+as <a class="reference internal" href="#features-histogram"><span class="std std-ref">discussed earlier</span></a> are extracted from the filtered images.</p>
+</section>
+</section>
+<section id="laplacian-of-gaussian-log-filter-features">
+<span id="features-log"></span><h2>Laplacian of Gaussian (LoG) filter features<a class="headerlink" href="#laplacian-of-gaussian-log-filter-features" title="Link to this heading">¶</a></h2>
+<p>Similar to the Gabor features, these features are extracted after the filtering the image, now with a LoG filter.
+WORC includes the width of the Gaussian part of the filter as parameter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;log_sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1, 5, 10&#39;</span>
+</pre></div>
+</div>
+<p>Again, for all sigma’s, the images are filtered per 2-D slice after which the PREDICT histogram features
+as <a class="reference internal" href="#features-histogram"><span class="std std-ref">discussed earlier</span></a> are extracted from the filtered images.</p>
+</section>
+<section id="vessel-filter-features">
+<span id="features-vessel"></span><h2>Vessel filter features<a class="headerlink" href="#vessel-filter-features" title="Link to this heading">¶</a></h2>
+<p>Similar to the Gabor features, these features are extracted after the filtering the image, now using a so called
+vessel filter from the following paper:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://link.springer.com/chapter/10.1007/bfb0056195/">Frangi, Alejandro F., et al. “Multiscale vessel enhancement filtering.” International conference on medical image computing and computer-assisted intervention. Springer, Berlin, Heidelberg, 1998.</a></p>
+</div></blockquote>
+<p>As the filter triggers on tubular structeres, these filter may be used to not only detect vessels but any tube like
+structure. The following parameters are used, see also the paper:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;vessel_scale_range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1, 10&#39;</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;vessel_scale_step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;vessel_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;5&#39;</span>
+</pre></div>
+</div>
+<p>As in several applications we were interested in vessel structures in the core of the ROI, WORC splits
+the ROI in an inner and outer part using the vessel_radius parameter.</p>
+<p>Again, for all parameter combinations, the images are filtered per 2-D slice and the PREDICT histogram features
+as <a class="reference internal" href="#features-histogram"><span class="std std-ref">discussed earlier</span></a> are extracted from the filtered images. This is done for
+the full ROI, the inner region, and the outer region.</p>
+</section>
+<section id="local-binary-patterns-lbp">
+<span id="features-lbp"></span><h2>Local Binary Patterns (LBP)<a class="headerlink" href="#local-binary-patterns-lbp" title="Link to this heading">¶</a></h2>
+<p>We recommend the following article for information about LBPs:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://ieeexplore.ieee.org/abstract/document/1017623/">Ojala, Timo, Matti Pietikainen, and Topi Maenpaa. “Multiresolution gray-scale and rotation invariant texture classification with local binary patterns.” IEEE Transactions on pattern analysis and machine intelligence 24.7 (2002): 971-987.</a></p>
+</div></blockquote>
+<p>Again, a range of parameters is used to compute the LBP:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;LBP_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3, 8, 15&#39;</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;LBP_npoints&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;12, 24, 36&#39;</span>
+</pre></div>
+</div>
+<p>For all parameter combinations, as each npoints corresponds to a radius setting, the images are “filtered” (the LBP produces an image with the same
+dimensions as the original, similar to a filtering operation) per 2-D slice and the PREDICT histogram features
+as <a class="reference internal" href="#features-histogram"><span class="std std-ref">discussed earlier</span></a> are extracted from the filtered images, both for the inner and outer
+region.</p>
+</section>
+<section id="local-phase-features">
+<span id="features-phase"></span><h2>Local phase features<a class="headerlink" href="#local-phase-features" title="Link to this heading">¶</a></h2>
+<p>In many imaging modalities, e.g. MRI, the intensity scale varies a lot per image. Therefore, using intensity
+information may not be relevant: changes in contrast in local regions may be more relevant. Therefore, PREDICT
+includes features based on local phase, which transforms the image to an intensity invariant phase by
+looking at fluctuations or the phase of the intensity in a local region. On these local phase images,
+measures based on congruency or symmetry of phase may result in relevant features. For more information,
+please see the work of <a class="reference external" href="https://www.peterkovesi.com/matlabfns/index.html/">Peter Kovesi</a>.</p>
+<p>Local phase computations serves as a filter, with the following parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;phase_minwavelength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3&#39;</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;phase_nscale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;5&#39;</span>
+</pre></div>
+</div>
+<p>Again, for all parameter combinations, the images are filtered per 2-D slice and the PREDICT histogram features
+as <a class="reference internal" href="#features-histogram"><span class="std std-ref">discussed earlier</span></a> are extracted from the filtered images. This is done for
+the local phase, phase congruency, and phase symmetry.</p>
+</section>
+<section id="dicom-features">
+<span id="features-dicom"></span><h2>DICOM features<a class="headerlink" href="#dicom-features" title="Link to this heading">¶</a></h2>
+<p>In PREDICT, several features may be extracted from DICOM headers, which can be provided in the metadata source.
+By default, these include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">(0010,</span> <span class="pre">1010)</span></code>: Patient age</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0010,</span> <span class="pre">0040)</span></code>: Patient sex</p></li>
+</ul>
+<p>You can define which tags you want to extract and how to name these features
+by altering the following in the config:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;dicom_feature_tags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0010 1010, 0010 0040&#39;</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;ImageFeatures&#39;</span><span class="p">][</span><span class="s1">&#39;dicom_feature_labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;age, sex&#39;</span>
+</pre></div>
+</div>
+<p>Note that the value will be converted to a float. If that’s not possible, or
+the tag is not present, <code class="docutils literal notranslate"><span class="pre">numpy.NaN</span></code> will be used instead.</p>
+<p>Other features may you want to include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">(0008,</span> <span class="pre">0070)</span></code>: Scanner manufacturer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">0022)</span></code>: Scan options, see below</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">0050)</span></code>: Slice thickness</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">0080)</span></code>: Repetition time (MRI)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">0081)</span></code>: Echo time (MRI)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">0087)</span></code>: Magnetic field strength (MRI)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">1314)</span></code>: Flip angle (MRI)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0028,</span> <span class="pre">0030)</span></code>: Pixel spacing</p></li>
+</ul>
+<p>Several routines for converting values to floats has been defined for the
+following features:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">(0008,</span> <span class="pre">0070)</span></code> (Scanner manufacturer): 0 = Siemens, 1 = Philips,
+2 = General Electric, 3 = Toshiba. If not one of these, <code class="docutils literal notranslate"><span class="pre">numpy.NaN</span></code> is used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">0022)</span></code> (Scan options): if name is ‘FatSat’, determine whether a
+a scan has been made with fat saturation or not from the scan options.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0010,</span> <span class="pre">0040)</span></code> (Patient Sex): M = 0, F = 1</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0018,</span> <span class="pre">0087)</span></code> (Magnetic field strength): 5000 = 0.5, 10000 = 1.0,
+15000 = 1.5, 30000 = 3.0. If not convertible to float, use <code class="docutils literal notranslate"><span class="pre">numpy.NaN</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(0028,</span> <span class="pre">0030)</span></code> (Pixel spacing): Use first value and convert to float</p></li>
+</ul>
+</section>
+<section id="semantic-features">
+<span id="features-semantic"></span><h2>Semantic features<a class="headerlink" href="#semantic-features" title="Link to this heading">¶</a></h2>
+<p>WORC allows the user to provide non-computational features, which are called semantic features. These
+can be give to WORC as an Excel file, in which each column represents a feature. See the
+<span class="xref std std-ref">User manual chapter</span> for more details on providing these features</p>
+</section>
+<section id="other-extraction-choices">
+<h2>Other extraction choices<a class="headerlink" href="#other-extraction-choices" title="Link to this heading">¶</a></h2>
+<section id="filtering-on-roi-or-full-image">
+<h3>Filtering on ROI or full image.<a class="headerlink" href="#filtering-on-roi-or-full-image" title="Link to this heading">¶</a></h3>
+<p>For all filter based features, the images are first filtered using the full image, after which the features
+are extracted from the region of interests (ROI). Only filtering the ROI with the filters would result in
+edge artefacts. A drawback could be that now the ROI surroundings influence the feature, but this
+can also be a benefit as a comparison between the ROI and it’s surrounding could give relevant information.</p>
+</section>
+<section id="feature-extraction-parameter-selection">
+<h3>Feature extraction parameter selection<a class="headerlink" href="#feature-extraction-parameter-selection" title="Link to this heading">¶</a></h3>
+<p>Many of the extracted features have parameters to be set. For each application, the most suitable set of
+parameters may vary. Therefore, in WORC, by default many features are extracted at a range of parameters.
+We hypothesize that in the next steps, e.g. feature selection and classification, the most relevant features
+will be automatically used.</p>
+</section>
+<section id="wavelet-features">
+<h3>Wavelet features<a class="headerlink" href="#wavelet-features" title="Link to this heading">¶</a></h3>
+<p>PyRadiomics supports the extraction of so-called wavelet features by first applying a set of filters
+to the image before extracting the above mentioned features. The amount of features therefore quickly expands
+when using wavelet features, while we have not noticed improvements in our experiments. Hence, to save
+computation time, we have decided to only include original features in WORC. Usage of wavelet features
+is however supported, both in feature extraction and selection, see the <a class="reference internal" href="configuration.html#config-chapter"><span class="std std-ref">Config chapter</span></a>.</p>
+</section>
+<section id="fixed-bin-width-vs-fixed-bin-size">
+<h3>Fixed bin width vs fixed bin size<a class="headerlink" href="#fixed-bin-width-vs-fixed-bin-size" title="Link to this heading">¶</a></h3>
+<p>For all gray level matrix based features, WORC by default uses a fixed bin-width, while
+<a class="reference external" href="https://pyradiomics.readthedocs.io/en/latest/faq.html#what-about-gray-value-discretization-fixed-bin-width-fixed-bin-count/">PyRadiomics argues to use a fixed bin-size</a>
+The reason for that is that we want the WORC default settings to work in a wide variety of applications,
+including those with images in arbitrary scales, which often happens when using MRI. In these cases,
+using a fixed bin-width may lead to odd features values and even errors.</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="additionalfunctionality.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Additional functionality</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="configuration.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Configuration</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2016 -- 2025, Biomedical Imaging Group Rotterdam, Department of Radiology and Nuclear Medicine, Erasmus University Medical Center, Rotterdam, The Netherlands
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Radiomics Features</a><ul>
+<li><a class="reference internal" href="#histogram-features">Histogram features</a></li>
+<li><a class="reference internal" href="#shape-features">Shape features</a></li>
+<li><a class="reference internal" href="#orientation-features">Orientation features</a></li>
+<li><a class="reference internal" href="#texture-features">Texture features</a><ul>
+<li><a class="reference internal" href="#gray-level-co-occurence-matrix-glcm">Gray-Level Co-occurence Matrix (GLCM)</a></li>
+<li><a class="reference internal" href="#gray-level-run-length-matrix-glrlm">Gray-Level Run Length Matrix (GLRLM)</a></li>
+<li><a class="reference internal" href="#gray-level-size-zone-matrix-glszm">Gray-Level Size Zone Matrix (GLSZM)</a></li>
+<li><a class="reference internal" href="#gray-level-dependence-matrix-gldm">Gray Level Dependence Matrix (GLDM)</a></li>
+<li><a class="reference internal" href="#neighborhood-gray-tone-difference-matrix-ngtdm">Neighborhood Gray Tone Difference Matrix (NGTDM)</a></li>
+<li><a class="reference internal" href="#gabor-filter-features">Gabor filter features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#laplacian-of-gaussian-log-filter-features">Laplacian of Gaussian (LoG) filter features</a></li>
+<li><a class="reference internal" href="#vessel-filter-features">Vessel filter features</a></li>
+<li><a class="reference internal" href="#local-binary-patterns-lbp">Local Binary Patterns (LBP)</a></li>
+<li><a class="reference internal" href="#local-phase-features">Local phase features</a></li>
+<li><a class="reference internal" href="#dicom-features">DICOM features</a></li>
+<li><a class="reference internal" href="#semantic-features">Semantic features</a></li>
+<li><a class="reference internal" href="#other-extraction-choices">Other extraction choices</a><ul>
+<li><a class="reference internal" href="#filtering-on-roi-or-full-image">Filtering on ROI or full image.</a></li>
+<li><a class="reference internal" href="#feature-extraction-parameter-selection">Feature extraction parameter selection</a></li>
+<li><a class="reference internal" href="#wavelet-features">Wavelet features</a></li>
+<li><a class="reference internal" href="#fixed-bin-width-vs-fixed-bin-size">Fixed bin width vs fixed bin size</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=229cbe3b"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

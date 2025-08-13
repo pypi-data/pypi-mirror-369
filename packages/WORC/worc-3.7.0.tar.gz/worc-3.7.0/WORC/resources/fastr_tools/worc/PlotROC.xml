@@ -1,0 +1,42 @@
+<tool id="PlotROC" name="PlotROC" version="1.0">
+    <description>A wrapper around WORCs ROC and PR curve plotting function.</description>
+    <authors>
+      <author name="Martijn Starmans" email="m.starmans@erasmusmc.nl" url="http://www.bigr.nl/people/MartijnStarmans" />
+    </authors>
+  <command version="1.0" url="" >
+    <targets>
+      <target os="*" arch="*" interpreter="python" paths='bin/' bin="PlotROC.py" />
+    </targets>
+    <description>
+       PlotROC.py prediction pinfo ensemble label_type roc_png roc_tex roc_csv pc_png PRC_tex PRC_csv
+    </description>
+    <authors>
+      <author  name="Martijn Starmans" email="m.starmans@erasmusmc.nl" url="http://www.bigr.nl/people/MartijnStarmans" />
+    </authors>
+  </command>
+  <repository />
+  <interface>
+    <inputs>
+        <input id="prediction" name="Radiomics estimator object from PREDICT Trainclassifier function" datatype="HDF5" prefix="--prediction" cardinality="1" repeat_prefix="false" required="true" />
+        <input id="pinfo" name="Text file containing labels from patients" datatype="PatientInfoFile" prefix="--pinfo" cardinality="1" repeat_prefix="false" required="true" />
+        <input id="ensemble_method" name="Ensemble method." datatype="String" prefix="--ensemble_method" cardinality="1" repeat_prefix="false" required="false" />
+        <input id="ensemble_size" name="Ensemble size." datatype="String" prefix="--ensemble_size" cardinality="1" repeat_prefix="false" required="false" />
+        <input id="label_type" name="Name of label predicted by the estimator to plot ROC for." datatype="String" prefix="--label_type" cardinality="1" repeat_prefix="false" required="false" />
+     </inputs>
+    <outputs>
+      <output id="ROC_png" name="ROC PNG File." datatype="PNGFile" prefix="--ROC_png" cardinality="1" nospace="False" order="0" required="false" />
+      <output id="ROC_tex" name="ROC TEX File." datatype="TexFile" prefix="--ROC_tex" cardinality="1" nospace="False" order="0" required="false" />
+      <output id="ROC_csv" name="ROC CSV File." datatype="CSVFile" prefix="--ROC_csv" cardinality="1" nospace="False" order="0" required="false" />
+      <output id="PRC_png" name="PR PNG File." datatype="PNGFile" prefix="--PRC_png" cardinality="1" nospace="False" order="0" required="false" />
+      <output id="PRC_tex" name="PR TEX File." datatype="TexFile" prefix="--PRC_tex" cardinality="1" nospace="False" order="0" required="false" />
+      <output id="PRC_csv" name="PR CSV File." datatype="CSVFile" prefix="--PRC_csv" cardinality="1" nospace="False" order="0" required="false" />
+    </outputs>
+  </interface>
+  <requirements />
+  <tests />
+  <help> usage: to write
+  </help>
+  <cite>
+  </cite>
+  <references />
+</tool>

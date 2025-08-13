@@ -1,0 +1,861 @@
+Changelog
+=========
+
+All notable changes to this project will be documented in this file.
+
+The format is based on `Keep a Changelog <http://keepachangelog.com/>`_
+and this project adheres to `Semantic Versioning <http://semver.org/>`_
+
+3.7.0 - 11-08-2025
+------------------
+Updates to be compatible with Python 3.11, dropped <=3.7 support.
+
+Fixed
+~~~~~
+- ret list in WORC.classification.fitandscore.fit_and_score
+    is now the result dict in line with sklearn updates. 
+- Bug in statistical feature testing.
+- Updated fastr config.d to be compatible with new pip editable install.
+- Removed n_jobs argument in many imbalanced learn functions
+  as its deprecated.
+- Check_is_fitted didnt check the specific attribute but only 
+  whether the best estimator was fitted overall.
+- Logging conflicts with fastr
+- Remove HDF5 validity check took to much memory.
+- ReadTheDocs building with newer python.
+- Unit testing with newer python.
+
+Changed
+~~~~~~~
+- Several dependencies have been updated, most notably
+    dependency on scikit-learn==0.23.1. 
+- The WORC.classification.BaseSearchCV object was updated to 
+    BaseSearchCVWORC, inhereting the dependencies from 
+    sklearn.model_selection._search.BaseSearchCV. While still
+    depending on a hidden object, this is more future proof
+    than the previous construction from scratch.
+- Replaced some private sklearn API functions by custom public ones 
+  for improved compatibility.
+- Depend on numpy<=1.26.3 due to PyRadiomics dependencies.
+- Reverted back to matplot2tikz instead of tikzplotlib as tikzplotlib
+  has compatibility issues and is not properly maintained anymore.
+- Minor bug in statistical testing for GLCMMS features.
+
+Removed
+~~~~~~~
+- Joblib SearchCV objects. Rarely used, costs quite some work to maintain.
+- Removed the Halton sampler which was an alternative to random search.
+  ghalton package outdated, rarely used extra feature anyway.
+
+Added
+~~~~~
+- Some documentation
+
+3.6.3 - 15-08-2023
+------------------
+
+Fixed
+~~~~~
+- Bug in computing confidence intervals when performance was always the same,
+  results now in a np.nan confidence interval.
+- Error catched and message added when you provide images and/or features in the
+  test set, but not labels.
+- SimpleWORC and BasicWORC now detect whether user has provided a separate training
+  and test set and thus bootstrapping should be used.
+- Bug in PREDICT was fixed that mixed up the mode in shape feature extraction (2D / 2.5D)
+- Bug in performance calculation of multiclass classification.
+- Bugs in statistical feature testing.
+
+Changed
+~~~~~~~
+- Statistical test feature selection before PCA: otherwise when combined,
+  it will select PCA components, not features.
+
+Added
+~~~~~
+- Histogram equalization to preprocessing.
+- Recursive feature elimination (RFE) feature selection.
+- Workflow to provide evaluate a trained model on new data
+- Option to set a fixed random seed in the hyperoptimization
+  for reproducibility.
+- Various FAQs
+- Updated user manual with more extensive debugging guide.
+- Thoroughly updated user manual documentation on different data flows, e.g.
+  train-test setups, multiple segmentations per patient.
+- function in SimpleWORC to add parameter files for elastix.
+
+
+3.6.2 - 2023-03-14
+------------------
+
+Fixed
+~~~~~
+- Bug when using statisticaltestthreshold in multiclass classification,
+  see Github Issue #73.
+
+
+3.6.1 - 2023-02-15
+------------------
+
+Fixed
+~~~~~
+- Bug when using elastix, dimensionality got wrong name in fastr network.
+- Bug in BasicWORC when starting from features
+- For statistical test thresholding, if refit does not work during ensembling, skip this method
+  instead of returning NaN.
+- Createfixedsplits function was outdated, updates to newest conventions and added
+  to documentation.
+- When using Dummy's, segmentix now still copies metadata information from image
+  to segmentation when required.
+
+Changed
+~~~~~~~
+- When part of fiting and scoring a workflow fails, during optimization return NaN as performance,
+  but during refitting skip that step. During optimization, if we skip it, the relation between
+  the hyperparameter and performance gets disturbed. During refitting, we need to have a model,
+  so best option is to skip the step. Previously, there was only skipping.
+- Set default of XGB estimator parallelization to single job.
+
+Added
+~~~~~
+- Documentation updates
+- Option to save the workflows trained on the train-validation training datasets, besides the option to save workflows
+  trained on the full training dataset. Not an option for SMAC due to implementation of SMAC.
+- Validate function for fastr HDF5 datatype, as previously fastr deemed empty hdf5 types as valid.
+- Option to eliminate features which are all NaN during imputation.
+- Preflightcheck on number of image types provided.
+
+
+3.6.0 - 2022-04-05
+------------------
+
+Added
+~~~~~~~
+- Bayesian optimization through SMAC as alternative to random search. Due
+  to specific requirements for SMAC, this is not by default installed.
+  Instructions to install this component are provided in the documentation.
+- Besides Top_N ensembling, various other methods are added:
+  'ForwardSelection', 'Caruana', and 'Bagging'
+- LightGBM classifier
+- Light fingerprinting approach to adjust config based on dataset.
+
+Fixed
+~~~~~
+- When none of the workflows to be included in the workflow converges during
+  retraining, add the next best performing workflows.
+
+3.5.0 - 2021-08-18
+------------------
+
+Fixed
+~~~~~
+- Bug in plotting 2D images when ranking the posteriors or percentages.
+- Bug in Evaluate for Regression.
+- Bug in BasicWORC for supplying label files.
+- There is a bug in SimpleITK 2.1.0, which leads it to not be able
+  to read certain NIFTI files. See: https://github.com/InsightSoftwareConsortium/ITK/issues/2674
+  Reverting to SimpleITK 2.0.2 for now
+
+Changed
+~~~~~~~
+- Defaults for splitting jobs in hyperoptimization: now more parallelized.
+
+Added
+~~~~~~~
+- Documentation on additional functionality.
+
+3.4.5 - 2021-07-09
+------------------
+ Unit tests moved from Travis to Github Workflow from this verion on.
+
+Fixed
+~~~~~
+- Bug in plotting images when ranking the posteriors or percentages.
+- Linting issues.
+
+Changed
+~~~~~~~
+- Removed deprecated scatterplot, RankedSVM functions.
+
+3.4.4 - 2021-07-01
+------------------
+
+Fixed
+~~~~~
+- Bug where most recent added estimators were not valid in SimpleWORC.
+- SelectorMixin is now imported directly from sklearn.feature_selection,
+  as sklearn.feature_selection.base is deprecated and will be removed.
+
+Changed
+~~~~~~~
+- Apply variance threshold selection before feature scaling, otherwise
+  variance is always the same for all features.
+- RELIEF, selection using a model, PCA, and univariate testing default
+  use changed from 0.20 to 0.275.
+
+Added
+~~~~~~~
+- Functionality in plotting images functions.
+- Documentation on how to use your own features.
+
+3.4.3 - 2021-06-02
+------------------
+
+Fixed
+~~~~~
+- SimpleWORC and BasicWORC now support multilabel workflows.
+- SimpleWORC and BasicWORC now support use of masks.
+
+Added
+~~~~~~~
+- Unit testing for multilabel workflows.
+
+3.4.2 - 2021-05-27
+------------------
+
+Fixed
+~~~~~
+- Bug in flattening of plot_ranked_posteriors function.
+- Bug in plot_images: could not handle 2D images when applying slicing.
+- Bug in precision-recall curve.
+- Bug in performance estimation plotting.
+- Preflighcheck now also accepts labels from txt or XNAT.
+
+Added
+~~~~~~~
+- Label file can now also be separated by semicolons.
+
+3.4.1 - 2021-05-18
+------------------
+
+Fixed
+~~~~~
+- Bugfix when PCA cannot be fitted.
+- Bugfix when using LOO cross-validation in performance evaluation.
+- Fix XGboost verson, as newest version automatically uses multihreading,
+  which is unsuitable for clusters.
+- Bug in decomposition for Evaluation.
+- RankedPosteriors naming of images was rounded to an integer, now unrounded
+- Several fixes for regression.
+- Regression in unit test.
+- Several fixes for using 2D images.
+
+Changed
+~~~~~~~
+- Reverted back to weighted f1-score without predictproba for optimization,
+  more stable.
+- Updated regressors in SimpleWORC.
+
+Added
+~~~~~~~
+- Option to combine features from a varying number of objects per patient,
+  e.g. by averaging or taking the maximum.
+- Logarithmic z-score scaler to be more robust to non-normal distributions
+  and outliers.
+- Linear and Ridge regression.
+- Precision-recall curves.
+
+3.4.0 - 2021-02-02
+------------------
+
+Fixed
+~~~~~
+- MAJOR: Bug in SearchCV sorting of output files.
+- Bug in StatisticalTest for Manhattan plot.
+- Bug in evaluate when using a test set.
+- Bug in SearchCV for fitting preprocessing.
+- Fix random states in boosting estimators.
+
+Changed
+~~~~~~~
+- IMPORTANT: previously, used f1_score based on estimator.predict function.
+  Now, use predict_proba.
+- New defaults for random-search and ensemble.
+
+Added
+~~~~~~~
+- All performances to output statistics.
+- Script for plotting of errors in classification. Not embedded yet.
+- Option to refit top performing workflows and save them.
+- Part to conduct experiment with varying random search and ensemble sizes.
+
+3.3.5 - 2020-10-21
+------------------
+
+Fixed
+~~~~~
+- Some function cleaning: removing redundant parts / variables.
+
+Changed
+~~~~~~~
+- Part of developper documentation for addinf methods to hyperoptimization.
+- Default config: SelectFromModel incorporated, so now also use
+  that in feature selection step.
+
+Added
+~~~~~~~
+- OneHotEncoder to workflows / HyperOptimization.
+- Documentation updates.
+- SelectFromModel expanded and properly integrated in workflow.
+- AdaBoost as classifier and regressor.
+- XGDBoost as classifier and regressor.
+- Plotting of hyperparameters of best workflows in Evaluate network.
+- Plotting of p-values of features.
+
+3.3.4 - 2020-10-06
+------------------
+
+Fixed
+~~~~~
+- Bugfixes in some error messages.
+- If a classifier cannot give a score, use the prediction instead.
+- Bugfix in bootstrapping.
+- Bugfix: use f1-weighted score in SimpleWORC binary classification.
+
+Changed
+~~~~~~~
+- There are no longer ''patient_features'' in PREDICT: these are extracted
+  from the DICOM tags and are thus now called ''dicom_features.
+- As bootstrapping is now more efficient, increase default to 1000 iterations.
+
+Added
+~~~~~~~
+- Option to transpose all images and segmentations to a default orientation.
+  Currently only supports axial.
+- Support for PREDICT DICOM features.
+- Memory of single optimization job to general config.
+- Catch when imputation completely removes a feature.
+- Clipping as preprocessing option
+- Function to show which hyperparameters were used in the best workflows.
+
+3.3.3 - 2020-09-11
+------------------
+
+Fixed
+~~~~~
+- In the RobustStandardScaler, if less than two values for a feature are left,
+  use the original set inset of the ``robust'' reduced set.
+
+Changed
+~~~~~~~
+- By default, semantic features are skipped in scaling, as the robust scaler
+  cannot deal well with categorical variables.
+- Wrapped scalers in single WORC scaler object to allow above for all scalers.
+
+Added
+~~~~~~~
+- Leave-One-Out (LOO) cross-validation.
+- Option to skip features in scaling.
+- Bias correction in preprocessing.
+- Option to check whether Nifti spacing seems incorrect and correct
+  with DICOM metadata.
+- ElasticNet as classifier through LogisticRegression penalty.
+
+3.3.2 - 2020-08-19
+------------------
+
+Fixed
+~~~~~
+- Bug in fit and score when using scaling: was incorrectly parsed as string
+  and always set to None.
+- Catch exception in ADASYN sampling.
+- Typo in configuration documentation.
+
+Added
+~~~~~~~
+- New type of scaler (robust z-scoring)
+- Resampling of image and mask in preprocessing (preprocessing and segmentix
+  nodes)
+
+Changed
+~~~~~~~
+- Newly added scaler is now also the default to use, instead of the search
+  over the older included scalers.
+- Evaluation of estimator is now separate from training it.
+
+3.3.1 - 2020-07-31
+------------------
+
+Changed
+~~~~~~~
+- Updated to using tikzplotlib for conversion of figures to LaTeX instead
+  of deprecated matplotlib2tikz.
+- Output of evaluation pipeline now in separate subfolder.
+- KNNImputer now also in sklearn, missingpy deprecated, so switched to
+  sklearn KNNImputer.
+
+Fixed
+~~~~~
+- Bug in fixandscore when using resampling.
+
+
+3.3.0 - 2020-07-28
+------------------
+
+Added
+~~~~~~~
+- Graphviz vizualization of network is now nicely grouped.
+- Properly integrated ObjectSampler: various resampling options now available.
+- Verbose option to fit and score tool
+- Validator for PyRadiomics output.
+- FAQ version to documentation
+
+Changed
+~~~~~~~
+- Upgraded to new versions of sklearn (0.23.1) and imbalanced learn (0.7.0)
+- Some defaults, based on computation time.
+- Do not skip workflow if feature selection selects zero features,
+  but disable the feature selection.
+- Do not skip workflow if resampling is unsuccesfull,
+  but disable the resampling.
+- Default scaling is now not only Z-score, but also MinMax and Robust
+- Renamed plot SVM function and all functions using it, as now
+  we use all kinds of estimators.
+- L1 penalty does not work with new standard LR solver. Removed L1 penalty.
+
+Fixed
+~~~~~
+- Bug when using both elastix and segmentix.
+- Bug when using elastix in train-test workflow.
+- IMPORTANT: Previously, all methods except the machine learning where fit on
+  both the training and validation set together in fitandscore. This led
+  to overfitting on the validation set. Now, these are properly split.
+- Bugfix in Evaluate standalone for decompositon tool.
+- Applied imputation in decomposition if NaNs are detected.
+- In the facade ConfigBuilder, an error is raised when incorrect
+  overrides are given.
+- Bugfix in statistical feature test plotting.
+- Bugfix in Evaluate when using ComBat
+- Bugfix in feature converter of PyRadiomics when using 2D images.
+- Catch Graphviz error.
+- Bug in ICC.
+
+
+3.2.2 - 2020-07-14
+------------------
+
+Added
+~~~~~~~
+- In classify node, when using temporary saves, start from where
+  the process previously stopped instead of from the beginning.
+- Imputation to ComBat.
+
+Changed
+~~~~~~~
+- Imputation is now the first step in the workflows. More logical as
+  scaler and variance threshold can crash on missing values.
+- In config, preprocessing fields are now actually called preprocessing and
+  not normalize.
+
+Fixed
+~~~~~
+- Preflightcheck now also compatible with BasicWORC.
+- Bugfix in ComBat when not using mod variable and skipping patients.
+- Bug in PyRadiomics feature converter: can now handle 2D images.
+- ReliefSampleSize parameter is now a uniform distribution, which it should be.
+- Gabor features now actually used in model instead of only computing them.
+
+
+3.2.1 - 2020-07-02
+------------------
+
+Added
+~~~~~~~
+- Major documentation update.
+
+Changed
+~~~~~~~
+- PyRadiomics setup not dependent on pre-install of numpy anymore, so altered
+  travis, yml, setup, and documentation.
+- PREDICT updated, change dependencies.
+- Defaults are now a bit different: see argumentation in the documentation.
+  Main thing is that PyRadiomics and PREDICT both compute certain features,
+  so it's redundant to use both. Additionally, the wavelet features
+  from PyRadiomics add +1000 features, which did not seem to help in many
+  experiments while majorly slowing down the computation.
+
+Fixed
+~~~~~
+- Catch error when PCA does not converge in fit and score function.
+
+3.2.0 - 2020-06-26
+------------------
+
+Added
+~~~~~~~
+- Labelprocessing can now also handle having patient ID in the feature files.
+  Was required for ComBat.
+
+Changed
+~~~~~~~
+- Output of plot_SVM function is better ordered.
+- Several defaults, as we now have PyRadiomics fully embedded, resulting in
+  a large increase in features.
+- No more overrides for the full config, as the default now is the full config.
+
+Fixed
+~~~~~
+- Cardinality of decomposition tool was incorrect.
+- ComBat integration in WORC network now works properly.
+- Documentation didn't build due to C-extension dependencies of PyRadiomics,
+  and thus therefore also PREDICT. Fixed in setup.py and readthedocs files.
+- Documentation building.
+- Bugfix in segmentix test output url.
+- Bugfix in SimpleWORC facade when using features.
+- Warning when using Evaluation pipeline without images.
+
+
+3.1.4 - 2020-05-26
+------------------
+
+Added
+~~~~~~~
+- Catch error if number of segmentations supplied does not match number of
+  images.
+- Add support in SimpleWORC and BasicWORC for multiple segmentations per
+  patient.
+- Chi2 test in statistical testing.
+- fastr tool to make boxplots of all features, overall and per class.
+- Added this boxplot tool to the evaluate workflow.
+- Option in evaluation to overfit feature scaling to test set: should only
+  be used to assess differences between the training and test sets, not
+  in an actual model.
+- Option to delete small objects in segmentation.
+- Option to within the preprocessing, use a dilated ROI.
+- Otsu thresholding as mask for preprocessing.
+- Memory for each fastr node is now in a dictionary of the WORC object and can
+  be easily changed.
+- PyRadiomics now fully embedded and configurable.
+- ComBat harmonization: currently as separate tool on full dataset,
+  not in cross-validation.
+- Computation of ICC, and thresholding object to use ICC for feature selection.
+- Added groupwise feature selection per feature extraction toolbox.
+- Feature converter tool, to convert features from a toolbox to WORC compatible
+  format.
+- RobustScaler for feature scaling.
+- Decomposition to evaluate network.
+- Combat: in WORK workflow.
+
+Changed
+~~~~~~~
+- Resampling of objects is now after feature selection.
+- Made plot_SVM function more memory efficient.
+- For PCA, Relief, VarianceThreshold, and SelectFromModel feature selection,
+  you can now simply supply a float to determine the percentage of times
+  this method is used in the created workflows.
+- Moved load_features from trainclassifier to file_io.
+- Matching of PID from labels from label file to other objects is now all
+  converted to lower case.
+- Refactoring of WORC network building.
+- Segmentix tool is cleaned up. Segmentix script is moved to processing.
+
+Fixed
+~~~~~
+- Order of methods in preprocessing function of SearchCV did not correspond
+  with that in fitandscore.
+- Replace spaces in uri conversion of sources in SimpleWORC.
+- Check whether all fitandscore jobs succeeded, otherwise throw error.
+- Bug in PCA when n_components > min(n_samples, n_features)
+- Random seed is now set and passed to PCA, Relief and all classifiers
+  for reproducability of the results.
+- Evaluate can now also accept multiple feature toolboxes.
+
+
+3.1.3 - 2020-01-24
+------------------
+
+Added
+~~~~~~~
+- Some options for the plot_images slicer function.
+- Validators to check your inputs before executing experiment.
+- Timer in classification log.
+- Backwards compatibility in fastr config.
+- Option for fixed seed in cross-validation.
+- BasicWORC Facade.
+- Support for computing confidence intervals on differences between models.
+- Error when config file cannot be found.
+
+Changed
+~~~~~~~
+- Preprocessor slows down progress and is not always neccesary. Made it optional.
+- Moved the preprocessor to the SearchCV script to do once on the training set,
+  not in within the algorithm optimization.
+- Ensembling during training is turned-of, as it takes to much time. Only
+  used when plotting the performance.
+- Debug flag includes fixed seed in cross-validation.
+- Joblib now uses by default only 1 core and threading backend.
+
+Fixed
+~~~~~
+- Bug in patient naming of plotting function: if ensembling was done in training,
+  do not re-ensemble.
+
+
+3.1.2 - 2019-12-09
+------------------
+
+Added
+~~~~~~~
+- Support for Oncoradiomics RadiomiX tool
+- Groupwise Search includes GLDZM, Fractal, location, NGTDM, NGLDM, wavelet,
+  and rgrd features
+- SimpleWORC now also accepts features instead of images and segs as input
+- Preprocessor object to preprocess the features before any fitting algorithms
+  are ran. Mostly to detect possible faults/errors in the data.
+
+Changed
+~~~~~~~
+- On runtime, copy config.d file if it does not exist yet.
+
+Fixed
+~~~~~
+- KNN imputation gave an error if >80% of the feature values were missing.
+  Added preprocessing function to remove these features.
+
+3.1.1 - 2019-11-28
+------------------
+
+Added
+~~~~~~~
+- Travis continuous integration for Windows.
+- Removed RT Struct Reader, as it was buggy and not used.
+
+Changed
+~~~~~~~
+- SimpleWORC now properly uses the fastr FileSystem plugin, instead
+  of supplying the absolute filepaths.
+
+Fixed
+~~~~~
+- Under Windows, creation of the fastr home folder if it did not exist
+  did not work when using pip for installing. We now use a new feature
+  of fastr to simply add the WORC folder to the fastr config
+  at WORC import time.
+- When debugging, override manual tempdir setting and always use default. On
+  Windows, Travis gives errors if the tempdir is not in a vfs mount.
+- Use shutil.move in the datadownloader, as os.rename could not overwrite files.
+
+3.1.0 - 2019-10-16
+------------------
+
+Added
+~~~~~~~
+- Thresholding option in plot_SVM.
+- NPV (Negative Preditive Value) to classification metrics.
+- Facade for easier interaction with WORC.
+- Thresholding option in plot_SVM.
+- Function to create fixed splits for cross validation.
+- n_splits parameter for train-test cross validation.
+- Added generalization score.
+- Parameter to choose how many of the optimal settings to save (maxlen).
+- Option to combine multiple onevsrest models in plot_SVM.
+- StatsticalTestThreshold feature selection for multilabel problems.
+- Support for test sets in which only one class is present in various
+  plotting functions and the metrics.
+- Installation: create fastr home if it does not exist yet.
+- Boostrapping as performance evaluation in plot_SVM.
+- Confidence intervals for boostrapping based on percentile.
+- Catch for if patient is in the test set, but not the overall label set.
+- Downloader for downloading example datasets.
+- ReadTheDocs.yml for configuration of documentation.
+- Unit test included in Travis.
+- Various detectors.
+
+Changed
+~~~~~~~
+- Plot_SVR is removed: it's now embedded in plot_SVM.
+- Moved statistical feature selection to last step in fit and score.
+- Also the minimum train and validation score are now saved.
+- Put scaler at top of fitandscore function.
+- Make link in file conversion if output is same format as input.
+- Sort keys in performance output JSON.
+- VarianceThreshold features selection on by default.
+- Removed grid_scores from SearchCV as support is dropped in sklearn > 0.20
+- Renamed IntermediateFacade to SimpleWORC
+- Use inspect to find packagedir
+
+Fixed
+~~~~~
+- Metric computation can now handle it when both the truth and the predicted
+  labels are from a single class.
+- Plotting module now correctly initialized.
+- Plot_SVM now also works properly for regression.
+- Masks for ROI normalization now properly added.
+- Preprocessing: mask needed to be cast to binary.
+- Failed workflows now return nan instead of zero for performance.
+- Several bugs in multilabel performance evaluation
+- Ring in segmentix was in sagital instead of axial direction.
+- Added replacenan in features before applying SMOTE.
+- Metadata test was not passed to calcfeatures: bugfix.
+- Bugfix: overide labels in facade when predict_labels is called.
+- Several bugfixes in the overrides in the facade configbuilder.
+- Various print commands converted to Python3: .format prints were still
+  left and sometimes buggy.
+- StatisticalTestFeatures and PlotRankedScores tools only accepted cardinality
+  of 1.
+- Bugfixes in many plotting functions: opening files with 'w' instead of 'wb'
+  due to python3 conversion, Compatibility issues with plot_SVM due to
+  conversion.
+- Except error when Grahpviz is not installed.
+- Symlinking in worccastcovert not supported by Windows, reverted to copying.
+- Bugfix in create_ensemble in SearchCV when using ensemble = 1.
+
+
+3.0.0 - 2019-05-08
+------------------
+
+Added
+~~~~~~~
+- Now ported to Python3.6+ (Python 2 is no longer supported!). Thereby also
+  to fastr3.
+- Compatibility for Windows. Some small changes in functions, as some packages
+  behaviour differently under Windows. Also, adjusted sink and source paths
+  to use OS file separator.
+- Config is now also a sink.
+
+
+Changed
+~~~~~~~
+- PCE and DTI node removed, as they were not open source.
+- Pinfo file can now also be a csv. Txt is still supported.
+- Use fastr as default for hyperparameter search parallelization instead
+  of Joblib, as this is much more flexible.
+- When the conffidence interval cannot be computed, just use the mean.
+
+
+Fixed
+~~~~~
+- WORC_config.py was not correctly copied in Windows due to incorrect path separation.
+- Source creation for the config was only for Linux.
+- In numpy 1.15>, booleans cannot be subtracted. Fixed an error due to this in
+  segmentix by using bitwise_xor instead.
+- Bug when using masks, but not for all images, and segmentix.
+- Cardinality of classify node was incorrect.
+
+
+2.1.3 - 2019-04-08
+------------------
+
+Changed
+~~~~~~~
+- PREDICT was updated, so had to update the requirements. Changed it
+  to a minimum of PREDICT to prevent these issues in the future.
+
+
+2.1.2 - 2019-04-02
+------------------
+
+Added
+~~~~~~~
+- Dummy workflow in segmentix and calcfeatures PREDICT tools.
+- Added several new PREDICT parameters.
+- Slicer tool.
+
+
+Changed
+~~~~~~~
+- Memory for elastix tool is now larger.
+
+Fixed
+~~~~~
+-Evaluate framework now correctly adopts the name you give it.
+
+
+2.1.1 - 2019-02-15
+------------------
+
+Added
+~~~~~~~
+- Several new PREDICT variables to the config.
+- Multilabel classification workflow.
+- New oversampling strategy.
+- RankedSVM multilabel classification and Relief feature selection.
+
+
+Changed
+~~~~~~~
+- Major reduction in memory usage, especially due to PREDICT updates.
+- Only use first configuration in the classify config.
+- Outputs are now in multiple subfolders instead of one big folder.
+
+
+Fixed
+~~~~~
+- Minor bug in test workflow: needed str of label in appending to classify.
+- There was a bug in using a .ini file as a config.
+
+
+2.1.0 - 2018-08-09
+------------------
+
+Added
+~~~~~~~
+- Feature imputation settings in WORC config.
+- PCA settings in WORC config.
+- Dummy file, which can generally be accepted by WORC.
+- Preprocessing is now a separate node before the calcfeatures node.
+- Started working on a RTStructReader tool.
+- Added EditElastixTransformFile node to set FinalBSplineInterpolationOrder to 0
+  in Elastix. Neccesary for transforming segmentations.
+- Registred image is also saved as a sink.
+- Tex, Zip and PNG Datatypes
+- Plot ROC tool for PREDICT
+- Plot SVM tool for PREDICT
+- Plot Barchart tool for PREDICT
+- Plot Ranked Scores tool for PREDICT
+- Plot statistical test tool for PREDICT
+- Tools: Evaluation network. Can currently be run only serparately: future
+  work includes the optional addition of the Evaluate network to the WORC network.
+- Settings for PREDICT General, which contains the joblib Parallel settings and
+  whether a temporary save will be made after each cross validation.
+
+
+Changed
+~~~~~~~
+- Separate sinks for the output segmentations of the elastix and segmentix
+  nodes.
+- Switched from using PXCastConvert to WORCCastConvert, hence ITK is not
+  anymore required as well as ITK tools.
+
+Fixed
+~~~~~
+- Patientclass ID was used for both test and training. Now given separate names.
+- When elastix is used but segmentix isn't, there was a bug.
+- DataFile dataype is now a TypeGroup instead of an URLType.
+- Last transformation output from elastix is passed further to the network.
+- Set FinalBSplineInterpolationOrder to 0 before transforming segmentation with
+  transformix.
+- Bug: when giving multiple feature sources, only the first was used.
+
+
+2.0.0 - 2018-02-13
+------------------
+
+Added
+~~~~~~~
+- Elastix and transformix as separate workflow in the tools folder. Can be used
+  through the WORC.Tools attribute.
+- Example data for elastix and transformix tool.
+- Workflow for separate training and testing set
+- FASTR tool for applying ttest to all features. Works similar to the
+  trainclassifier tool in terms of inputs and outputs.
+
+
+Changed
+~~~~~~~
+- Option for multiple modalities. Supports infinitely many inputs per object.
+- Moved many PREDICT parameters to the configuration file.
+- When using a multimodal workflow with only a single segmentation,
+  Elastix will automatically be used for registration. Note that you have to
+  put the reference segmentation on the first modality!
+
+Fixed
+~~~~~
+- Proper combining of features from multiple modalities to classify tool.
+- Minor bugs in segmentix tool.
+- For multiple modalities, add only optional sources like metadata when present.
+
+1.0.0rc1 - 2017-05-08
+---------------------
+
+First release

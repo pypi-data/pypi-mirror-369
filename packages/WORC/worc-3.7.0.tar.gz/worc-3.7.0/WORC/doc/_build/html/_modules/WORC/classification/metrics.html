@@ -1,0 +1,802 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+        <link rel="prefetch" href="../../../_static/WORC_Logo.svg" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>WORC.classification.metrics - WORC 3.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/extra.css?v=a591123b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">WORC 3.7.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/WORC_Logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">WORC 3.7.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/quick_start.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/user_manual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/features.html">Radiomics Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/additionalfunctionality.html">Additional functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/developerdocumentation.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/developerdocumentation.html#references">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../autogen/WORC.html">WORC Package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of WORC Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.IOparser.html">IOparser Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.classification.html">classification Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.detectors.html">detectors Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.exampledata.html">exampledata Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.export.html">export Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autogen/WORC.facade.html">facade Package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of facade Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autogen/WORC.facade.helpers.html">helpers Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.fastrconfig.html">fastrconfig Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.featureprocessing.html">featureprocessing Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.plotting.html">plotting Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.processing.html">processing Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autogen/WORC.resources.html">resources Package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of resources Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autogen/WORC.resources.fastr_tests.html">fastr_tests Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autogen/WORC.resources.fastr_tools.html">fastr_tools Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.statistics.html">statistics Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.tests.html">tests Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.tools.html">tools Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.validators.html">validators Package</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for WORC.classification.metrics</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Copyright 2016-2020 Biomedical Imaging Group Rotterdam, Departments of</span>
+<span class="c1"># Medical Informatics and Radiology, Erasmus MC, Rotterdam, The Netherlands</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">balanced_accuracy_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">roc_auc_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">confusion_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">f1_score</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">metrics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span><span class="p">,</span> <span class="n">spearmanr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_scorer</span><span class="p">,</span> <span class="n">average_precision_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_scoring</span> <span class="k">as</span> <span class="n">check_scoring_sklearn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">pinv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">geometric_mean_score</span>
+
+
+<div class="viewcode-block" id="performance_singlelabel">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.performance_singlelabel">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">performance_singlelabel</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">regression</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Singleclass performance metrics</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">regression</span><span class="p">:</span>
+        <span class="n">y_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_truth</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">r2score</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">r2_score</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">)</span>
+        <span class="n">MSE</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">)</span>
+        <span class="n">coefICC</span> <span class="o">=</span> <span class="n">ICC</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">y_prediction</span><span class="p">,</span> <span class="n">y_truth</span><span class="p">)))</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">,</span> <span class="n">y_truth</span><span class="p">)</span>
+        <span class="n">PearsonC</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">PearsonP</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">,</span> <span class="n">y_truth</span><span class="p">)</span>
+        <span class="n">SpearmanC</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">correlation</span>
+        <span class="n">SpearmanP</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">pvalue</span>
+
+        <span class="k">return</span> <span class="n">r2score</span><span class="p">,</span> <span class="n">MSE</span><span class="p">,</span> <span class="n">coefICC</span><span class="p">,</span> <span class="n">PearsonC</span><span class="p">,</span> <span class="n">PearsonP</span><span class="p">,</span> <span class="n">SpearmanC</span><span class="p">,</span> <span class="n">SpearmanP</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Compute confuction matrics and extract measures</span>
+        <span class="n">c_mat</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[WORC Warning] No samples in y_truth and y_prediction.&#39;</span><span class="p">)</span>
+            <span class="n">TN</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">FN</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">TP</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">FP</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">c_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[WORC Warning] Only a single class represented in y_truth and y_prediction.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">c_mat</span><span class="p">:</span>
+                <span class="n">TN</span> <span class="o">=</span> <span class="n">c_mat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">FN</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">TP</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">FP</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">TN</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">FN</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">TP</span> <span class="o">=</span> <span class="n">c_mat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">FP</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">TN</span> <span class="o">=</span> <span class="n">c_mat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">FN</span> <span class="o">=</span> <span class="n">c_mat</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">TP</span> <span class="o">=</span> <span class="n">c_mat</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">FP</span> <span class="o">=</span> <span class="n">c_mat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">FN</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">TP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sensitivity</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sensitivity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">TP</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">TP</span><span class="o">+</span><span class="n">FN</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">FP</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">TN</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">specificity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">specificity</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">specificity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">TN</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">FP</span><span class="o">+</span><span class="n">TN</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">TP</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">FP</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">precision</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">precision</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">TP</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">TP</span><span class="o">+</span><span class="n">FP</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">TN</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">FN</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">npv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">npv</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">npv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">TN</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">TN</span> <span class="o">+</span> <span class="n">FN</span><span class="p">)</span>
+
+        <span class="c1"># Additionally, compute accuracy, AUC and f1-score</span>
+        <span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">)</span>
+        <span class="n">BCA</span> <span class="o">=</span> <span class="n">balanced_accuracy_score</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">auc</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[WORC Warning] &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;. Setting AUC to NaN.&#39;</span><span class="p">)</span>
+            <span class="n">auc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+
+        <span class="n">f1_score_out</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">BCA</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">,</span> <span class="n">specificity</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">npv</span><span class="p">,</span> <span class="n">f1_score_out</span><span class="p">,</span> <span class="n">auc</span></div>
+
+
+
+<div class="viewcode-block" id="performance_multilabel">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.performance_multilabel">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">performance_multilabel</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span> <span class="n">y_score</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Multiclass performance metrics.</span>
+
+<span class="sd">    y_truth and y_prediction should both be lists with the multiclass label of each</span>
+<span class="sd">    object, e.g.</span>
+
+<span class="sd">    y_truth = [0, 0,	0,	0,	0,	0,	2,	2,	1,	1,	2]    ### Groundtruth</span>
+<span class="sd">    y_prediction = [0, 0,	0,	0,	0,	0,	1,	2,	1,	2,	2]    ### Predicted labels</span>
+<span class="sd">    y_score = [[0.3, 0.3, 0.4], [0.2, 0.6, 0.2], ... ] # Normalized score per patient for all labels (three in this example)</span>
+
+
+<span class="sd">    Calculation of accuracy accorading to formula suggested in CAD Dementia Grand Challege http://caddementia.grand-challenge.org</span>
+<span class="sd">    and the TADPOLE challenge https://tadpole.grand-challenge.org/Performance_Metrics/</span>
+<span class="sd">    Calculation of Multi Class AUC according to classpy: https://bitbucket.org/bigr_erasmusmc/classpy/src/master/classpy/multi_class_auc.py</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">)</span>
+
+    <span class="c1"># Determine no. of classes</span>
+    <span class="n">labels_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_truth</span><span class="p">)</span>
+    <span class="n">n_class</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels_class</span><span class="p">)</span>
+
+    <span class="c1"># Splits confusion matrix in true and false positives and negatives</span>
+    <span class="n">TP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_class</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">FN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_class</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">FP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_class</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">TN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_class</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_class</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_class</span><span class="p">):</span>
+        <span class="n">TP</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">FN</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span><span class="o">-</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">FP</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cm</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span><span class="o">-</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">TN</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cm</span><span class="p">[:])</span><span class="o">-</span><span class="n">TP</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">FP</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">FN</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+    <span class="c1"># Determine Accuracy</span>
+    <span class="n">Accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">TP</span><span class="p">))</span><span class="o">/</span><span class="n">n</span>
+
+    <span class="c1"># BCA: Balanced Class Accuracy</span>
+    <span class="n">BCA</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_class</span><span class="p">):</span>
+        <span class="n">BCAi</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">TP</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">TP</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">FN</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">TN</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">TN</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">FP</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span>
+        <span class="n">BCA</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BCAi</span><span class="p">)</span>
+
+    <span class="n">AverageAccuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">BCA</span><span class="p">)</span>
+
+    <span class="c1"># Determine total positives and negatives</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">TP</span> <span class="o">+</span> <span class="n">FN</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">FP</span> <span class="o">+</span> <span class="n">TN</span>
+
+    <span class="c1"># Calculation of sensitivity</span>
+    <span class="n">Sensitivity</span> <span class="o">=</span> <span class="n">TP</span><span class="o">/</span><span class="n">P</span>
+    <span class="n">Sensitivity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">)</span>
+
+    <span class="c1"># Calculation of specifitity</span>
+    <span class="n">Specificity</span> <span class="o">=</span> <span class="n">TN</span><span class="o">/</span><span class="n">N</span>
+    <span class="n">Specificity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Specificity</span><span class="p">)</span>
+
+    <span class="c1"># Calculation of precision</span>
+    <span class="n">Precision</span> <span class="o">=</span> <span class="n">TP</span><span class="o">/</span><span class="p">(</span><span class="n">TP</span><span class="o">+</span><span class="n">FP</span><span class="p">)</span>
+    <span class="n">Precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">Precision</span><span class="p">)</span>
+    <span class="n">Precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Precision</span><span class="p">)</span>
+
+    <span class="c1"># Calculation of NPV</span>
+    <span class="n">NPV</span> <span class="o">=</span> <span class="n">TN</span><span class="o">/</span><span class="p">(</span><span class="n">TN</span><span class="o">+</span><span class="n">FN</span><span class="p">)</span>
+    <span class="n">NPV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">NPV</span><span class="p">)</span>
+    <span class="n">NPV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">NPV</span><span class="p">)</span>
+
+    <span class="c1"># Calculation  of F1_Score</span>
+    <span class="n">F1_score</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">Sensitivity</span><span class="o">*</span><span class="n">Precision</span><span class="p">))</span><span class="o">/</span><span class="p">((</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Precision</span> <span class="o">+</span> <span class="n">Sensitivity</span><span class="p">))</span>
+    <span class="n">F1_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">F1_score</span><span class="p">)</span>
+    <span class="n">F1_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">F1_score</span><span class="p">)</span>
+
+    <span class="c1"># Calculation of Multi Class AUC according to classpy: https://bitbucket.org/bigr_erasmusmc/classpy/src/master/classpy/multi_class_auc.py</span>
+    <span class="k">if</span> <span class="n">y_score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">AUC</span> <span class="o">=</span> <span class="n">multi_class_auc</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">AUC</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">Accuracy</span><span class="p">,</span> <span class="n">Sensitivity</span><span class="p">,</span> <span class="n">Specificity</span><span class="p">,</span> <span class="n">Precision</span><span class="p">,</span> <span class="n">NPV</span><span class="p">,</span> <span class="n">F1_score</span><span class="p">,</span> <span class="n">AUC</span><span class="p">,</span> <span class="n">AverageAccuracy</span></div>
+
+
+
+<div class="viewcode-block" id="pairwise_auc">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.pairwise_auc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pairwise_auc</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">class_i</span><span class="p">,</span> <span class="n">class_j</span><span class="p">):</span>
+    <span class="c1"># Filter out the probabilities for class_i and class_j</span>
+    <span class="n">y_score</span> <span class="o">=</span> <span class="p">[</span><span class="n">est</span><span class="p">[</span><span class="n">class_i</span><span class="p">]</span> <span class="k">for</span> <span class="n">ref</span><span class="p">,</span> <span class="n">est</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span> <span class="k">if</span> <span class="n">ref</span> <span class="ow">in</span> <span class="p">(</span><span class="n">class_i</span><span class="p">,</span> <span class="n">class_j</span><span class="p">)]</span>
+    <span class="n">y_truth</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref</span> <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">y_truth</span> <span class="k">if</span> <span class="n">ref</span> <span class="ow">in</span> <span class="p">(</span><span class="n">class_i</span><span class="p">,</span> <span class="n">class_j</span><span class="p">)]</span>
+
+    <span class="c1"># Sort the y_truth by the estimated probabilities</span>
+    <span class="n">sorted_y_truth</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">y_score</span><span class="p">,</span> <span class="n">y_truth</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+
+    <span class="c1"># Calculated the sum of ranks for class_i</span>
+    <span class="n">sum_rank</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_y_truth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">element</span> <span class="o">==</span> <span class="n">class_i</span><span class="p">:</span>
+            <span class="n">sum_rank</span> <span class="o">+=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">sum_rank</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sum_rank</span><span class="p">)</span>
+
+    <span class="c1"># Get the counts for class_i and class_j</span>
+    <span class="n">n_class_i</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y_truth</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">class_i</span><span class="p">))</span>
+    <span class="n">n_class_j</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y_truth</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">class_j</span><span class="p">))</span>
+
+    <span class="c1"># If a class in empty, AUC is 0.0</span>
+    <span class="k">if</span> <span class="n">n_class_i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n_class_j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Calculate the pairwise AUC</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">sum_rank</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">n_class_i</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_class_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_class_i</span> <span class="o">*</span> <span class="n">n_class_j</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="multi_class_auc">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.multi_class_auc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">multi_class_auc</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">):</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_truth</span><span class="p">)</span>
+
+    <span class="c1"># if any(t == 0.0 for t in np.sum(y_score, axis=1)):</span>
+    <span class="c1">#     raise ValueError(&#39;No AUC is calculated, output probabilities are missing&#39;)</span>
+
+    <span class="n">pairwise_auc_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">pairwise_auc</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">+</span>
+                                <span class="n">pairwise_auc</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">classes</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">classes</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">]</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pairwise_auc_list</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="multi_class_auc_score">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.multi_class_auc_score">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">multi_class_auc_score</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">multi_class_auc</span><span class="p">,</span> <span class="n">needs_proba</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="f1_weighted_predictproba">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.f1_weighted_predictproba">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">f1_weighted_predictproba</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Calculate f1-score, but based on predict_proba instead of predict.</span>
+
+<span class="sd">    Probabilities are thresholded at 0.5.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Convert predictions to binary by thresholding at 0.5</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">y_score</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">y_pred</span><span class="p">[</span><span class="n">y_score</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">y_pred</span><span class="p">[</span><span class="n">y_score</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Compute and return score</span>
+    <span class="k">return</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_scoring">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.check_scoring">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_scoring</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Surrogate for sklearn&#39;s check_scoring to enable use of some other</span>
+<span class="sd">    scoring metrics.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">scoring</span> <span class="o">==</span> <span class="s1">&#39;average_precision_weighted&#39;</span><span class="p">:</span>
+        <span class="n">scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">average_precision_score</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">,</span> <span class="n">needs_proba</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">scoring</span> <span class="o">==</span> <span class="s1">&#39;gmean&#39;</span><span class="p">:</span>
+        <span class="n">scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">geometric_mean_score</span><span class="p">,</span> <span class="n">needs_proba</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">scoring</span> <span class="o">==</span> <span class="s1">&#39;f1_weighted_predictproba&#39;</span><span class="p">:</span>
+        <span class="n">scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">f1_weighted_predictproba</span><span class="p">,</span> <span class="n">needs_proba</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scorer</span> <span class="o">=</span> <span class="n">check_scoring_sklearn</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">scorer</span></div>
+
+
+
+<div class="viewcode-block" id="check_multimetric_scoring">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.check_multimetric_scoring">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_multimetric_scoring</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around sklearn function to enable more scoring options.</span>
+
+
+<span class="sd">    Check the scoring parameter in cases when multiple metrics are allowed</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    estimator : sklearn estimator instance</span>
+<span class="sd">        The estimator for which the scoring will be applied.</span>
+<span class="sd">    scoring : string, callable, list/tuple, dict or None, default: None</span>
+<span class="sd">        A single string (see :ref:`scoring_parameter`) or a callable</span>
+<span class="sd">        (see :ref:`scoring`) to evaluate the predictions on the test set.</span>
+<span class="sd">        For evaluating multiple metrics, either give a list of (unique) strings</span>
+<span class="sd">        or a dict with names as keys and callables as values.</span>
+<span class="sd">        NOTE that when using custom scorers, each scorer should return a single</span>
+<span class="sd">        value. Metric functions returning a list/array of values can be wrapped</span>
+<span class="sd">        into multiple scorers that return one value each.</span>
+<span class="sd">        See :ref:`multimetric_grid_search` for an example.</span>
+<span class="sd">        If None the estimator&#39;s score method is used.</span>
+<span class="sd">        The return value in that case will be ``{&#39;score&#39;: &lt;default_scorer&gt;}``.</span>
+<span class="sd">        If the estimator&#39;s score method is not available, a ``TypeError``</span>
+<span class="sd">        is raised.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scorers_dict : dict</span>
+<span class="sd">        A dict mapping each scorer name to its validated scorer.</span>
+<span class="sd">    is_multimetric : bool</span>
+<span class="sd">        True if scorer is a list/tuple or dict of callables</span>
+<span class="sd">        False if scorer is None/str/callable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">scoring</span><span class="p">)</span> <span class="ow">or</span> <span class="n">scoring</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scoring</span><span class="p">,</span>
+                                                          <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># Just one, similar behaviour to the sklearn function, just return a single scorer</span>
+        <span class="n">scorers</span> <span class="o">=</span> <span class="n">check_scoring</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scorers</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">err_msg_generic</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;scoring should either be a single string or &quot;</span>
+                           <span class="s2">&quot;callable for single metric evaluation or a &quot;</span>
+                           <span class="s2">&quot;list/tuple of strings or a dict of scorer name &quot;</span>
+                           <span class="s2">&quot;mapped to the callable for multiple metric &quot;</span>
+                           <span class="s2">&quot;evaluation. Got </span><span class="si">%s</span><span class="s2"> of type </span><span class="si">%s</span><span class="s2">&quot;</span>
+                           <span class="o">%</span> <span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">scoring</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">scoring</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scoring</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The list/tuple elements must be unique &quot;</span>
+                       <span class="s2">&quot;strings of predefined scorers. &quot;</span><span class="p">)</span>
+            <span class="n">invalid</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">scoring</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">invalid</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">invalid</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scoring</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span> <span class="o">+</span> <span class="s2">&quot;Duplicate elements were found in&quot;</span>
+                                 <span class="s2">&quot; the given list. </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">scoring</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span> <span class="o">+</span>
+                                         <span class="s2">&quot;One or more of the elements were &quot;</span>
+                                         <span class="s2">&quot;callables. Use a dict of score name &quot;</span>
+                                         <span class="s2">&quot;mapped to the scorer callable. &quot;</span>
+                                         <span class="s2">&quot;Got </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">scoring</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span> <span class="o">+</span>
+                                         <span class="s2">&quot;Non-string types were found in &quot;</span>
+                                         <span class="s2">&quot;the given list. Got </span><span class="si">%r</span><span class="s2">&quot;</span>
+                                         <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">scoring</span><span class="p">))</span>
+                <span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span><span class="n">scorer</span><span class="p">:</span> <span class="n">check_scoring</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scorer</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">scorer</span> <span class="ow">in</span> <span class="n">scoring</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span> <span class="o">+</span>
+                                 <span class="s2">&quot;Empty list was given. </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">scoring</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scoring</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">scoring</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Non-string types were found in the keys of &quot;</span>
+                                 <span class="s2">&quot;the given dict. scoring=</span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">scoring</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;An empty dict was passed. </span><span class="si">%r</span><span class="s2">&quot;</span>
+                                 <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">scoring</span><span class="p">))</span>
+            <span class="n">scorers</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">check_scoring</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scorer</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">scorer</span> <span class="ow">in</span> <span class="n">scoring</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg_generic</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scorers</span><span class="p">,</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="ICC">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.ICC">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ICC</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">ICCtype</span><span class="o">=</span><span class="s1">&#39;inter&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Input:</span>
+<span class="sd">        M is matrix of observations. Rows: patients, columns: observers.</span>
+<span class="sd">        type: ICC type, currently &quot;inter&quot; or &quot;intra&quot;.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">SStotal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">MSR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span>
+    <span class="n">MSW</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">MSC</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="n">MSE</span> <span class="o">=</span> <span class="p">(</span><span class="n">SStotal</span> <span class="o">-</span> <span class="n">MSR</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">MSC</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">ICCtype</span> <span class="o">==</span> <span class="s1">&#39;intra&#39;</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">-</span> <span class="n">MSW</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">MSW</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ICCtype</span> <span class="o">==</span> <span class="s1">&#39;inter&#39;</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">-</span> <span class="n">MSE</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">MSE</span> <span class="o">+</span> <span class="n">k</span><span class="o">*</span><span class="p">(</span><span class="n">MSC</span><span class="o">-</span><span class="n">MSE</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No valid ICC type given.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">r</span></div>
+
+
+
+<div class="viewcode-block" id="ICC_anova">
+<a class="viewcode-back" href="../../../autogen/WORC.classification.html#WORC.classification.metrics.ICC_anova">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ICC_anova</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">ICCtype</span><span class="o">=</span><span class="s1">&#39;inter&#39;</span><span class="p">,</span> <span class="n">more</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Adopted from Nipype with a slight alteration to distinguish inter and intra.</span>
+<span class="sd">    the data Y are entered as a &#39;table&#39; ie subjects are in rows and repeated</span>
+<span class="sd">    measures in columns</span>
+<span class="sd">    One Sample Repeated measure ANOVA</span>
+<span class="sd">    Y = XB + E with X = [FaTor / Subjects]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="p">[</span><span class="n">nb_subjects</span><span class="p">,</span> <span class="n">nb_conditions</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">dfc</span> <span class="o">=</span> <span class="n">nb_conditions</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">dfe</span> <span class="o">=</span> <span class="p">(</span><span class="n">nb_subjects</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dfc</span>
+    <span class="n">dfr</span> <span class="o">=</span> <span class="n">nb_subjects</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># Compute the repeated measure effect</span>
+    <span class="c1"># ------------------------------------</span>
+
+    <span class="c1"># Sum Square Total</span>
+    <span class="n">mean_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">SST</span> <span class="o">=</span> <span class="p">((</span><span class="n">Y</span> <span class="o">-</span> <span class="n">mean_Y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="c1"># create the design matrix for the different levels</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">nb_conditions</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">nb_subjects</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>  <span class="c1"># sessions</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">nb_subjects</span><span class="p">),</span> <span class="p">(</span><span class="n">nb_conditions</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># subjects</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">])</span>
+
+    <span class="c1"># Sum Square Error</span>
+    <span class="n">predicted_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pinv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">X</span><span class="p">))),</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">Y</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">))</span>
+    <span class="n">residuals</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">predicted_Y</span>
+    <span class="n">SSE</span> <span class="o">=</span> <span class="p">(</span><span class="n">residuals</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="n">residuals</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">MSE</span> <span class="o">=</span> <span class="n">SSE</span> <span class="o">/</span> <span class="n">dfe</span>
+
+    <span class="c1"># Sum square session effect - between colums/sessions</span>
+    <span class="n">SSC</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">mean_Y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">nb_subjects</span>
+    <span class="n">MSC</span> <span class="o">=</span> <span class="n">SSC</span> <span class="o">/</span> <span class="n">dfc</span> <span class="o">/</span> <span class="n">nb_subjects</span>
+
+    <span class="n">session_effect_F</span> <span class="o">=</span> <span class="n">MSC</span> <span class="o">/</span> <span class="n">MSE</span>
+
+    <span class="c1"># Sum Square subject effect - between rows/subjects</span>
+    <span class="n">SSR</span> <span class="o">=</span> <span class="n">SST</span> <span class="o">-</span> <span class="n">SSC</span> <span class="o">-</span> <span class="n">SSE</span>
+    <span class="n">MSR</span> <span class="o">=</span> <span class="n">SSR</span> <span class="o">/</span> <span class="n">dfr</span>
+
+    <span class="c1"># ICC(3,1) = (mean square subjeT - mean square error) / (mean square subjeT + (k-1)*-mean square error)</span>
+    <span class="k">if</span> <span class="n">ICCtype</span> <span class="o">==</span> <span class="s1">&#39;intra&#39;</span><span class="p">:</span>
+        <span class="n">ICC</span> <span class="o">=</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">-</span> <span class="n">MSE</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">+</span> <span class="n">dfc</span><span class="o">*</span><span class="n">MSE</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ICCtype</span> <span class="o">==</span> <span class="s1">&#39;inter&#39;</span><span class="p">:</span>
+        <span class="n">ICC</span> <span class="o">=</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">-</span> <span class="n">MSE</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">+</span> <span class="n">dfc</span><span class="o">*</span><span class="n">MSE</span> <span class="o">+</span> <span class="n">nb_conditions</span><span class="o">*</span><span class="p">(</span><span class="n">MSC</span><span class="o">-</span><span class="n">MSE</span><span class="p">)</span><span class="o">/</span><span class="n">nb_subjects</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No valid ICC type given.&#39;</span><span class="p">)</span>
+
+    <span class="n">e_var</span> <span class="o">=</span> <span class="n">MSE</span>  <span class="c1"># variance of error</span>
+    <span class="n">r_var</span> <span class="o">=</span> <span class="p">(</span><span class="n">MSR</span> <span class="o">-</span> <span class="n">MSE</span><span class="p">)</span> <span class="o">/</span> <span class="n">nb_conditions</span>  <span class="c1"># variance between subjects</span>
+
+    <span class="k">if</span> <span class="n">more</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ICC</span><span class="p">,</span> <span class="n">r_var</span><span class="p">,</span> <span class="n">e_var</span><span class="p">,</span> <span class="n">session_effect_F</span><span class="p">,</span> <span class="n">dfc</span><span class="p">,</span> <span class="n">dfe</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ICC</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2016 -- 2025, Biomedical Imaging Group Rotterdam, Department of Radiology and Nuclear Medicine, Erasmus University Medical Center, Rotterdam, The Netherlands
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=229cbe3b"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
