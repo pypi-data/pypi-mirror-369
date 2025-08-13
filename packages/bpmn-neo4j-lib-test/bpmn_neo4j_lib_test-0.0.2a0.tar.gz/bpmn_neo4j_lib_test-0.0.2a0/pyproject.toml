@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bpmn-neo4j-lib-test"
+#version = "0.1.0"
+version = "0.0.2-alpha"
+description = "Library untuk mengubah BPMN JSON menjadi Cypher queries untuk Neo4j"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Izzat Aji Androfaza", email = "business.aji2022@gmail.com" },
+    { name = "Lalu Aldo Wadagraprana", email = "lalualdo@gmail.com" }
+]
+requires-python = ">=3.8"
+dependencies = [
+    "neo4j>=5.0.0",
+    "dirtyjson>=1.0.0",
+    "demjson3>=3.0.0"
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "flake8"]
+
+#[project.urls]
+#Homepage = "https://github.com/yourusername/bpmn-neo4j-lib"
+#Repository = "https://github.com/yourusername/bpmn-neo4j-lib"
+#Issues = "https://github.com/yourusername/bpmn-neo4j-lib/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"bpmn_neo4j.validators" = ["bpmn_schema.json"]
