@@ -1,0 +1,319 @@
+CHANGES
+=======
+
+2025.1.0
+--------
+
+* Setup branch for stable/2025.1 Epoxy
+* Add arista ini to uwsgi env variables in devstack
+* Update min tox version to tox4 and escape url properly
+* tests: fix test\_db\_base\_plugin\_v2 import
+* Fix trunk plugin testing
+* Don't update VNIC type on trunk port delete
+* Bump versions to match 2023.1 antelope
+* Add support for provisioning L2 connectivity for L3 GW ports
+* Dropping lower-constraints test
+* Use context manager from neutron-lib accessing VlanAllocation
+* Revert "Check for missing port bindings each sync period"
+* Ensure queries are executed in reader sessions
+* Don't send sync complete on sync failure after switchover
+* Bump python versions to match neutron
+* Don't use router\_interface fixed\_ip for MLAG peer SVI IPs
+* Start running jobs against newer python versions
+* Add connectivity property to MechanismDrivers
+* Make unit tests backwards compatible with the latest pyPI Neutron
+* Fix unit tests and lower-constraints
+* Use new callback payloads for PORT AFTER\_UPDATE and AFTER\_DELETE
+* Handle new payload format for SUBNETs, SG and SG\_RULES
+* Temporary fix to make code work with SQLAlchemy 1.4.18
+* Add support for specifying switch shortnames in physnets for HPB
+* Fix L3 plugin to handle new payload format
+* Fix arista\_trunk plugin to handle new payload format
+* Add test coverage for managed\_physnets without HPB
+* Fix handling of FQDN in port binding delete
+* Check for missing port bindings each sync period
+* Revert "Bind DVR ports when DOWN to workaround upstream issue"
+* Bind DVR ports when DOWN to workaround upstream issue
+* Fix security\_group unit tests
+* Don't call get\_session in vlan type driver
+* Try re-importing any deleted multiprocessing modules
+* Fix AttributeError on select.poll()
+* Encode special characters in CVX username and password
+* Reduce info level logging output
+* Fix handling of ERROR ports and '' device\_id
+* Test routes are not deleted on sync
+* Remove delete\_default\_gateway from create\_router
+* Use show version to validate vrf support
+* Use an interprocess lock for physnets
+* Prevent recursive check for vrf supported commands
+* Synchronize requirements with neutron
+* Wrap L3 synchronize function in try catch
+* Add enable\_clenup to devstack plugin
+* Added missing format character
+* Add option to create default route to router VRFs
+* Update L3 plugin to handle new syntax for deprecated vrf forwarding
+* Update L3 plugin to handle switches that support vrf instance
+* Update create\_network test wrapper to set mtu as 1450 if does not exist. Change-Id: I3b80697173b133e0c6924c6b22b28cfae28ddc77
+* Update README
+* Add dockerfiles subdir
+* Improve performance of sync under heavy load
+* Declare that the arista plugin provides L2 connectivity
+* Get next segment from NetworkSegment DB
+* Removed creation of INTERNAL-TENANT-ID
+* Create network when project\_id is an empty string
+* Correct case of ERR\_CVX\_NOT\_LEADER
+* OpenDev Migration Patch
+* Filter segments for network\_id with empty project\_id
+* Fix allocate\_tenant\_segment to support filters
+* Return networks with non-empty project\_id
+* use trunk constants from neutron-lib
+* Add another test mech driver for scale simulation
+* Use immediateload for loading rules attribute
+* add python 3.7 unit test job
+* remove noqa use of neutron.db.api
+* update project for zuul v3
+* use neutron-lib for rpc
+* Ensure arista\_vlan type driver has correct network\_vlan\_range
+* Add unit test for router\_gateway ports in the L3 plugin
+* Only create SVIs for router\_interface ports in sync worker
+* Make protected\_vlans valid range inclusive
+* Allow arista\_vlan type driver to startup when CVX is not reachable
+* Fix a number of HA bugs
+* Add a test driver to simulate running Neutron in HA deployments
+* Add ability to cleanup L3 resources
+* Load listeners to expire stale objects from session
+* Update min tox version to 2.0
+* use common rpc and exceptions from neutron-lib
+* add bug link in README
+* opt in for neutron-lib consumption patches
+* Add support for VRFs on MLAGs
+* Remove the duplicated word
+* Improve Security Group support
+* Fixup the arista\_vlan type driver
+* Make resource updates implicit
+* update requirements for neutron-lib 1.18.0
+* Another set of stability fixes for the driver rewrite
+* Use original\_binding\_levels when current binding\_levels is not set
+* Delete resources in reverse sync order
+* use add\_worker() in plugin for consistency with other service plugins
+* Remove remaining portion of NeutronNets in favor of calling core plugin
+* Convert l3 sync thread to ServiceWorker
+* Simplify base class to service worker
+* Add \*-dev tox envs to install dependencies correctly for local testing
+* Align baremetal EGRESS/INGRESS meaning with VM meaning
+* Cleanup some unused methods from mechanism arista
+* A number of fixes for the driver rewrite
+* Clear security group rules before adding new ones
+* Increase default command timeout
+* Update resource id mapping and add additional logging
+* fix tox python3 overrides
+* use get reader/writer session from neutron-lib
+* Switch to stestr to comply with OpenStack python guidelines[1]
+* Cleanup Arista VLAN Type Driver
+* Add support for trunks
+* Cleanup Arista Security Group Support
+* Pass resources from Arista Mech Driver to Sync Worker for provisioning
+* Add ability to pass resources from mechanism driver to sync thread
+* Cleanup port binding logic
+* Cleanup synchronization
+* Replace deprecated "auth\_uri" by "www\_authenticate\_uri"
+* Unconditionally setting the authentication header
+* use rpc Connection rather than create\_connection
+* Update tox.ini
+* Updated from global requirements
+* Update requirements to pull in latest neutron package
+* use common agent topics from neutron-lib
+* modify keystone spelling errors
+* Updated from global requirements
+* Change http link to https according to OpenStack website
+* Updated from global requirements
+* Query PortBindingLevel table for segments bind to a port
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Remove use of the arista\_provisioned\_vms table
+* Remove use of the arista\_provisioned\_nets table
+* Remove use of the arista\_provisioned\_tenants table
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Remove the EAPI rpc implementation
+* Updated from global requirements
+* Fix support for security groups on Port-Channels
+* Throw error in Arista JSON API calls on error status code
+* Revert "Remove the EAPI rpc implementation"
+* Updated from global requirements
+* Remove the EAPI rpc implementation
+* Drop MANIFEST.in - it's not needed by pbr
+* Updated from global requirements
+
+2017.2.0
+--------
+
+* Handle errors in GETs gracefully
+* enable trunk service plugin in devstack when using networking-arista
+* modify ml2 dirver to support neutron trunk port & subport
+* Updated from global requirements
+* Use DEVICE\_ID\_RESERVED\_DHCP\_PORT constant defined in neutron-lib
+* fix text conversion for python2/3
+* Split arista\_ml2 into separate files for sync and RPC wrappers
+* Removed registration of keystone authentication with CVX
+* Updated from global requirements
+* Bind ports using physnet provided by higher level drivers
+* Updated from global requirements
+* Move Sync Thread to ML2 worker process
+* use service type constants from neutron\_lib plugins
+* Update get\_physical\_network with the latest change to topology
+* Updated from global requirements
+* oslo-incubator is not used anymore
+* Make the JSON API the default CVX endpoint
+* Updated from global requirements
+* migrate neutron.plugins.ml2.driver\_api imports to neutron\_lib
+* Migrate neutron.db.api imports to neutron\_lib.db.api
+* Remove usage of Neutron's MechanismDriverError
+* Migrate neutron plugin constant imports to neutron-lib
+* migrate imports for neutron.callbacks.\* to neutron\_lib
+* Change log level from info to debug
+* Add port to database with supported device\_owner
+* Treat MLAG pairs as a single physical network
+* Use only 'binding:host\_id' to detect port migration
+* Updated from global requirements
+* Updated from global requirements
+* Use vnic\_type to determine whether a port is baremetal
+* Updated from global requirements
+* Updated from global requirements
+* Handle portbindings with no local\_link\_information gracefully
+* Updated from global requirements
+* Fix ml2\_conf\_arista.ini installation
+* Implement method for RBAC policy changes
+* Add call to the directory add\_plugin method
+* Updated from global requirements
+* Updated from global requirements
+* Flush transactions to ensure data is present in the database
+* Update classifiers for Python 3 support
+* Sync from global requirements
+* Enable Python3.5 support
+* Capture to ensure CVX error is logged
+* Capture and ensure LOG.exception output
+* Add cfg.CONF.import\_group() to document option dependencies
+* Use identity v3 api
+* oslo.config will begin to enfore types in a future version
+* Add unordered list wrapper to help with validating mocked calls
+* remove H302 pep8 exception
+* Update get\_session() calls to get\_(reader|writer)\_session
+* Provide a return\_value for get\_region\_updated\_time mock
+* Add explicit check for rpc is not None
+* Clear out ml2\_vlan\_allocations if CVX has no VLAN pool configured
+* Remove external dependency on jsonrpclib
+* Fail VLAN allocations from outside the assigned range
+
+2017.1.0
+--------
+
+* Only send managed segments to CVX as part of port update
+* Add a manage\_fabric configuration option
+* Use neutron-lib portbindings api-def
+* Handling dhcp port migration
+* Removed unneeded segments setting in non-HPB case
+* Replace jsonrpclib with jsonrpc\_requests module
+* Correction for importing context module
+* Stop passing sessions from mech\_arista to db\_lib
+* Bump minimum requirements to match Ocata
+* Fix VlanAllocation import
+* LOG marker mismatch in arista\_ml2.py
+* Fix for segments info in delete\_network\_segments
+* Copying the config file to ml2 plugin directory
+* Fix setting dynamic flag for each segment in list
+* neutron-lib: use L3 constant from neutron-lib
+* Change passing session to context in segments db functions
+* default ARISTA\_REGION\_NAME to REGION\_NAME
+* Fixed Arista VLAN type driver initialization
+* Don't include openstack/common in flake8 exclude list
+* Adding all config options to devstack plugin
+
+2016.2.0
+--------
+
+* Calling delete\_network\_segments instead
+* Importing db from neutron\_lib
+* Fixed a bug in segment creation and deletion
+* Fix regression when flat networks were created
+* Fixed a bug in unplugging baremetal ports
+* Adding JSON support for HPB, DVR and Baremetal
+* Migrated neutron constants to neutron-lib for l3 plugin
+* Redact keystone password from logs in arista\_ml2
+* Remove reference to neutron.db
+* use LOG.warning instead of LOG.warn
+* Remove reference to neutron.i18n
+* Migrate Neutron constant and exception references to neutron-lib
+* Add devstack plugin support
+* Move neutron include to tox.ini file
+* Support of HPB in Arista Mechanism Driver
+* Add support constraining requirements to match upstream
+* Revert "Redact keystone password from logs in arista\_ml2"
+* Redact keystone password from logs in arista\_ml2
+* Fixed incorrect cli command for sync heartbeat
+* Do not fail initialization when EOS not available
+* Fix typo in etc/ml2\_conf\_arista.ini
+* Updating L3 plugin to accomodate upstream changes
+* Make feature checks abstract methods
+* Fix sending the sync name
+* Obscure passwords in log files
+* Allow empty fields for Keystone
+* Fix current\_sync\_name
+* Have the ML2 plugin use EOS' OpenStack JSON API
+* TrivialFix: Clean imports in code
+* Temporary workaround to project id migration
+* Removed cli command check in sync to fix CVX publication issue
+* Enable DeprecationWarning in test environments
+* Adding Ironic Support
+
+2016.1.0
+--------
+
+* Adding DVR support
+* Do not delete a network with ports attached to it
+* Fixing L3 Plugin to match with upstream change
+* Added the arista\_vlan type driver
+* Fix L3 plugin to match with upstream
+* Check that shared networks are VLAN networks before in Arista ML2
+* Fixed typos in arista\_l3\_driver.py
+* Fix error handling to handle invalid URL, response
+* Enabling creation of unattached ports
+* Ensuring that the response contains 'errors' key
+* Use requests library instead of jsonrpclib
+
+2015.2.0
+--------
+
+* Adding database migration scripts
+* Use auth\_uri in when set
+* Adding support for multiple EOS instances
+* Supporting neutron HA
+* Using 'INTERNAL-TENANT-ID' as the network owner
+* Fixed HA router network cleanup
+* Fix a spelling typo in error message
+* Change ignore-errors to ignore\_errors
+* Fix port creation on shared networks
+* Removing unused dependency: discover
+* Migration of Arista drivers from neutron to here
+* Fixing for transition from stackforge to openstack
+* Fix unit tests
+* Updating pbr in requirements to reflect neutron's requirements
+* Adding an API to update the host id of a VM
+* Bumping the package version for Master to 2015.2
+* Adding jsonrpclib to requirements.txt
+* Added missing jsonrpclib dependency
+
+2015.1.3
+--------
+
+* Moving Neutron dependency
+* Arista L3 Service Plugin decomposition
+* Migrate to oslo.log
+* Fixes sync between Arista ML2 driver and EOS
+* Updated the package version
+* Moving Arista ML2 driver from neutron tree
+* Fixing README.rst to point to correct repo for this project
+* Initial Setup of the base project for networking-arista drivers
+* Added .gitreview
