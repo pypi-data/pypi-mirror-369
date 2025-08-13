@@ -1,0 +1,177 @@
+# Copyright 2023 Google LLC
+#
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file or at
+# https://developers.google.com/open-source/licenses/bsd
+
+# Bazel build rules for Vanir code extractors.
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
+load("@vanir_deps//:requirements.bzl", "requirement")
+
+package(default_visibility = [
+    "//visibility:public",
+])
+
+py_library(
+    name = "code_extractor_base",
+    srcs = ["code_extractor_base.py"],
+    deps = [
+        "//:file_path_utils",
+        "//:vulnerability",
+        requirement("unidiff"),
+    ],
+)
+
+py_library(
+    name = "code_extractor",
+    srcs = ["code_extractor.py"],
+    deps = [
+        ":code_extractor_android",
+        ":code_extractor_base",
+        ":code_extractor_git",
+        "//:vulnerability",
+        requirement("requests"),
+    ],
+)
+
+py_library(
+    name = "code_extractor_android",
+    srcs = ["code_extractor_android.py"],
+    deps = [
+        ":code_extractor_base",
+        ":git_commit",
+        ":gitiles_commit",
+        ":qualcomm_commit",
+        "//:vulnerability",
+    ],
+)
+
+py_library(
+    name = "code_extractor_git",
+    srcs = ["code_extractor_git.py"],
+    deps = [
+        ":code_extractor_base",
+        ":git_commit",
+        "//:vulnerability",
+        requirement("osv"),
+    ],
+)
+
+py_library(
+    name = "gitiles_commit",
+    srcs = ["gitiles_commit.py"],
+    deps = [
+        ":code_extractor_base",
+        requirement("requests"),
+        requirement("unidiff"),
+    ],
+)
+
+py_library(
+    name = "qualcomm_commit",
+    srcs = ["qualcomm_commit.py"],
+    deps = [
+        ":code_extractor_base",
+        requirement("requests"),
+        requirement("unidiff"),
+    ],
+)
+py_library(
+    name = "git_commit",
+    srcs = ["git_commit.py"],
+    deps = [
+        ":code_extractor_base",
+        requirement("tenacity"),
+        requirement("unidiff"),
+    ],
+)
+
+py_test(
+    name = "code_extractor_test",
+    srcs = ["code_extractor_test.py"],
+    data = [
+        "//vanir/testdata:test_patch_set",
+    ],
+    deps = [
+        ":code_extractor",
+        ":code_extractor_android",
+        ":code_extractor_base",
+        ":code_extractor_git",
+        "//:vulnerability",
+        requirement("absl-py"),
+    ],
+)
+
+py_test(
+    name = "code_extractor_android_test",
+    srcs = ["code_extractor_android_test.py"],
+    data = [
+        "//vanir/testdata:test_patch_set",
+    ],
+    deps = [
+        ":code_extractor_android",
+        ":code_extractor_base",
+        ":git_commit",
+        ":gitiles_commit",
+        ":qualcomm_commit",
+        "//:vulnerability",
+        requirement("absl-py"),
+    ],
+)
+
+py_test(
+    name = "code_extractor_git_test",
+    srcs = ["code_extractor_git_test.py"],
+    data = [
+        "//vanir/testdata:test_patch_set",
+    ],
+    deps = [
+        ":code_extractor_base",
+        ":code_extractor_git",
+        ":git_commit",
+        "//:vulnerability",
+        requirement("absl-py"),
+    ],
+)
+
+py_test(
+    name = "gitiles_commit_test",
+    srcs = ["gitiles_commit_test.py"],
+    data = [
+        "//vanir/testdata:test_patch_set",
+    ],
+    deps = [
+        ":code_extractor_base",
+        ":gitiles_commit",
+        requirement("absl-py"),
+        requirement("requests"),
+    ],
+)
+
+py_test(
+    name = "qualcomm_commit_test",
+    srcs = ["qualcomm_commit_test.py"],
+    data = [
+        "//vanir/testdata:test_patch_set",
+    ],
+    deps = [
+        ":code_extractor_base",
+        ":qualcomm_commit",
+        requirement("absl-py"),
+        requirement("requests"),
+    ],
+)
+
+py_test(
+    name = "git_commit_test",
+    srcs = ["git_commit_test.py"],
+    data = [
+        "//vanir/testdata:test_patch_set",
+    ],
+    deps = [
+        ":code_extractor_base",
+        ":git_commit",
+        requirement("absl-py"),
+        requirement("tenacity"),
+    ],
+)
