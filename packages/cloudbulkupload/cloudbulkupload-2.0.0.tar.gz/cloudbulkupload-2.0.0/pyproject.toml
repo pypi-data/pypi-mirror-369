@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloudbulkupload"
+version = "2.0.0"
+description = "Python package for fast and parallel transferring a bulk of files to S3, Azure Blob Storage, and Google Cloud Storage"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Dynamic Deploy. Credit: Amir Masoud Sefidian", email = "dynamicdeploy@gmail.com"}
+]
+maintainers = [
+    {name = "Dynamic Deploy. Credit: Amir Masoud Sefidian", email = "dynamicdeploy@gmail.com"}
+]
+keywords = ["Boto3", "S3", "Azure", "Google Cloud", "Blob Storage", "Parallel", "Multi-thread", "Bulk", "Boto", "Bulk Boto", "Bulk Boto3", "Simple Storage Service", "Minio", "Amazon AWS S3", "Microsoft Azure", "Google Cloud Storage", "Python", "Async"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+
+]
+requires-python = ">=3.11.0"
+dependencies = [
+    "boto3>=1.21.26",
+    "azure-storage-blob>=12.0.0",
+    "google-cloud-storage>=2.0.0",
+    "aiohttp>=3.8.0",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+dev = ["isort", "black"]
+test = ["pytest", "pytest-cov", "python-dotenv", "azure-storage-blob>=12.0.0", "google-cloud-storage>=2.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/dynamicdeploy/cloudbulkupload"
+Repository = "https://github.com/dynamicdeploy/cloudbulkupload"
+Issues = "https://github.com/dynamicdeploy/cloudbulkupload/issues"
+
+[tool.setuptools.packages.find]
+include = ["cloudbulkupload*"]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow",
+    "comparison: marks tests as comparison tests",
+    "azure: marks tests as Azure Blob Storage tests",
+]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+honor_noqa = true
+src_paths = ["cloudbulkupload", "tests"]
+
+[tool.black]
+line-length = 79
+skip_string_normalization = true
