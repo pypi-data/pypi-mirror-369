@@ -1,0 +1,36 @@
+[project]
+name = "btreeny"
+dynamic = ["version"]
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Tim Lingard", email = "tklingard@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "hatch>=1.14.1,<1.15.0",
+    "pyrefly>=0.24.2",
+    "pytest>=8.4.1",
+    "rerun-sdk>=0.24.0",
+    "rich>=14.0.0",
+    "ruff>=0.12.4",
+    "typer>=0.16.0",
+]
+
+bench = [
+    "py-trees>=2.3.0",
+    "richbench>=1.0.3",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+version_scheme = "no-guess-dev"
