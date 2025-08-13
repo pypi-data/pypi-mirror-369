@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "graph-id-core"
+version = "0.1.4"
+description = ""
+authors = ["Koki Muraoka <muraok_k@chemsys.t.u-tokyo.ac.jp>"]
+readme = "README.md"
+packages = [{include = "graph_id"}]
+
+include = [
+    "library/**/*",
+    "cpp/**/*",
+    "CMakeLists.txt",
+    "build.py",
+    "*.h",
+    "*.cpp",
+    "*.hpp"
+]
+
+[tool.poetry.build]
+script = "build.py"
+generate-setup-file = true
+
+[tool.poetry.dependencies]
+pybind11 = "2.11.1"
+python = ">=3.10,<3.14"
+pymatgen = "^2025.4.20"
+scikit-learn = ">=0.24.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "graph_id"]
+norecursedirs = ["library", "build", "dist", ".git", ".venv", "__pycache__"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "pybind11~=2.11.1", "setuptools"]
+build-backend = "poetry.core.masonry.api"
+
