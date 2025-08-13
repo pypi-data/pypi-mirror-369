@@ -1,0 +1,32 @@
+## Here's my code: 
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_manim-mcp-server"
+version = "0.1.0"
+description = "MCP server that executes Manim animation code and returns the generated video"
+authors = [
+    {name = "abhiemj", email = "abhiemj@example.com"}
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "manim>=0.18.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+
+[project.scripts]
+manim-mcp-server = "manim_server:main"
+
+[project.urls]
+Homepage = "https://github.com/iflow-mcp/manim-mcp-server"
+Repository = "https://github.com/iflow-mcp/manim-mcp-server"
+
+[tool.setuptools]
+py-modules = ["manim_server"]
+
+[tool.setuptools.package-dir]
+"" = "src"
