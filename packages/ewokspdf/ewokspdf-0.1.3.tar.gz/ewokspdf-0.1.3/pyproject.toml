@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "ewokspdf"
+version = "0.1.3"
+keywords = ['orange3 add-on,ewoks']
+authors = [{name = "ESRF", email = "dau-pydev@esrf.fr"}]
+description = "Ewoks project for processing Pair Distribution Function analysis (PDF)."
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE.md"}
+classifiers = [
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3',
+]
+requires-python = ">=3.9"
+dependencies = [
+    'ewoksxrpd',
+]
+
+[project.urls]
+Homepage = "https://gitlab.esrf.fr/workflow/ewoksapps/ewokspdf/"
+Documentation = "https://ewokspdf.readthedocs.io/"
+Repository = "https://gitlab.esrf.fr/workflow/ewoksapps/ewokspdf/"
+Issues = "https://gitlab.esrf.fr/workflow/ewoksapps/ewokspdf/issues"
+Changelog = "https://gitlab.esrf.fr/workflow/ewoksapps/ewokspdf/-/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+test = [
+    'pytest >=7',
+]
+dev = [
+    'ewokspdf[test]',
+    'black >=25',
+    'flake8 >=4',
+]
+doc = [
+    'ewokspdf[test]',
+    'sphinx >=4.5',
+    'sphinx-autodoc-typehints >=1.16',
+    'pydata-sphinx-theme < 0.15',
+]
+
+[tool.setuptools]
+package-dir = {''= 'src'}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"ewokspdf.tests.data"= ['*/*']
+
+[tool.coverage.run]
+omit = ['*/tests/*']
+
+
+[project.entry-points."ewoks.tasks.class"]
+"ewokspdf.tasks.*" = "ewokspdf"
+
+
