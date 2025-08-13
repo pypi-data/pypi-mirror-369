@@ -1,0 +1,24 @@
+[project]
+name = "modly"
+version = "0.1.0"
+description = "Signed provenance receipts for LLM calls with policies and drift checks"
+authors = [{ name = "World Modeler" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pyyaml>=6.0",
+  "jsonschema>=4.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+receiptkit = "receiptkit.cli:main"
+modly = "receiptkit.cli:main"
+
+[tool.setuptools]
+package-dir = {"receiptkit" = "."}
+packages = ["receiptkit"]
+

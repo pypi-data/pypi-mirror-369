@@ -1,0 +1,35 @@
+Metadata-Version: 2.4
+Name: modly
+Version: 0.1.0
+Summary: Signed provenance receipts for LLM calls with policies and drift checks
+Author: World Modeler
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: jsonschema>=4.0
+
+# receiptkit
+
+Signed, policy-evaluated receipts for LLM calls. Privacy-preserving (hashes only), tamper-evident (HMAC), and CI-friendly.
+
+## Quick start
+```python
+from receiptkit import ReceiptManager
+
+rm = ReceiptManager(enabled=True, receipts_dir="receipts", policies_path="policies.yaml")
+# Call your LLM...
+rm.write_receipt(
+  model="your-model",
+  params={"temperature": 0.2},
+  prompt_text="...",
+  response_text="...",
+  latency_ms=120,
+  context_key="feature-name"
+)
+```
+
+## Policies
+Define guardrails in policies.yaml (PII, jailbreak, citation, topics). Receipts include pass/fail per rule.
+
+## Signing
+Set RECEIPT_SECRET to add an HMAC signature to each receipt.
