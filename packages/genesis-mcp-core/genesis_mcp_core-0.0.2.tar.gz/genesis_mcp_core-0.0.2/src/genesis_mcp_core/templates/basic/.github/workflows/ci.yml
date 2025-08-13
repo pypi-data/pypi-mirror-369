@@ -1,0 +1,89 @@
+name: {{ project_name | title }} CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.12]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python {% raw %}${{ matrix.python-version }}{% endraw %}
+      uses: actions/setup-python@v4
+      with:
+        python-version: {% raw %}${{ matrix.python-version }}{% endraw %}
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-{% raw %}${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}{% endraw %}
+
+    - name: Install dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install --no-interaction --no-root
+
+    - name: Install project
+      run: poetry install --no-interaction
+
+    - name: Run linting
+      run: |
+        poetry run black --check .
+        poetry run isort --check-only .
+
+    - name: Start MCP server
+      run: |
+        poetry run python main.py &
+        sleep 10
+      env:
+        SERVER_HOST: localhost
+        SERVER_PORT: 8002
+
+    - name: Run tests
+      run: |
+        poetry run python test_mcp_client.py
+      env:
+        SERVER_HOST: localhost
+        SERVER_PORT: 8002
+
+    - name: Stop server
+      run: |
+        pkill -f "python main.py" || true
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+
+    - name: Install dependencies
+      run: poetry install --no-interaction
+
+    - name: Run security checks
+      run: |
+        poetry run pip install safety bandit
+        poetry run safety check
+        poetry run bandit -r . -f json || true
