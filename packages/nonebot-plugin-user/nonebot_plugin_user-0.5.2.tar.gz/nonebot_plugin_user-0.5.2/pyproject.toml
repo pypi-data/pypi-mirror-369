@@ -1,0 +1,138 @@
+[project]
+name = "nonebot-plugin-user"
+version = "0.5.2"
+description = "适用于 Nonebot2 的用户插件"
+authors = [{ name = "uy_sun", email = "hmy0119@gmail.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">= 3.9"
+dependencies = [
+  "nonebot2>=2.2.0",
+  "nonebot-plugin-orm>=0.7.0",
+  "nonebot-plugin-alconna>=0.37.1",
+  "expiringdictx>=1.1.0",
+  "nonebot-plugin-uninfo>=0.7.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/he0119/nonebot-plugin-user"
+Repository = "https://github.com/he0119/nonebot-plugin-user.git"
+Issues = "https://github.com/he0119/nonebot-plugin-user/issues"
+Changelog = "https://github.com/he0119/nonebot-plugin-user/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+inspect = ["nonebot-plugin-inspect>=0.2.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["nonebot_plugin_user"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["nonebot_plugin_user"]
+
+[dependency-groups]
+dev = [
+  "nonebug>=0.4.3",
+  "pytest-cov>=6.1.1",
+  "pytest-xdist>=3.6.1",
+  "pytest-mock>=3.14.0",
+  "pytest-asyncio>=0.26.0",
+  "freezegun>=1.5.1",
+  "nonebot2[fastapi,httpx,websockets]>=2.4.2",
+  "nonebot-plugin-orm[default]>=0.7.7",
+  "nonebot-adapter-onebot>=2.4.6",
+  "nonebot-adapter-qq>=1.6.3",
+  "nonebot-adapter-satori>=0.13.6",
+  "bump-my-version>=1.1.2",
+  "poethepoet>=0.34.0",
+  "aiomysql>=0.2.0",
+  "asyncpg>=0.30.0",
+]
+
+[tool.uv.pip]
+universal = true
+
+[tool.poe.tasks]
+test = "pytest --cov=nonebot_plugin_user --cov-report xml --junitxml=./junit.xml -n auto"
+"test:single" = "pytest --cov=nonebot_plugin_user --cov-report xml --junitxml=./junit.xml"
+bump = "bump-my-version bump"
+show-bump = "bump-my-version show-bump"
+
+[tool.pyright]
+pythonVersion = "3.9"
+pythonPlatform = "All"
+typeCheckingMode = "standard"
+defineConstant = { PYDANTIC_V2 = true }
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+  "W",   # pycodestyle warnings
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "UP",  # pyupgrade
+  "C4",  # flake8-comprehensions
+  "T10", # flake8-debugger
+  "T20", # flake8-print
+  "PYI", # flake8-pyi
+  "PT",  # flake8-pytest-style
+  "Q",   # flake8-quotes
+]
+ignore = [
+  "E402", # module-import-not-at-top-of-file
+]
+
+[tool.nonebot]
+adapters = [
+  { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
+  { name = "OneBot V12", module_name = "nonebot.adapters.onebot.v12" },
+  { name = "QQ", module_name = "nonebot.adapters.qq" },
+  { name = "Satori", module_name = "nonebot.adapters.satori" },
+]
+plugins = ["nonebot_plugin_user"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "@overload",
+  "except ImportError:",
+]
+omit = ["*/migrations/*"]
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+
+[tool.bumpversion]
+current_version = "0.5.2"
+commit = true
+message = "chore(release): {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = "version = \"{current_version}\""
+replace = "version = \"{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = "CHANGELOG.md"
+search = "## [Unreleased]"
+replace = "## [Unreleased]\n\n## [{new_version}] - {now:%Y-%m-%d}"
+
+[[tool.bumpversion.files]]
+filename = "CHANGELOG.md"
+regex = true
+search = "\\[Unreleased\\]: (https://.+?)v{current_version}\\.\\.\\.HEAD"
+replace = "[Unreleased]: \\1v{new_version}...HEAD\n[{new_version}]: \\1v{current_version}...v{new_version}"
