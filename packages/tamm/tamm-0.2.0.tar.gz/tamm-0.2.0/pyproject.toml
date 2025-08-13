@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tamm"
+description = "A library for ML model development with PyTorch"
+license = "MIT"
+license-files = ["LICENSE.md"]
+requires-python = ">=3.9"
+dynamic = ["readme", "version"]
+dependencies = [
+  "torch>=2.1",
+  "numpy",
+  "jinja2",
+  "filelock",
+  "wrapt",
+  "packaging",
+  "coloredlogs",
+]
+keywords = [
+  "Machine learning",
+  "Model development",
+  "PyTorch",
+  "Natural language processing",
+  "Computer vision",
+  "Audio processing",
+  "Transformers",
+  "Deep learning",
+  "Generative AI",
+]
+classifiers = [
+  "Intended Audience :: Developers",
+]
+
+[project.optional-dependencies]
+sentencepiece = ["sentencepiece"]
+transformers = ["transformers", "safetensors"]
+xxhash = ["xxhash"] # model checksum
+torchvision = ["torchvision"]
+all = [
+  "tamm[sentencepiece,transformers,xxhash,torchvision]",
+]
+
+[project.scripts]
+tamm = "tamm._cli.__main__:main"
+
+[tool.setuptools.package-dir]
+tamm = "tamm"
+
+[tool.setuptools.dynamic]
+version = { attr = "tamm._version.__version__" }
+readme = { file = ["README.md"] }
