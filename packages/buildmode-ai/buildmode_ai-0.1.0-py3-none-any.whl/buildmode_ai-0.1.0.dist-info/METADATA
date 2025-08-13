@@ -1,0 +1,394 @@
+Metadata-Version: 2.3
+Name: buildmode-ai
+Version: 0.1.0
+Summary: BuildMode.AI backend service
+Author: BuildMode Team
+Author-email: team@buildmode.ai
+Requires-Python: >=3.11,<3.13
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: APScheduler (==3.10.4)
+Requires-Dist: PyYAML (==6.0.1)
+Requires-Dist: SQLAlchemy (==2.0.30)
+Requires-Dist: fastapi (==0.104.1)
+Requires-Dist: httpx (==0.27.0)
+Requires-Dist: itsdangerous (==2.1.2)
+Requires-Dist: networkx (==3.3)
+Requires-Dist: numpy (>=2.3.2,<3.0.0)
+Requires-Dist: openai (>=1.13.3,<2.0.0)
+Requires-Dist: psycopg[binary] (>=3.2,<4.0)
+Requires-Dist: pydantic (==2.5.0)
+Requires-Dist: pydantic-settings (==2.1.0)
+Requires-Dist: python-dotenv (==1.1.1)
+Requires-Dist: qdrant-client (==1.15.1)
+Requires-Dist: requests (==2.32.4)
+Requires-Dist: slowapi (>=0.1.9,<0.2.0)
+Requires-Dist: uvicorn (==0.29.0)
+Description-Content-Type: text/markdown
+
+# BuildMode.AI
+
+BuildMode.AI is a backend-first platform that powers generative agent workflows, memory storage, and a lightweight web studio. It combines a
+FastAPI backend, a vector memory store (Qdrant), and a Vite-based frontend so you can prototype, run, and ship memory-enabled assistants from a
+single repository.
+
+Why choose BuildMode.AI?
+
+- Fast experimentation: lightweight in-memory mocks and deterministic tests speed local iteration.
+- Full-stack examples: a small Vite SPA demonstrates agent interaction and integrates with the backend API.
+- Extensible architecture: modular agent patterns, memory storage, and helper utilities so you can build custom assistants quickly.
+
+Example quick scenario: run the backend locally, post a chat message to `/chat`, and confirm the assistant stores an embedding in the vector store (Qdrant or the local
+mock).
+
+Table of contents
+
+- [Project Overview](#project-overview)
+- [Quickstart (Local)](#quickstart-local)
+- [Installation](#installation)
+- [Running the backend](#running-the-backend)
+- [API Usage](#api-usage)
+- [Running the frontend](#running-the-frontend)
+- [Deployment](#deployment)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Additional Documentation](#additional-documentation)
+
+---
+
+## Project Overview
+
+- **Backend:** FastAPI application in the `server` directory handling API logic, data persistence, and serving the built frontend.
+- **Frontend:** Vite-powered PWA located in `client-vite`, bundled and served by the backend in production.
+- **Shared:** Repository-level scripts, tests, and configuration used by both backend and frontend.
+- **Vision builder:** PWA view and backend routes for creating and persisting visual project artifacts. See [vision.md](vision.md).
+- **Task / Epic / Goal system:** Hierarchical planning model (Goals → Epics → Tasks) with API and UI for lightweight project management. See [tasks.md](tasks.md).
+
+See [repo_maps/REPO_MAP_TOP.md](repo_maps/REPO_MAP_TOP.md) for a directory-level breakdown.
+
+## Quickstart (Local)
+
+The following steps get a minimal local development environment running quickly.
+
+1) Install dependencies and create the Python virtual environment:
+
+```bash
+poetry install
+```
+
+2) Initialize the database schema:
+
+For SQLite (local dev):
+
+```bash
+poetry run python -c "from server.database import Base, engine; Base.metadata.create_all(bind=engine)"
+```
+
+For Postgres, apply migrations with Alembic:
+
+```bash
+export DATABASE_URL="postgresql://user:pass@host:5432/dbname"
+alembic upgrade head  # upgrade to latest
+```
+
+3) Run the API locally (hot reload):
+
+```bash
+poetry run uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+4) (Optional) Run the frontend during development:
+
+```bash
+cd client-vite
+pnpm install
+pnpm run dev
+```
+
+The backend listens on `http://localhost:8000` and the Vite dev server runs on `http://localhost:5173` by default.
+
+---
+
+## Installation
+
+Prerequisites
+
+- Python 3.11 (recommended)
+- Poetry (dependency & virtualenv manager) — https://python-poetry.org/
+- Node.js + pnpm (only if you develop the frontend locally)
+- Docker (optional, for production or local container runs)
+
+Install and prepare the project
+
+1. Install Poetry following the [official instructions](https://python-poetry.org/#installation).
+2. Install project dependencies and create the virtual environment:
+
+```bash
+poetry install
+```
+
+3. Initialize the database schema (run once). The application also performs
+  this on startup, but running it manually ensures the DB is ready before
+  serving requests:
+
+For SQLite (local dev):
+
+```bash
+poetry run python -c "from server.database import Base, engine; Base.metadata.create_all(bind=engine)"
+```
+
+For Postgres:
+
+```bash
+alembic upgrade head
+```
+
+Environment variables
+
+Create a local `.env.development` (see `.env.example`) or export the minimum
+required variables in your shell. For local development you can use
+placeholder values for third-party services (tests mock external calls):
+
+```bash
+export OPENAI_API_KEY=test-key
+export USE_QDRANT_MOCK=1   # use the in-memory Qdrant mock for local dev
+```
+
+Notes
+
+- When running in production you must provide real API keys (OpenAI, Qdrant,
+ Supabase, etc.). The server will exit at startup if a required key is missing
+ in production mode.
+- If you use Docker, the `Dockerfile` and `railway.json` describe the
+ production image and deployment configuration.
+
+## Running the backend
+
+Start the API locally with Uvicorn:
+
+```bash
+poetry run uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+This command runs the server with hot reloading enabled on port `8000`.
+
+## API Usage
+
+Interact with the backend by sending a `POST` request to the `/api/chat` endpoint.
+
+Example: store a chat memory
+
+```bash
+curl -X POST http://localhost:8000/api/chat \
+ -H "Content-Type: application/json" \
+ -d '{"user_id":"user-1","text":"Hello world"}'
+```
+
+Expected response:
+
+```json
+{"status": "success", "message": "Memory stored."}
+```
+
+Verify stored collections (Qdrant mock or real Qdrant)
+
+```bash
+curl http://localhost:8000/api/memory/qdrant/collections
+```
+
+The collections endpoint returns JSON with a `collections` array; when
+chat memories are stored the test/local collection name is `user_memories`.
+
+---
+
+## Getting Started — end-to-end example (local mock)
+
+This quick walkthrough demonstrates storing a chat memory and searching it
+using the in-memory Qdrant mock. It assumes you started the backend with
+`USE_QDRANT_MOCK=1` (see Installation section).
+
+1) Post a chat message (stores an embedding and upserts a point):
+
+```bash
+curl -sS -X POST http://localhost:8000/api/chat \
+ -H "Content-Type: application/json" \
+ -d '{"user_id":"e2e-user","text":"Integration test message"}' | jq
+```
+
+Expected small response:
+
+```json
+{"status":"success","message":"Memory stored."}
+```
+
+2) List Qdrant collections and find `user_memories`:
+
+```bash
+curl -sS http://localhost:8000/api/memory/qdrant/collections | jq
+```
+
+3) (Optional) Search vectors — simple example using the service route:
+
+```bash
+curl -sS -G http://localhost:8000/api/memory/qdrant/search \
+ --data-urlencode "collection_name=user_memories" \
+ --data-urlencode "limit=5" | jq
+```
+
+This minimal flow gives a quick verification that the chat message was
+embedded and stored. For programmatic use prefer calling the server's
+Python client helpers or using the `server/services/qdrant_service.py`
+API directly in Python code.
+
+## Running the frontend
+
+To start the Vite-powered frontend locally:
+
+```bash
+cd client-vite
+pnpm install
+pnpm run dev
+```
+
+For a production build, run `pnpm run build` inside `client-vite` or use
+`scripts/build_frontend.sh` to bundle and copy assets to `server/static`.
+
+See [client-vite/README.md](../client-vite/README.md) for advanced options and additional commands.
+
+Troubleshooting
+
+- 500 on `/api/chat`: ensure `OPENAI_API_KEY` is set for non-test runs; for
+ local development you can set `OPENAI_API_KEY=test-key` and `USE_QDRANT_MOCK=1`.
+- Qdrant connection issues: verify `QDRANT_URL` and `QDRANT_API_KEY` are set
+ and that the environment variable names do not contain accidental spaces.
+- Unexpected blank page or "Something went wrong" message: open the
+  browser's developer console to view detailed error information logged by
+  the frontend error boundary.
+
+
+## Deployment
+
+Production deployments run on [Railway](https://railway.app/) using the configuration in `railway.json`. Railway deploys a single unified Docker service that serves both the FastAPI backend and the built Vite frontend, along with a managed Qdrant vector database.
+Refer to [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for full setup instructions.
+
+### Required environment variables
+
+Configure the following secrets in Railway (or the appropriate `.env.<environment>` file for local development):
+
+#### Backend
+
+- `DATABASE_URL` – PostgreSQL connection string
+- `GH_PAT` – GitHub personal access token. Optional; inject at runtime only if access to private repositories is needed. For example:
+
+    ```bash
+    GH_PAT=ghp_your_token docker compose -f docker-compose.local.yml up
+    ```
+- `SESSION_SECRET_KEY` – session management secret. Generate a secure value, for example:
+  `python -c "import secrets; print(secrets.token_urlsafe(32))"`
+- `OPENAI_API_KEY` – OpenAI API key (required; the server will exit on startup if unset).
+
+ For running tests, a placeholder value is sufficient:
+
+ ```bash
+ export OPENAI_API_KEY=test-key
+ ```
+
+ The tests mock external calls, so no real API access is required.
+- `QDRANT_URL` – Qdrant Cloud URL (logged on startup if missing). Note: some deployment UIs or `.env` files have accidentally created the environment variable with a leading space in the name (for example: ` QDRANT_URL`). If you encounter connection errors, verify the variable name is exactly `QDRANT_URL` in your deployment settings and `.env` files.
+- `QDRANT_API_KEY` – Qdrant Cloud API key (logged on startup if missing)
+- `SUPABASE_URL` – Supabase project URL
+- `SUPABASE_ANON_KEY` – Supabase anonymous access key
+- `SUPABASE_REGION` – Supabase region (defaults to `us-east-1`)
+
+#### Frontend (now served from backend)
+
+- `VITE_API_URL` – backend origin used by the frontend. Use `http://localhost:8000` during development and the deployed origin in production.
+- `VITE_OPENAI_API_KEY` – OpenAI API key used for direct client-side requests (if applicable)
+- `VITE_SUPABASE_URL` – Supabase project URL for the frontend (throws a friendly error if unset)
+- `VITE_SUPABASE_ANON_KEY` – Supabase anonymous access key for the frontend (throws a friendly error if unset)
+
+These variables and services provide the minimum configuration needed to deploy the project.
+
+## Authentication
+
+Refer to [authentication.md](authentication.md) for an overview of the project's Supabase-based authentication. The guide covers required environment variables, frontend and backend setup, and examples for email/password and Google OAuth flows.
+
+## Additional Documentation
+
+- [Architecture overview](ARCHITECTURE.md)
+- [Blueprint](BLUEPRINT_v3.md) – product blueprint and architecture notes.
+- [Project roadmap](ROADMAP.md) – high-level milestones and sprint plans.
+- [Progress tracker](PROGRESS.md) – session state and work log.
+- [Developer notes](DEVELOPER_NOTES.md) – setup tips and common commands.
+- [Deployment guide](DEPLOYMENT_GUIDE.md) – deployment runbook and environment guidance.
+- [Dependency reference](DEPENDENCIES.md) – backend and frontend package lists.
+- [Railway environment setup](RAILWAY_ENV_SETUP.md) – required variables for Railway.
+- [Railway migration guide](RAILWAY_MIGRATION.md) – steps to migrate services.
+- [Changelog](CHANGELOG.md) – release history and notable changes.
+- [Changes report](CHANGES_REPORT.md) – developer-focused rationale for recent edits.
+- [Documentation index](DOCS_INDEX.md) – list of project documentation.
+- [Agent development guide](agents.md)
+- [Qdrant integration notes](QDRANT.md)
+- [Security monitoring](SECURITY.md)
+- [Testing guide](TESTING.md)
+- Repository structure maps in [repo_maps](repo_maps/REPO_MAP_TOP.md)
+
+## Testing
+
+Run the test suite from the repository root:
+
+```bash
+export OPENAI_API_KEY=test-key
+pytest -q
+```
+
+The tests mock external calls, so a placeholder value for `OPENAI_API_KEY` is sufficient.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on code style, testing, and pull requests. We welcome contributions — follow the contributing guide and run the test suite before submitting a PR.
+
+If you plan to contribute:
+
+- Fork the repository and create a feature branch.
+- Run the test suite and linters before submitting a PR:
+
+```bash
+export OPENAI_API_KEY=test-key
+poetry run ruff .
+pytest -q
+```
+
+- Follow the code style rules enforced by the repository (Black/isort/ruff configured in pre-commit).
+
+If you're unsure where to start, open an issue describing the change and I'll help prioritize it.
+
+## FAQ & Troubleshooting
+
+Q: The `/api/chat` endpoint returns 500 with "OpenAI API key not configured".
+
+A: For non-test runs you must set `OPENAI_API_KEY` in your environment. For
+development and tests you can set `OPENAI_API_KEY=test-key` and enable the
+in-memory Qdrant mock with `USE_QDRANT_MOCK=1`.
+
+Q: The Qdrant client fails to connect in CI or deployment.
+
+A: Verify `QDRANT_URL` and `QDRANT_API_KEY` are set and contain no accidental
+leading/trailing whitespace. The config normalizes environment keys, but
+deployment portals sometimes add extra spaces accidentally.
+
+Q: How can I run the full test suite locally?
+
+A: Ensure dependencies are installed via `poetry install`, set `OPENAI_API_KEY`
+to a placeholder, then run `pytest -q` from the repository root. CI runs the
+same test suite and patches external clients where necessary.
+
+## License
+
+This project is released under the MIT License. See `LICENSE` for details.
+
+---
+
+If you want a short migration note, release notes, or a changelog entry for the shim removals, I can prepare that as a follow-up patch.
+
