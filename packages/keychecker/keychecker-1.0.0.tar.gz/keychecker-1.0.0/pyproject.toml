@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "keychecker"
+version = "1.0.0"
+description = "A comprehensive key reconnaissance framework for red team activities"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-only"
+authors = [
+    {name = "Cyfinoid", email = "keychecker@cyfinoid.com"}
+]
+maintainers = [
+    {name = "Cyfinoid", email = "keychecker@cyfinoid.com"}
+]
+keywords = ["security", "ssh", "keys", "reconnaissance", "red-team", "penetration-testing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: System :: Systems Administration",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+]
+dependencies = [
+    "requests>=2.25.0",
+    "cryptography>=3.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/cyfinoid/keychecker"
+"Bug Tracker" = "https://github.com/cyfinoid/keychecker/issues"
+"Documentation" = "https://github.com/cyfinoid/keychecker#readme"
+"Source Code" = "https://github.com/cyfinoid/keychecker"
+
+[project.scripts]
+keychecker = "keychecker.__main__:main"
+
+[tool.setuptools]
+packages = ["keychecker", "keychecker.core", "keychecker.core.ssh", "keychecker.plugins", "keychecker.plugins.github", "keychecker.plugins.gitlab", "keychecker.utils"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+keychecker = ["assets/*"]
