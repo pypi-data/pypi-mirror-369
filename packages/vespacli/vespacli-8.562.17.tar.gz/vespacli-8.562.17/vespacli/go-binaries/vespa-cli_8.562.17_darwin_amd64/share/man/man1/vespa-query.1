@@ -1,0 +1,88 @@
+.nh
+.TH "VESPA-QUERY" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-query - Issue a query to Vespa
+
+
+.SH SYNOPSIS
+\fBvespa query query-parameters [flags]\fP
+
+
+.SH DESCRIPTION
+Issue a query to Vespa.
+
+.PP
+Any parameter from https://docs.vespa.ai/en/reference/query-api-reference.html
+can be set by the syntax [parameter-name]=[value].
+
+
+.SH OPTIONS
+\fB--file\fP=""
+	Read query parameters from the given JSON file and send a POST request, with overrides from arguments
+
+.PP
+\fB--format\fP="human"
+	Output format. Must be 'human' (human-readable) or 'plain' (no formatting)
+
+.PP
+\fB--header\fP=[]
+	Add a header to the HTTP request, on the format 'Header: Value'. This can be specified multiple times
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for query
+
+.PP
+\fB-T\fP, \fB--timeout\fP=10
+	Timeout for the query in seconds
+
+.PP
+\fB-v\fP, \fB--verbose\fP[=false]
+	Print the equivalent curl command for the query
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa query 'yql=select * from music where album contains "head"' hits=5
+$ vespa query --format=plain 'yql=select * from music where album contains "head"' hits=5
+$ vespa query --file q-vector.json
+$ vespa query --header='X-First-Name: Joe' 'yql=select * from music where album contains "head"' hits=5
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP

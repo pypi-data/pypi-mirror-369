@@ -1,0 +1,98 @@
+.nh
+.TH "VESPA-DEPLOY" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-deploy - Deploy (prepare and activate) an application package
+
+
+.SH SYNOPSIS
+\fBvespa deploy [application-directory-or-file] [flags]\fP
+
+
+.SH DESCRIPTION
+Deploy (prepare and activate) an application package.
+
+.PP
+An application package defines a deployable Vespa application. See
+https://docs.vespa.ai/en/reference/application-packages-reference.html for
+details about the files contained in this package.
+
+.PP
+To get started, 'vespa clone' can be used to download a sample application.
+
+.PP
+This command deploys an application package. When deploy returns successfully
+the application package has been validated and activated on config servers. The
+process of applying it on individual nodes has started but may not have
+completed.
+
+.PP
+If application directory is not specified, it defaults to working directory.
+
+.PP
+In Vespa Cloud you may override the Vespa runtime version (--version) for your
+deployment. This option should only be used if you have a reason for using a
+specific version. By default, Vespa Cloud chooses a suitable version for you.
+
+
+.SH OPTIONS
+\fB-A\fP, \fB--add-cert\fP[=false]
+	Copy certificate of the configured application to the current application package
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for deploy
+
+.PP
+\fB-l\fP, \fB--log-level\fP="error"
+	Log level for Vespa logs. Must be "error", "warning", "info" or "debug"
+
+.PP
+\fB-V\fP, \fB--version\fP=""
+	Override the Vespa runtime version to use in Vespa Cloud
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa deploy .
+$ vespa deploy -t cloud
+$ vespa deploy -t cloud -z dev.aws-us-east-1c  # -z can be omitted here as this zone is the default
+$ vespa deploy -t cloud -z perf.aws-us-east-1c
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP

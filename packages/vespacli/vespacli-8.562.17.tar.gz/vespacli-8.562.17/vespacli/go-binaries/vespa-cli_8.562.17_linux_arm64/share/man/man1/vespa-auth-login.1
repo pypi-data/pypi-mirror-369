@@ -1,0 +1,68 @@
+.nh
+.TH "VESPA-AUTH-LOGIN" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-auth-login - Authenticate Vespa CLI with Vespa Cloud control plane. This is preferred over api-key for interactive use
+
+
+.SH SYNOPSIS
+\fBvespa auth login [flags]\fP
+
+
+.SH DESCRIPTION
+Authenticate Vespa CLI with Vespa Cloud control plane. This is preferred over api-key for interactive use.
+
+.PP
+This command runs a browser-based authentication flow for the Vespa Cloud control plane.
+
+.PP
+Use --file-storage flag to store the refresh token in unencrypted files instead of the system keyring.
+This is useful in SSH/CI/Docker environments where keyring access may not be available.
+
+
+.SH OPTIONS
+\fB--file-storage\fP[=false]
+	Use file storage (unencrypted) instead of keyring for storing refresh token
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for login
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa auth login
+.EE
+
+
+.SH SEE ALSO
+\fBvespa-auth(1)\fP

@@ -1,0 +1,74 @@
+.nh
+.TH "VESPA-STATUS-DEPLOYMENT" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-status-deployment - Show status of a Vespa deployment
+
+
+.SH SYNOPSIS
+\fBvespa status deployment [flags]\fP
+
+
+.SH DESCRIPTION
+Show status of a Vespa deployment.
+
+.PP
+This commands shows whether a Vespa deployment has converged on the latest run
+(Vespa Cloud) or config generation (self-hosted). If an argument is given,
+show the convergence status of that particular run or generation.
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for deployment
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB--format\fP="human"
+	Output format. Must be 'human' (human-readable) or 'plain' (cluster URL only)
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa status deployment
+$ vespa status deployment -t cloud [run-id]
+$ vespa status deployment -t local [session-id]
+$ vespa status deployment -t local [session-id] --wait 600
+
+.EE
+
+
+.SH SEE ALSO
+\fBvespa-status(1)\fP

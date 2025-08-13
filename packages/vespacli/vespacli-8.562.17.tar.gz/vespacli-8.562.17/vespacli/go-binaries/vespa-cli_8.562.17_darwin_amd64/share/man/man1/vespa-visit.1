@@ -1,0 +1,127 @@
+.nh
+.TH "VESPA-VISIT" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-visit - Retrieve and print all documents from Vespa
+
+
+.SH SYNOPSIS
+\fBvespa visit [flags]\fP
+
+
+.SH DESCRIPTION
+Retrieve and print all documents from Vespa.
+
+.PP
+By default, prints each document received on its own line (JSONL format).
+
+
+.SH OPTIONS
+\fB--bucket-space\fP=[global,default]
+	The "default" or "global" bucket space
+
+.PP
+\fB--chunk-count\fP=1000
+	Chunk by count
+
+.PP
+\fB--content-cluster\fP="*"
+	Which content cluster to visit documents from
+
+.PP
+\fB--field-set\fP=""
+	Which fieldset to ask for
+
+.PP
+\fB--from\fP=""
+	Timestamp to visit from, in seconds
+
+.PP
+\fB--header\fP=[]
+	Add a header to the HTTP request, on the format 'Header: Value'. This can be specified multiple times
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for visit
+
+.PP
+\fB--json-lines\fP[=true]
+	Output documents as JSON lines
+
+.PP
+\fB--make-feed\fP[=false]
+	Output JSON array suitable for vespa-feeder
+
+.PP
+\fB--pretty-json\fP[=false]
+	Format pretty JSON
+
+.PP
+\fB--selection\fP=""
+	Select subset of cluster
+
+.PP
+\fB--slice-id\fP=-1
+	The number of the slice this visit invocation should fetch
+
+.PP
+\fB--slices\fP=-1
+	Split the document corpus into this number of independent slices
+
+.PP
+\fB--stream\fP[=false]
+	Stream the HTTP responses
+
+.PP
+\fB--to\fP=""
+	Timestamp to visit up to, in seconds
+
+.PP
+\fB-v\fP, \fB--verbose\fP[=false]
+	Print the equivalent curl command for the visit operation
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa visit # get documents from any cluster
+$ vespa visit --content-cluster search # get documents from cluster named "search"
+$ vespa visit --field-set "[id]" # list document IDs
+
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP

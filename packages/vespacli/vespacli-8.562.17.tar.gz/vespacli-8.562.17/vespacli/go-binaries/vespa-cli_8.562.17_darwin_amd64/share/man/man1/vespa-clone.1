@@ -1,0 +1,74 @@
+.nh
+.TH "VESPA-CLONE" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-clone - Create files and directory structure from a Vespa sample application
+
+
+.SH SYNOPSIS
+\fBvespa clone sample-application-path target-directory [flags]\fP
+
+
+.SH DESCRIPTION
+Create files and directory structure from a Vespa sample application.
+
+.PP
+Sample applications are downloaded from
+https://github.com/vespa-engine/sample-apps.
+
+.PP
+By default, sample applications are cached in the user's cache directory. This
+directory can be overridden by setting the VESPA_CLI_CACHE_DIR environment
+variable.
+
+
+.SH OPTIONS
+\fB-f\fP, \fB--force\fP[=false]
+	Ignore cache and force downloading the latest sample application from GitHub
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for clone
+
+.PP
+\fB-l\fP, \fB--list\fP[=false]
+	List available sample applications
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa clone album-recommendation my-app
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP

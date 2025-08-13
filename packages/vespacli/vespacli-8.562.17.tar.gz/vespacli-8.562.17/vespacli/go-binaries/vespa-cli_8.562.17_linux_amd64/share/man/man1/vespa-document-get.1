@@ -1,0 +1,86 @@
+.nh
+.TH "VESPA-DOCUMENT-GET" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-document-get - Gets one or more documents
+
+
+.SH SYNOPSIS
+\fBvespa document get id(s) [flags]\fP
+
+
+.SH DESCRIPTION
+Gets one or more documents
+
+
+.SH OPTIONS
+\fB-d\fP, \fB--data\fP=""
+	Document data to use instead of reading from file or stdin
+
+.PP
+\fB--field-set\fP=""
+	Fields to include when reading document
+
+.PP
+\fB--header\fP=[]
+	Add a header to the HTTP request, on the format 'Header: Value'. This can be specified multiple times
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for get
+
+.PP
+\fB--ignore-missing\fP[=false]
+	Do not treat non-existent document as an error
+
+.PP
+\fB-T\fP, \fB--timeout\fP=60
+	Timeout for the document request in seconds
+
+.PP
+\fB-v\fP, \fB--verbose\fP[=false]
+	Print the equivalent curl command for the document operation
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa document get id:mynamespace:music::song-1
+$ vespa document get id:mynamespace:music::song-1 id:mynamespace:music::song-2
+.EE
+
+
+.SH SEE ALSO
+\fBvespa-document(1)\fP

@@ -1,0 +1,65 @@
+.nh
+.TH "VESPA-FETCH" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-fetch - Download a deployed application package
+
+
+.SH SYNOPSIS
+\fBvespa fetch [path] [flags]\fP
+
+
+.SH DESCRIPTION
+Download a deployed application package.
+
+.PP
+This command can be used to download an already deployed Vespa application
+package. The package is written as a ZIP file to the given path, or current
+directory if no path is given.
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for fetch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa fetch
+$ vespa fetch mydir/
+$ vespa fetch -t cloud mycloudapp.zip
+
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP

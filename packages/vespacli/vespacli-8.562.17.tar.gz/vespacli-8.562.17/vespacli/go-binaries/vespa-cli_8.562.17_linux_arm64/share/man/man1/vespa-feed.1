@@ -1,0 +1,165 @@
+.nh
+.TH "VESPA-FEED" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-feed - Feed multiple document operations to Vespa
+
+
+.SH SYNOPSIS
+\fBvespa feed json-file [json-file]... [flags]\fP
+
+
+.SH DESCRIPTION
+Feed multiple document operations to Vespa.
+
+.PP
+This command can be used to feed large amounts of documents to a Vespa cluster
+efficiently.
+
+.PP
+The contents of json-file must be either a JSON array or JSON objects separated by
+newline (JSONL).
+
+.PP
+If json-file is a single dash ('-'), documents will be read from standard input.
+
+.PP
+Once feeding completes, metrics of the feed session are printed to standard out
+in a JSON format:
+.IP \(bu 2
+feeder.operation.count: Number of operations passed to the feeder by the user,
+not counting retries.
+.IP \(bu 2
+feeder.seconds: Total time spent feeding.
+.IP \(bu 2
+feeder.ok.count: Number of successful operations.
+.IP \(bu 2
+feeder.ok.rate: Number of successful operations per second.
+.IP \(bu 2
+feeder.error.count: Number of network errors (transport layer).
+.IP \(bu 2
+feeder.inflight.count: Number of operations currently being sent.
+.IP \(bu 2
+http.request.count: Number of HTTP requests made, including retries.
+.IP \(bu 2
+http.request.bytes: Number of bytes sent.
+.IP \(bu 2
+http.request.MBps: Request throughput measured in MB/s. This is the raw
+operation throughput, and not the network throughput,
+I.e. using compression does not affect this number.
+.IP \(bu 2
+http.exception.count: Same as feeder.error.count. Present for compatibility
+with vespa-feed-client.
+.IP \(bu 2
+http.response.count: Number of HTTP responses received.
+.IP \(bu 2
+http.response.bytes: Number of bytes received.
+.IP \(bu 2
+http.response.MBps: Response throughput measured in MB/s.
+.IP \(bu 2
+http.response.error.count: Number of non-OK HTTP responses received.
+.IP \(bu 2
+http.response.latency.millis.min: Lowest latency of a successful operation.
+.IP \(bu 2
+http.response.latency.millis.avg: Average latency of successful operations.
+.IP \(bu 2
+http.response.latency.millis.max: Highest latency of a successful operation.
+.IP \(bu 2
+http.response.code.counts: Number of responses grouped by their HTTP code.
+
+
+.SH OPTIONS
+\fB--compression\fP="auto"
+	Whether to compress the document data when sending the HTTP request. Default is "auto", which compresses large documents. Must be "auto", "gzip" or "none"
+
+.PP
+\fB--connections\fP=8
+	The number of connections to use
+
+.PP
+\fB--deadline\fP=0
+	Exit if this number of seconds elapse without any successful operations. 0 to disable (default 0)
+
+.PP
+\fB--header\fP=[]
+	Add a header to all HTTP requests, on the format 'Header: Value'. This can be specified multiple times
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for feed
+
+.PP
+\fB--inflight\fP=0
+	The target number of inflight requests. 0 to dynamically detect the best value (default 0)
+
+.PP
+\fB--progress\fP=0
+	Print stats summary at given interval, in seconds. 0 to disable (default 0)
+
+.PP
+\fB--route\fP=""
+	Target Vespa route for feed operations (default "default")
+
+.PP
+\fB--speedtest\fP=0
+	Perform a network speed test using given payload, in bytes. 0 to disable (default 0)
+
+.PP
+\fB--speedtest-duration\fP=60
+	Duration of speedtest, in seconds
+
+.PP
+\fB--timeout\fP=0
+	Individual feed operation timeout in seconds. 0 to disable (default 0)
+
+.PP
+\fB--trace\fP=0
+	Network traffic trace level in the range [0,9]. 0 to disable (default 0)
+
+.PP
+\fB--verbose\fP[=false]
+	Verbose mode. Print successful operations in addition to errors
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa feed docs.jsonl moredocs.json
+$ cat docs.jsonl | vespa feed -
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP

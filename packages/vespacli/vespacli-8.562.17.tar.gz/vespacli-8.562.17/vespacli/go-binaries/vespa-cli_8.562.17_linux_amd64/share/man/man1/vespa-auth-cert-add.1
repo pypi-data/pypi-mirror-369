@@ -1,0 +1,70 @@
+.nh
+.TH "VESPA-AUTH-CERT-ADD" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-auth-cert-add - Add certificate to application package
+
+
+.SH SYNOPSIS
+\fBvespa auth cert add [flags]\fP
+
+
+.SH DESCRIPTION
+Add an existing self-signed certificate for Vespa Cloud deployment to your application package.
+
+.PP
+The certificate will be loaded from the Vespa CLI home directory (see 'vespa
+help config') by default.
+
+.PP
+The location of the application package can be specified as an argument to this
+command (default '.').
+
+
+.SH OPTIONS
+\fB-f\fP, \fB--force\fP[=false]
+	Force overwrite of existing certificate
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for add
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa auth cert add -a my-tenant.my-app.my-instance
+$ vespa auth cert add -a my-tenant.my-app.my-instance path/to/application/package
+.EE
+
+
+.SH SEE ALSO
+\fBvespa-auth-cert(1)\fP
