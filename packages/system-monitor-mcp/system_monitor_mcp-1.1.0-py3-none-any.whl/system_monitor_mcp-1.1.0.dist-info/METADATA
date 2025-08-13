@@ -1,0 +1,115 @@
+Metadata-Version: 2.4
+Name: system-monitor-mcp
+Version: 1.1.0
+Summary: System Monitor MCP Server - 系统监控MCP服务器
+Author-email: Undoom <kaikaihuhu666@163.com>
+License: MIT
+Project-URL: Homepage, https://github.com/undoom/system-monitor-mcp
+Project-URL: Repository, https://github.com/undoom/system-monitor-mcp
+Project-URL: Issues, https://github.com/undoom/system-monitor-mcp/issues
+Keywords: mcp,system,monitor,server
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: psutil>=5.9.0
+Requires-Dist: pydantic>=2.0.0
+Dynamic: license-file
+
+# System Monitor MCP
+
+System Monitor MCP 是一个基于 Model Context Protocol (MCP) 的系统监控服务，可以提供系统资源信息，包括 CPU、内存、磁盘、网络和进程等。
+
+## 功能特点
+
+- 实时监控系统资源使用情况
+- 提供 CPU 详细信息，包括使用率、频率等
+- 提供内存详细信息，包括物理内存和交换内存
+- 提供磁盘详细信息，包括分区和 I/O 统计
+- 提供网络详细信息，包括接口和流量统计
+- 提供进程详细信息，包括 CPU 使用率、内存使用率等
+- 支持资源监控，定期返回资源数据
+
+## 安装
+
+```bash
+pip install system-monitor-mcp
+```
+
+## 使用方法
+
+### 作为 MCP 服务器
+
+在 AI 助手配置中添加以下 MCP 服务器配置：
+
+```json
+{
+  "mcpServers": {
+    "system-monitor-mcp": {
+      "timeout": 60,
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "-m",
+        "system_monitor_mcp"
+      ]
+    }
+  }
+}
+```
+
+### 可用工具
+
+- `get_system_info`: 获取系统基本信息，包括 CPU、内存、操作系统等
+- `get_cpu_info`: 获取 CPU 详细信息，包括使用率、频率等
+- `get_memory_info`: 获取内存详细信息，包括物理内存和交换内存
+- `get_disk_info`: 获取磁盘详细信息，包括分区和 I/O 统计
+- `get_network_info`: 获取网络详细信息，包括接口和流量统计
+- `get_processes_info`: 获取进程详细信息，包括 CPU 使用率、内存使用率等
+- `monitor_resource`: 监控系统资源使用情况，定期返回资源数据
+
+## 示例
+
+### 获取系统信息
+
+```python
+# 使用 MCP 工具获取系统信息
+result = await use_mcp_tool(
+    server_name="system-monitor-mcp",
+    tool_name="get_system_info",
+    arguments={}
+)
+print(result)
+```
+
+### 监控 CPU 使用率
+
+```python
+# 监控 CPU 使用率，每 2 秒采集一次，持续 30 秒
+result = await use_mcp_tool(
+    server_name="system-monitor-mcp",
+    tool_name="monitor_resource",
+    arguments={
+        "resource_type": "cpu",
+        "interval": 2,
+        "duration": 30
+    }
+)
+print(result)
+```
+
+## 依赖
+
+- Python >= 3.8
+- psutil >= 5.9.0
+
+## 许可证
+
+MIT
