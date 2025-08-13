@@ -1,0 +1,97 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: build (Python ${{ matrix.python-version }}, Django ${{ matrix.django-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        django-version: ['4.2', '5.1', '5.2', 'main']
+        postgres-version: ['13', '17']
+        mariadb-version: ['10.6', '10.11', '11.4']
+        exclude:
+          # Django 5.1 doesn't support python <=3.9 (https://docs.djangoproject.com/en/5.1/faq/install/)
+          - python-version: '3.9'
+            django-version: '5.1'
+
+          # Django 5.2 doesn't support python <=3.9 (https://docs.djangoproject.com/en/5.2/faq/install/)
+          - python-version: '3.9'
+            django-version: '5.2'
+
+          # Django 5.2 doesn't support Postgres 13 (https://docs.djangoproject.com/en/5.2/releases/5.2/#dropped-support-for-postgresql-13)
+          - django-version: '5.2'
+            postgres-version: '13'
+
+          # Django main doesn't support python <=3.9 (https://docs.djangoproject.com/en/5.1/faq/install/)
+          - python-version: '3.9'
+            django-version: 'main'
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres-version }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+        - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mariadb:
+        image: mariadb:${{ matrix.mariadb-version }}
+        env:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_DATABASE: mysql
+        options: >-
+          --health-cmd "mariadb-admin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+        - 3306:3306
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key:
+          ${{ matrix.python-version }}-v1-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/setup.py') }}-${{ hashFiles('**/tox.ini') }}
+        restore-keys: |
+          ${{ matrix.python-version }}-v1-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade tox tox-gh-actions
+
+    - name: Tox tests
+      run: |
+        tox -v
+      env:
+        DJANGO: ${{ matrix.django-version }}
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        name: Python ${{ matrix.python-version }}
