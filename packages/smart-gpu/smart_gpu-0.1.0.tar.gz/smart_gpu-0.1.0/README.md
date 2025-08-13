@@ -1,0 +1,341 @@
+# Smart GPU
+
+Simple GPU/CPU mode switching utilities with automatic detection.
+
+## Problem Statement
+
+When developing data science and machine learning applications, you often need to support both CPU and GPU environments. This creates several challenges:
+
+### The Challenge
+- **Code Duplication**: You need separate code paths for CPU (NumPy/Pandas) and GPU (CuPy/CuDF) operations
+- **Environment Complexity**: Different users have different hardware setups (some with GPUs, some without)
+- **Deployment Issues**: Code that works on your GPU machine might fail on CPU-only servers
+- **Maintenance Overhead**: Keeping CPU and GPU code paths in sync is error-prone and time-consuming
+- **Platform Limitations**: GPU libraries like CuPy and CuDF only work on Linux with NVIDIA GPUs
+
+### The Solution
+Smart GPU provides a unified interface that automatically detects your environment and uses the best available resources:
+
+- **Write Once, Run Anywhere**: Use the same code on CPU and GPU systems
+- **Automatic Detection**: Seamlessly switches between CPU and GPU modes based on hardware availability
+- **Graceful Fallbacks**: Automatically falls back to CPU mode when GPU is unavailable
+- **Environment Control**: Override automatic detection with environment variables when needed
+- **Cross-Platform**: Works on Linux (with GPU support), macOS, and Windows (CPU-only)
+
+## Why Smart GPU?
+
+### Before Smart GPU
+```python
+# You had to write code like this:
+import numpy as np
+import pandas as pd
+
+try:
+    import cupy as cp
+    import cudf
+    USE_GPU = True
+except ImportError:
+    USE_GPU = False
+
+# Duplicate code paths
+if USE_GPU:
+    # GPU code path
+    arr = cp.array([1, 2, 3, 4, 5])
+    df = cudf.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+    result = cp.sum(arr)
+else:
+    # CPU code path
+    arr = np.array([1, 2, 3, 4, 5])
+    df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+    result = np.sum(arr)
+```
+
+### With Smart GPU
+```python
+# Clean, unified interface
+from smart_gpu import gpu_utils, array, DataFrame
+
+# Same code works everywhere
+arr = array([1, 2, 3, 4, 5])
+df = DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+result = gpu_utils.np.sum(arr)
+
+# Automatically uses GPU if available, CPU otherwise
+print(f"Using: {'GPU' if gpu_utils.is_gpu_mode else 'CPU'}")
+```
+
+### Even Simpler with Direct Import
+```python
+from smart_gpu import gpu_utils
+
+# Import np and pd directly - they automatically switch between GPU/CPU
+np = gpu_utils.np
+pd = gpu_utils.pd
+
+# Use exactly like regular NumPy/Pandas
+arr = np.array([1, 2, 3, 4, 5])
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+result = np.sum(arr)
+```
+
+### Real-World Benefits
+- **Faster Development**: Write code once, test everywhere
+- **Reduced Bugs**: No more "works on my machine" issues
+- **Easier Deployment**: Same codebase works on laptops, servers, and cloud environments
+- **Better Performance**: Automatically leverages GPU acceleration when available
+- **Simplified CI/CD**: No need for separate CPU and GPU test environments
+
+## Features
+
+- **Automatic GPU Detection**: Automatically detects NVIDIA GPU hardware and CUDA availability
+- **Smart Mode Switching**: Seamlessly switches between CPU (NumPy/Pandas) and GPU (CuPy/CuDF) modes
+- **Environment Variable Control**: Override detection with environment variables
+- **Cross-Platform Support**: Works on Linux (with GPU support) and other platforms (CPU-only)
+- **Easy Integration**: Drop-in replacement for NumPy and Pandas operations
+
+## Installation
+
+### Basic Installation (CPU-only)
+
+```bash
+pip install smart-gpu
+```
+
+### With GPU Support (Linux only)
+
+```bash
+pip install smart-gpu[gpu]
+```
+
+### Development Installation
+
+```bash
+git clone https://github.com/ardydedase/smart-gpu.git
+cd smart-gpu
+pip install -e ".[dev]"
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+python -m pytest tests/ -v
+
+# Run tests with coverage
+python -m pytest tests/ --cov=smart_gpu --cov-report=term-missing
+
+# Run tests and generate HTML coverage report
+python -m pytest tests/ --cov=smart_gpu --cov-report=html
+
+# Run specific test file
+python -m pytest tests/test_gpu_utils.py -v
+
+# Run tests matching a pattern
+python -m pytest tests/ -k "gpu" -v
+```
+
+## Quick Start
+
+```python
+from smart_gpu import gpu_utils, array, DataFrame, to_cpu
+
+# Check if GPU mode is active
+print(f"GPU mode: {gpu_utils.is_gpu_mode}")
+
+# Create arrays - automatically uses GPU if available
+data = array([1, 2, 3, 4, 5])
+print(f"Array type: {type(data)}")
+
+# Create DataFrames - automatically uses GPU if available
+df = DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+print(f"DataFrame type: {type(df)}")
+
+# Convert back to CPU if needed
+cpu_data = to_cpu(data)
+cpu_df = to_cpu(df)
+```
+
+## Usage
+
+### Basic Usage
+
+```python
+from smart_gpu import gpu_utils
+
+# The package automatically detects GPU availability
+utils = gpu_utils
+
+# Use NumPy/CuPy operations
+arr = utils.np.array([1, 2, 3, 4, 5])
+result = utils.np.sum(arr)
+
+# Use Pandas/CuDF operations
+df = utils.pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+sum_result = df.sum()
+```
+
+### Direct Import Method
+
+```python
+from smart_gpu import gpu_utils
+
+# Import np and pd directly for automatic GPU/CPU switching
+np = gpu_utils.np
+pd = gpu_utils.pd
+
+# Now you can use np and pd normally - they'll automatically use GPU if available
+arr = np.array([1, 2, 3, 4, 5])
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+
+# All NumPy/Pandas operations work as expected
+result = np.sum(arr)
+mean_val = df.mean()
+```
+
+### Manual Mode Control
+
+```python
+from smart_gpu import set_gpu_mode, get_gpu_mode
+
+# Force CPU mode
+set_gpu_mode(False)
+
+# Force GPU mode (if available)
+set_gpu_mode(True)
+
+# Check current mode
+print(f"Current mode: {'GPU' if get_gpu_mode() else 'CPU'}")
+```
+
+### Environment Variables
+
+You can control the GPU mode using environment variables:
+
+```bash
+# Force CPU mode
+export SMART_GPU_FORCE_CPU=true
+
+# Explicitly enable GPU mode
+export USE_GPU=true
+
+# Explicitly disable GPU mode
+export USE_GPU=false
+```
+
+### Advanced Usage
+
+```python
+from smart_gpu import GPUUtils
+
+# Create a custom instance
+gpu_utils = GPUUtils(gpu_mode=True)  # Force GPU mode
+
+# Create arrays and DataFrames
+arr = gpu_utils.array([1, 2, 3, 4, 5])
+df = gpu_utils.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+
+# Synchronize GPU operations
+gpu_utils.synchronize()
+
+# Convert to CPU format
+cpu_arr = gpu_utils.to_cpu(arr)
+cpu_df = gpu_utils.to_cpu(df)
+```
+
+## API Reference
+
+### Core Functions
+
+- `detect_gpu_hardware()`: Detect NVIDIA GPU hardware
+- `is_gpu_available()`: Check if GPU libraries are available
+- `auto_detect_gpu_mode()`: Auto-detect optimal GPU mode
+- `set_gpu_mode(enabled)`: Set global GPU mode
+- `get_gpu_mode()`: Get current GPU mode
+
+### GPUUtils Class
+
+- `is_gpu_mode`: Property indicating if GPU mode is active
+- `np`: NumPy or CuPy based on mode
+- `pd`: Pandas or CuDF based on mode
+- `array(data, **kwargs)`: Create array with appropriate library
+- `DataFrame(data, **kwargs)`: Create DataFrame with appropriate library
+- `to_cpu(data)`: Convert GPU data to CPU format
+- `synchronize()`: Synchronize GPU operations
+
+### Convenience Functions
+
+- `array(data, **kwargs)`: Create array using current mode
+- `DataFrame(data, **kwargs)`: Create DataFrame using current mode
+- `to_cpu(data)`: Convert data to CPU format
+- `synchronize()`: Synchronize GPU operations
+
+## Platform Support
+
+| Platform | GPU Support | CPU Support |
+|----------|-------------|-------------|
+| Linux    | ✅ NVIDIA + CUDA | ✅ |
+| macOS    | ❌ | ✅ |
+| Windows  | ❌ | ✅ |
+
+## Requirements
+
+- Python 3.8+
+- NumPy 1.20+
+- Pandas 1.3+
+
+### Optional (for GPU support)
+
+- Linux OS
+- NVIDIA GPU
+- CUDA Toolkit
+- CuPy
+- CuDF
+
+## Testing
+
+The package includes comprehensive unit tests with 87% code coverage:
+
+- **GPU Detection Tests**: Platform detection, hardware detection, library availability
+- **Mode Switching Tests**: Environment variable overrides, manual mode control
+- **GPUUtils Class Tests**: Array creation, DataFrame creation, data conversion
+- **Convenience Functions Tests**: Global functions and utilities
+- **Logging Tests**: Logger configuration and behavior
+
+### Test Coverage
+
+```bash
+# View current coverage
+python -m pytest tests/ --cov=smart_gpu --cov-report=term-missing
+
+# Generate detailed HTML report
+python -m pytest tests/ --cov=smart_gpu --cov-report=html
+# Open htmlcov/index.html in your browser
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Run the test suite and ensure all tests pass
+6. Check code coverage and maintain or improve it
+7. Submit a pull request
+
+## Publishing
+
+For information on publishing this package to PyPI, see:
+- [PyPI Setup Guide](PYPI_SETUP.md) - How to set up authentication tokens
+- [Publishing Guide](PUBLISHING.md) - Complete publishing workflow
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Changelog
+
+### 0.1.0
+- Initial release
+- Automatic GPU detection
+- CPU/GPU mode switching
+- Basic NumPy/Pandas compatibility
