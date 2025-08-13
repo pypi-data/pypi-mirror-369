@@ -1,0 +1,230 @@
+Metadata-Version: 2.4
+Name: basicsec-mcp
+Version: 1.0.0
+Summary: Model Context Protocol server for DNS and email security scanning using basicsec
+Home-page: https://github.com/marlinkcyber/basicsec-mcp
+Author: Vlatko Kosturjak
+Author-email: Vlatko Kosturjak <vlatko.kosturjak@marlink.com>
+License: MIT
+Project-URL: Homepage, https://github.com/marlinkcyber/basicsec-mcp
+Project-URL: Bug Reports, https://github.com/marlinkcyber/basicsec-mcp/issues
+Project-URL: Source, https://github.com/marlinkcyber/basicsec-mcp
+Project-URL: Documentation, https://basicsec-mcp.readthedocs.io/
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Topic :: Security
+Classifier: Topic :: Internet :: Name Service (DNS)
+Classifier: Topic :: Communications :: Email
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: basicsec>=1.0.0
+Requires-Dist: mcp>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python
+
+# BasicSec MCP Server
+
+A Model Context Protocol (MCP) server that provides DNS and email security scanning capabilities using the [basicsec](https://pypi.org/project/basicsec/) library.
+
+## Features
+
+- **MCP Integration**: Full Model Context Protocol support for AI assistants
+- **DNS Security Analysis**: SPF, DMARC, DNSSEC validation
+- **Email Security Checks**: MX record analysis and SMTP testing
+- **Batch Processing**: Scan multiple domains efficiently
+- **Passive & Active Modes**: Choose between DNS-only or full SMTP testing
+- **Performance Optimized**: Designed to work within MCP timeout constraints
+
+## Installation
+
+```bash
+pip install basicsec-mcp
+```
+
+## MCP Server Usage
+
+### Running the Server
+
+```bash
+basicsec-mcp
+```
+
+The server will start and listen for MCP connections on the default interface.
+
+### MCP Tools Available
+
+The server provides the following MCP tools:
+
+#### Domain Scanning Tools
+
+- `passive_scan(domain, dns_timeout=5.0)` - DNS-only security scan
+- `active_scan(domain, dns_timeout=5.0, smtp_timeout=3.0, smtp_ports=[25,465,587])` - Full scan with SMTP tests
+- `scan_multiple_domains(domains, scan_type="active", dns_timeout=3.0, smtp_timeout=2.0)` - Batch domain scanning
+- `quick_domain_check(domains, check_types=["live","mx","spf","dmarc"])` - Fast batch checks
+
+#### Individual Record Tools
+
+- `get_mx_records(domain, timeout=5.0)` - Get MX records
+- `get_spf_record(domain, timeout=5.0)` - Get and validate SPF record
+- `get_dmarc_record(domain, timeout=5.0)` - Get and validate DMARC record
+- `check_dnssec_status(domain, timeout=5.0)` - Check DNSSEC status
+- `validate_dnssec_chain(domain, timeout=5.0)` - Validate DNSSEC chain of trust
+- `test_smtp_connection(hostname, port=25, timeout=3.0)` - Test SMTP connectivity
+
+### Claude Desktop Integration
+
+Add to your Claude Desktop configuration:
+
+```json
+{
+  "mcpServers": {
+    "basicsec": {
+      "command": "basicsec-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+Or using uvx:
+
+```json
+{
+  "mcpServers": {
+    "basicsec": {
+      "command": "uvx",
+      "args": ["--refresh","basicsec-mcp"]
+    }
+  }
+}
+```
+
+### Usage Examples
+
+Once connected via MCP, you can use the tools through your AI assistant:
+
+```
+"Scan example.com for email security issues"
+-> Uses passive_scan() or active_scan()
+
+"Check SPF and DMARC records for google.com"
+-> Uses get_spf_record() and get_dmarc_record()
+
+"Test SMTP connectivity for mail.example.com"
+-> Uses test_smtp_connection()
+
+"Quick check these domains: example.com, google.com, github.com"
+-> Uses quick_domain_check()
+```
+
+## Security Checks Performed
+
+### DNS Records
+- **MX Records**: Mail server configuration
+- **SPF Records**: Sender Policy Framework validation
+- **DMARC Records**: Domain-based Message Authentication
+- **DNSSEC**: DNS Security Extensions status and chain validation
+
+### SMTP Tests (Active Scans)
+- **Connection Testing**: Verify mail server accessibility
+- **STARTTLS Support**: Check encryption capability
+- **Multiple Ports**: Test common SMTP ports (25, 465, 587)
+
+## Performance Considerations
+
+The MCP server is optimized for responsiveness:
+
+- **Timeout Management**: Reduced timeouts for batch operations
+- **Domain Limits**: Automatic limiting of batch sizes
+- **Quick Checks**: Minimal DNS lookups for fast results
+- **Error Handling**: Graceful degradation on failures
+
+## Configuration
+
+### Environment Variables
+
+- `BASICSEC_MCP_LOG_LEVEL`: Set logging level (DEBUG, INFO, WARNING, ERROR)
+- `BASICSEC_MCP_DNS_TIMEOUT`: Default DNS timeout in seconds
+- `BASICSEC_MCP_SMTP_TIMEOUT`: Default SMTP timeout in seconds
+
+### Programmatic Usage
+
+You can also use the server components directly:
+
+```python
+from basicsec_mcp.server import passive_scan, active_scan
+
+# Direct function calls
+result = passive_scan("example.com")
+print(f"SPF Valid: {result['spf_valid']}")
+
+result = active_scan("example.com")
+print(f"SMTP Working: {result['has_smtp_connection']}")
+```
+
+## Requirements
+
+- Python 3.8+
+- basicsec>=1.0.0
+- mcp>=1.0.0
+
+## Development
+
+```bash
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Run server locally
+python -m basicsec_mcp.server
+```
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Security Considerations
+
+This MCP server is designed for **defensive security analysis only**:
+
+✅ **Allowed Operations:**
+- DNS record lookups
+- Standard SMTP protocol tests
+- Public security record validation
+
+❌ **Not Performed:**
+- Vulnerability exploitation
+- Unauthorized access attempts
+- Aggressive scanning techniques
+
+Always ensure you have permission to scan target domains.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure MCP compatibility
+5. Submit a pull request
+
+## Related Projects
+
+- [basicsec](https://pypi.org/project/basicsec/) - Core security scanning library
+- [Model Context Protocol](https://modelcontextprotocol.io/) - Protocol specification
