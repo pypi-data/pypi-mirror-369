@@ -1,0 +1,40 @@
+required_validator_schema:
+  BackgroundSuppression:
+    type: "BooleanValidator"
+  M0Type:
+    type: "StringValidator"
+  TotalAcquiredPairs:
+    type: "NumberValidator"
+    min_error: 0
+    enforce_integer: true
+  AcquisitionVoxelSize:
+    type: "NumberArrayValidator"
+    size_error: 3
+  LabelingDuration:
+    type: "NumberOrNumberArrayValidator"
+    aliases: "NumRFBlocks"
+  PostLabelingDelay:
+    type: "NumberOrNumberArrayValidator"
+    aliases: ["InversionTime"]
+  BolusCutOffFlag:
+    type: "BooleanValidator"
+  BolusCutOffTechnique:
+    type: "StringValidator"
+  BolusCutOffDelayTime:
+    type: "NumberOrNumberArrayValidator"
+    aliases: ["BolusDuration"]
+  EchoTime:
+    type: "NumberOrNumberArrayValidator"
+  RepetitionTimePreparation:
+    type: "NumberOrNumberArrayValidator"
+    aliases: ["RepetitionTime"]
+  FlipAngle:
+    type: "NumberValidator"
+    min_error: 0
+    max_error_include: 360
+  MagneticFieldStrength:
+    type: "NumberValidator"
+  Manufacturer:
+    type: "StringValidator"
+  ManufacturersModelName:
+    type: "StringValidator"

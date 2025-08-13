@@ -1,0 +1,29 @@
+[project]
+name = "pyaslreport"
+version = "0.0.3"
+description = "A Python package for generating methods sections in for ASL parameters."
+authors = [{ name="Ibrahim Abdelazim", email="ibrahim.abdelazim@fau.de" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "PyYAML~=6.0.2",
+    "numpy~=2.2.6",
+    "nibabel~=5.3.2",
+    "pydicom~=3.0.1",
+    "dicom2nifti~=2.6.2",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"pyaslreport" = ["*.yaml", "**/*.yaml"]
