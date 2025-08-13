@@ -1,0 +1,59 @@
+name: Build & Publish to Test PyPI
+
+on:
+  push:
+    branches: [main, master]  # Only trigger on push to main branches
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: test-pypi
+    permissions:
+      id-token: write  # Required for trusted publishing
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+    
+    - name: Install dependencies
+      run: uv sync --extra dev
+    
+    - name: Run smoke tests
+      run: uv run pytest tests/ -x --tb=short
+    
+    - name: Build package
+      run: uv build
+    
+    - name: Verify package contents
+      run: |
+        uv run python -m tarfile -l dist/*.tar.gz
+        uv run python -m zipfile -l dist/*.whl
+    
+    - name: Test package installation
+      run: |
+        # Test that the built package can be installed and imported
+        uv pip install dist/*.whl
+        uv run python -c "import braze_mcp; print('Package imports successfully')"
+    
+    - name: Publish to Test PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        verbose: true
+        skip-existing: true  # Don't fail if version already exists
