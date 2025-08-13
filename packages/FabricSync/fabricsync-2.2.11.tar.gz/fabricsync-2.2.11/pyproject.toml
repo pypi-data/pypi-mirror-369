@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools >= 77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FabricSync"
+version = "2.2.11"
+
+dependencies = [
+  "virtualenv",
+  "fsspec-wrapper",
+  "nni",
+  "datasets",
+  "mlflow-skinny",
+  "db-dtypes",
+  "google-cloud-bigquery",
+  "google-cloud-storage",
+  "pydantic",
+  "pygithub",
+  "pyspark",
+  "delta-spark"
+]
+requires-python = ">=3.11.8"
+authors = [
+  {name = "Praveen Singh (MSFT)", email = "Singh.Praveen@microsoft.com"},
+  {name = "Tonio Lora", email = "tonio.lora@microsoft.com"},
+  {name = "Shane Ochotny", email = "Shane.Ochotny@microsoft.com"}
+]
+description = "Fabric BigQuery Data Sync Utility"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["Fabric", "BigQuery", "Data Sync", "Mirror", "ETL"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/microsoft/FabricBQSync"
+Documentation = "https://github.com/microsoft/FabricBQSync/blob/main/Docs/Home.md"
+Repository = "https://github.com/microsoft/FabricBQSync.git"
+Issues = "https://github.com/microsoft/FabricBQSync/issues"
+
+[tool.setuptools.packages.find]
+where = ["Packages/FabricSync"]
+
+[tool.setuptools]
+# If there are data files included in your packages that need to be
+# installed, specify them here.
+package-data = { "fabricsync" = ["fabricsync.png"] }
