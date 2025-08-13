@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: pdfgridcat
+Version: 1.0.0
+Summary: Arrange multiple PDF pages into a grid without scaling or margins
+Author: Katsutoshi Seki
+License: MIT
+Project-URL: Homepage, https://github.com/sekika/pdfgridcat
+Keywords: pdf,pypdf,concat,grid,tile
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Utilities
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pypdf>=4.0.0
+
+# pdfgridcat
+
+Arrange multiple PDF images both horizontally and vertically on a single page without scaling or margins.
+
+## Features
+- Combine multiple PDF files into a grid (no scaling, no margins)
+- Specify number of columns and rows per page
+- Both CLI and Python API
+
+## Installation
+```bash
+pip install pdfgridcat
+````
+
+## Usage (CLI)
+
+```bash
+pdfgridcat -i *.pdf -o output.pdf -c 2 -r 3
+```
+
+This arranges PDFs in 2 columns × 3 rows per page.
+
+## Usage (Python)
+
+```python
+from pdfgridcat import concat_pdf_pages
+
+concat_pdf_pages(
+    input_files=["a.pdf", "b.pdf", "c.pdf"],
+    output_file="output.pdf",
+    col=2,
+    row=3
+)
+````
+
+## License
+
+MIT License
