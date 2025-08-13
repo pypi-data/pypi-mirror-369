@@ -1,0 +1,38 @@
+Metadata-Version: 2.4
+Name: binimage
+Version: 0.1.0
+Summary: Extract binary from images (OCR or grid) and decode to text, saving to results.txt
+Author-email: Your Name <you@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/your-username/binimage
+Project-URL: Issues, https://github.com/your-username/binimage/issues
+Keywords: binary,image,OCR,grid,decode,persian,english
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Text Processing :: General
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Pillow>=10.0.0
+Requires-Dist: numpy>=1.24.0
+Provides-Extra: ocr
+Requires-Dist: pytesseract>=0.3.10; extra == "ocr"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: flake8>=7.0; extra == "dev"
+Dynamic: license-file
+
+# binimage
+
+استخراج **باینری** از تصویر و تبدیل آن به **متن** (انگلیسی/فارسی) + ذخیره در `results.txt`.
+
+دو روش:
+- **OCR**: برای تصاویری که شامل کاراکترهای `0` و `1` هستند (نیازمند Tesseract).
+- **Grid**: برای تصاویری که بیت‌ها در شبکه‌ای از خانه‌های تیره/روشن کدگذاری شده‌اند.
+
+## نصب
+```bash
+pip install binimage
