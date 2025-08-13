@@ -1,0 +1,41 @@
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "binimage"
+version = "0.1.5"
+description = "Extract binary from images (OCR or grid) and decode to text, saving to results.txt"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "vesper", email = "vesper.oneold@gmail.com" }
+]
+keywords = ["binary", "image", "OCR", "grid", "decode", "persian", "english"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Multimedia :: Graphics",
+  "Topic :: Text Processing :: General"
+]
+
+dependencies = [
+  "Pillow>=10.0.0",
+  "numpy>=1.24.0"
+]
+
+[project.optional-dependencies]
+ocr = [
+  "pytesseract>=0.3.10"
+]
+dev = [
+  "pytest>=7.0",
+  "flake8>=7.0"
+]
+
+[project.scripts]
+binimage = "binimage.cli:main"
