@@ -1,0 +1,41 @@
+"""deepmirror CLI package."""
+
+from .api import (
+    authenticate,
+    create_batch_inference,
+    download_batch_results,
+    download_structure_prediction,
+    get_batch_inference,
+    get_predict_hlm,
+    get_structure_prediction,
+    list_models,
+    list_structure_tasks,
+    login,
+    model_info,
+    model_metadata,
+    predict,
+    predict_hlm,
+    save_token,
+    structure_prediction,
+    train,
+)
+
+__all__ = [
+    "authenticate",
+    "list_models",
+    "predict",
+    "save_token",
+    "list_structure_tasks",
+    "download_structure_prediction",
+    "structure_prediction",
+    "get_structure_prediction",
+    "create_batch_inference",
+    "get_batch_inference",
+    "download_batch_results",
+    "train",
+    "login",
+    "model_metadata",
+    "predict_hlm",
+    "get_predict_hlm",
+    "model_info",
+]
