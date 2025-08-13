@@ -1,0 +1,54 @@
+[project]
+name = "polars-splitters"
+version = "0.4.4"
+description = "Polars-based splitter functionalities for polars LazyFrames and DataFrames, similar to `sklearn.model_selection.train_test_split` and `sklearn.model_selection.StratifiedKFold`."
+authors = [{ name = "Jonas M. Miguel", email = "charter-shushes0n@icloud.com" }]
+readme = "README.md"
+requires-python = ">=3.10, <3.14"
+dependencies = [
+    "loguru==0.7.*",
+    "polars>=1.30,<1.40",
+]
+license-files = ["LICENSE"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "pytest==8.2.2",
+    "pytest-cov",
+    "pytest-check==2.5.*",
+    "ruff>=0.12.8",
+    "mdformat>=0.7.22",
+    "mktestdocs>=0.2.5",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["B", "D3", "E", "F", "I"]
+ignore = ["E501"]                   # handled by formatter
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+package-dir = { "" = "src" } # if using src layout
+include-package-data = true
