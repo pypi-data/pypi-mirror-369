@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bookup-fuse"
+version = "0.1.8"
+description = "Mount Bookup .bdb (SQLite) files as a FUSE filesystem exposing Markdown pages."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Frederik", email = "you@example.com" }]
+keywords = ["fuse", "sqlite", "filesystem", "markdown", "bookup"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Filesystems",
+    "Environment :: Console",
+]
+
+# Wichtig: 'fusepy' liefert das 'fuse'-Modul
+dependencies = ["fuse-python>=1.0.9"]
+
+[project.urls]
+Homepage = "https://example.com/bookup-fuse"
+Repository = "https://github.com/yourname/bookup-fuse"
+Issues = "https://github.com/yourname/bookup-fuse/issues"
+
+# CLI-Einstiegspunkt
+[project.scripts]
+bookup-fuse = "bookup_fuse:main"
+
+[tool.setuptools]
+# Single-Module-Layout
+py-modules = ["bookup_fuse"]
+
+# Falls du das "src"-Layout erzwingen willst:
+[tool.setuptools.packages.find]
+where = ["src"]
