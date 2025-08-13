@@ -1,0 +1,139 @@
+Metadata-Version: 2.4
+Name: binimage
+Version: 1.5.0
+Summary: Extract binary from images (OCR or grid) and decode to text, saving to results.txt
+Author-email: vesper <vesper.oneold@gmail.com>
+License: MIT
+Keywords: binary,image,OCR,grid,decode,persian,english
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Text Processing :: General
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Pillow>=10.0.0
+Requires-Dist: numpy>=1.24.0
+Provides-Extra: ocr
+Requires-Dist: pytesseract>=0.3.10; extra == "ocr"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: flake8>=7.0; extra == "dev"
+Dynamic: license-file
+
+# binimage
+
+کتابخانه‌ای برای استخراج و رمزگشایی کد باینری از تصاویر.  
+پشتیبانی از سه حالت: **OCR** (خواندن مستقیم `0` و `1`)، **Grid** (تحلیل شبکه‌ای پیکسل‌ها) و **LSB** (استخراج بیت‌های کم‌اهمیت از تصاویر طبیعی/استگانوگرافی).
+
+---
+
+## نصب
+
+می‌توانید کتابخانه را با یکی از روش‌های زیر نصب کنید:
+
+```bash
+pip install binimage
+```
+یا
+```bash
+python -m pip install binimage
+```
+
+---
+
+## استفاده
+
+### از طریق خط فرمان (CLI)
+
+```bash
+binimage path/to/image.png --mode auto --language fa
+```
+
+**پارامترهای مهم:**
+- `image` (اجباری): مسیر تصویر ورودی
+- `--mode` : حالت استخراج (`auto`، `ocr`، `grid` یا `lsb`)
+- `--language` : ترجیح زبان سطح‌بالا (`fa` یا `en`) تا پیش‌فرض‌های مناسب OCR/دیکد تنظیم شود
+- `--ocr-lang` : زبان OCR (مثلاً `eng` یا `fas`)؛ اگر تعیین شود بر `--language` غلبه می‌کند
+- `--rows` و `--cols` : تعداد سطر/ستون شبکه در حالت `grid`
+- `--invert` : معکوس کردن نگاشت رنگ به بیت
+- `--out` : مسیر فایل خروجی (پیش‌فرض `results.txt`)
+- `--encodings` : ترتیب دلخواه برای دیکد متن (مثلاً `utf-8 utf-16le utf-16be latin-1`)
+- `--errors` : نحوه‌ی برخورد با خطاهای دیکد (یکی از `strict`، `ignore`، `replace`)
+  
+پارامترهای حالت LSB:
+- `--lsb-channels` کانال‌ها برای استخراج (مثل `RGB` یا `R`)
+- `--lsb-bit` شماره بیت از هر کانال (۰ یعنی LSB)
+- `--lsb-step` نمونه‌برداری هر N مقدار یک‌بار
+- `--lsb-max-bits` سقف تعداد بیت استخراجی
+- `--stop-at-null` توقف در اولین بایت صفر قبل از دیکد متن
+
+مثال:
+```bash
+# Grid نمونه
+binimage ./binary_image.png --mode grid --rows 20 --cols 40 --out output.txt --encodings utf-8 utf-16le utf-16be latin-1 --errors strict
+
+# LSB نمونه برای تصویر طبیعی (استگانو)
+binimage ./photo.png --mode lsb --lsb-channels RGB --lsb-bit 0 --lsb-step 1 --stop-at-null --out output.txt
+
+# نوشتن بیت‌های خام در فایل خروجی و سپس متن دیکد شده
+binimage ./photo.png --mode lsb --include-bits --out results.txt
+```
+
+---
+
+### استفاده در پایتون (API)
+
+```python
+from binimage import decode_image
+
+result = decode_image(
+    image_path="image.png",
+    mode="auto",        # "auto" | "ocr" | "grid" | "lsb"
+    language="fa",       # fa | en (پیش‌فرض‌های مناسب اعمال می‌شود)
+    ocr_lang=None,        # در صورت نیاز override کنید، مثلاً "fas" یا "eng"
+    rows=None,
+    cols=None,
+    invert=False,
+    bits_per_byte=8,
+    msb_first=True,
+    out_file="results.txt",  # اگر نخواهید در فایل ذخیره شود: None
+    encodings=("utf-8", "utf-16le", "utf-16be", "latin-1"),
+    errors="strict",
+)
+
+print("Encoding:", result.encoding)
+print("Decoded text:", result.text)
+```
+
+---
+
+### خروجی
+
+پس از اجرا، متن استخراج‌شده در فایل مشخص‌شده (`results.txt` یا هر مسیر دلخواه) ذخیره می‌شود. اگر `out_file=None` بدهید، چیزی در دیسک نوشته نمی‌شود و می‌توانید `result.text` و `result.bits` را مستقیم استفاده کنید. اگر متن شما دارای BOM باشد (UTF-8 یا UTF-16)، به صورت خودکار تشخیص و به‌درستی دیکد می‌شود.
+
+### دریافت بیت‌های خام (LSB)
+```python
+from binimage import decode_image
+
+res = decode_image(
+	"your_image.png",
+	mode="lsb",
+	lsb_channels="RGB",
+	lsb_bit=0,
+	lsb_step=1,
+	stop_at_null=True,
+	msb_first=True,
+	out_file="results.txt",
+	include_bits_in_output=False,
+)
+
+print(res.text) # دریافت خروجی به صورت باینری
+```
+
+در CLI می‌توانید بیت‌های خام را چاپ کنید:
+```bash
+binimage image.png --mode lsb --print-bits --out ""
+```
