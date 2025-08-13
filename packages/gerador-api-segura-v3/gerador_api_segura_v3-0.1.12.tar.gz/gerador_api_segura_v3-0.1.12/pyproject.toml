@@ -1,0 +1,14 @@
+[project]
+name = "gerador-api-segura-v3"
+version = "0.1.12"
+requires-python = ">=3.10"
+
+[project.scripts]
+gerador-api-segura    = "gerador_api_segura_v3.cli:main"
+gerador-api-segura-v3 = "gerador_api_segura_v3.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gerador_api_segura_v3"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/**", "README.md", "LICENSE"]
