@@ -1,0 +1,60 @@
+Metadata-Version: 2.3
+Name: tunax
+Version: 0.2.5
+Summary: Differential calibrator of the vertical ocean turbulence closures.
+License: CC BY-NC 4.0
+Keywords: ocean,closure,calibration,differential,turbulence
+Author: Gabriel Mouttapa
+Author-email: gabriel.mouttapa@univ-grenoble-alpes.fr
+Requires-Python: >=3.10,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Dist: equinox (>=0.11.7)
+Requires-Dist: h5py (>=3.12.1)
+Requires-Dist: jax (>=0.4.34)
+Requires-Dist: jaxtyping (>=0.2.34)
+Requires-Dist: netcdf4 (>=1.7.1.post2)
+Requires-Dist: optax (>=0.2.3)
+Requires-Dist: pyyaml (>=6.0.2,<7.0.0)
+Requires-Dist: xarray (>=2024.9.0)
+Project-URL: Documentation, https://tunax.readthedocs.io/en/latest/
+Project-URL: Issues, https://github.com/meom-group/tunax/issues
+Project-URL: Repository, https://github.com/meom-group/tunax
+Description-Content-Type: text/markdown
+
+![Python](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/meom-group/tunax/master/.github/workflows/run_tests.yaml&label=Python&query=$.jobs.test.strategy.matrix["python-version"]&color=seagreen)
+[![PyPi](https://img.shields.io/badge/dynamic/xml?url=https://pypi.org/rss/project/tunax/releases.xml&label=PyPi&query=/rss/channel/item[1]/title)](https://pypi.org/project/tunax/)
+[![Documentation Status](https://readthedocs.org/projects/tunax/badge/?version=latest)](https://tunax.readthedocs.io/en/latest/?badge=latest)
+[![Tests](https://github.com/meom-group/tunax/actions/workflows/run_tests.yaml/badge.svg)](https://github.com/meom-group/tunax/actions/workflows/run_tests.yaml)
+[![License: CC-BY-NC](https://img.shields.io/badge/License-CC--BY--NC-chocolate.svg)](LICENSE)
+
+# Description
+This package provides a framework for calibrating the parameters of vertical physics schemes of ocean circulation models using variational optimization. The parameters are calibrated through the minimization of an 'objective function' which compares model predictions with 'Large Eddy Simulations' (LES). *Tunax* is written in JAX in order to use automatic differentiation for computing the gradient of the objective function with respect to model parameters.
+
+# Repository organisation
+## Sources
+The source code of tunax is in the folder `tunax/`. The two main modules are `tunax/model.py` which contains the implementation of the forward Single Column Model and `tunax/fitter.py` which contains the implementation of the calibration part. The various physical closures equations that *Tunax* can calibrate are implemented in the folder `tunax/closures/`. The other modules implement the object used by the model and the callibrator and they are described in the [documentation](https://tunax.readthedocs.io/en/latest/).
+
+## Notebooks
+The folder `notebooks/` contains some notebooks of demonstration of *tunax*.
+
+# Installation
+*Tunax* is installed by default with JAX on CPU.
+## Stable version
+*Tunax* is pip installable the following command will install the lastest stable release :
+```shell
+pip install tunax
+```
+
+## Development release
+The most recent additions to *Tunax* since the last release are implemented in the `main` branch of this repository. To benefit from them one can clone or fork this repository and install *Tunax* with the package manager *poetry* :
+```shell
+poetry install --no-dev
+```
+
+## Notebook use
+To use the notebooks with the specific packages that they use, one can clone or fork the branch `main` or another of this repository and install *Tunax* with the package manager *poetry* :
+```shell
+poetry install
+```
+
