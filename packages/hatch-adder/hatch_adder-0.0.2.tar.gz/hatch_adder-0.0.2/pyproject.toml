@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hatch-adder"
+dynamic = ["version"]
+description = 'Command to add/remove packages to pyproject.toml for hatch projects'
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "James Crasta", email = "james@simplecodes.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "uv",
+]
+
+[project.urls]
+Documentation = "https://github.com/crast/hatch-adder#readme"
+Issues = "https://github.com/crast/hatch-adder/issues"
+Source = "https://github.com/crast/hatch-adder"
+
+[project.scripts]
+hatch-adder = "hatch_adder.cli:cli"
+hatch-add = "hatch_adder.cli:hatch_add"
+#hatch-remove = "hatch_adder.cli:hatch_remove"
+
+[tool.hatch.version]
+path = "src/hatch_adder/__init__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/hatch_adder tests}"
+
+[tool.coverage.run]
+source_pkgs = ["hatch_adder", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/hatch_adder/__about__.py",
+]
+
+[tool.coverage.paths]
+hatch_adder = ["src/hatch_adder", "*/hatch-adder/src/hatch_adder"]
+tests = ["tests", "*/hatch-adder/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
