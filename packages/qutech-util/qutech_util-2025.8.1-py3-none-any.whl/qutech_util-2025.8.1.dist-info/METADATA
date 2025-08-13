@@ -1,0 +1,306 @@
+Metadata-Version: 2.4
+Name: qutech-util
+Version: 2025.8.1
+Summary: Utility package of the Quantum Technology group of RWTH Aachen
+Project-URL: Homepage, https://git.rwth-aachen.de/qutech/qutil
+Author: Quantum Technology Group, RWTH Aachen University
+License-Expression: GPL-3.0
+License-File: LICENSE
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Utilities
+Requires-Python: >=3.9
+Requires-Dist: dill
+Requires-Dist: lazy-loader
+Requires-Dist: matplotlib>=3.7
+Requires-Dist: more-itertools
+Requires-Dist: numpy
+Requires-Dist: packaging
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: typeguard
+Provides-Extra: all
+Requires-Dist: colorspacious; extra == 'all'
+Requires-Dist: ezdxf; extra == 'all'
+Requires-Dist: fastz; extra == 'all'
+Requires-Dist: hdf5storage; extra == 'all'
+Requires-Dist: moviepy; extra == 'all'
+Requires-Dist: myst-parser; extra == 'all'
+Requires-Dist: pydata-sphinx-theme; extra == 'all'
+Requires-Dist: pyserial; extra == 'all'
+Requires-Dist: qcodes; extra == 'all'
+Requires-Dist: qcodes-loop; extra == 'all'
+Requires-Dist: sphinx; extra == 'all'
+Requires-Dist: tifffile[all]; extra == 'all'
+Requires-Dist: tqdm; extra == 'all'
+Requires-Dist: xarray; extra == 'all'
+Provides-Extra: colormaps
+Requires-Dist: colorspacious; extra == 'colormaps'
+Provides-Extra: complete
+Requires-Dist: colorspacious; extra == 'complete'
+Requires-Dist: ezdxf; extra == 'complete'
+Requires-Dist: fastz; extra == 'complete'
+Requires-Dist: hdf5storage; extra == 'complete'
+Requires-Dist: moviepy; extra == 'complete'
+Requires-Dist: myst-parser; extra == 'complete'
+Requires-Dist: pydata-sphinx-theme; extra == 'complete'
+Requires-Dist: pyserial; extra == 'complete'
+Requires-Dist: qcodes; extra == 'complete'
+Requires-Dist: qcodes-loop; extra == 'complete'
+Requires-Dist: sphinx; extra == 'complete'
+Requires-Dist: tifffile[all]; extra == 'complete'
+Requires-Dist: tqdm; extra == 'complete'
+Requires-Dist: xarray; extra == 'complete'
+Provides-Extra: doc
+Requires-Dist: myst-parser; extra == 'doc'
+Requires-Dist: pydata-sphinx-theme; extra == 'doc'
+Requires-Dist: sphinx; extra == 'doc'
+Provides-Extra: electronics
+Requires-Dist: fastz; extra == 'electronics'
+Provides-Extra: fancy-progressbar
+Requires-Dist: tqdm; extra == 'fancy-progressbar'
+Provides-Extra: gl
+Requires-Dist: ezdxf; extra == 'gl'
+Provides-Extra: hardware
+Requires-Dist: pyserial; extra == 'hardware'
+Provides-Extra: image
+Requires-Dist: moviepy; extra == 'image'
+Requires-Dist: tifffile[all]; extra == 'image'
+Provides-Extra: matlab
+Requires-Dist: hdf5storage; extra == 'matlab'
+Requires-Dist: xarray; extra == 'matlab'
+Provides-Extra: qcodes
+Requires-Dist: qcodes; extra == 'qcodes'
+Requires-Dist: qcodes-loop; extra == 'qcodes'
+Description-Content-Type: text/markdown
+
+# qutil / qutech_util
+This package is a collection of various utilities used in the [Quantum Technology Group](https://www.quantuminfo.physik.rwth-aachen.de) at RWTH Aachen University. These range from tools specific to the work in the group (`matlab`, `qi`, `hardware`, ...) to tools helpful when coding Python (`functools`, `misc`, `io`, ...).
+
+The original name was `qutil` but we included the additional alias `qutech_util` so you can install it via [pipy](https://pypi.org/project/qutech-util).
+It is not meant as a lightweight package but some heavy dependencies like qcodes are feature gated.
+
+For an (incomplete) feature overview, navigate to [the module overview section](#module-overview).
+
+## Installation
+If you don't have a reason for a lightweight install you should install all features i.e. `qutil[complete]`.
+If you just want to use it you can install the latest "released" version via
+```sh
+python -m pip install qutech-util[complete]
+```
+However, this package profits from everybody's work and the releases are infrequent. Please make a development install
+and contribute your changes. You can do this via
+```sh
+python -m pip install -e git+https://git.rwth-aachen.de/qutech/qutil.git#egg=qutech-util
+```
+This will download the source code (i.e. clone the git repository) into a subdirectory of the `./src` argument and link the files into your environment instead of copying them. If you are on windows you can use [SourceTree](https://www.sourcetreeapp.com/) which is a nice GUI for git. Note that this will not install the `complete` extras and will also not work with `uv`.
+You can specify the source code directory with the `--src` argument (which needs to be BEFORE `-e`):
+```sh
+python -m pip install --src some_directory/my_python_source -e git+https://git.rwth-aachen.de/qutech/qutil.git#egg=qutech-util
+```
+If you have already downloaded/cloned the package yourself you can use `python -m pip install -e .[complete]`.
+
+Please file an issue if any of these instructions does not work.
+
+## Tests
+Except for the `plotting.live_view` module, there is no plan for writing extensive tests for the code in this package but please try to write proper docstrings for
+your functions and include examples in them which can be checked via [`doctest`](https://docs.python.org/3/library/doctest.html).
+Follow the link for an example :)
+
+You can run the tests either via
+```sh
+python -m pytest --doctest-modules
+```
+or to check if everything works for a clean install (requires hatch to be installed)
+```sh
+python -m hatch run test:run
+```
+### `plotting.live_view`
+By default, tests for live views running in a separate process (using the `LiveView.in_process()` classmethod) are only executed once as they take a long time to run on Windows. To run them for the full parameter matrix, pass the `--runall-inprocess` option to `pytest`:
+```shell
+python -m pytest --runall-inprocess tests
+```
+
+## Documentation
+The auto-generated documentation can be found at [the Gitlab Pages](https://qutech.pages.rwth-aachen.de/qutil/index.html).
+
+To build the documentation locally, navigate to `doc/` and run either
+
+```bat
+.\make.bat html
+```
+
+(on Windows),
+
+```sh
+make html
+```
+
+(on Unix), or
+
+```bat
+sphinx-build -b html source build
+```
+
+Make sure the dependencies are installed via
+
+```sh
+python -m pip install -e .[doc]
+```
+
+in the top-level directory.
+
+## Releases
+Releases on Gitlab, PyPI, and Zenodo are automatically created and pushed whenever a commit is tagged matching [CalVer](https://calver.org/) in the form `vYYYY.MM.MICRO` or `vYYYY.0M.MICRO`.
+
+## Module overview
+This section gives an incomplete overview over the modules included in `qutil` and the tools they provide. If you contribute something you think is worth showing off, add it here.
+
+### qutil.plotting
+This module contains useful classes and functions surrounding `maptlotlib` plots.
+
+`cycle_plots` helps you cycling through many plots with the arrow keys (there are probably much better functions for this out there)
+`plot_2d_dataframe` helps you plot 2d data frames with numeric indices
+`BlitManager` can be used to significantly speed up plotting when certain parts of the plot, such as the artists on the canvas (lines, annotations, etc.) change but others do not (axes, labels, etc.) does not.
+`CoordClicker` and `LineClicker` allow some interactive selection of data.
+`get_rwth_color_cycle` and the predefined `rwth_color_cycle` are cycler instances with the official RWTH corporate design colors:
+
+![cycler example](./doc/source/_static/cycles.png)
+
+The module also exports matplotlib style sheets that can be used to set style preferences either globally or locally within a context manager. See [the matplotlib documentation](https://matplotlib.org/stable/users/explain/customizing.html#customizing-with-style-sheets) for more details.
+
+#### live_view
+This module provides pretty (`matplotlib`) but fast live-plotting. While possibly not as fast as a well-designed `pyqtgraph` plot, it has sufficiently low overhead to provide responsive video-like plots of continuously arriving data. Data sources are pushed to a background thread so that the interpreter and figure remain responsive. Alternatively, the figure can be run in a separate process to allow responsive figures even when the interpreter is blocked.
+
+The module is object-oriented and should in principle allow users to implement their own live plots. Currently provided are classes that handle incrementally arriving 1- and 2d data as well as batched versions (data that arrives in chunks of 1d or 2d arrays).
+
+![live_view_1d.svg](doc/source/_static/live_view_1d.svg)
+![live_view_2d.svg](doc/source/_static/live_view_2d.svg)
+
+### qutil.matlab
+In this module there are functions that are helpful for reading `.mat` files, especially those created with special measure.
+It depends on the optional `matlab` feature which is included in the complete install.
+If you simply want to open a random `.mat` file you can use `hdf5storage.loadmat`.
+Some functionality requires the matlab engine python interface to work, i.e. python will use a MATLAB instance to open files.
+However, the matlab engine interface is *not* installed by default because the install process depends on the version and fails if MATLAB is not installed.
+For older MATLAB versions navigate to `$MATLAB_INSTALL_FOLDER/extern/engines/python` and execute `python setup.py install`.
+For newer MATLAB versions you can install the engine interface via `python -m pip install matlabengine`.
+
+Loading matlab files with "newer" MATLAB classes like `table` requires connecting (and starting) MATLAB instance.
+The function `load_special_measure_with_matlab_engine` can load most special measure scans by utilizing the MATLAB engine interface. To use it you require a "sufficiently new" version of MATLAB and then navigate to `C:\Program Files\MATLAB\$VERSION\extern\engines\python` and call `python setup.py install`.
+
+Recommended: There are dataclasses like `SimpleScan` or `VirtualScan` that are a python representation of certain common scan
+types and have a convenience `to_xarray` method. Use `load_simple_scan_with_matlab_engine` or `load_virtual_scan_with_matlab_engine` to load them.
+
+There are the dataclasses `FigureData`, `AxesData` and `PlotData` that represent matlab figure data. They help inspecting saved matlab figures with the help of a matlab engine.
+
+### qutil.const
+This module defines all the constants you could wish for as well as functions to convert temperatures (`convert_temperature`) or between wavelengths and energies (`lambda2eV`, `eV2lambda`). For an overview, see the module docstring.
+
+### qutil.linalg
+This module provides several handy linear algebra functions. While some are implemented elsewhere, the implementation here is typically speedier for large arrays. For example, `pauli_expm` exploits the fact that a matrix exponential of Pauli matrices can be written as a cosine times the identity matrix plus a sine times the Paulis to speed up the calculation.
+
+For an overview of the included functions, see the module docstring.
+
+### qutil.math
+Contains functions like `cexp()` and `abs2()`, which are fast versions of `np.exp(1j*x)` and `np.abs()**2`, respectively.
+
+### qutil.ui
+This module collects UI helpers, such as a progress bar for loops that can be used like so:
+```python
+for i in qutil.ui.progressbar(range(n)):
+    do_something()
+```
+
+It also contains a `gate_layout` module that can be used to display gate voltages by plotting and coloring in `.dxf` files of gate layouts.
+
+### qutil.qi
+In this module there are some quantities and functions related to quantum information, like the Pauli matrices in different data types.
+
+### qutil.random
+Here we collect functions for random numbers like `random_hermitian` to generate random Hermitian matrices.
+
+### qutil.itertools
+This module contains everything from `itertools`, `more_itertools` and custom functions.
+
+### qutil.functools
+This module contains everything from `functools` as well as custom functions and classes, for instance `FunctionChain`, which iterates over a list of functions and passes the return value(s) on to the next function as positional arguments.
+
+### qutil.caching
+Here you find decorators, functions and classes that help you implement caching like `file_cache` and `lru_cache`. This is helpful if you need to call computationally expensive functions with the same arguments repeatedly.
+
+### qutil.io
+User input related functions like `query_yes_no` or a `CsvLogger` interface (for reading use pandas.read_csv).
+
+`to_global_path` resolves all network drive mappings (such as `Z:\`) as well as domain names 
+(such as `\\janeway`) to their global address (`\\janeway.physik.rwth-aachen.de` in this case).
+
+### qutil.parallel
+Functions and classes related to parallel execution i.e. multi-threading, multi-processing and asyncio.
+There is a class for periodic callbacks from another thread `ThreadedPeriodicCallback`.
+
+### qutil.hardware
+This package contains little scripts to talk to various hardware devices. For example reading the leak tester via serial interface.
+
+### qutil.electronics
+#### lumped_elements
+Exposes the contents of [fastz](https://github.com/whileman133/fastZ), a package for simple lumped-elements calculations. Overloads `+` and `//` to implement series and parallel connections, respectively.
+
+See the `fastz` documentation for more information.
+
+### qutil.qcodes
+Functions to convert from and to qcodes data sets. Currently only
+from `pandas.DataFrame` to `qcodes.data.data_set.DataSet`
+
+### qutil.measurement
+This package is supposed to contain measurement-related functionality. It is currently empty besides some backward compatibility imports.
+
+#### spectrometer
+Moved to https://git.rwth-aachen.de/qutech/python-spectrometer.
+
+### qutil.typecheck
+Functions and decorators to  help with runtime typechecking. Notably the `@check_literals` decorator to ensure that arguments match an annotated literal.
+Imports the [`typeguard`](https://typeguard.readthedocs.io/en/latest/userguide.html) which provides the powerful `@typechecked` decorator.
+```python
+from typing import Literal, Sequence
+from qutil.typecheck import check_literals
+@check_literals
+def my_function(a: Sequence[int], b: Literal['forward', 'backward']):
+    pass # do something
+
+# works
+my_function([1, 2, 3], 'backward')
+
+# works because the first arguement is not checked at runtime
+my_function({'no': 'sequence'}, 'backward')
+
+# runtime error because of typo in 'backward'
+my_function('wrong', 'backwardd')
+```
+
+### qutil.pandas_tools
+Pandas utility functions for common code patterns. `consecutive_groupby` is like `pandas.DataFrame.groupby` but only
+groups consecutive rows.
+
+### qutil.image
+Image and video processing tools. `convert_tiff` converts a multipage `.tif` image to a video with a format of choice using `moviepy`.
+
+### qutil.signal_processing
+This module is split into functionality that works with signals in real space (time domain) and fourier space (frequency domain). Both submodules adhere to a common function signature so that they can be chained using `qutil.functools.FunctionChain`. Functionality includes:
+- `real_space.rms()`: Compute the RMS
+- `real_space.butter()`: Butter filter
+- `fourier_space.derivative()`: Compute the (anti-)derivative
+- `fourier_space.rms()`: Compute the RMS
+
+### qutil.domains
+This module defines classes representing mathematical domains and intervals. Currently used by [pyspeck](https://git.rwth-aachen.de/qutech/python-spectrometer).
+
+### qutil.misc
+Includes various miscallaneous utilities like context managers to suppress warnings (`filter_warnings()`) or temporarily set a key of a dictionary (`key_set_to()`).

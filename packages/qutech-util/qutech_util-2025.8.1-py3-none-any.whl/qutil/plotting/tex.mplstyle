@@ -1,0 +1,51 @@
+#### FONT
+font.family         : serif
+font.serif          : Computer Modern Roman, DejaVu Serif, Bitstream Vera Serif, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
+font.sans-serif     : Computer Modern Sans Serif, DejaVu Sans, Bitstream Vera Sans, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
+font.monospace      : Computer Modern Typewriter, DejaVu Sans Mono, Bitstream Vera Sans Mono, Andale Mono, Nimbus Mono L, Courier New, Courier, Fixed, Terminal, monospace
+
+#### AXES
+axes.formatter.limits : -4, 4 ## use scientific notation if log10
+                               ## of the axis range is smaller than the
+                               ## first or larger than the second
+axes.formatter.use_locale : False  ## When True, format tick labels
+                                   ## according to the user's locale.
+                                   ## For example, use ',' as a decimal
+                                   ## separator in the fr_FR locale.
+axes.formatter.use_mathtext : False ## When True, use mathtext for scientific
+                                     ## notation.
+axes.formatter.useoffset      : True    ## If True, the tick label formatter
+                                         ## will default to labeling ticks relative
+                                         ## to an offset when the data range is
+                                         ## small compared to the minimum absolute
+                                         ## value of the data.
+axes.formatter.offset_threshold : 4     ## When useoffset is True, the offset
+                                         ## will be used when it can remove
+                                         ## at least this number of significant
+                                         ## digits from tick labels.
+
+#### LaTeX customizations. See http://wiki.scipy.org/Cookbook/Matplotlib/UsingTex
+text.usetex         : True  ## use latex for all text handling. The following fonts
+                              ## are supported through the usual rc parameter settings:
+                              ## new century schoolbook, bookman, times, palatino,
+                              ## zapf chancery, charter, serif, sans-serif, helvetica,
+                              ## avant garde, courier, monospace, computer modern roman,
+                              ## computer modern sans serif, computer modern typewriter
+                              ## If another font is desired which can loaded using the
+                              ## LaTeX \usepackage command, please inquire at the
+                              ## matplotlib mailing list
+text.latex.preamble : \usepackage[utf8]{inputenc}\usepackage{amsmath}\usepackage{amssymb}\usepackage{physics}\usepackage[detect-all,separate-uncertainty]{siunitx}
+                            ## IMPROPER USE OF THIS FEATURE WILL LEAD TO LATEX FAILURES
+                            ## AND IS THEREFORE UNSUPPORTED. PLEASE DO NOT ASK FOR HELP
+                            ## IF THIS FEATURE DOES NOT DO WHAT YOU EXPECT IT TO.
+                            ## preamble is a comma separated list of LaTeX statements
+                            ## that are included in the LaTeX document preamble.
+                            ## An example:
+                            ## text.latex.preamble : \usepackage{bm},\usepackage{euler}
+                            ## The following packages are always loaded with usetex, so
+                            ## beware of package collisions: color, geometry, graphicx,
+                            ## type1cm, textcomp. Adobe Postscript (PSSNFS) font packages
+                            ## may also be loaded, depending on your font settings
+mathtext.fontset : cm ## Should be 'dejavusans' (default),
+                               ## 'dejavuserif', 'cm' (Computer Modern), 'stix',
+                               ## 'stixsans' or 'custom'
