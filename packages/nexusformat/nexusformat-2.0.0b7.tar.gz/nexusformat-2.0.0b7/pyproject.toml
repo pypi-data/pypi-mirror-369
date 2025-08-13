@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools >= 64", "setuptools_scm >= 8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nexusformat"
+dynamic = ["version"]
+description = "Python API to access NeXus data"
+readme = "README.md"
+license = {file = "COPYING"}
+authors = [{name = "Raymond Osborn", email = "rayosborn@mac.com"}]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: BSD License",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Visualization",
+]
+keywords = ["data format", "HDF5", "neutron scattering", "x-ray scattering"]
+requires-python = ">=3.9"
+dependencies = [
+    "colored",
+    "h5py",
+    "hdf5plugin",
+    "numpy",
+    "packaging",
+    "pygments",
+    "python-dateutil",
+    "scipy",
+    "importlib_resources; python_version <= '3.9'",
+]
+
+[project.optional-dependencies]
+testing = ["pytest"]
+
+[project.urls]
+Homepage = "https://nexpy.github.io/nexpy"
+Repository = "https://github.com/nexpy/nexusformat.git"
+Issues = "https://github.com/nexpy/nexusformat/issues"
+Documentation = "https://nexpy.github.io/nexpy/pythonshell.html"
+Changelog = "https://github.com/nexpy/nexusformat/releases"
+
+[project.scripts]
+nexusformat = "nexusformat.scripts.nexusformat:main"
+nxcheck = "nexusformat.scripts.nxcheck:main"
+nxconsolidate = "nexusformat.scripts.nxconsolidate:main"
+nxdir = "nexusformat.scripts.nxdir:main"
+nxduplicate = "nexusformat.scripts.nxduplicate:main"
+nxinspect = "nexusformat.scripts.nxinspect:main"
+nxstack = "nexusformat.scripts.nxstack:main"
+
+[tool.setuptools_scm]
+version_file = "src/nexusformat/_version.py"
+
+[tool.setuptools.package-data]
+"nexusformat.definitions.applications" = ["*.nxdl.xml"]
+"nexusformat.definitions.base_classes" = ["*.nxdl.xml"]
+"nexusformat.definitions.contributed_definitions" = ["*.nxdl.xml"]
+"nexusformat.examples" = ["*.nxs", "*.h5"]
+"nexusformat.notebooks" = ["*.pnyb"]

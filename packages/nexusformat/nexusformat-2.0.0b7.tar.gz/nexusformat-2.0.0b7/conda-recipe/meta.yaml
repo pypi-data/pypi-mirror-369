@@ -1,0 +1,45 @@
+package:
+  name: nexusformat
+  version: "2.0.0"
+
+source:
+  git_url: https://github.com/nexpy/nexusformat.git
+  git_tag: v2.0.0
+
+build:
+  entry_points:
+    - nexusformat = nexusformat.scripts.nexusformat:main
+    - nxcheck = nexusformat.scripts.nxcheck:main
+    - nxconsolidate = nexusformat.scripts.nxconsolidate:main
+    - nxdir = nexusformat.scripts.nxdir:main
+    - nxduplicate = nexusformat.scripts.nxduplicate:main
+    - nxinspect = nexusformat.scripts.nxinspect:main
+    - nxstack = nexusformat.scripts.nxstack:main
+number: 0
+
+requirements:
+  build:
+    - python >=3.9
+    - setuptools
+    - setuptools_scm
+
+  run:
+    - python >=3.9
+    - colored
+    - h5py
+    - hdf5plugin
+    - numpy
+    - packaging
+    - pygments
+    - python-dateutil
+    - scipy
+
+test:
+  commands:
+    - nexusformat --version
+    - pytest
+
+about:
+  home: http://nexpy.github.io/nexusformat/
+  license: BSD License
+  summary: 'nexusformat: Python API to access NeXus data'
