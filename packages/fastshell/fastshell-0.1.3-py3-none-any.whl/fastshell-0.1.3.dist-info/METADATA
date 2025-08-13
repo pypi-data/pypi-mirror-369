@@ -1,0 +1,79 @@
+Metadata-Version: 2.3
+Name: fastshell
+Version: 0.1.3
+Summary: A FastAPI-like framework for building interactive shell applications with auto-completion and type safety
+License: GPLv3
+Author: originalFactor
+Author-email: 2438926613@qq.com
+Requires-Python: >=3.8
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Dist: prompt-toolkit (>=3.0.0,<4.0.0)
+Requires-Dist: pydantic (>=2.0.0,<3.0.0)
+Requires-Dist: rich (>=13.0.0,<15.0.0)
+Requires-Dist: typing-extensions (>=4.0.0,<5.0.0)
+Project-URL: Homepage, https://github.com/originalfactor/fastshell
+Project-URL: Issues, https://github.com/originalfactor/fastshell/issues
+Description-Content-Type: text/markdown
+
+# FastShell
+
+A FastAPI-like framework for building interactive shell applications with automatic completion, type conversion, and subcommands.
+
+## 🚀 Quick Start
+
+```bash
+pip install fastshell
+```
+
+```python
+from fastshell import FastShell
+
+app = FastShell(use_pydantic=True)
+
+@app.command()
+def hello(name: str = "World", count: int = 1):
+    """Say hello to someone."""
+    for _ in range(count):
+        print(f"Hello, {name}!")
+
+if __name__ == "__main__":
+    app.run()
+```
+
+## ✨ 主要特性
+
+- 🚀 **FastAPI风格装饰器** - 简单直观的API设计
+- 🛡️ **Pydantic验证** - 增强的类型验证和错误处理
+- 🔧 **自动补全** - 命令和参数的智能补全
+- 📊 **自动格式化** - 智能识别数据类型，自动选择最佳显示格式
+- 🌳 **子命令支持** - 嵌套命令结构
+- 🖥️ **跨平台** - 支持Windows、macOS和Linux
+
+## 🎯 示例
+
+### 格式化输出示例
+
+查看 `examples/` 目录中的示例代码
+
+## 🧪 测试
+
+```bash
+# 运行所有测试
+python -m pytest tests/
+```
+
+## 🤝 贡献
+
+欢迎提交Issue和Pull Request！
+
+## 📄 许可证
+
+本项目采用 GNU General Public License v3.0 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
