@@ -1,0 +1,363 @@
+name: run-tests-slow
+on:
+  push:
+    branches: ["main", "develop"]
+    tags-ignore: ['v*']
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      run-all:
+        description: "Run all methods (by default only methods with changes are run)"
+        required: false
+        type: boolean
+        default: false
+jobs:
+  readme-up-to-date:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e '.[dev]'
+    - name: Test if README results are up to date
+      run: |
+        python scripts/update_readme.py
+        if ! git diff --exit-code; then
+          echo "README.md is out of date. Please run 'python scripts/update_readme.py' and commit the changes"
+          exit 1
+        fi
+
+  web-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Build web
+        run: |
+          pip install -e '.[web]'
+          nerfbaselines web build --output web-build --base-path "${{ steps.setup-pages.outputs.base_path }}" --docs all
+
+  py37-tests:
+    runs-on: ubuntu-22.04
+    name: run-tests-py37
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.7"
+      - uses: federicocarboni/setup-ffmpeg@v2
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[dev]'
+      - name: Run pyright, pytests
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          pip install tensorboard==2.11.2
+          pip install 'protobuf<4' 
+          pytest -vrA
+
+  common-tests:
+    runs-on: ubuntu-latest
+    name: run-tests-common
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.8","3.9","3.10","3.11","3.12","3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: federicocarboni/setup-ffmpeg@v2
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[dev]'
+      - name: Run pyright, pytests
+        run: |
+          if [[ "${{ matrix.python }}" == "3.7" ]]; then
+            export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+            pip install tensorboard==2.11.2
+            pip install 'protobuf<4' 
+          fi
+          pytest -vrA
+      - name: Install dev-extras
+        id: dev-extras
+        if: ${{ matrix.python == '3.11' }}
+        run: |
+          pip install -e ".[extras,dev,extras-tests]"
+      - name: Run dev-extras tests
+        run: |
+          pyright
+          pytest -v --run-extras
+        if: ${{ steps.dev-extras.outcome == 'success' }}
+
+  windows-tests:
+    runs-on: windows-latest
+    name: run-tests-windows
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: federicocarboni/setup-ffmpeg@v2
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[extras,dev,extras-tests]"
+      - name: Run pyright, pytests
+        run: |
+          pyright
+          pytest -vrA
+
+  macos-tests:
+    runs-on: macos-latest
+    name: run-tests-macos
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install -e ".[extras,dev,extras-tests]"
+      - name: Run pyright, pytests
+        run: |
+          pyright
+          pytest -vrA
+
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      conda_methods: ${{ steps.data-step.outputs.conda_methods }}
+      docker_methods: ${{ steps.data-step.outputs.docker_methods }}
+      apptainer_methods: ${{ steps.data-step.outputs.apptainer_methods }}
+      datasets: ${{ steps.data-step.outputs.datasets }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e .
+      - id: data-step
+        name: Get required methods
+        run: |
+          # TODO: remove nerfw-reimpl from blacklist as soon as it supports no-point3D setup
+          pip install --upgrade pip
+          pip install -e .
+          python -c '
+          import sys,os
+          sys.path.append("scripts")
+          from has_method_changed import method_has_changes
+          from nerfbaselines import get_supported_methods
+          blacklist=("trips","nerfonthego","nerfw-reimpl")
+          import json; 
+          github_event = "${{ github.event_name }}"
+          for backend in ["docker", "conda", "apptainer"]:
+            methods = [x for x in get_supported_methods(backend) if not ":" in x and x not in blacklist]
+            # Tetra-NeRF currently uses too much disk space, so we skip it
+            if backend in ("apptainer", "conda"):
+              methods = [x for x in methods if not x.startswith("tetra-nerf")]
+            if os.environ["GITHUB_EVENT_NAME"] in ("pull_request", "push") and "${{ inputs.run-all }}" != "true":
+              methods = [x for x in methods if method_has_changes(x, backend)]
+            print(f"{backend}_methods=" + json.dumps(methods))
+          from nerfbaselines import get_supported_datasets
+          print("datasets=" + json.dumps(list(get_supported_datasets())))
+          ' >> $GITHUB_OUTPUT
+
+  docker-tests:
+    runs-on: ubuntu-latest
+    name: run-tests-docker
+    needs: [setup, common-tests]
+    if: ${{ needs.setup.outputs.docker_methods != '' && toJson(fromJson(needs.setup.outputs.docker_methods)) != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # method: [instant-ngp,gaussian-splatting,tetra-nerf,mipnerf360,nerfacto]
+        method: ${{ fromJson(needs.setup.outputs.docker_methods) }}
+    steps:
+      - name: Free root space
+        uses: almahmoud/free-root-space@main
+        with:
+          remove-gcc: false
+          remove-cplusplus: false
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[dev]'
+      - name: Test install method
+        run: |
+          export TCNN_CUDA_ARCHITECTURES="80"
+          export TORCH_CUDA_ARCH_LIST="8.0"
+          export CUDAARCHS="80"
+          nerfbaselines install-method --method "${{ matrix.method }}" --backend docker
+      - name: Run tests
+        run: |
+          export TCNN_CUDA_ARCHITECTURES="80"
+          export TORCH_CUDA_ARCH_LIST="8.0"
+          export CUDAARCHS="80"
+          method_regex="^$(python -c 'import re;print(re.escape("${{ matrix.method }}"))')(?:\\:.*|)\$"
+          pytest -sv --run-docker --method-regex "$method_regex" -rA -x
+
+          # Run tests inside the container
+          nerfbaselines shell --method "${{ matrix.method }}" --backend docker pytest -sv -rA -x --run-extras --typeguard-packages "" --method-regex "$method_regex"
+
+  apptainer-tests:
+    runs-on: ubuntu-22.04
+    name: run-tests-apptainer
+    needs: [setup, common-tests]
+    if: ${{ needs.setup.outputs.apptainer_methods != '' && toJson(fromJson(needs.setup.outputs.apptainer_methods)) != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # method: [instant-ngp,gaussian-splatting,tetra-nerf,mipnerf360,nerfacto]
+        method: ${{ fromJson(needs.setup.outputs.apptainer_methods) }}
+    steps:
+      - uses: eWaterCycle/setup-apptainer@v2
+        name: Install apptainer
+        with:
+          apptainer-version: 1.2.5
+      - name: Free root space
+        uses: almahmoud/free-root-space@main
+        with:
+          remove-gcc: false
+          remove-cplusplus: false
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[dev]'
+      - name: Test install method
+        run: |
+          export TCNN_CUDA_ARCHITECTURES="80"
+          export TORCH_CUDA_ARCH_LIST="8.0"
+          export CUDAARCHS="80"
+          # We have to use conda, there is not enough space to unpack docker images
+          export NERFBASELINES_APPTAINER_PREFER_CONDA=1
+          m="${{ matrix.method }}"
+          if [[ "$m" == "camp"* ]] || [[ "$m" == "mipnerf"* ]] || [[ "$m" == "zipnerf"* ]] || [[ "$m" == "nerf" ]]; then
+            export NERFBASELINES_APPTAINER_PREFER_CONDA=0
+          fi
+          nerfbaselines install-method --method "${{ matrix.method }}" --backend apptainer
+      - name: Run tests
+        run: |
+          # We have to use conda, there is not enough space to unpack docker images
+          export NERFBASELINES_APPTAINER_PREFER_CONDA=1
+          m="${{ matrix.method }}"
+          if [[ "$m" == "camp"* ]] || [[ "$m" == "mipnerf"* ]] || [[ "$m" == "zipnerf"* ]] || [[ "$m" == "nerf" ]]; then
+            export NERFBASELINES_APPTAINER_PREFER_CONDA=0
+          fi
+          export TCNN_CUDA_ARCHITECTURES="80"
+          export TORCH_CUDA_ARCH_LIST="8.0"
+          export CUDAARCHS="80"
+          method_regex="^$(python -c 'import re;print(re.escape("${{ matrix.method }}"))')(?:\\:.*|)\$"
+          pytest -sv --run-apptainer --method-regex "$method_regex" -rA -x
+
+          # Run tests inside the container
+          nerfbaselines shell --method "${{ matrix.method }}" --backend apptainer pytest -sv -rA -x --run-extras --typeguard-packages "" --method-regex "$method_regex"
+
+  conda-tests:
+    runs-on: ubuntu-latest
+    name: run-tests-conda
+    needs: [setup, common-tests]
+    if: ${{ needs.setup.outputs.conda_methods != '' && toJson(fromJson(needs.setup.outputs.conda_methods)) != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        method: ${{ fromJson(needs.setup.outputs.conda_methods) }}
+    steps:
+      - name: Free root space
+        uses: almahmoud/free-root-space@main
+        with:
+          remove-gcc: false
+          remove-cplusplus: false
+      - name: Add swap space
+        run: |
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[dev]'
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: "latest"
+          auto-activate-base: false
+      - name: Test install method
+        run: |
+          export TCNN_CUDA_ARCHITECTURES="80"
+          export TORCH_CUDA_ARCH_LIST="8.0"
+          export CUDAARCHS="80"
+          nerfbaselines install-method --method "${{ matrix.method }}" --backend conda
+      - name: Run tests
+        run: |
+          export TCNN_CUDA_ARCHITECTURES="80"
+          export TORCH_CUDA_ARCH_LIST="8.0"
+          export CUDAARCHS="80"
+          method_regex="^$(python -c 'import re;print(re.escape("${{ matrix.method }}"))')(?:\\:.*|)\$"
+          pytest -sv --run-conda --method-regex "$method_regex" -rA -x
+
+          # Run tests inside the container
+          nerfbaselines shell --method "${{ matrix.method }}" --backend conda pytest -sv -rA -x --run-extras --typeguard-packages "" --method-regex "$method_regex"
+
+  dataset-tests:
+    runs-on: ubuntu-latest
+    name: test-datasets
+    needs: [setup, common-tests]
+    if: ${{ needs.setup.outputs.datasets != '' && toJson(fromJson(needs.setup.outputs.datasets)) != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        dataset: ${{ fromJson(needs.setup.outputs.datasets) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Install nerfbaselines
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[dev]' gdown
+      - name: Test datasets
+        run: |
+          pytest -vsrA --dataset "${{ matrix.dataset }}"
