@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling>=1.27", "hatch-vcs>=0.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spikeble"
+description = "BLE interface for running Micropython on LEGO SPIKE devices"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Michael Gross", email = "MGross21@users.noreply.github.com" }]
+keywords = ["lego", "spike", "ble", "bluetooth", "robotics"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: System :: Hardware",
+]
+dependencies = ["bleak>=1.0.0"]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/MGross21/spikeble"
+Repository = "https://github.com/MGross21/spikeble"
+Issues = "https://github.com/MGross21/spikeble/issues"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+raw-options = { local_scheme = "no-local-version" }
+
+[tool.hatch.build.targets.wheel]
+packages = ["spikeble"]
+include = ["spikeble/py.typed"]
+
+# Expose MicroPython folders as top-level install packages
+[tool.hatch.build.targets.wheel.force-include]
+"spikeble/micropython/app" = "app"
+"spikeble/micropython/color" = "color"
+"spikeble/micropython/color_matrix" = "color_matrix"
+"spikeble/micropython/color_sensor" = "color_sensor"
+"spikeble/micropython/device" = "device"
+"spikeble/micropython/distance_sensor" = "distance_sensor"
+"spikeble/micropython/force_sensor" = "force_sensor"
+"spikeble/micropython/hub" = "hub"
+"spikeble/micropython/motor" = "motor"
+"spikeble/micropython/motor_pair" = "motor_pair"
+"spikeble/micropython/orientation" = "orientation"
+"spikeble/micropython/runloop" = "runloop"
+
+[tool.hatch.build.targets.sdist]
+include = ["/spikeble", "/README.md", "/LICENSE*", "/pyproject.toml"]
+
+# ---- Tooling ---------------------------------------------------------------
+
+[tool.ruff]
+target-version = "py311"
+line-length = 80
+lint.select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = ["tests"]
