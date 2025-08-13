@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  jupyterlab:
+    image: jupyter-tigervnc-novnc-proxy
+    build:
+      context: "."
+      dockerfile: setup/Dockerfile
+    container_name: jupyter-tigervnc-novnc-proxy
+    restart: always
+    ports:
+      - 8888:8888
+    environment:
+      NOVNC_ENABLED: 'true'
+      # NOVNC_ENABLED: 'false'
+    volumes:
+      - "${PWD}:/home/jovyan/jupyter-tigervnc-novnc-proxy"
