@@ -1,0 +1,177 @@
+Metadata-Version: 2.4
+Name: abaco
+Version: 0.1.0
+Summary: Batch Effect Correction framework for metagenomic data
+Author: Edir Sebastián Vidal Castro, Angel L. P., Henry Webel, Atieh Gharib, Juliana Assis, Sebastián Ayala-Ruano
+Author-email: Alberto Santos <albsad@dtu.dk>
+License-Expression: MIT
+Project-URL: Bug Tracker, https://github.com/Multiomics-Analytics-Group/abaco/issues
+Project-URL: homepage, https://github.com/Multiomics-Analytics-Group/abaco
+Project-URL: repository, https://github.com/Multiomics-Analytics-Group/abaco
+Project-URL: documentation, https://mona-abaco.readthedocs.io
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: anndata==0.12.0
+Requires-Dist: array-api-compat==1.12.0
+Requires-Dist: asttokens==3.0.0
+Requires-Dist: biom-format==2.1.16
+Requires-Dist: certifi==2025.7.14
+Requires-Dist: charset-normalizer==3.4.2
+Requires-Dist: click==8.2.1
+Requires-Dist: clustergrammer2==0.18.0
+Requires-Dist: combat==0.3.3
+Requires-Dist: comm==0.2.2
+Requires-Dist: contourpy==1.3.2
+Requires-Dist: crc32c==2.7.1
+Requires-Dist: cycler==0.12.1
+Requires-Dist: decorator==5.2.1
+Requires-Dist: donfig==0.8.1.post1
+Requires-Dist: executing==2.2.0
+Requires-Dist: fastcluster==1.3.0
+Requires-Dist: filelock==3.18.0
+Requires-Dist: fonttools==4.59.0
+Requires-Dist: fsspec==2025.7.0
+Requires-Dist: h5py==3.14.0
+Requires-Dist: idna==3.10
+Requires-Dist: inmoose==0.8.0
+Requires-Dist: ipython==9.4.0
+Requires-Dist: ipython_pygments_lexers==1.1.1
+Requires-Dist: ipywidgets==8.1.7
+Requires-Dist: jedi==0.19.2
+Requires-Dist: Jinja2==3.1.6
+Requires-Dist: joblib==1.5.1
+Requires-Dist: jupyterlab_widgets==3.0.15
+Requires-Dist: kiwisolver==1.4.8
+Requires-Dist: legacy-api-wrap==1.4.1
+Requires-Dist: MarkupSafe==3.0.2
+Requires-Dist: matplotlib==3.10.3
+Requires-Dist: matplotlib-inline==0.1.7
+Requires-Dist: mpmath==1.3.0
+Requires-Dist: narwhals==1.48.0
+Requires-Dist: natsort==8.4.0
+Requires-Dist: networkx==3.5
+Requires-Dist: numcodecs==0.16.1
+Requires-Dist: numpy==2.3.1
+Requires-Dist: packaging==25.0
+Requires-Dist: pandas==2.3.1
+Requires-Dist: parso==0.8.4
+Requires-Dist: patsy==1.0.1
+Requires-Dist: pexpect==4.9.0
+Requires-Dist: pillow==11.3.0
+Requires-Dist: plotly==6.2.0
+Requires-Dist: prompt_toolkit==3.0.51
+Requires-Dist: ptyprocess==0.7.0
+Requires-Dist: pure_eval==0.2.3
+Requires-Dist: Pygments==2.19.2
+Requires-Dist: pyparsing==3.2.3
+Requires-Dist: python-dateutil==2.9.0.post0
+Requires-Dist: pytz==2025.2
+Requires-Dist: PyYAML==6.0.2
+Requires-Dist: requests==2.32.4
+Requires-Dist: scikit-bio==0.7.0
+Requires-Dist: scikit-learn==1.7.1
+Requires-Dist: scipy==1.15.3
+Requires-Dist: seaborn==0.13.2
+Requires-Dist: six==1.17.0
+Requires-Dist: stack-data==0.6.3
+Requires-Dist: statsmodels==0.14.5
+Requires-Dist: sympy==1.14.0
+Requires-Dist: threadpoolctl==3.6.0
+Requires-Dist: torch==2.7.1
+Requires-Dist: tqdm==4.67.1
+Requires-Dist: traitlets==5.14.3
+Requires-Dist: typing_extensions==4.14.1
+Requires-Dist: tzdata==2025.2
+Requires-Dist: urllib3==2.5.0
+Requires-Dist: wcwidth==0.2.13
+Requires-Dist: widgetsnbextension==4.0.14
+Requires-Dist: zarr==3.1.0
+Provides-Extra: docs
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinx-book-theme; extra == "docs"
+Requires-Dist: myst-nb; extra == "docs"
+Requires-Dist: ipywidgets; extra == "docs"
+Requires-Dist: sphinx-new-tab-link!=0.2.2; extra == "docs"
+Requires-Dist: jupytext; extra == "docs"
+Requires-Dist: sphinx-copybutton; extra == "docs"
+Requires-Dist: anndata; extra == "docs"
+Provides-Extra: dev
+Requires-Dist: black[jupyter]; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: ipykernel; extra == "dev"
+Dynamic: license-file
+
+# ABaCo
+![img](https://raw.githubusercontent.com/Multiomics-Analytics-Group/abaco/refs/heads/main/docs/figures/overview.png)
+
+<h1 align="center">ABaCo</h1>
+<p align="center"><em>Batch Effect Correction framework for metagenomic data</em></p>
+
+<p align="center">
+    <a href="https://pypi.org/project/abaco/">
+        <img src="https://img.shields.io/pypi/v/abaco?label=PyPI" alt="PyPI">
+    </a>
+    <a href="https://github.com/Multiomics-Analytics-Group/abaco/actions/workflows/cicd.yml">
+        <img src="https://github.com/Multiomics-Analytics-Group/abaco/actions/workflows/cicd.yml/badge.svg?branch=" alt="Python application">
+    </a>
+    <a href="https://abaco.readthedocs.io/en/latest/?badge=latest">
+        <img src="https://readthedocs.org/projects/abaco/badge/?version=latest" alt="Read the Docs">
+    </a>
+    <img src="https://img.shields.io/pypi/pyversions/abaco" alt="PyPI - Python Version">
+    <br>
+    <br>
+    <img src="https://img.shields.io/github/issues/Multiomics-Analytics-Group/abaco" alt="GitHub issues">
+    <img src="https://img.shields.io/github/license/Multiomics-Analytics-Group/abaco" alt="GitHub license">
+    <img src="https://img.shields.io/github/last-commit/Multiomics-Analytics-Group/abaco" alt="GitHub last commit">
+    <img src="https://img.shields.io/github/stars/Multiomics-Analytics-Group/abaco?style=social" alt="GitHub stars">
+</p>
+
+The integration of metagenomic data from multiple studies and experimental conditions is essential to understand the interactions between microbial communities in complex biological systems, but the inherent diversity and biological complexity pose methodological challenges that require refined strategies for atlas-level integration. ABaCo, a family of generative models based on Variational Autoencoders (VAEs) combined with an adversarial training, aim for the integration of metagenomic data from different studies by minimizing technical heterogeneity conserving biological significance. The VAE encodes the data into a latent space, while the discriminator is trained to detect the provenance of the data, eliminating variability associated with its origin; concurrently, the data is modeled using distributions suitable for raw counts, and the latent space follows a clustering prior to ensure biological conservation.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Features](#features)
+- [Usage](#usage)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Installation 
+
+ABaCo is available on PyPI: 
+```bash
+pip install abaco
+```
+
+## Features
+## Usage
+## Documentation
+Tutorials and documentation are available on [Read the Docs](https://mona-abaco.readthedocs.io/)
+## Contributing
+1. Fork the repository
+2. Clone the repository
+3. Create a virtual env e.g.
+  ```bash
+  # navigate terminal to repo
+  cd <path-to-repo-root>
+
+  # create virtual env
+  python -m venv .venv
+
+  # activate venv
+  source .venv/bin/activate
+  ```
+4. Install abaco in editing mode into the virtual env
+  ```bash
+  pip install -e .
+  ```
+5. Make changes
+  > Note: we aimt o use numpy style python docstrings [sphinx example](https://www.sphinx-doc.org/en/master/usage/extensions/example_numpy.html#example-numpy)
+6. Make a pull request
+## License
