@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: macmod
+Version: 0.2.2
+Summary: A simple command-line tool to format MAC addresses in standard styles.
+Home-page: https://github.com/Maksym-Ototiuk/macmod
+Author: Maksym Ototiuk
+Author-email: mac@masik.slmail.me
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENCE
+Requires-Dist: pyperclip>=1.8.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# modmac
+
+A simple command-line tool to format MAC addresses in standard styles.
+
+## Features
+
+- Accepts MAC addresses in any common format.
+- Outputs formatted MAC using `:`, `-`, or `.` separators.
+- Copies the formatted MAC to the clipboard automatically.
+
+
+## Installation
+
+To install the package, run:
+
+```
+pip install macmod
+```
+
+## Usage
+
+```
+mac <separator> <MAC>
+```
+
+Where:
+
+<separator> — one of .-:
+
+<MAC> — input MAC address
+
+Examples
+```
+> mac : 00-1A-2B-3C-4D-5E
+00:1A:2B:3C:4D:5E  (copied to clipboard)
+
+> mac - 001a.2b3c.4d5e
+00-1A-2B-3C-4D-5E  (copied to clipboard)
+
+> mac . 00-1A-2B-3C-4D-5E
+001a.2b3c.4d5e  (copied to clipboard)
+
+```
