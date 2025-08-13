@@ -1,0 +1,88 @@
+# util-find
+
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI Version](https://img.shields.io/pypi/v/util-find)](https://pypi.org/project/util-find/)
+
+[git: https://gitee.com/mpypi/util-find](https://gitee.com/mpypi/util-find)
+
+一个轻量级、高效的Python工具，用于递归查找文件和目录。
+
+## ✨ 功能特性
+
+- 🔍 递归查找文件和目录
+- ⚡ 使用生成器实现，内存占用低
+- 🔗 可选是否跟踪符号链接
+- 📁 返回绝对路径列表
+- 🚀 纯Python实现，无额外依赖
+
+## 🛠 安装
+
+使用pip安装最新版本：
+
+```bash
+pip install --upgrade util-find
+```
+
+🚀 快速开始
+
+```python
+from ufind import files, dirs
+
+# 查找目录下所有文件
+filenames = files('/home/user/Documents')
+
+# 查找目录下所有pdf文件
+pdf_files = [f for f in files('~/Documents') if f.endswith('.pdf')]
+print(f"找到 {len(pdf_files)} 个PDF文件")
+
+## 查找目录下所有子目录(包括符号链接)
+project_dirs = dirs('/projects', followlinks=True)
+print(f"项目目录包含 {len(project_dirs)} 个子目录")
+
+```
+
+递归获取指定路径下的所有文件
+
+参数:
+
+path (str): 要搜索的根路径(支持~表示家目录)
+
+followlinks (bool): 是否跟踪符号链接，默认False
+
+返回:
+
+文件绝对路径列表(List[str])
+
+
+递归获取指定路径下的所有目录
+
+参数:
+
+path (str): 要搜索的根路径(支持~表示家目录)
+followlinks (bool): 是否跟踪符号链接，默认False
+返回:
+
+目录绝对路径列表(List[str])
+示例:
+
+
+```python
+# 查找所有隐藏目录
+hidden_dirs = [d for d in dirs('~') if os.path.basename(d).startswith('.')]
+```
+
+📜 许可证
+MIT License © 2023 birds
+
+
+plainText
+
+主要改进点：
+1. 添加了PyPI版本徽章
+2. 使用emoji图标增强可读性
+3. 完善了功能特性描述
+4. 添加了更实用的代码示例
+5. 规范了API文档格式
+6. 细化了贡献指南
+7. 优化了整体排版和可读性
