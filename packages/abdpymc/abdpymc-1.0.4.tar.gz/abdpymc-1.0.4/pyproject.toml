@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools >= 77.0.3", "setuptools-scm >= 8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abdpymc"
+description = "Antibody dynamics using PyMC"
+dynamic = ["version"]
+authors = [{ name = "David Pattinson", email = "david.pattinson@wisc.edu" }]
+dependencies = ["arviz", "matplotlib", "numpy", "pandas", "pydantic", "pymc"]
+requires-python = ">= 3.8"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+keywords = [
+    "pymc",
+    "antibody dynamics",
+    "sars-cov-2",
+    "influenza",
+    "antibody",
+    "titer",
+    "bayesian inference",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python",
+]
+
+[project.urls]
+Repository = "https://github.com/davipatti/abdpymc"
+
+[project.optional-dependencies]
+dev = ["pytest", "flake8"]
+
+[tool.setuptools]
+py-modules = ["abdpymc"]
+include-package-data = true
+
+[project.scripts]
+abdpymc-infer = "abdpymc.abd:main"
+abdpymc-plot-timelines = "abdpymc.timelines:main"
+abdpymc-subsample-idata = "abdpymc.subsample_idata:main"
+
+[tool.setuptools_scm]
