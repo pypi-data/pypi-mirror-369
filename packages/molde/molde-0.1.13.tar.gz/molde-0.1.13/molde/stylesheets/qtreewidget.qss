@@ -1,0 +1,25 @@
+QTreeView {
+    background-color: @background;
+    alternate-background-color: @background-variant;
+}
+
+QTreeView::branch:!selected:hover,
+QTreeView::item:!selected:hover {
+    background-color: @primary-lighter;
+    color: @on-primary;
+}
+
+QTreeView::item:selected {
+    background-color: @primary;
+    border: 1px solid @border-color;
+    color: @on-primary;
+}
+
+QTreeWidget::branch:has-children:open {
+    background-image: url("@arrow-down-image-icon");
+}
+
+QTreeWidget::branch:has-children:closed {
+    background-image: url("@arrow-right-image-icon");
+}
+
