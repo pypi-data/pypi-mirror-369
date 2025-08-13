@@ -1,0 +1,268 @@
+Metadata-Version: 2.4
+Name: simple-botmaker
+Version: 0.0.2
+Summary: A package that simplifies the creation of bots that react to the screen in real time
+Home-page: https://github.com/yourusername/simple-botmaker
+Author: Jayden Clarke
+Author-email: 
+License: Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+Project-URL: Homepage, https://github.com/BARKEM-JC/simple-botmaker
+Keywords: automation,bot,screen-capture,ocr,image-recognition,windows
+Platform: win32
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Games/Entertainment
+Classifier: Topic :: Multimedia :: Graphics :: Capture :: Screen Capture
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: opencv-python~=4.12.0.88
+Requires-Dist: numpy~=2.2.6
+Requires-Dist: PyWinCtl~=0.4.1
+Requires-Dist: mss~=10.0.0
+Requires-Dist: PyAutoGUI~=0.9.54
+Requires-Dist: Pillow>=8.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: platform
+Dynamic: requires-python
+
+# Simple Botmaker
+
+A package that simplifies the creation of bots that react to the screen in real time, for example your health gets low in a game so it automatically drinks a potion. **Only works on Windows.**
+
+## Features
+
+- **Screen Capture**: Take screenshots of specific regions or entire screens
+- **Image Recognition**: Find images on screen with template matching and scaling
+- **OCR (Optical Character Recognition)**: Extract text and numbers from screen regions
+- **Color Detection**: Detect specific colors in screen regions
+- **Automated Input**: Click, move mouse, and interact with applications
+- **Window Management**: Work with specific windows or full screen
+- **Custom Interpreter**: Secure script execution environment
+- **Bar/Gauge Reading**: Extract percentage values from health bars, progress bars, etc.
+
+## Installation
+
+### From PyPI (Recommended)
+
+```bash
+pip install simple-botmaker
+```
+
+### From Source
+
+```bash
+git clone https://github.com/yourusername/simple-botmaker.git
+cd simple-botmaker
+pip install -e .
+```
+
+## Requirements
+
+- **Operating System**: Windows (uses Windows-specific libraries)
+- **Python**: 3.7 or higher
+- **Dependencies**: All dependencies are automatically installed via pip
+
+## Quick Start
+
+```python
+import simple_botmaker as sb
+
+# Initialize settings for a specific window (optional)
+sb.SETTINGS.window_name = "My Game Window"  # Leave None for full screen
+sb.SETTINGS.monitor = 0  # Monitor index
+sb.SETTINGS.debug = True  # Enable debug mode
+
+# Take a screenshot of a region
+screenshot = sb.TakeRegionScreenshot(100, 100, 200, 150)
+
+# Find an image on screen
+result = sb.FindImageInRegion(0, 0, 1920, 1080, "template.png", threshold=0.8)
+if result:
+    print(f"Found image at: {result['x']}, {result['y']}")
+    sb.Click(result['x'], result['y'])
+
+# Read text from a screen region
+text = sb.GetText(100, 100, 300, 150)
+print(f"Extracted text: {text}")
+
+# Get health bar percentage
+health_percent = sb.GetBar(50, 50, 200, 70, threshold=128)
+print(f"Health: {health_percent}%")
+
+# Get color-based bar (e.g., red health bar)
+health_percent = sb.GetBarByColour(50, 50, 200, 70, 'red', tolerance=30)
+print(f"Red bar: {health_percent}%")
+```
+
+## Main Functions
+
+### Screen Capture
+- `TakeRegionScreenshot(x, y, width, height, grayscale=False, monitor=0)` - Capture screen region
+- `GetPixelColour(x, y)` - Get color of a specific pixel
+
+### Image Recognition
+- `FindImageInRegion(x, y, width, height, template_path, threshold=0.8, ...)` - Find template image
+- `LoadFrameFromPath(path, grayscale=False)` - Load image from file
+
+### OCR (Text Recognition)
+- `GetText(x1, y1, x2, y2, one_word=False, threshold=128, ...)` - Extract text
+- `GetValue(x1, y1, x2, y2, threshold=128, ...)` - Extract numeric values
+- `Capture2Text(frame, numeric_only=False, ...)` - OCR on image frame
+
+### Bar/Gauge Reading
+- `GetBar(x1, y1, x2, y2, threshold=128, ...)` - Get percentage from binary threshold
+- `GetBarByColour(x1, y1, x2, y2, color, tolerance=30, ...)` - Get percentage by color
+
+### Automation
+- `Click(x, y, delay=100)` - Click at coordinates
+- `MouseMove(x, y, delay=100)` - Move mouse
+- `FocusedClick(x, y, focusDelay=100, delay=100)` - Move then click
+
+### Utility
+- `SaveObject(fileName, obj)` - Save object to file
+- `LoadObject(fileName)` - Load object from file
+- `SetRegions()` - Interactive region selection tool
+
+### Window Management
+- `GetWindowByName(window_name)` - Get window object
+- `GetScreenResolution(monitor=0)` - Get screen dimensions
+- `GetScreenCoordinatesFromWindowCoordinates(window_name, x, y)` - Convert coordinates
+
+## Interactive Region Selection
+
+Use the `SetRegions()` function to interactively select regions on your screen:
+
+```python
+import simple_botmaker as sb
+
+# Launch interactive region selector
+sb.SetRegions()
+```
+
+This will:
+1. Show you a list of available windows
+2. Let you select regions, pixels, or screenshots
+3. Save the coordinates and images to a timestamped folder
+4. Generate a text file with all coordinates for easy copying
+
+## Custom Interpreter
+
+The package includes a secure interpreter for running scripts with restricted access:
+
+```bash
+# Run a script with the custom interpreter
+simple-botmaker-interpreter your_script.py
+
+# Check script for issues without running
+simple-botmaker-interpreter --check your_script.py
+```
+
+## Configuration
+
+Configure global settings:
+
+```python
+import simple_botmaker as sb
+
+# Configure for a specific window
+sb.SETTINGS.window_name = "Game Window"
+sb.SETTINGS.monitor = 0  # Primary monitor
+sb.SETTINGS.debug = True  # Enable debug output
+
+# Or work with full screen (default)
+sb.SETTINGS.window_name = None
+```
+
+## Examples
+
+### Health Monitoring Bot
+```python
+import simple_botmaker as sb
+import time
+
+sb.SETTINGS.window_name = "My Game"
+
+while True:
+    # Check health bar (red color)
+    health = sb.GetBarByColour(100, 50, 200, 70, 'red')
+    
+    if health < 30:  # Health below 30%
+        # Click health potion
+        sb.Click(500, 600)
+        print("Used health potion!")
+        time.sleep(2)
+    
+    time.sleep(0.5)  # Check every 500ms
+```
+
+### Text Recognition Bot
+```python
+import simple_botmaker as sb
+
+# Read game score
+score_text = sb.GetValue(800, 50, 900, 80)
+print(f"Current Score: {score_text}")
+
+# Check if specific text appears
+status_text = sb.GetText(400, 200, 600, 230, one_word=True)
+if status_text == "READY":
+    sb.Click(500, 300)  # Click start button
+```
+
+## Platform Support
+
+- **Windows**: Full support (primary platform)
+- **macOS/Linux**: Not supported (uses Windows-specific libraries)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Disclaimer
+
+This software is intended for educational and automation purposes. Users are responsible for ensuring compliance with the terms of service of any applications they interact with. The authors are not responsible for any misuse of this software.
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/simple-botmaker/issues)
+- **Documentation**: This README and inline code documentation
+- **Examples**: See the examples in the repository
+
+## Changelog
+
+### Version 1.0.0
+- Initial release
+- Core screen capture functionality
+- Image recognition with template matching
+- OCR support with Capture2Text integration
+- Bar/gauge reading capabilities
+- Interactive region selection tool
+- Custom secure interpreter
+- Full Windows automation support

@@ -1,0 +1,25 @@
+# Include important project files
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+
+# Include all Python files in the package
+recursive-include simple_botmaker *.py
+
+# Include any data files that might be needed
+recursive-include simple_botmaker *.txt
+recursive-include simple_botmaker *.json
+recursive-include simple_botmaker *.yaml
+recursive-include simple_botmaker *.yml
+
+# Exclude unnecessary files
+exclude .gitignore
+exclude .github
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.orig
+recursive-exclude * *.rej
+exclude .coverage
+exclude .pytest_cache
+recursive-exclude * .DS_Store
