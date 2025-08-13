@@ -1,0 +1,89 @@
+Metadata-Version: 2.4
+Name: anima_core
+Version: 0.1.1
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+
+# anima-core
+
+**anima-core** is a small Rust library (with PyO3 bindings) that powers the
+import-scanning fast-path for [AnimaDao](https://pypi.org/project/anima-dao/).
+It provides a single high-level function optimized for speed and parallelism.
+
+- 🚀 **Fast**: scans large codebases 5–10× faster than a pure-Python walker
+- 🧩 **Drop-in**: used transparently by `anima-dao[native]`; falls back to Python if absent
+- 🧱 **No Rust required**: prebuilt wheels for Linux, macOS and Windows
+- 🧪 **Safe**: read-only filesystem access, no network calls
+
+## Installation
+
+```bash
+# end users (AnimaDao optional speedup)
+uv pip install "anima-dao[native]"
+
+# or install anima-core directly
+uv pip install anima-core
+# pip works as well:
+# pip install anima-core
+````
+
+> If wheels are unavailable for your platform, you can build from source:
+> `pip install maturin && maturin develop` inside the repository.
+
+## Python API
+
+```python
+from anima_core import scan_imports
+
+# Accepts a list of filesystem roots (str paths); returns sorted unique top-level imports.
+imports = scan_imports([".", "tests"])
+print(imports[:10])
+# ['click', 'httpx', 'packaging', 'pytest', '...']
+```
+
+* For lines like `import requests.adapters` or `from numpy.linalg import norm`,
+  the function returns the **top-level** module: `requests`, `numpy`.
+* Non-`.py` files are ignored.
+
+## Compatibility
+
+* **Python**: 3.10–3.13 (wheels); source build may work on newer
+* **OS**: manylinux x86\_64/aarch64, macOS universal2, Windows x86\_64
+* **Consumers**: `anima-dao >= 0.1.81` (optional extra `native`)
+
+## Performance
+
+On medium codebases (1–3k `.py` files), `scan_imports` is typically **5–10× faster**
+than a single-threaded Python AST walk, thanks to:
+
+* parallel directory traversal (`rayon`),
+* lightweight line scanning for `import`/`from ... import` patterns.
+
+Actual speedups vary with filesystem and CPU.
+
+## Development
+
+```bash
+# Clone and enter the repo
+git clone https://github.com/Absolentia/anima-core
+cd anima-core
+
+# Build a wheel (release)
+pipx install maturin
+maturin build --release -o dist
+
+# Develop in-place (editable)
+maturin develop
+
+# Smoke-test the module
+python -c "import anima_core; print(anima_core.scan_imports(['.'])[:5])"
+```
+
+## Versioning & Stability
+
+`anima-core` follows semantic versioning. The public Python API is intentionally small
+and stable (`scan_imports(paths: list[str]) -> list[str]`).
+
+## License
+
+MIT © Contributors
+
