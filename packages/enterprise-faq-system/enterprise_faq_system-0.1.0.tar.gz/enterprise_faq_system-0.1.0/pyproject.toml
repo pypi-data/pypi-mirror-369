@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "enterprise-faq-system"
+version = "0.1.0"
+description = "AI-powered FAQ system with hybrid search capabilities"
+readme = "README.md"
+authors = [{name = "jayaprakash-shanmugam", email = "jayaprkash7@gmail.com"}]
+license = "MIT"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.21.0",
+    "sentence-transformers>=2.2.0",
+    "faiss-cpu>=1.7.0",
+    "scikit-learn>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=6.0", "black", "flake8"]
+
+[project.urls]
+Homepage = "https://github.com/jayaprakash-shanmugam/faq-system"
+Issues = "https://github.com/jayaprakash-shanmugam/faq-system/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["faq_system*"]
