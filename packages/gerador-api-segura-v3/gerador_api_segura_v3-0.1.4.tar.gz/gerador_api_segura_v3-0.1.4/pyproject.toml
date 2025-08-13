@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gerador-api-segura-v3"
+version = "0.1.4"  # aumente sempre que publicar no PyPI
+description = "CLI para gerar projeto API Flask segura (Mongo/MariaDB/PostgreSQL) a partir de um template robusto."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "wanderson.felipe" }
+]
+license = { file = "LICENSE" }  # se você tem o arquivo LICENSE no repo
+keywords = ["flask", "api", "generator", "security", "jwt", "rbac"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: MIT License",
+  "Environment :: Console",
+  "Topic :: Software Development :: Code Generators",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/WandersonDeveloper/gerador-api-segura-v3_cli_package"
+Repository = "https://github.com/WandersonDeveloper/gerador-api-segura-v3_cli_package"
+Issues = "https://github.com/WandersonDeveloper/gerador-api-segura-v3_cli_package/issues"
+
+[project.scripts]
+gerador-api-segura = "gerador_api_segura_v3.cli:main"
+
+[tool.hatch.build]
+include = ["src/gerador_api_segura_v3/**", "README.md", "LICENSE"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gerador_api_segura_v3"]
