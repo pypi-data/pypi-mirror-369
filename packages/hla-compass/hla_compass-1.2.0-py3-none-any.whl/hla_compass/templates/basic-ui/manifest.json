@@ -1,0 +1,80 @@
+{
+  "name": "basic-peptide-search-ui",
+  "version": "1.0.0",
+  "display_name": "Basic Peptide Search with UI",
+  "description": "Peptide search module with a minimal user interface",
+  "author": "HLA-Compass Platform",
+  "template_type": "with-ui",
+  "compute_type": "lambda",
+  "category": "analysis",
+  "tags": ["peptide", "search", "ui", "template"],
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "peptide_sequences": {
+        "type": "array",
+        "description": "List of peptide sequences to search for",
+        "example": ["SIINFEKL", "GILGFVFTL"],
+        "minItems": 1,
+        "maxItems": 100,
+        "ui": {
+          "component": "textarea",
+          "label": "Peptide Sequences",
+          "placeholder": "Enter peptide sequences (one per line)",
+          "help": "Enter peptide sequences using standard single-letter amino acid codes"
+        }
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Maximum number of results per sequence",
+        "default": 10,
+        "minimum": 1,
+        "maximum": 100,
+        "ui": {
+          "component": "number",
+          "label": "Results Limit",
+          "help": "Maximum number of matches to return per sequence"
+        }
+      }
+    },
+    "required": ["peptide_sequences"]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": ["success", "error"]
+      },
+      "results": {
+        "type": "array",
+        "description": "Search results for each input sequence"
+      },
+      "summary": {
+        "type": "object",
+        "description": "Summary statistics of the search"
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Execution metadata"
+      }
+    }
+  },
+  "ui": {
+    "entry": "frontend/index.tsx",
+    "dependencies": {
+      "react": "^19.0.0",
+      "antd": "^5.0.0",
+      "@ant-design/icons": "^5.0.0"
+    }
+  },
+  "requirements": {
+    "memory": 256,
+    "timeout": 30,
+    "permissions": {
+      "database": ["read"],
+      "storage": false,
+      "network": []
+    }
+  }
+}
