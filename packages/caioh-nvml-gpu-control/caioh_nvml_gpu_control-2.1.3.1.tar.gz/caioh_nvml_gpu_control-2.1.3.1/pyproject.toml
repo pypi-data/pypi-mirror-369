@@ -1,0 +1,56 @@
+# See: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
+# See: https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+# XX.YY.ZZ.WW
+# XX: Breaking changes to the CLI
+# YY: New features that do not break existing features/CLI
+# ZZ: Just code refactor
+# WW: Dependency version bump
+[project]
+name = "caioh-nvml-gpu-control"
+version = "2.1.3.1"
+
+dependencies = [
+  "nvidia-ml-py>=13.580.65"
+]
+
+requires-python = ">=3.8"
+
+authors = [
+  {name = "Caio Gomes Flausino", email = "caio.hacktestes@gmail.com"}
+]
+
+maintainers = [
+  {name = "Caio Gomes Flausino", email = "caio.hacktestes@gmail.com"}
+]
+
+description = "A small program that uses the NVIDIA Management Library to control the GPU independent of OS or display server. This project is not provided or endorsed by NVIDIA"
+readme = "README_PYPI.md"
+
+license = "GPL-2.0-or-later"
+
+license-files = ["LICENSE*"]
+
+keywords = ["NVIDIA", "gpu", "nvml", "fan control", "power control"]
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+
+  # Support is for Linux and Windows
+  "Operating System :: Microsoft",
+  "Operating System :: POSIX :: Linux",
+
+  "Programming Language :: Python"
+]
+
+[project.urls]
+Repository = "https://github.com/HackTestes/NVML-GPU-Control"
+
+# caiohack-nvml or chnvml for short
+[project.scripts]
+chnvml = "caioh_nvml_gpu_control.__main__:script_call"
