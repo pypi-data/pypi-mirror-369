@@ -1,0 +1,96 @@
+[project]
+name = "vail-model-registry"
+version = "0.1.12"
+description = "Project VAIL Model Registry"
+readme = "README.md"
+requires-python = ">=3.12"
+urls = { "Homepage" = "https://projectvail.org" }
+dependencies = [
+    "huggingface-hub==0.34.0",
+    "matplotlib==3.10.3",
+    "numpy==1.26.4",
+    "onnx==1.18.0",
+    "onnxruntime==1.22.0",
+    "pgvector==0.4.1",
+    "pip==25.1.1",
+    "plotly==6.2.0",
+    "psycopg2-binary==2.9.10",
+    "scipy==1.16.0",
+    "seaborn==0.13.2",
+    "transformers==4.55.0",
+    "fastapi==0.115.0",
+    "uvicorn==0.30.6",
+    "pydantic==2.11.7",
+    "python-dotenv==1.1.1",
+    "psutil==7.0.0",
+    "GPUtil==1.4.0",
+    "py3nvml==0.2.7",
+    "requests==2.32.4",
+    "fastmcp==2.10.0",
+    "mcp[cli]==1.10.1",
+    "tiktoken==0.9.0",
+    "blobfile==3.0.0",
+    "sentencepiece==0.2.0",
+    "accelerate==1.8.1",
+    "bitsandbytes==0.41.1; sys_platform != 'linux'",
+    "bitsandbytes==0.45.5; sys_platform == 'linux'",
+    "einops==0.8.1",
+    "peft==0.15.1",
+    "llama-cpp-python==0.3.14",
+    "gguf==0.17.1",
+    "duckdb==1.2.2",
+    "rich==13.9.4",  # Required for registry browser
+    "google-cloud-storage==2.16.0",  # For GCS log upload in fingerprint runner
+    # Conditional torch dependencies
+     "torch==2.2.2; platform_machine == 'x86_64' and sys_platform == 'darwin'",
+     "torch==2.6.0; platform_machine != 'x86_64' or sys_platform != 'darwin'",
+]
+
+[project.scripts]
+vail = "vail.cli:main"
+
+[dependency-groups]
+dev = [
+    "pre-commit==4.2.0",
+    "ruff==0.12.2",
+    "pytest==8.3.5",
+    "pytest-asyncio==1.0.0",
+]
+
+[project.optional-dependencies]
+remoteonly = [
+    "setuptools==78.1.0",
+    "triton==3.2.0",
+]
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["setuptools==78.1.0"]
+build-backend = "setuptools.build_meta" 
+
+[tool.setuptools]
+packages = ["vail", "vail.registry", "vail.utils", "vail.vail_mcp", "vail.fingerprint"]
+
+[tool.setuptools.package-data]
+"vail" = ["docs/*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+fix = true
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]  # Example: ignore line length
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore:Type google\\._upb\\._message\\..* uses PyType_Spec.*"
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
