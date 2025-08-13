@@ -1,0 +1,37 @@
+[console_scripts]
+trove-api = trove.cmd.api:main
+trove-conductor = trove.cmd.conductor:main
+trove-docker-plugin = trove.cmd.network_driver:main
+trove-fake-mode = trove.cmd.fakemode:main
+trove-guestagent = trove.cmd.guest:main
+trove-manage = trove.cmd.manage:main
+trove-mgmt-taskmanager = trove.cmd.taskmanager:mgmt_main
+trove-status = trove.cmd.status:main
+trove-taskmanager = trove.cmd.taskmanager:main
+
+[oslo.config.opts]
+trove.config = trove.common.cfg:list_opts
+
+[oslo.messaging.notify.drivers]
+trove.openstack.common.notifier.log_notifier = oslo_messaging.notify._impl_log:LogDriver
+trove.openstack.common.notifier.no_op_notifier = oslo_messaging.notify._impl_noop:NoOpDriver
+trove.openstack.common.notifier.rpc_notifier = oslo_messaging.notify.messaging:MessagingDriver
+trove.openstack.common.notifier.rpc_notifier2 = oslo_messaging.notify.messaging:MessagingV2Driver
+trove.openstack.common.notifier.test_notifier = oslo_messaging.notify._impl_test:TestDriver
+
+[oslo.policy.enforcer]
+trove = trove.common.policy:get_enforcer
+
+[oslo.policy.policies]
+trove = trove.common.policies:list_rules
+
+[trove.api.extensions]
+mgmt = trove.extensions.routes.mgmt:Mgmt
+mysql = trove.extensions.routes.mysql:Mysql
+
+[trove.guestagent.module.drivers]
+new_relic_license = trove.guestagent.module.drivers.new_relic_license_driver:NewRelicLicenseDriver
+ping = trove.guestagent.module.drivers.ping_driver:PingDriver
+
+[wsgi_scripts]
+trove-wsgi = trove.cmd.app_wsgi:wsgimain

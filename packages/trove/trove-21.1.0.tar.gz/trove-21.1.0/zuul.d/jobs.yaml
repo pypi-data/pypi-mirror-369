@@ -1,0 +1,512 @@
+- job:
+    name: trove-tox-bandit-baseline
+    parent: openstack-tox
+    timeout: 2400
+    vars:
+      tox_envlist: bandit-baseline
+    required-projects:
+      - openstack/requirements
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^.*\.txt$
+      - ^api-ref/.*$
+      - ^contrib/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^setup.cfg$
+      - ^tools/.*$
+      - ^trove/hacking/.*$
+      - ^trove/tests/scenario/.*$
+      - ^trove/tests/unittests/.*$
+
+- job:
+    name: trove-tempest
+    parent: devstack-tempest
+    nodeset: trove-ubuntu-jammy
+    timeout: 10800
+    required-projects: &base_required_projects
+      - openstack/trove
+      - openstack/trove-tempest-plugin
+      - openstack/tempest
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^\..+
+    vars: &base_vars
+      tox_envlist: all
+      tempest_concurrency: 1
+      devstack_localrc:
+        TEMPEST_PLUGINS: /opt/stack/trove-tempest-plugin
+        USE_PYTHON3: true
+        Q_AGENT: openvswitch
+        Q_PLUGIN: ml2
+        Q_ML2_TENANT_NETWORK_TYPE: vxlan
+        Q_ML2_PLUGIN_MECHANISM_DRIVERS: openvswitch
+        SYNC_LOG_TO_CONTROLLER: True
+        TROVE_DATASTORE_VERSION: 5.7
+        TROVE_AGENT_CALL_HIGH_TIMEOUT: 1800
+        SWIFT_LOOPBACK_DISK_SIZE: 15G
+        TROVE_MGMT_GATEWAY: "192.168.254.1"
+      devstack_local_conf:
+        post-config:
+          $TROVE_CONF:
+            DEFAULT:
+              swift_api_insecure: True
+              usage_timeout: 1800
+            network:
+              network_isolation: True
+        test-config:
+          $TEMPEST_CONFIG:
+            auth:
+              tempest_roles: ResellerAdmin
+            database:
+              database_build_timeout: 2400
+              default_datastore_versions: mysql:5.7
+      devstack_plugins:
+        trove: https://opendev.org/openstack/trove.git
+      devstack_services:
+        etcd3: false
+        cinder: true
+        c-sch: true
+        c-api: true
+        c-vol: true
+        c-bak: false
+        swift: true
+        s-account: true
+        s-container: true
+        s-object: true
+        s-proxy: true
+        tls-proxy: true
+        tempest: true
+        q-svc: true
+        q-agt: true
+        q-dhcp: true
+        q-l3: true
+        q-meta: true
+        q-ovn-metadata-agent: false
+        ovn-controller: false
+        ovn-northd: false
+      tempest_test_regex: ^trove_tempest_plugin\.tests
+      tempest_test_timeout: 3600
+      zuul_copy_output:
+        '/var/log/guest-agent-logs/': 'logs'
+
+- job:
+    name: trove-tempest-ubuntu-base
+    parent: trove-tempest
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+    vars:
+      devstack_services:
+        swift: false
+        s-account: false
+        s-container: false
+        s-object: false
+        s-proxy: false
+      tempest_test_regex: ^trove_tempest_plugin\.tests\.scenario\.test_instance_basic
+
+- job:
+    name: trove-tempest-ubuntu-backup
+    parent: trove-tempest
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+    vars:
+      devstack_localrc:
+        TROVE_ENABLE_LOCAL_REGISTRY: True
+      tempest_test_regex: ^trove_tempest_plugin\.tests\.scenario\.test_backup
+
+- job:
+    name: trove-tempest-ubuntu-replication
+    parent: trove-tempest
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+    vars:
+      devstack_localrc:
+        TROVE_ENABLE_LOCAL_REGISTRY: True
+      tempest_test_regex: ^trove_tempest_plugin\.tests\.scenario\.test_replication
+
+- job:
+    name: trove-tempest-ubuntu-base-mysql5.7
+    parent: trove-tempest-ubuntu-base
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+      - ^trove/guestagent/datastore/(postgres|mariadb)/.*$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_VERSION: 5.7
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                default_datastore_versions: mysql:5.7
+
+- job:
+    name: trove-tempest-ubuntu-backup-mysql5.7
+    parent: trove-tempest-ubuntu-backup
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+      - ^trove/guestagent/datastore/(postgres|mariadb)/.*$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_VERSION: 5.7
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                backup_wait_timeout: 1200
+                default_datastore_versions: mysql:5.7
+
+- job:
+    name: trove-tempest-ubuntu-replication-mysql5.7
+    parent: trove-tempest-ubuntu-replication
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+      - ^trove/guestagent/datastore/(postgres|mariadb)/.*$
+      - ^trove/guestagent/strategies/replication/(postgresql.*|mariadb.*)\.py$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_VERSION: 5.7
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                backup_wait_timeout: 1200
+                default_datastore_versions: mysql:5.7
+
+- job:
+    name: trove-tempest-ubuntu-base-mariadb10.4
+    parent: trove-tempest-ubuntu-base
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+      - ^trove/guestagent/datastore/(mysql.*|postgres)/.*$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_TYPE: mariadb
+          TROVE_DATASTORE_VERSION: 10.4
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                enabled_datastores: "mariadb"
+                default_datastore_versions: mariadb:10.4
+
+- job:
+    name: trove-tempest-ubuntu-backup-mariadb10.4
+    parent: trove-tempest-ubuntu-backup
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+      - ^trove/guestagent/datastore/(mysql.*|postgres)/.*$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_TYPE: mariadb
+          TROVE_DATASTORE_VERSION: 10.4
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                enabled_datastores: "mariadb"
+                default_datastore_versions: mariadb:10.4
+
+- job:
+    name: trove-tempest-ubuntu-replication-mariadb10.4
+    parent: trove-tempest-ubuntu-replication
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+      - ^trove/guestagent/datastore/(mysql.*|postgres)/.*$
+      - ^trove/guestagent/strategies/replication/(postgresql.*|mysql.*)\.py$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_TYPE: mariadb
+          TROVE_DATASTORE_VERSION: 10.4
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                enabled_datastores: "mariadb"
+                default_datastore_versions: mariadb:10.4
+
+- job:
+    name: trove-tempest-ubuntu-base-postgresql12
+    parent: trove-tempest-ubuntu-base
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+      - ^trove/guestagent/datastore/(mysql.*|mariadb)/.*$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_TYPE: postgresql
+          TROVE_DATASTORE_VERSION: 12
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                enabled_datastores: "postgresql"
+                default_datastore_versions: postgresql:12
+
+- job:
+    name: trove-tempest-ubuntu-backup-postgresql12
+    parent: trove-tempest-ubuntu-backup
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^\..+
+      - ^trove/guestagent/strategies/replication/
+      - ^trove/guestagent/datastore/(mysql.*|mariadb)/.*$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_TYPE: postgresql
+          TROVE_DATASTORE_VERSION: 12
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                enabled_datastores: "postgresql"
+                default_datastore_versions: postgresql:12
+
+- job:
+    name: trove-tempest-ubuntu-replication-postgresql12
+    parent: trove-tempest-ubuntu-replication
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^tox.ini$
+      - ^LICENSE$
+      - ^contrib/
+      - ^zuul\.d/
+      - ^backup/
+      - ^\..+
+      - ^trove/guestagent/datastore/(mysql.*|mariadb)/.*$
+      - ^trove/guestagent/strategies/replication/(mariadb.*|mysql.*)\.py$
+    vars:
+        devstack_localrc:
+          TROVE_DATASTORE_TYPE: postgresql
+          TROVE_DATASTORE_VERSION: 12
+        devstack_local_conf:
+          test-config:
+            $TEMPEST_CONFIG:
+              database:
+                enabled_datastores: "postgresql"
+                default_datastore_versions: postgresql:12
+
+- job:
+    name: publish-trove-guest-image
+    parent: publish-openstack-artifacts
+    run: playbooks/image-build/run.yaml
+    post-run: playbooks/image-build/post.yaml
+    required-projects:
+      - openstack/diskimage-builder
+      - openstack/trove
+
+- job:
+    name: trove-ubuntu-guest-image-build
+    run: playbooks/image-build/run.yaml
+    nodeset: trove-ubuntu-jammy-single
+    timeout: 3600
+    description: |
+      Build Ubuntu jammy based image only on ubuntu distro.
+    required-projects:
+      - openstack/diskimage-builder
+      - openstack/trove
+    files:
+      - ^integration/(scripts|tests)/
+    vars:
+      guest_os: ubuntu
+      guest_os_release: jammy
+      guest_username: ubuntu
+      branch: 2024.1
+      dev_mode: false
+      image_suffix: ""
+
+- job:
+    name: trove-centos8s-guest-image-build
+    run: playbooks/image-build/run.yaml
+    nodeset: trove-centos8s-single
+    timeout: 3600
+    description: |
+      Build Ubuntu jammy based image only on centos8 stream.
+    required-projects:
+      - openstack/diskimage-builder
+      - openstack/trove
+    files:
+      - ^integration/(scripts|tests)/
+    vars:
+      guest_os: ubuntu
+      guest_os_release: jammy
+      guest_username: ubuntu
+      branch: 2024.1
+      dev_mode: false
+      image_suffix: ""
+
+- job:
+    name: publish-trove-guest-image-ubuntu-jammy
+    parent: publish-trove-guest-image
+    description: |
+      Build and publish Ubuntu jammy based Trove guest image to
+      tarballs.openstack.org.
+    vars:
+      guest_os: ubuntu
+      guest_os_release: jammy
+      guest_username: ubuntu
+      branch: 2024.1
+      dev_mode: false
+      image_suffix: ""
+
+- job:
+    name: publish-trove-guest-image-ubuntu-jammy-dev
+    parent: publish-trove-guest-image
+    description: |
+      Build and publish Ubuntu jammy based Trove guest image to
+      tarballs.openstack.org.
+    vars:
+      guest_os: ubuntu
+      guest_os_release: jammy
+      guest_username: ubuntu
+      branch: 2024.1
+      dev_mode: true
+      image_suffix: "-dev"
+
+- job:
+    name: publish-trove-datastore-images
+    description: |
+      Build and publish trove datastore docker images to
+      tarballs.openstack.org.
+    run: playbooks/image-build/docker-registry.yaml
+    parent: publish-openstack-artifacts
+    post-run: playbooks/image-build/post.yaml
+    nodeset: trove-ubuntu-jammy-single
+    required-projects:
+      - openstack/trove

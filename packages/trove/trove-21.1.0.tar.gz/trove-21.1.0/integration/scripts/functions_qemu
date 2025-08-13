@@ -1,0 +1,113 @@
+#!/bin/bash
+#
+# Additional functions that would mostly just pertain to a Ubuntu + Qemu setup
+#
+
+function build_guest_image() {
+    exclaim "Actually building the image, params: $@"
+
+    local guest_os=$1
+    local guest_release=$2
+    local dev_mode=$3
+    local guest_username=$4
+    local image_output=$5
+    local image_type=${image_output##*.}
+    local working_dir=$(dirname ${image_output})
+    local root_password=${TROVE_ROOT_PASSWORD}
+
+    local trove_elements_path=${PATH_TROVE}/integration/scripts/files/elements
+    # For system-wide installs, DIB will automatically find the elements, so we only check local path
+    if [[ "${DIB_LOCAL_ELEMENTS_PATH}" ]]; then
+        export ELEMENTS_PATH=${trove_elements_path}:${DIB_LOCAL_ELEMENTS_PATH}
+    else
+        export ELEMENTS_PATH=${trove_elements_path}
+    fi
+
+    local GUEST_IMAGESIZE=${GUEST_IMAGESIZE:-5}
+    local GUEST_CACHEDIR=${GUEST_CACHEDIR:-"$HOME/.cache/image-create"}
+    sudo rm -rf ${GUEST_CACHEDIR}
+
+    export GUEST_USERNAME=${guest_username}
+    export HOST_SCP_USERNAME=${HOST_SCP_USERNAME:-$(whoami)}
+    export ESCAPED_PATH_TROVE=$(echo ${PATH_TROVE} | sed 's/\//\\\//g')
+    export DEV_MODE=${dev_mode,,}
+
+    # In dev mode, the trove guest agent needs to download trove code from
+    # trove-taskmanager host during service initialization.
+    if [[ "${DEV_MODE}" == "true" ]]; then
+        export SSH_DIR=${SSH_DIR:-"$HOME/.ssh"}
+        manage_ssh_keys
+        # sync_log_to_controller only works in dev mode
+        export SYNC_LOG_TO_CONTROLLER=${SYNC_LOG_TO_CONTROLLER:-False}
+    else
+        # set SYNC_LOG_TO_CONTROLLER to false when dev mode is false
+        export SYNC_LOG_TO_CONTROLLER=False
+    fi
+
+    TEMP=$(mktemp -d ${working_dir}/diskimage-create.XXXXXXX)
+    pushd $TEMP > /dev/null
+
+    # Prepare elements for diskimage-builder
+    export DIB_CLOUD_INIT_ETC_HOSTS="localhost"
+    local elementes="base vm"
+
+    # Only support ubuntu at the moment.
+    if [[ "${guest_os}" == "ubuntu" ]]; then
+        export DIB_RELEASE=${guest_release}
+        export DISTRO_NAME="ubuntu"
+        elementes="$elementes ubuntu-minimal"
+    fi
+
+    export DIB_CLOUD_INIT_DATASOURCES=${DIB_CLOUD_INIT_DATASOURCES:-"ConfigDrive, OpenStack"}
+    elementes="$elementes cloud-init-datasources"
+
+    elementes="$elementes pip-cache"
+    elementes="$elementes guest-agent"
+    elementes="$elementes ${guest_os}-docker"
+
+    if [[ -n ${root_password} ]]; then
+        elementes="$elementes root-passwd"
+        export DIB_PASSWORD=${root_password}
+    fi
+
+    # Build the image
+    disk-image-create -x \
+      -a amd64 \
+      -o ${image_output} \
+      -t ${image_type} \
+      --image-size ${GUEST_IMAGESIZE} \
+      --image-cache ${GUEST_CACHEDIR} \
+      $elementes
+
+    # out of $TEMP
+    popd > /dev/null
+    sudo rm -rf $TEMP
+
+    exclaim "Image ${image_output} was built successfully."
+}
+
+function clean_instances() {
+    LIST=`virsh -q list|awk '{print $1}'`
+    for i in $LIST; do sudo virsh destroy $i; done
+}
+
+# In dev mode, guest agent needs to ssh into the controller to download code.
+function manage_ssh_keys() {
+    SSH_DIR=${SSH_DIR:-"$HOME/.ssh"}
+
+    if [ -d ${SSH_DIR} ]; then
+        echo "${SSH_DIR} already exists"
+    else
+        echo "Creating ${SSH_DIR} for ${HOST_SCP_USERNAME}"
+        sudo -Hiu ${HOST_SCP_USERNAME} mkdir -m go-w -p ${SSH_DIR}
+    fi
+
+    if [ ! -f ${SSH_DIR}/id_rsa.pub ]; then
+         /usr/bin/ssh-keygen -f ${SSH_DIR}/id_rsa -q -N ""
+    fi
+
+    cat ${SSH_DIR}/id_rsa.pub >> ${SSH_DIR}/authorized_keys
+    sort ${SSH_DIR}/authorized_keys | uniq > ${SSH_DIR}/authorized_keys.uniq
+    mv ${SSH_DIR}/authorized_keys.uniq ${SSH_DIR}/authorized_keys
+    chmod 600 ${SSH_DIR}/authorized_keys
+}

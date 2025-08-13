@@ -1,0 +1,989 @@
+# variables in path
+backup_id:
+  description: |
+    The ID of the backup.
+  in: path
+  required: true
+  type: string
+configId:
+  description: |
+    The ID of the configuration group.
+  in: path
+  required: false
+  type: string
+data_store:
+  description: |
+    Name or ID of the data store.
+  in: path
+  required: false
+  type: string
+databaseName:
+  description: |
+    The name for the database.
+  in: path
+  required: false
+  type: string
+datastore_name:
+  description: |
+    The name of the data store.
+  in: path
+  required: false
+  type: string
+datastore_version_id:
+  description: |
+    The UUID of the data store version.
+  in: path
+  required: false
+  type: string
+flavorId:
+  description: |
+    The ID of the flavor.
+  in: path
+  required: false
+  type: string
+instanceId:
+  description: |
+    The ID of the database instance.
+  in: path
+  required: true
+  type: string
+parameter_name:
+  description: |
+    The name of the parameter for which to show
+    details.
+  in: path
+  required: false
+  type: string
+project_id:
+  description: |
+    The project ID of the instance owner.
+  in: path
+  required: true
+  type: string
+user_name:
+  description: |
+      The name of the user.
+  in: path
+  required: false
+  type: string
+user_project:
+  description: |
+    The project ID of the user's project.
+  in: path
+  required: true
+  type: string
+version:
+  description: |
+    Name or ID of the datastore version. If there are multiple datastore
+    versions with the same name but different version numbers, ID is needed.
+  in: path
+  required: false
+  type: string
+# variables in body
+access:
+  description: |
+    A ``access`` object defines how the database service is exposed.
+  in: body
+  required: false
+  type: object
+access_allowed_cidrs:
+  description: |
+    A list of IPv4, IPv6 or mix of both CIDRs that restrict access to the
+    database service. ``0.0.0.0/0`` is used by default if this parameter is not
+    provided.
+  in: body
+  required: false
+  type: array
+access_is_public:
+  description: |
+    Whether the database service is exposed to the public.
+  in: body
+  required: false
+  type: boolean
+active:
+  description: |
+    Whether the database version is enabled.
+  in: body
+  required: true
+  type: boolean
+active_optional:
+  description: |
+    Whether the database version is enabled.
+  in: body
+  required: false
+  type: boolean
+availability_zone:
+  description: |
+    The availability zone of the instance.
+  in: body
+  required: false
+  type: string
+backup_backend:
+  description: |
+    The storage backend of instance backups, currently only swift is supported.
+  in: body
+  required: true
+  type: string
+backup_description:
+  description: |
+    An optional description for the backup.
+  in: body
+  required: false
+  type: string
+backup_description1:
+  description: |
+    An optional description for the backup.
+  in: body
+  required: true
+  type: string
+backup_incremental:
+  description: |
+    Create an incremental backup based on the last full backup by setting this
+    parameter to 1 or 0. It will create a full backup if no existing backup
+    found.
+  in: body
+  required: false
+  type: integer
+backup_instanceId:
+  description: |
+    The ID of the instance to create backup for.
+  in: body
+  required: false
+  type: string
+backup_list:
+  description: |
+    A list of ``backup`` objects.
+  in: body
+  required: true
+  type: array
+backup_locationRef:
+  description: |
+    The URL of the backup location.
+  in: body
+  required: true
+  type: string
+backup_name:
+  description: |
+    Name of the backup.
+  in: body
+  required: true
+  type: string
+backup_parentId:
+  description: |
+    ID of the parent backup to perform an incremental backup from.
+  in: body
+  required: false
+  type: string
+backup_parentId1:
+  description: |
+    ID of the parent backup to perform an incremental backup from.
+  in: body
+  required: true
+  type: string
+backup_restore_from:
+  description: |
+    The information needed to restore a backup, including:
+
+    - ``remote_location``: The original backup data location.
+    - ``local_datastore_version_id``: The local datastore version corresponding
+      to the original backup.
+    - ``size``: The original backup size.
+  in: body
+  required: false
+  type: object
+backup_size:
+  description: |
+    Size of the backup, the unit is GB.
+  in: body
+  required: true
+  type: string
+backup_status:
+  description: |
+    Status of the backup.
+  in: body
+  required: true
+  type: string
+backup_strategy_list:
+  description: |
+    A list of ``backup_strategy`` objects.
+  in: body
+  required: true
+  type: array
+characterSet:
+  description: |
+    A set of symbols and encodings. Default is
+    ``utf8``.  For information about supported character sets and
+    collations, see `Character Sets and Collations in MySQL
+    <https://dev.mysql.com/doc/refman/5.7/en/charset-mysql.html>`_.
+  in: body
+  required: false
+  type: string
+cluster_id:
+   description: |
+     The cluster ID of an instance.
+   in: body
+   required: false
+   type: string
+collate:
+  description: |
+    A set of rules for comparing characters in a
+    character set. Default is ``utf8_general_ci``.  For information
+    about supported character sets and collations, see `Character Sets
+    and Collations in MySQL <https://dev.mysql.com/doc/refman/5.7/en
+    /charset-mysql.html>`_.
+  in: body
+  required: false
+  type: string
+configuration:
+  description: |
+    ID of the configuration group that you want to
+    attach to the instance.
+  in: body
+  required: true
+  type: string
+configuration1:
+  description: |
+    A ``configuration`` object.
+  in: body
+  required: false
+  type: object
+configuration_id:
+  description: |
+    The ID of a configuration.
+  in: body
+  required: true
+  type: string
+configuration_link_href:
+  description: |
+    The ``href`` attribute of a configuration link.
+  in: body
+  required: true
+  type: string
+configuration_link_rel:
+  description: |
+    The ``rel`` attribute of a configuration link.
+  in: body
+  required: true
+  type: string
+configuration_links:
+  description: |
+    The ``links`` object of a configuration.
+  in: body
+  required: true
+  type: array
+configuration_name:
+  description: |
+    The name of a configuration.
+  in: body
+  required: true
+  type: string
+created:
+  description: |
+    The date and time when the resource was created.
+
+    The date and time stamp format is `ISO 8601
+    <https://en.wikipedia.org/wiki/ISO_8601>`_:
+
+    ::
+
+       CCYY-MM-DDThh:mm:ss±hh:mm
+
+    For example, ``2015-08-27T09:49:58-05:00``.
+
+    The ``±hh:mm`` value, if included, is the time zone as an offset
+    from UTC. In the previous example, the offset value is ``-05:00``.
+  in: body
+  required: true
+  type: string
+database_name:
+  description: |
+    The name of a database.
+  in: body
+  required: true
+  type: string
+databases:
+  description: |
+    A ``databases`` object.
+  in: body
+  required: false
+  type: array
+datastore:
+  description: |
+    Data store type and version assigned to the configuration group.
+    Required if the default data store is not configured.
+  in: body
+  required: true
+  type: string
+datastore1:
+  description: |
+    A ``datastore`` object.
+  in: body
+  required: false
+  type: object
+datastore2:
+  description: |
+    A ``datastore`` object.
+  in: body
+  required: true
+  type: object
+datastore_name_required:
+   description: |
+     The name of a datastore.
+   in: body
+   required: true
+   type: string
+datastore_type:
+   description: |
+     The type of a datastore.
+   in: body
+   required: false
+   type: string
+datastore_type1:
+   description: |
+     The type of a datastore.
+   in: body
+   required: true
+   type: string
+datastore_version:
+  description: |
+    Name of the datastore version to use when
+    creating/updating the instance.
+  in: body
+  required: false
+  type: string
+datastore_version1:
+  description: |
+    Name or ID of a datastore version.
+  in: body
+  required: true
+  type: string
+datastore_version_id1:
+  description: |
+    The UUID of the data store version.
+  in: body
+  required: true
+  type: string
+datastore_version_name:
+  description: |
+    The name of the datastore version. Different datastore versions can have
+    the same name.
+  in: body
+  required: true
+  type: string
+datastore_version_name_optional:
+  description: |
+    The name of the datastore version. Different datastore versions can have
+    the same name.
+  in: body
+  required: false
+  type: string
+default:
+  description: |
+    When true this datastore version is created as the default in the
+    datastore. If not specified, for creating, default is false, for updating,
+    it's ignored.
+  in: body
+  required: false
+  type: boolean
+description:
+  description: |
+    New description of the configuration group.
+  in: body
+  required: true
+  type: string
+encrypted_rpc_messaging:
+  description: |
+    Whether the instance is using encrypted
+    rpm messaging feature or not.
+  in: body
+  required: false
+  type: boolean
+flavor:
+  description: |
+    A ``flavor`` object, which includes the flavor ID
+    (integer) and flavor relative links.
+  in: body
+  required: true
+  type: object
+flavor_link_href:
+  description: |
+    The ``href`` attribute of a flavor link.
+  in: body
+  required: true
+  type: string
+flavor_link_rel:
+  description: |
+    The ``rel`` attribute of a flavor link.
+  in: body
+  required: true
+  type: string
+flavor_links:
+  description: |
+    The ``links`` object of a flavor.
+  in: body
+  required: true
+  type: array
+flavorId1:
+  description: |
+    The ID of the flavor.
+  in: body
+  required: true
+  type: string
+flavorRef:
+  description: |
+    Reference (href), which is the actual URI to a
+    flavor as it appears in the list flavors response. Rather than
+    the flavor URI, you can also pass the flavor ID (integer) as the
+    ``flavorRef`` value. For example, ``1``.
+  in: body
+  required: true
+  type: string
+image_id:
+  description: |
+    The ID of an image.
+
+    Either ``image`` or ``image_tags`` needs to be specified when creating
+    datastore version.
+  in: body
+  required: false
+  type: string
+image_tags:
+  description: |
+    List of image tags.
+
+    Either ``image`` or ``image_tags`` needs to be specified when creating
+    datastore version.
+
+    If the image ID is not provided, the image can be retrieved by the image
+    tags. The tags are used for filtering as a whole rather than separately.
+    Using image tags is more flexible than ID especially when a new guest image
+    is uploaded to Glance, Trove can pick up the latest image automatically for
+    creating instances.
+
+    When updating, only specifying ``image_tags`` could remove ``image``
+    from the datastore version.
+  in: body
+  required: false
+  type: array
+instance:
+  description: |
+    An ``instance`` object.
+  in: body
+  required: true
+  type: object
+instance_fault:
+  description: |
+    The ``fault`` object of an instance.
+  in: body
+  required: false
+  type: object
+instance_fault_created:
+  description: |
+    The update timestamp of the fault message
+    for an instance.
+  in: body
+  required: true
+  type: string
+instance_fault_details:
+  description: |
+    The detail fault explanation of an instance.
+  in: body
+  required: true
+  type: string
+instance_fault_message:
+  description: |
+    The fault message of an instance.
+  in: body
+  required: true
+  type: string
+instance_hostname:
+  description: |
+    The hostname of an instance.
+  in: body
+  require: false
+  type: string
+instance_id_optional:
+  description: |
+    The ID of the database instance.
+  in: body
+  required: false
+  type: string
+instance_ip_address:
+  description: |
+    The IP address of an instance(deprecated).
+  in: body
+  require: false
+  type: string
+instance_ip_addresses:
+  description: |
+    The IP addresses of an instance, including the address type("private" or
+    "public") and IP. "network" field is added since Xena when the address type
+    is "private".
+  in: body
+  require: false
+  type: array
+instance_link_href:
+  description: |
+    The ``href`` attribute of an instance link.
+  in: body
+  required: true
+  type: string
+instance_link_rel:
+  description: |
+    The ``rel`` attribute of an instance link.
+  in: body
+  required: true
+  type: string
+instance_links:
+  description: |
+    The ``links`` object of the instance.
+  in: body
+  required: true
+  type: array
+instance_log:
+  description: |
+    A ``log`` objects.
+  in: body
+  required: true
+  type: array
+instance_logs:
+  description: |
+    A list of ``log`` objects.
+  in: body
+  required: true
+  type: array
+instance_replica_id:
+  description:
+    The ID of a replica instance.
+  in: body
+  required: true
+  type: string
+instance_replica_link_href:
+  description: |
+    The ``href`` attribute of a replica instance link.
+  in: body
+  required: true
+  type: string
+instance_replica_link_rel:
+  description: |
+    The ``rel`` attribute of a replica instance link.
+  in: body
+  required: true
+  type: string
+instance_replica_links:
+  description:
+    The ``links`` object of a replica instance.
+  in: body
+  required: true
+  type: array
+instance_replicas:
+  description: |
+    The ``replicas`` object of an instance.
+  in: body
+  required: false
+  type: array
+instance_status:
+  description: |
+    Status of the instance.
+  in: body
+  required: true
+  type: string
+instanceId1:
+  description: |
+    The ID of the database instance.
+  in: body
+  required: true
+  type: string
+instanceName:
+  description: |
+    Name of the instance.
+  in: body
+  required: false
+  type: string
+instanceName1:
+  description: |
+    Name of the instance.
+  in: body
+  required: true
+  type: string
+local_storage_used:
+  description: |
+    The used space of the ephemeral disk, in gigabytes (GB).
+  in: body
+  required: false
+  type: float
+locality:
+  description: |
+    The scheduler hint when creating underlying
+    Nova instances. Valide values are:
+    ``affinity``, ``anti-affinity``.
+  in: body
+  required: false
+  type: string
+log_container:
+  description: |
+    The object store container where the published
+    log data will be stored. Defaults to ``None``
+    before the log has been published.
+  in: body
+  required: true
+  type: string
+log_disable_action:
+  description: |
+    To disable a log type, this should always set to 1.
+  in: body
+  required: false
+  type: integer
+log_discard_action:
+  description: |
+    To discard a log type which has been published previously,
+    this should always set to 1.
+  in: body
+  required: false
+  type: integer
+log_enable_action:
+  description: |
+    To enable a log type, this should always set to 1.
+  in: body
+  required: false
+  type: integer
+log_metafile:
+  description: |
+    The log metafile location.
+  in: body
+  required: true
+  type: string
+log_name:
+  description: |
+    The name of the log.
+  in: body
+  required: true
+  type: string
+log_pending_size:
+  description: |
+    Log file size pending to be published.
+  in: body
+  required: true
+  type: string
+log_prefix:
+  description: |
+    If the log has been published, thi is the prefix location
+    of where the log data are stored. Otherwize the prefix is
+    ``None``.
+  in: body
+  required: true
+  type: string
+log_publish_action:
+  description: |
+    To publish a log type, this should always set to 1.
+  in: body
+  required: false
+  type: integer
+log_published_size:
+  description: |
+    Published size of the log.
+  in: body
+  required: true
+  type: string
+log_status:
+  description: |
+    The log status.
+  in: body
+  required: true
+  type: string
+log_type:
+  description: |
+    The type of the log.
+  in: body
+  required: true
+  type: string
+module_id:
+  description: |
+    The ID of a module.
+  in: body
+  required: true
+  type: string
+modules:
+  description: |
+    The ``modules`` object.
+  in: body
+  required: false
+  type: object
+name:
+  description: |
+    Name of the configuration group you are creating.
+  in: body
+  required: true
+  type: string
+nics:
+  description: |
+    Network interface definition for database instance. This is a list of
+    mappings for backward compatibility, but only one item is allowed. The
+    allowed keys in the mapping are: network_id, subnet_id, ip_address and
+    net-id (for backward compatibility, deprecated).
+
+    Trove will allocate port using the given information. In order to
+    successfully create database instance, either the user should make sure the
+    traffic coming through that port could access the public contaier image
+    registry(i.e. the port subnet is associated with a Neutron router), or the
+    cloud provider should be responsible for that.
+  in: body
+  required: false
+  type: array
+operating_status:
+  description: |
+    The operating status of the database service inside the Trove instance.
+  in: body
+  required: true
+  type: string
+project_uuid:
+  description: |
+    The project ID of the resource.
+  in: body
+  required: true
+  type: string
+quota_in_use:
+  description: |
+    The used quota for a resource.
+  in: body
+  required: true
+  type: integer
+quota_limit:
+  description: |
+    The limit of a resource quota.
+  in: body
+  required: true
+  type: integer
+quota_list:
+  description: |
+    A list of resource quotas.
+  in: body
+  required: true
+  type: array
+quota_reserved:
+  description: |
+    The reserved quota for a resource.
+  in: body
+  required: true
+  type: integer
+quota_resource:
+  description: |
+    The resource name.
+  in: body
+  required: true
+  type: string
+quotas:
+  description: |
+    Dictionary that defines the resources quota.
+  in: body
+  required: true
+  type: string
+region_name:
+  description: |
+    The region name of an instance.
+  in: body
+  required: false
+  type: string
+region_name2:
+  description: |
+    The region name of an instance.
+  in: body
+  required: true
+  type: string
+replica_count:
+  description: |
+    Number of replicas to create (defaults to 1).
+  in: body
+  required: false
+  type: integer
+replica_of:
+  description: |
+    ID or name of an existing instance to replicate from.
+  in: body
+  required: true
+  type: string
+replica_of_optional:
+  description: |
+    The primary instance ID of this replica.
+  in: body
+  required: false
+  type: string
+restore_point:
+  description: |
+    The ``restorePoint`` object. Use this paramter
+    to create an instance from a backup.
+  in: body
+  required: false
+  type: object
+restore_point_backupref:
+  description:
+    The backup id used from which a new instance
+    is created.
+  in: body
+  required: true
+  type: string
+root_password:
+  description: |
+    The password of the database root user(i.e. the
+    administrative user).
+  in: body
+  required: false
+  type: string
+server_id:
+   description: |
+     The ID of the underlying Nova instance for an instance.
+   in: body
+   required: false
+   type: string
+service_status_updated:
+  description: |
+    The date and time when the database service status was updated. This field
+    can be used to validate if the 'HEALTHY' status is stale or not.
+  in: body
+  required: true
+  type: string
+shard_id:
+   description: |
+     The shard ID of an instance.
+   in: body
+   required: false
+   type: string
+slave_of:
+  description: |
+    To detach a replica, set ``slave_of`` to null. Deprecated in favor of
+    ``replica_of``
+  in: body
+  required: false
+  type: string
+swift_container:
+  description: |
+    User defined swift container name. When creating backups, the swift
+    container is created automatically if does not exist.
+  in: body
+  required: false
+  type: string
+swift_container_required:
+  description: User defined swift container name.
+  in: body
+  required: true
+  type: string
+tenant_id:
+  description: |
+    The ID of a tenant.
+  in: body
+  required: false
+  type: string
+updated:
+  description: |
+    The date and time when the resource was updated.
+
+    The date and time stamp format is `ISO 8601
+    <https://en.wikipedia.org/wiki/ISO_8601>`_:
+
+    ::
+
+       CCYY-MM-DDThh:mm:ss±hh:mm
+
+    The ``±hh:mm`` value, if included, is the time zone as an offset
+    from UTC.
+
+    For example, ``2015-08-27T09:49:58-05:00``.
+
+    The UTC time zone is assumed.
+  in: body
+  required: true
+  type: string
+user_database_name:
+  description: |
+    The name of a database which the user
+    can access.
+  in: body
+  required: true
+  type: string
+user_databases:
+  description: |
+    The ``databases`` object. This is a list
+    of databases which the user can access.
+  in: body
+  required: false
+  type: array
+user_host:
+  description: |
+    A host allowed for a user.
+  in: body
+  required: false
+  type: string
+user_name1:
+  description: |
+    The name of a user.
+  in: body
+  required: true
+  type: string
+user_password:
+  description: |
+    The password of a user.
+  in: body
+  required: true
+  type: string
+users:
+  description: |
+    A ``users`` object.
+  in: body
+  required: false
+  type: array
+values:
+  description: |
+    Dictionary that lists configuration parameter
+    names and associated values.
+  in: body
+  required: true
+  type: string
+version_number:
+  description: |
+    The version number for the database. In container based trove instance
+    deployment, the version number is the same as the container image tag,
+    e.g. for MySQL, a valid version number is 5.7.30
+  in: body
+  required: false
+  type: string
+volume:
+  description: |
+    A ``volume`` object.
+  in: body
+  required: false
+  type: object
+volume_id:
+  description: |
+    The ID of a volume.
+  in: body
+  required: false
+  type: string
+volume_size:
+  description: |
+    The volume size, in gigabytes (GB). A valid value
+    is from 1 to 50(this limit is controlled by the
+    configuration ``max_accepted_volume_size``).
+  in: body
+  required: true
+  type: integer
+volume_size2:
+  description: |
+    The volume size, in gigabytes (GB).
+  in: body
+  required: true
+  type: integer
+volume_type:
+  description: |
+    The volume type to use. You can list the
+    available volume types on your system by using the ``cinder type-
+    list`` command.  If you want to specify a volume type, you must
+    also specify a volume size.
+  in: body
+  required: false
+  type: string
+volume_used:
+  description: |
+    The used space of the volume, in gigabytes (GB).
+  in: body
+  required: false
+  type: float

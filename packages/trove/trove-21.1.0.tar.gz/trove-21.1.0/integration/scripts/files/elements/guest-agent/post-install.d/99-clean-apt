@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# CONTEXT: GUEST during CONSTRUCTION as ROOT
+# PURPOSE: Delete contents of apt cache on guest (saves image disk space)
+
+set -e
+set -o xtrace
+
+apt-get --assume-yes purge --auto-remove

@@ -1,0 +1,11 @@
+- name: Run trovestack
+  become: true
+  become_user: stack
+  shell: |
+    export BRIDGE_IP=10.1.0.1
+    export DEST={{devstack_base_dir}}
+    export PATH_DEVSTACK_SRC=$DEST/devstack
+    export TROVE_RESIZE_TIME_OUT={{trove_resize_time_out}}
+
+    cd $DEST/trove
+    tox -etrovestack -vv -- gate-tests {{trove_test_datastore}} {{trove_test_group}} {{trove_test_datastore_version}}

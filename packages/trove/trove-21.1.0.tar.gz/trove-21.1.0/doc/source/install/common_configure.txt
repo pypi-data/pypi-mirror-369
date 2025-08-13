@@ -1,0 +1,95 @@
+2. In the ``/etc/trove`` directory, edit the ``trove.conf`` file, here is an example:
+
+    .. code-block:: ini
+
+        [DEFAULT]
+        network_driver = trove.network.neutron.NeutronDriver
+        management_networks = ef7541ad-9599-4285-878a-e0ab62032b03
+        management_security_groups = d0d797f7-11d4-436e-89a3-ac8bca829f81
+        cinder_volume_type = lvmdriver-1
+        nova_keypair = trove-mgmt
+        default_datastore = mysql
+        taskmanager_manager = trove.taskmanager.manager.Manager
+        trove_api_workers = 5
+        transport_url = rabbit://stackrabbit:password@192.168.1.34:5672/
+        control_exchange = trove
+        reboot_time_out = 300
+        usage_timeout = 900
+        agent_call_high_timeout = 1200
+        use_syslog = False
+        debug = True
+
+        [keystone_authtoken]
+        memcached_servers = localhost:11211
+        cafile = /devstack/stack/data/ca-bundle.pem
+        project_domain_name = Default
+        project_name = service
+        user_domain_name = Default
+        password = password
+        username = trove
+        auth_url = http://192.168.1.34/identity
+        auth_type = password
+
+        [service_credentials]
+        auth_url = http://192.168.1.34/identity/v3
+        region_name = RegionOne
+        project_name = service
+        password = password
+        project_domain_name = Default
+        user_domain_name = Default
+        username = trove
+
+        [database]
+        connection = mysql+pymysql://root:password@127.0.0.1/trove?charset=utf8
+
+        [mariadb]
+        tcp_ports = 3306,4444,4567,4568
+
+        [mysql]
+        tcp_ports = 3306
+
+        [postgresql]
+        tcp_ports = 5432
+
+3. Verify that the ``api-paste.ini`` file is present in ``/etc/trove``.
+
+   If the file is not present, you can get it from this
+   `location <https://opendev.org/openstack/trove/raw/branch/master/etc/trove/api-paste.ini>`__.
+
+4. Edit the ``/etc/trove/trove-guestagent.conf`` file
+   so that future trove guests can connect to your OpenStack environment, here
+   is an example:
+
+   .. code-block:: ini
+
+      [DEFAULT]
+      log_file = trove-guestagent.log
+      log_dir = /var/log/trove/
+      ignore_users = os_admin
+      control_exchange = trove
+      transport_url = rabbit://stackrabbit:password@172.24.5.1:5672/
+      command_process_timeout = 60
+      use_syslog = False
+      debug = True
+
+      [service_credentials]
+      auth_url = http://192.168.1.34/identity/v3
+      region_name = RegionOne
+      project_name = service
+      password = password
+      project_domain_name = Default
+      user_domain_name = Default
+      username = trove
+
+5. Populate the trove database you created earlier in this procedure:
+
+   .. code-block:: console
+
+      # su -s /bin/sh -c "trove-manage db_sync" trove
+        ...
+        2016-04-06 22:00:17.771 10706 INFO trove.db.sqlalchemy.migration [-]
+        Upgrading mysql+pymysql://trove:dbaasdb@controller/trove to version latest
+
+   .. note::
+
+      Ignore any deprecation messages in this output.
