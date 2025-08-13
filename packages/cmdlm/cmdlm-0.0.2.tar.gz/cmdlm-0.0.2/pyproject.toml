@@ -1,0 +1,68 @@
+[project]
+name = "cmdlm"
+version = "0.0.2"
+description = "Simple CLI tool to command and use langauge models from the command line"
+authors = [{ name = "AI-4-ALL", email = "ai4all2505@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "aiohttp>=3.12.15",
+    "click>=8.2.1",
+    "cryptography>=45.0.5",
+    "gitingest>=0.3.0",
+    "litellm>=1.64.1",
+    "prompt-toolkit>=3.0.51",
+    "pyperclip>=1.9.0",
+    "requests>=2.32.4",
+    "rich>=14.1.0",
+    "gnureadline>=8.2.13,<9.0.0 ; sys_platform != 'win32'",
+    "pyreadline3>=3.4.1,<4.0.0 ; sys_platform == 'win32'",
+]
+
+[project.scripts]
+cmdlm = "cmdlm.cli.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5,<9",
+    "black>=25.1.0,<26",
+    "isort>=6.0.1,<7",
+    "flake8>=7.1.2,<8",
+    "mypy>=1.15.0,<2",
+    "ipykernel>=6.29.5,<7",
+    "pytest-cov>=6.0.0,<7",
+    "pytest-mock>=3.14.0,<4",
+    "pre-commit>=4.2.0,<5",
+    "pytest-benchmark>=5.1.0,<6",
+    "memory-profiler>=0.61.0,<0.62",
+    "mkdocs>=1.6.1,<2",
+    "mkdocs-material>=9.6.9,<10",
+    "mkdocstrings>=0.29.0,<0.30",
+    "ipywidgets>=8.1.7,<9",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/cmdlm"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/cmdlm"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/cmdlm" = "cmdlm"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test"]
+python_functions = ["test_*"]
+addopts = "-v --cov=cmdlm --cov-report=term-missing"
