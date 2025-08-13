@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cxgparser"
+dynamic = ["version"]
+description = "A CxG Induction Parser."
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = [
+    'cxglearner>=1.3.3b0'
+]
+authors = [
+    { name = "Lvxiaowei Xu", email = "xlxw@zju.edu.cn" },
+    { name = "Yaowen Xu", email = "yaoxu@zju.edu.cn" },
+    { name = "Zhilin Gong", email = "zhilingong@gmail.com" },
+    { name = "Anpeng Wu", email = "anpwu@zju.edu.cn" },
+    { name = "Ming Cai", email = "cm@zju.edu.cn" },
+]
+
+[project.urls]
+Repository = "https://github.com/CxGrammar/CxGParser"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"cxgparser" = ["resources/*", "resources/**/*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "cxgparser.version.VERSION" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["app*", "constructicon*", "scripts*", "cache*", "build*", "dist*", "logs*"]
+
+[tool.pytest.ini_options]
+addopts = "-s --pdb"
+testpaths = "tests/"
+python_classes = ["Test*", "*Test"]
+log_format = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+log_level = "DEBUG"
+
+
+[project.scripts]
+cxgparser = "cxgparser.cxgparser:main"
+
+[project.optional-dependencies]
+torch = [
+    "torch>=2.6.0"
+]
