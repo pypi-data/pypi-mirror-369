@@ -1,0 +1,72 @@
+[project]
+name = "pybuoy"
+version = "0.5.9"
+authors = [{ name = "Kyle J. Burda", email = "kylejbdev@gmail.com" }]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+]
+description = "Python wrapper for NOAA and NDBC REST web services."
+documentation = "https://pybuoy.readthedocs.io"
+include = ["LICENSE"]
+keywords = ["NDBC", "NOAA", "api", "buoy", "weather", "wrapper"]
+license = "GPL-3.0-or-later"
+readme = "README.rst"
+requires-python = ">=3.11"
+
+[tool.poetry.urls]
+"Source Code" = "https://github.com/clairBuoyant/pybuoy"
+"Bug Tracker" = "https://github.com/clairBuoyant/pybuoy/issues"
+
+[tool.poetry.dependencies]
+lxml = ">=6.0,<7.0"
+requests = "^2.32.4"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.8"
+mypy = "^1.17.1"
+pre-commit = "^4.3.0"
+pytest = "^8.4.1"
+types-requests = "^2.32.4"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+furo = ">=2025.7.19"
+Sphinx = "^8.2.3"
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".github",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".venv",
+    "dist",
+    "htmlcov",
+]
+line-length = 88
+target-version = "py311"
+
+[tool.mypy]
+namespace_packages = true
+explicit_package_bases = true
+exclude = '''
+(
+  /(
+    \.git
+    | dist
+    | docs/source/conf.py
+    | .venv
+  )/
+)
+'''
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
