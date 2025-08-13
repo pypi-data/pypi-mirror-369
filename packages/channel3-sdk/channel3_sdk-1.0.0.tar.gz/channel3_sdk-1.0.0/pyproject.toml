@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "channel3-sdk"
+version = "1.0.0"
+description = "The official Python SDK for Channel3"
+authors = ["Channel3 <alex@trychannel3.com>"]
+readme = "README.md"
+license = "MIT"
+packages = [{ include = "channel3_sdk" }]
+repository = "https://github.com/channel3-ai/sdk-python"
+keywords = ["ai", "shopping", "ecommerce", "search", "api"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+requests = "^2.31.0"
+httpx = ">=0.23.0,<0.29.0"
+attrs = ">=22.2.0"
+python-dateutil = "^2.8.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+black = "^23.0.0"
+isort = "^5.12.0"
+mypy = "^1.7.0"
+openapi-python-client = "==0.25.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
