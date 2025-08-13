@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: robotframework-cnpjgenerator
+Version: 1.0.0
+Summary: Biblioteca Robot Framework para geração e validação de CNPJs
+Home-page: https://github.com/seu-usuario/robotframework-cnpjgenerator
+Author: Seu Nome
+Author-email: seu.email@example.com
+Project-URL: Documentation, https://seu-usuario.github.io/robotframework-cnpjgenerator/
+Project-URL: Source, https://github.com/seu-usuario/robotframework-cnpjgenerator
+Keywords: robotframework testing brazil cnpj generator
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Testing
+Classifier: Framework :: Robot Framework
+Classifier: Framework :: Robot Framework :: Library
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: robotframework>=4.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Biblioteca Robot Framework CNPJGenerator
+
+Biblioteca para geração e validação de CNPJs em testes automatizados com Robot Framework.
+
+## Instalação
+
+```bash
+pip install robotframework-cnpjgenerator
+```
+
+## Uso Básico
+
+```robotframework
+*** Settings ***
+Library    cnpjgenerator.CNPJGenerator
+...    safe_prefixes=12345678,87654321
+...    blocked_prefixes=99999999
+
+*** Test Cases ***
+Gerar CNPJ Válido
+    ${cnpj} =    Generate Safe CNPJ
+    ${valid} =    Validate CNPJ    ${cnpj}
+    Should Be True    ${valid}
+```
+
+## Documentação Completa
+
+[Ver documentação completa](https://seu-usuario.github.io/robotframework-cnpjgenerator/)
