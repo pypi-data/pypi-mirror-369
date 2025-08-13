@@ -1,0 +1,93 @@
+[tool.poetry]
+name = "orcalib"
+version = "0.0.98"
+description = "Orca Core Library"
+license = "Apache-2.0"
+authors = ["Orca DB Inc. <dev-rel@orcadb.ai>"]
+readme = "README.md"
+packages = [{ include = "orcalib" }]
+
+[tool.poetry.dependencies]
+python = "^3.12,<3.13"
+datasets = "^3.1.0"
+matplotlib = "^3.9.2"
+orjson = "^3.10.11"
+pillow = "^10.0.0"
+plotly = "^5.24.1"
+prettytable = "^3.12.0"
+pymilvus = "2.5.4"
+scikit-learn = "^1.5.2"
+# These versions are pinned to resolve an issue with SentenceTransformerTrainer.compute_loss
+# https://discuss.huggingface.co/t/typeerror-sentencetransformertrainer-compute-loss-got-an-unexpected-keyword-argument-num-items-in-batch/114298
+sentence-transformers = "4.1.0"
+transformers = { extras = ["torch"], version = "4.52.4" }
+einops = "^0.8.0"
+s3fs = "^2024.9.0"
+gcsfs = "^2024.9.0"
+uuid-utils = "^0.10.0"
+ts2vec = "^0.1"
+umap-learn = "^0.5.7"
+numpy = "^2.1.0"
+leidenalg = "^0.10.2"
+igraph = "^0.11.8"
+pydantic-ai-slim = { extras = ["anthropic", "openai"], version = "^0.4.10" }
+faiss-cpu = "^1.10.0"
+optuna = "^4.3.0"
+hdbscan = "^0.8.40"
+networkx = "^3.4.2"
+# torch 2.6.0 has a bug for MPS (macOS GPU) so we lock the version to 2.5.1 for now
+torch = "2.5.1"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.29.0"
+pyright = "^1.1.399"
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.3"
+pytest-env = "^1.0.1"
+pytest-profiling = "^1.8.1"
+pytest-cov = "^6.0.0"
+poethepoet = "^0.31.1"
+pytest-xdist = "^3.6.1"
+ipykernel = "^6.29.5"
+types-networkx = "^3.4.2"
+
+# TODO: Use this once poetry 2.0.0 is released https://github.com/python-poetry/poetry/issues/9448
+# [tool.poetry.requires-plugins]
+# poethepoet = { extras = ["poetry-plugin"], version = "^0.31.0" }
+
+[tool.poe]
+poetry_command = ""
+
+[tool.poe.tasks]
+test = "pytest"
+typecheck = "pyright"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["./orcalib/**"]
+
+[tool.black]
+line-length = 120
+target-version = ["py312"]
+
+[tool.isort]
+profile = "black"
+known_first_party = ["orcalib"]
+
+[tool.pytest]
+testpaths = ["orcalib/rac/**test.py", "tests/"]
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)s] %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+filterwarnings = ["ignore::DeprecationWarning"]
+addopts = "--color=yes -s -n 0 --dist loadscope"
+markers = ["asyncio: marks tests as asyncio)", "serial"]
