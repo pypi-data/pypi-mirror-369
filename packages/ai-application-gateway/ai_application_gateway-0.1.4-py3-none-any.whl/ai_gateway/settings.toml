@@ -1,0 +1,183 @@
+[default]
+debug = false
+listen_host = '0.0.0.0'
+listen_port = 8008
+is_reload = false
+workers = 4
+
+[default.system]
+url = "http://localhost:8008"
+etf_url = "http://localhost:8010"
+
+[default.swagger]
+enable = true
+
+[default.auth]
+# 协同部、财富委、信息技术中心、资管子、CAP平台
+api_key = { "xtb" = "fxHMREdXot6PDeWOV62TWyNHBnG8ZM9TLRaXuaXmN92+bGyl2lNUEJTW", "cfw" = "8z7q9o0lehdT8h7QELKGTklAGi3jKoRfYuFRfffiSRdAF3+cLvG4fNmg", "xxjszx"="X6UpkSdGlqvN6LsB6pJshlxXEI2u2YPksYWN+ij8kssya86DFJKC5XsNDg0ncC+Y", "zgz" = "fxHMREdXot6PDeWOV62TWyNHBnG8ZM9TLRaXuaXmN92+bGyl2lNUEJTW", "cap" = "l73V+zYFGJeqYitscI1Vn1wniOu0BjRKvPVCqj+U5PLNTw03F4EgXqDxNehnYDUz" }
+secret_key = "@format {env[SECRET_KEY]}"
+algorithm = "HS256"
+expire_day = -1 # -1表示永不过期
+enable = true
+
+[default.logging]
+enable_file = true  # true表示输出的日志文件，false表示只输出到控制台
+
+# 接口日志写入
+[default.interface_log]
+database=true   # 写入数据库
+elasticsearch=true  # 写入 ES
+
+[default.database]
+db_type = "oceanbase"
+#db_type = "mysql"
+
+[default.mysql]
+host = "localhost"
+port = 3306
+user = "ai"
+password = "@format {env[MYSQL_PASSWORD]}"
+database = "ai-application-gateway"
+pool_size = 100
+max_overflow = 50
+
+[default.oceanbase]
+host = "172.23.119.51"
+port = 2883
+user = "obuser@AAGATEWAY_DEV#obtest40"
+password = "@format {env[OB_PASSWORD]}"
+database = "ai-application-gateway"
+#tenant = "sys"  # OceanBase 特有配置
+#cluster = "cluster1"  # OceanBase 特有配置
+pool_size = 100
+max_overflow = 50
+
+[default.redis]
+host = "redis-cluster"
+port = 6379
+password = "@format {env[REDIS_PASSWORD]}"
+database = 0 # 集群模式下强制使用数据库 0
+cluster = true # 集群模式
+
+[default.es]
+enable = false
+ai_gateway_api_logs_index = "ai_gateway_api_logs"
+# K8s上用：
+url = "http://elasticsearch:9200"
+# 云桌面配置文件中使用地址：
+# url = "http://elastic.citicsinfo.com:80"
+user = ""
+password = "@format {env[ELASTICSEARCH_PASSWORD]}"
+analyzer = "ik_max_word"
+search_analyzer = "ik_smart"
+hybrid = "hybrid"
+knn_boost = 0.95
+
+
+[default.minio]
+endpoint = "http://jdcsi-s3.citicsinfo.com"
+access_key = "@format {env[MINIO_ACCESS_KEY]}"
+secret_key = "@format {env[MINIO_SECRET_KEY]}"
+region = ""
+bucket = "aagateway"
+secure = false
+
+[default.llm]
+url = "http://ai-api.citicsinfo.com/v1/chat/completions"
+default_model = "qwen25"
+model_list = ["qwen-chat", "qwen2", "qwen25", "qwen-110", "gpt-4o", "citics-large", "citics-medium"]
+api_key = "@format {env[CITICS_LLM_API_KEY]}"
+retry_count = 1
+
+# 商机
+[default.opportunity]
+# 商机订阅审批
+opportunity_subscribable_email_approve = true
+# 商机订阅审批 - 发送审批通知邮件
+opportunity_subscribable_email_approve_send = true
+# 商机订阅审批 - 主题
+opportunity_subscribable_email_approve_subject = "商机挖掘：订阅审批通知"
+# 测试邮箱
+opportunity_subscribable_email_approve_send_test_email = ""
+
+# 商机 ES
+[default.opportunity.es]
+enable = true
+#stock_index = "stock_index_test" # 我建的测试索引
+stock_index = "stock_index"
+#url = "http://ai-elastic.citicsinfo.com:80" 测试环境
+#k8s上用，ns外访问：172.22.162.199:9200
+url = "http://elasticsearch-master.aipaas-business-oppo-mining:9200"
+user = "elastic"
+password = "@format {env[OPPORTUNITY_ELASTICSEARCH_PASSWORD]}"
+
+# 商机 OceanBase
+[default.opportunity.db]
+host = "10.80.138.38"
+port = 28830
+user = "cap@AIPro#obcloud01"
+password = "@format {env[OPPORTUNITY_DB_PASSWORD]}"
+database = "intf_dm"
+pool_size = 100
+max_overflow = 50
+comp_ann_tablename = "business_opportunities"
+ashare_companies_tabename = "ashare_companies"
+
+# 通用类应用数据库连接（支持多套，例如传入：opportunity - 代表商机）：用户扩展、收藏、订阅
+[default.common]
+db = ["opportunity.db"]
+
+# 分红数据库类型
+[default.dividend.database]
+#db_type = "oracle"
+#db_type = "oceanbase"
+db_type = "oceanbase_prog"
+
+# 分红生产数据库 oceanbase_prog
+[default.dividend.oceanbase_prog.db]
+host = "172.21.138.41"
+port = 2883
+user = "OBUSER@SERVICE:MCAPOS_PROD_SVC"
+password = "@format {env[DIVIDEND_PROG_OB_DB_PASSWORD]}"
+database = "ashare_dividend"
+pool_size = 100
+max_overflow = 50
+
+# 分红测试数据库 OceanBase
+[default.dividend.oceanbase.db]
+host = "172.23.119.51"
+port = 2883
+user = "obuser@AAGATEWAY_DEV#obtest40"
+password = "@format {env[DIVIDEND_OB_DB_PASSWORD]}"
+database = "ashare_dividend"
+pool_size = 100
+max_overflow = 50
+
+# 分红 Oracle
+[default.dividend.oracle.db]
+host = "10.23.120.89"
+port = 1521
+user = "ai_reader"
+password = "@format {env[DIVIDEND_ORACLE_DB_PASSWORD]}"
+database = "cfgldb"
+pool_size = 100
+max_overflow = 500
+
+[default.dividend]
+ashare_dvd_his_table = "t_dbm_lc_ashare_dvd_his"
+ashare_dvd_ind_listed_table = "t_dbm_lc_ashare_dvd_ind_listed"
+industries_class_table = "t_dbm_lc_industries_class"
+
+[default.scheduler]
+#send_email_opportunity_cron = "0 0 1 * * *"    # 秒(0) 分(0) 时(1) 日(*) 月(*) 周(*)
+#send_email_opportunity_cron = "*/5 * * * * *"  # 每隔5秒执行一次
+#send_email_opportunity_cron = "0 */1 * * * *"  # 每隔1分钟执行一次
+send_email_opportunity_cron = ""  # 永远为空表示不会执行
+
+# CAP平台
+[default.cap]
+url = "http://cap-backend-app.aipaas-cap:8080"
+# 通用邮件发送接口
+send_email_api = "/v2/3rd/mail_notice/send_mail"
+# 商机发掘 邮件通知 API_KEY
+niche_email_api_key = "@format {env[NICHE_EMAIL_API_KEY]}"
