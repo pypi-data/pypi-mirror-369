@@ -1,0 +1,21 @@
+[project]
+name = "iflow-mcp_jmeter-mcp-server"
+version = "0.1.0"
+description = "JMeter MCP Server"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.6.0",
+]
+
+[project.scripts]
+jmeter-mcp-server = "main:main"
+
+[tool.setuptools]
+packages = ["analyzer"]
+py-modules = ["main", "jmeter_server", "windsurf_db_reader", "windsurf_db_reader_alternative"]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
