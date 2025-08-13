@@ -1,0 +1,217 @@
+{
+  "test_summary": {
+    "workflows_created": 5,
+    "workflows_completed": 5,
+    "messages_processed": 5,
+    "messages_failed": 1,
+    "congestion_events": 0,
+    "load_balance_decisions": 9,
+    "throttle_actions": 0
+  },
+  "node_statistics": {
+    "node_1": {
+      "workflow_manager": {
+        "node_id": "node_1",
+        "active_workflows": 0,
+        "total_workflows": 1,
+        "statistics": {
+          "workflows_created": 1,
+          "workflows_completed": 1,
+          "workflows_failed": 0,
+          "workflows_timeout": 0,
+          "messages_processed": 1,
+          "messages_failed": 0
+        },
+        "configuration": {
+          "max_workflows": 1000,
+          "default_timeout": 300.0,
+          "cleanup_interval": 60.0
+        }
+      },
+      "congestion_detector": {
+        "node_id": "node_1",
+        "congestion_level": "NORMAL",
+        "congestion_score": 0.0,
+        "current_rate_limit": 100.0,
+        "current_delay": 0.01,
+        "metrics": {
+          "avg_latency": 0.0,
+          "queue_depth": 0,
+          "error_rate": 0.0,
+          "throughput": 0.0
+        },
+        "last_adjustment": 1748258014.8309622,
+        "statistics": {
+          "congestion_events": 0,
+          "throttle_actions": 0,
+          "messages_dropped": 0,
+          "total_delay_added": 0.0
+        }
+      },
+      "load_balancer": {
+        "node_id": "node_1",
+        "default_strategy": "ADAPTIVE",
+        "total_nodes": 2,
+        "available_nodes": 2,
+        "sticky_sessions": 0,
+        "routing_rules": 0,
+        "success_rate": 100.0,
+        "statistics": {
+          "total_routes": 9,
+          "successful_routes": 9,
+          "failed_routes": 0,
+          "failover_routes": 0,
+          "routes_by_strategy": {
+            "ADAPTIVE": 9
+          },
+          "routes_by_node": {
+            "node_2": 3,
+            "node_3": 6
+          }
+        },
+        "node_distribution": {
+          "node_2": 3,
+          "node_3": 6
+        },
+        "strategy_distribution": {
+          "ADAPTIVE": 9
+        }
+      }
+    },
+    "node_2": {
+      "workflow_manager": {
+        "node_id": "node_2",
+        "active_workflows": 0,
+        "total_workflows": 2,
+        "statistics": {
+          "workflows_created": 2,
+          "workflows_completed": 2,
+          "workflows_failed": 0,
+          "workflows_timeout": 0,
+          "messages_processed": 2,
+          "messages_failed": 0
+        },
+        "configuration": {
+          "max_workflows": 1000,
+          "default_timeout": 300.0,
+          "cleanup_interval": 60.0
+        }
+      },
+      "congestion_detector": {
+        "node_id": "node_2",
+        "congestion_level": "NORMAL",
+        "congestion_score": 0.08478138136615437,
+        "current_rate_limit": 100.0,
+        "current_delay": 0.01,
+        "metrics": {
+          "avg_latency": 230.60460455384793,
+          "queue_depth": 52,
+          "error_rate": 0.0,
+          "throughput": 0.0
+        },
+        "last_adjustment": 1748258014.8356867,
+        "statistics": {
+          "congestion_events": 0,
+          "throttle_actions": 0,
+          "messages_dropped": 0,
+          "total_delay_added": 0.0
+        }
+      },
+      "load_balancer": {
+        "node_id": "node_2",
+        "default_strategy": "ADAPTIVE",
+        "total_nodes": 2,
+        "available_nodes": 2,
+        "sticky_sessions": 0,
+        "routing_rules": 0,
+        "success_rate": 0.0,
+        "statistics": {
+          "total_routes": 0,
+          "successful_routes": 0,
+          "failed_routes": 0,
+          "failover_routes": 0,
+          "routes_by_strategy": {},
+          "routes_by_node": {}
+        },
+        "node_distribution": {},
+        "strategy_distribution": {}
+      }
+    },
+    "node_3": {
+      "workflow_manager": {
+        "node_id": "node_3",
+        "active_workflows": 0,
+        "total_workflows": 2,
+        "statistics": {
+          "workflows_created": 2,
+          "workflows_completed": 2,
+          "workflows_failed": 0,
+          "workflows_timeout": 0,
+          "messages_processed": 2,
+          "messages_failed": 0
+        },
+        "configuration": {
+          "max_workflows": 1000,
+          "default_timeout": 300.0,
+          "cleanup_interval": 60.0
+        }
+      },
+      "congestion_detector": {
+        "node_id": "node_3",
+        "congestion_level": "NORMAL",
+        "congestion_score": 0.0,
+        "current_rate_limit": 100.0,
+        "current_delay": 0.01,
+        "metrics": {
+          "avg_latency": 0.0,
+          "queue_depth": 0,
+          "error_rate": 0.0,
+          "throughput": 0.0
+        },
+        "last_adjustment": 1748258014.8401935,
+        "statistics": {
+          "congestion_events": 0,
+          "throttle_actions": 0,
+          "messages_dropped": 0,
+          "total_delay_added": 0.0
+        }
+      },
+      "load_balancer": {
+        "node_id": "node_3",
+        "default_strategy": "ADAPTIVE",
+        "total_nodes": 2,
+        "available_nodes": 2,
+        "sticky_sessions": 0,
+        "routing_rules": 0,
+        "success_rate": 0.0,
+        "statistics": {
+          "total_routes": 0,
+          "successful_routes": 0,
+          "failed_routes": 0,
+          "failover_routes": 0,
+          "routes_by_strategy": {},
+          "routes_by_node": {}
+        },
+        "node_distribution": {},
+        "strategy_distribution": {}
+      }
+    }
+  },
+  "component_health": {
+    "node_1": {
+      "workflow_manager_running": true,
+      "congestion_detector_running": true,
+      "load_balancer_running": true
+    },
+    "node_2": {
+      "workflow_manager_running": true,
+      "congestion_detector_running": true,
+      "load_balancer_running": true
+    },
+    "node_3": {
+      "workflow_manager_running": true,
+      "congestion_detector_running": true,
+      "load_balancer_running": true
+    }
+  }
+}

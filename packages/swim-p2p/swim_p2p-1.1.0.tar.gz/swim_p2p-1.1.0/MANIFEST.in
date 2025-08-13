@@ -1,0 +1,73 @@
+# MANIFEST.in - Controls which files are included in the source distribution
+
+# Include essential project files
+include LICENSE
+include README.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include pyproject.toml
+
+# Include examples (only if they exist)
+recursive-include examples *.py
+
+# Include test files (for source distribution)
+recursive-include tests *.py *.json
+
+# Include type information
+include src/swim/py.typed
+
+# Exclude development and build artifacts
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude .pytest_cache
+global-exclude .mypy_cache
+global-exclude .coverage
+global-exclude htmlcov
+global-exclude .tox
+global-exclude .nox
+
+# Exclude editor and IDE files
+global-exclude .vscode
+global-exclude .idea
+global-exclude *.swp
+global-exclude *.swo
+global-exclude *~
+global-exclude .DS_Store
+global-exclude Thumbs.db
+
+# Exclude version control
+global-exclude .git
+global-exclude .gitignore
+global-exclude .gitattributes
+
+# Exclude build directories
+global-exclude build
+global-exclude dist
+global-exclude *.egg-info
+
+# Exclude temporary files
+global-exclude tmp
+global-exclude temp
+global-exclude .tmp
+global-exclude .temp
+
+# Exclude log files
+global-exclude *.log
+global-exclude logs
+
+# Exclude environment files
+global-exclude .env
+global-exclude .env.*
+global-exclude venv
+global-exclude env
+
+# Prune unwanted directories
+prune .git
+prune .pytest_cache
+prune .mypy_cache
+prune __pycache__
+prune *.egg-info
+prune build
+prune dist
