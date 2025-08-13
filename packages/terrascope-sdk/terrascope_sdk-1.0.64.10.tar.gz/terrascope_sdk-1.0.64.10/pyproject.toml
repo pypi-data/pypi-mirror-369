@@ -1,0 +1,54 @@
+[build-system]
+requires = [
+    "setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "terrascope-sdk"
+
+version = "1.0.64.10"
+
+authors = [
+    { name = "Orbital Insight" },
+]
+description = "A software development kit for developing projects on TerraScope"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = ["Orbital Insight", "OI", "SDK", "terrascope", "terrascope-sdk", "API", "terrascope-api"]
+
+dependencies = [
+    "grpcio-tools",
+    "pandas",
+    "numpy",
+    "wget",
+    "h3",
+    "geojson",
+    "chardet",
+    "click",
+    "pyyaml",
+    "geopandas",
+    "pytz",
+    "shapely",
+    "tabulate",
+    "timezonefinder",
+    "terrascope-api>=1.0.64.9",
+    "boto3"
+]
+
+[project.urls]
+"Readme" = "https://terrascope.readme.io/docs"
+
+[tool.setuptools.packages]
+find = { }
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-asyncio", "build", "twine", "flake8", "grip"]
+
+[project.scripts]
+ts = "terrascope.cli.ts:main"
