@@ -1,0 +1,194 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hayhooks"
+dynamic = ["version"]
+description = 'Grab and deploy Haystack pipelines'
+readme = "README.md"
+requires-python = ">=3.9,<3.13"
+license = "Apache-2.0"
+keywords = []
+authors = [
+  { name = "Massimiliano Pippi", email = "mpippi@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "haystack-ai>=2.11.0",
+  "fastapi[standard]",
+  "typer",
+  "uvicorn",
+  "rich",
+  "requests",
+  "python-multipart",
+  "loguru",
+  "pydantic-settings",
+  "python-dotenv",
+  "docstring-parser",
+]
+
+[project.optional-dependencies]
+mcp = [
+  "mcp>=1.8.0 ; python_version >= '3.10'",
+]
+
+[project.urls]
+Documentation = "https://github.com/unknown/hayhooks#readme"
+Issues = "https://github.com/unknown/hayhooks/issues"
+Source = "https://github.com/unknown/hayhooks"
+
+[project.scripts]
+hayhooks = "hayhooks.cli:hayhooks_cli"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.envs.default]
+installer = "uv"
+
+[tool.hatch.envs.mcp]
+features = ["mcp"]
+
+[tool.hatch.envs.test.scripts]
+unit = "pytest -vv -m 'not integration' {args:tests}"
+integration = "pytest -vv -m integration {args:tests}"
+all = "pytest -vv {args:tests}"
+all-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "all-cov",
+  "cov-report",
+]
+
+[tool.hatch.envs.test]
+extra-dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-mock",
+  "qdrant-haystack",
+  "trafilatura",
+  "pytest-asyncio",
+  "mcp ; python_version >= '3.10'",
+]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "black>=23.1.0",
+  "mypy>=1.0.0",
+  "ruff>=0.0.243",
+]
+[tool.hatch.envs.lint.scripts]
+typing = "mypy --install-types --non-interactive {args:src/hayhooks tests}"
+style = [
+  "ruff {args:.}",
+  "black --check --diff {args:.}",
+]
+fmt = [
+  "black {args:.}",
+  "ruff --fix {args:.}",
+  "style",
+]
+all = [
+  "style",
+  "typing",
+]
+
+[tool.black]
+target-version = ["py37"]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+target-version = "py37"
+line-length = 120
+select = [
+  "A",
+  "ARG",
+  "B",
+  "C",
+  "DTZ",
+  "E",
+  "EM",
+  "F",
+  "FBT",
+  "I",
+  "ICN",
+  "ISC",
+  "N",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "Q",
+  "RUF",
+  "S",
+  "T",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105", "S106", "S107",
+  # Ignore complexity
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+]
+unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
+
+[tool.ruff.isort]
+known-first-party = ["hayhooks"]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]
+
+[tool.coverage.run]
+source_pkgs = ["hayhooks", "tests"]
+branch = true
+parallel = true
+omit = []
+
+[tool.coverage.paths]
+hayhooks = ["src/hayhooks", "*/hayhooks/src/hayhooks"]
+tests = ["tests", "*/hayhooks/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore::UserWarning",
+]
+asyncio_mode = "auto"
+markers = [
+    "integration: marks tests as integration tests"
+]
