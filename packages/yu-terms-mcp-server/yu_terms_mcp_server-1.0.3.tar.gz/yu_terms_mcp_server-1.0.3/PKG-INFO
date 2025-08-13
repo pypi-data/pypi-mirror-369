@@ -1,0 +1,189 @@
+Metadata-Version: 2.4
+Name: yu-terms-mcp-server
+Version: 1.0.3
+Summary: A Python MCP server for terms management functionality
+Author-email: YuPi <your-email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/yu-terms-mcp-server
+Project-URL: Repository, https://github.com/yourusername/yu-terms-mcp-server
+Project-URL: Issues, https://github.com/yourusername/yu-terms-mcp-server/issues
+Keywords: mcp,server,terms,management
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: asyncio-mqtt>=0.16.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Dynamic: license-file
+
+# Yu Terms MCP Server
+
+一个基于Python的MCP (Model Context Protocol) 服务器，用于条款管理功能。这是Java Spring AI实现的Python等价版本。
+
+## 功能特性
+
+- **条款更新工具**: 提供更新条款要素的接口
+- **MCP协议支持**: 完全兼容MCP协议规范
+- **异步处理**: 基于asyncio的高性能异步处理
+- **易于扩展**: 模块化设计，便于添加新的工具和功能
+- **完整日志**: 详细的日志记录，便于调试和监控
+
+## 安装
+
+### 从PyPI安装
+
+```bash
+pip install yu-terms-mcp-server
+```
+
+### 从源码安装
+
+```bash
+git clone https://github.com/yourusername/yu-terms-mcp-server.git
+cd yu-terms-mcp-server
+pip install -e .
+```
+
+## 使用方法
+
+### 命令行启动
+
+```bash
+yu-terms-mcp-server
+```
+
+### 程序化使用
+
+```python
+import asyncio
+from yu_terms_mcp_server import TermsMcpServer
+
+async def main():
+    server = TermsMcpServer()
+    await server.run()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## 工具说明
+
+### terms_updated
+
+更新条款要素的主要工具。
+
+**参数:**
+- `query` (string): 更新参数
+
+**返回:**
+- 成功时返回: "更新成功！"
+- 失败时返回: 错误信息
+
+**示例:**
+```json
+{
+  "name": "terms_updated",
+  "arguments": {
+    "query": "更新条款内容"
+  }
+}
+```
+
+## 开发
+
+### 环境设置
+
+```bash
+# 克隆仓库
+git clone https://github.com/yourusername/yu-terms-mcp-server.git
+cd yu-terms-mcp-server
+
+# 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# 或
+venv\Scripts\activate  # Windows
+
+# 安装开发依赖
+pip install -e ".[dev]"
+```
+
+### 运行测试
+
+```bash
+pytest
+```
+
+### 代码格式化
+
+```bash
+black yu_terms_mcp_server/
+isort yu_terms_mcp_server/
+```
+
+### 类型检查
+
+```bash
+mypy yu_terms_mcp_server/
+```
+
+## 项目结构
+
+```
+yu_terms_mcp_server/
+├── __init__.py          # 包初始化
+├── main.py             # 主入口点
+├── server.py           # MCP服务器实现
+└── tools.py            # 工具实现
+```
+
+## 与Java版本的对应关系
+
+| Java组件 | Python组件 | 说明 |
+|---------|-----------|------|
+| `TermsUpdatedTool.java` | `tools.py` | 条款更新工具实现 |
+| `YuImageSearchMcpServerApplication.java` | `server.py` | 主应用程序和服务器配置 |
+| `@Tool` 注解 | `get_tool_definition()` | 工具定义和注册 |
+| `@Service` 注解 | 类实例化 | 服务组件管理 |
+| `SpringApplication.run()` | `server.run()` | 应用程序启动 |
+
+## 配置
+
+服务器默认使用stdio进行通信，这是MCP协议的标准方式。如需自定义配置，可以修改`server.py`中的相关设置。
+
+## 日志
+
+应用程序使用Python标准logging模块。日志级别默认为INFO，输出到stderr。
+
+## 许可证
+
+MIT License
+
+## 贡献
+
+欢迎提交Issue和Pull Request！
+
+## 更新日志
+
+### v1.0.0
+- 初始版本发布
+- 实现基础的条款更新功能
+- 完整的MCP协议支持
