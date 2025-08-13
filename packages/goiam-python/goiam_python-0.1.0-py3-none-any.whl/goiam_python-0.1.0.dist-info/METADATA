@@ -1,0 +1,216 @@
+Metadata-Version: 2.4
+Name: goiam-python
+Version: 0.1.0
+Summary: Python SDK for Go IAM - A lightweight Identity and Access Management server
+Author-email: melvinodsa <melvinodsa@gmail.com>
+Maintainer-email: melvinodsa <melvinodsa@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 melvinodsa
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/melvinodsa/go-iam-sdk
+Project-URL: Repository, https://github.com/melvinodsa/go-iam-sdk.git
+Project-URL: Documentation, https://github.com/melvinodsa/go-iam-sdk/tree/main/python
+Project-URL: Issues, https://github.com/melvinodsa/go-iam-sdk/issues
+Keywords: iam,authentication,authorization,golang,python,sdk
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Systems Administration :: Authentication/Directory
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: pytest-xdist>=2.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.8; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Requires-Dist: pylint>=2.12; extra == "dev"
+Requires-Dist: isort>=5.0; extra == "dev"
+Requires-Dist: bandit>=1.7; extra == "dev"
+Requires-Dist: safety>=2.0; extra == "dev"
+Requires-Dist: build>=0.7; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
+Requires-Dist: check-manifest>=0.47; extra == "dev"
+Dynamic: license-file
+
+# 🔐 goiam-python
+
+[![PyPI version](https://badge.fury.io/py/goiam-python.svg)](https://badge.fury.io/py/goiam-python)
+[![Python versions](https://img.shields.io/pypi/pyversions/goiam-python.svg)](https://pypi.org/project/goiam-python/)
+
+Python SDK for Go IAM - A lightweight Identity and Access Management server.
+
+## Installation
+
+```bash
+pip install goiam-python
+# or
+poetry add goiam-python
+# or
+pipenv install goiam-python
+```
+
+## Usage
+
+### Initialize the SDK
+
+```python
+from goiam import new_service
+
+service = new_service(
+    base_url="https://go-iam.example.com",
+    client_id="your-client-id",
+    secret="your-secret"
+)
+```
+
+### Verify Authentication Code
+
+```python
+try:
+    token = service.verify("auth-code")
+    print(f"Access Token: {token}")
+except Exception as error:
+    print(f"Failed to verify code: {error}")
+```
+
+### Fetch Current User Information
+
+```python
+try:
+    user = service.me(token)
+    print(f"User: {user.name} ({user.email})")
+except Exception as error:
+    print(f"Failed to fetch user information: {error}")
+```
+
+### Create a Resource
+
+```python
+from goiam import Resource
+
+resource = Resource(
+    id="resource-id",
+    name="Resource Name",
+    description="Resource Description",
+    key="resource-key",
+    enabled=True,
+    project_id="project-id",
+    created_by="creator",
+    updated_by="updater"
+)
+
+try:
+    service.create_resource(resource, token)
+    print("Resource created successfully")
+except Exception as error:
+    print(f"Failed to create resource: {error}")
+```
+
+## Classes
+
+The SDK provides the following main classes:
+
+### User
+
+```python
+class User:
+    id: str
+    project_id: str
+    name: str
+    email: str
+    phone: str
+    enabled: bool
+    profile_pic: str
+    expiry: Optional[str]
+    roles: Dict[str, UserRole]
+    resources: Dict[str, UserResource]
+    policies: Dict[str, str]
+    created_at: Optional[str]
+    created_by: str
+    updated_at: Optional[str]
+    updated_by: str
+```
+
+### Resource
+
+```python
+class Resource:
+    def __init__(self,
+                 id: str = '',
+                 name: str = '',
+                 description: str = '',
+                 key: str = '',
+                 enabled: bool = True,
+                 project_id: str = '',
+                 created_by: str = '',
+                 updated_by: str = '',
+                 created_at: Optional[str] = None,
+                 updated_at: Optional[str] = None,
+                 deleted_at: Optional[str] = None):
+        # ...
+```
+
+## Error Handling
+
+The SDK methods raise exceptions with descriptive messages. It's recommended to wrap API calls in try-except blocks:
+
+```python
+try:
+    result = service.verify("code")
+    # Handle success
+except Exception as error:
+    print(f"API Error: {error}")
+    # Handle error
+```
+
+## Testing
+
+Run the tests using:
+
+```bash
+python -m pytest python/test_service.py
+# or
+python -m unittest python/test_service.py
+```
+
+## Related Projects
+
+> ✅ Admin UI: [go-iam-ui](https://github.com/melvinodsa/go-iam-ui)  
+> 🐳 Docker Setup: [go-iam-docker](https://github.com/melvinodsa/go-iam-docker)  
+> 🔐 Backend: [go-iam](https://github.com/melvinodsa/go-iam)  
+> 📦 SDK: [go-iam-sdk](https://github.com/melvinodsa/go-iam-sdk)  
+> 🚀 Examples: [go-iam-examples](https://github.com/melvinodsa/go-iam-examples)
+
+## License
+
+MIT
