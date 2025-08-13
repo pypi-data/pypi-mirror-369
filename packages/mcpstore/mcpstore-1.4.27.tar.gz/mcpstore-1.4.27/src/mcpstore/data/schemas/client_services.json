@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Client Services Configuration Schema",
+  "description": "Schema for client-service mapping configuration",
+  "type": "object",
+  "description": "客户端服务配置文件，定义每个客户端ID下的MCP服务配置",
+  "patternProperties": {
+    "^client_[0-9]{8}_[0-9]{6}_[a-z0-9]{6}$": {
+      "type": "object",
+      "description": "单个客户端的服务配置",
+      "properties": {
+        "mcpServers": {
+          "type": "object",
+          "description": "该客户端下的MCP服务器配置",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+$": {
+              "type": "object",
+              "description": "单个MCP服务配置",
+              "anyOf": [
+                {
+                  "title": "Remote HTTP Service",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "服务URL地址"
+                    },
+                    "transport": {
+                      "type": "string",
+                      "enum": ["streamable-http", "sse", "http"],
+                      "description": "传输协议类型"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "HTTP请求头",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": ["url"],
+                  "additionalProperties": true
+                },
+                {
+                  "title": "Local Command Service",
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "description": "执行命令"
+                    },
+                    "args": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "命令参数"
+                    },
+                    "env": {
+                      "type": "object",
+                      "description": "环境变量",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "working_dir": {
+                      "type": "string",
+                      "description": "工作目录"
+                    }
+                  },
+                  "required": ["command"],
+                  "additionalProperties": true
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["mcpServers"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "client_20250721_174502_n9cqzj": {
+        "mcpServers": {
+          "mcpstore-wiki": {
+            "url": "http://mcpstore.wiki/mcp"
+          }
+        }
+      },
+      "client_20250724_003657_qnl47c": {
+        "mcpServers": {
+          "howtocook": {
+            "command": "npx",
+            "args": ["-y", "howtocook-mcp"]
+          }
+        }
+      }
+    }
+  ],
+  "template": {}
+}
