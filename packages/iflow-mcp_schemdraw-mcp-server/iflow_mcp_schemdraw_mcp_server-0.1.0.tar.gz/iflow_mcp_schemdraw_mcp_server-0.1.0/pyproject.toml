@@ -1,0 +1,94 @@
+## Here's my code: 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iflow-mcp_schemdraw-mcp-server"
+version = "0.1.0"
+description = "MCP Server for schemdraw - Electronic circuit diagram drawing"
+authors = [
+    {name = "fukayatti0", email = "contact@fukayatti0.dev"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["mcp", "schemdraw", "circuit", "diagram", "electronics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "schemdraw>=0.15",
+    "matplotlib>=3.5.0",
+    "numpy>=1.20.0",
+    "Pillow>=8.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "flake8>=6.0.0",
+]
+
+[project.scripts]
+schemdraw-mcp-server = "schemdraw_mcp_server.server:cli_main"
+
+[project.urls]
+Homepage = "https://github.com/fukayatti/schemdraw-mcp-server"
+Repository = "https://github.com/fukayatti/schemdraw-mcp-server"
+Issues = "https://github.com/fukayatti/schemdraw-mcp-server/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/schemdraw_mcp_server"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
