@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Runner Sandbox</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">AI Runner Sandbox</div>
+      <div id="statusBar" class="status">就绪</div>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <h3>请求参数</h3>
+        <div class="form">
+          <div class="row2">
+            <div>
+              <label>Project Name</label>
+              <input id="project" placeholder="dogvoice" />
+            </div>
+            <div>
+              <label>Route Key</label>
+              <input id="route" placeholder="dogvocal" />
+            </div>
+          </div>
+
+          <label>Runtime Variables (JSON)</label>
+          <textarea id="vars" rows="8" placeholder='{"IMAGE_URL":"https://..."}'></textarea>
+
+          <div class="row2 align">
+            <div></div>
+            <div class="right actions">
+              <button id="btnRun" class="primary">Run</button>
+              <span id="spinner" class="spinner hidden"></span>
+              <span id="timer" class="muted">00.0s</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>执行结果</h3>
+        <div class="kv"><span>HTTP Status</span><code id="httpStatus">-</code></div>
+        <div class="kv"><span>Duration</span><code id="duration">-</code></div>
+
+        <details open>
+          <summary>Request <button data-copy="#reqJson" class="copy">复制</button></summary>
+          <pre id="reqJson" class="code"></pre>
+        </details>
+
+        <details>
+          <summary>Meta <button data-copy="#metaJson" class="copy">复制</button></summary>
+          <pre id="metaJson" class="code"></pre>
+        </details>
+
+        <details open>
+          <summary>Response <button data-copy="#respJson" class="copy">复制</button></summary>
+          <pre id="respJson" class="code"></pre>
+        </details>
+
+        <details>
+          <summary>Error <button data-copy="#errJson" class="copy">复制</button></summary>
+          <pre id="errJson" class="code"></pre>
+        </details>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
+
