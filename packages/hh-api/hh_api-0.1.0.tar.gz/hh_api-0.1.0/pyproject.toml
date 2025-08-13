@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hh-api"
+version = "0.1.0"
+description = "Async Python client for the HeadHunter (hh.ru) API with token refresh and typing."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{ name="iNetsmol", email="inetsmol@gmail.com" }]
+keywords = ["hh", "headhunter", "hr", "jobs", "api", "async", "httpx"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["httpx>=0.27,<0.28"]
+
+[project.urls]
+Homepage = "https://github.com/inetsmol/hh-api"
+Issues = "https://github.com/inetsmol/hh-api/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hh_api"]
+[tool.hatch.version]
+path = "src/hh_api/version.py"

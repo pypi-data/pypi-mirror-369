@@ -1,0 +1,63 @@
+Metadata-Version: 2.4
+Name: hh-api
+Version: 0.1.0
+Summary: Async Python client for the HeadHunter (hh.ru) API with token refresh and typing.
+Project-URL: Homepage, https://github.com/inetsmol/hh-api
+Project-URL: Issues, https://github.com/inetsmol/hh-api/issues
+Author-email: iNetsmol <inetsmol@gmail.com>
+License: MIT
+License-File: LICENSE
+Keywords: api,async,headhunter,hh,hr,httpx,jobs
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Requires-Dist: httpx<0.28,>=0.27
+Description-Content-Type: text/markdown
+
+# hhru-async
+
+Async Python client for the HeadHunter (hh.ru) API.
+Built on `httpx`, includes token auto-refresh (OAuth2 refresh token flow), retries, and helpers.
+
+See `pyproject.toml` for metadata.
+
+## Quickstart
+
+```bash
+pip install hh-api
+```
+
+```python
+import asyncio
+from hh_api import HHClient, StaticTokenAuth
+
+async def main():
+    auth = StaticTokenAuth("YOUR_ACCESS_TOKEN")
+    client = HHClient(auth)
+    vac = await client.get_vacancy("123456")
+    print(vac["name"])
+    await client.aclose()
+
+asyncio.run(main())
+```
+
+## Development
+
+Build:
+```bash
+pipx install hatch
+hatch build
+```
+
+Publish:
+```bash
+python -m pip install --upgrade twine
+twine upload dist/*
+```
