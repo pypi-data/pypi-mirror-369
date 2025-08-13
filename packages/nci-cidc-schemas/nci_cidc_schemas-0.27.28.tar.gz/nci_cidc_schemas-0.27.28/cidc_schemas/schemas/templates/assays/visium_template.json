@@ -1,0 +1,150 @@
+{    "title": "Visium assay template",
+    "description": "Visium submission.",
+    "prism_template_root_object_schema": "assays/visium_assay.json",
+    "prism_template_root_object_pointer": "/assays/visium/0",
+    "properties":
+    {
+        "worksheets":
+        {
+            "visium":
+            {
+                "preamble_rows":
+                {
+                    "protocol identifier":
+                    {
+                        "merge_pointer": "3/protocol_identifier",
+                        "type_ref": "clinical_trial.json#properties/protocol_identifier"
+                    },
+                    "assay creator":
+                    {
+                        "merge_pointer": "0/assay_creator",
+                        "type_ref": "assays/visium_assay.json#properties/assay_creator"
+                    },
+                    "batch id": {
+                        "merge_pointer": "0/batch_id",
+                        "type_ref": "assays/visium_assay.json#properties/batch_id"
+                    },
+                    "azimuth reference": {
+                        "merge_pointer": "0/azimuth_reference",
+                        "type_ref": "assays/components/scrnaseq_preamble.json#properties/azimuth_reference",
+                        "allow_empty": true
+                    },
+                    "tabula sapiens reference": {
+                        "merge_pointer": "0/tabula_sapiens_reference",
+                        "type_ref": "assays/components/scrnaseq_preamble.json#properties/tabula_sapiens_reference",
+                        "allow_empty": true
+                    },
+                    "spatial gene expression platform": {
+                        "merge_pointer": "0/spatial_gene_expression_platform",
+                        "type_ref": "assays/components/visium_preamble.json#properties/spatial_gene_expression_platform",
+                        "allow_empty": true
+                    },
+                    "human transcriptome probe set version": {
+                        "merge_pointer": "0/human_transcriptome_probe_set_version",
+                        "type_ref": "assays/components/visium_preamble.json#properties/human_transcriptome_probe_set_version",
+                        "allow_empty": true
+                    },
+                    "sample metadata csv": {
+                        "merge_pointer": "0/samples_metadata_csv",
+                        "gcs_uri_format": "{protocol identifier}/visium/{batch id}/samples_metadata.csv",
+                        "is_artifact": 1,
+                        "type_ref": "assays/components/local_file.json#properties/file_path"
+                    }
+                },
+                "prism_data_object_pointer": "/records/-",
+                "data_columns":
+                {
+                    "Samples":
+                    {
+                        "Cimac ID":
+                        {
+                            "merge_pointer": "0/cimac_id",
+                            "type_ref": "sample.json#properties/cimac_id"
+                        },
+                        "Lane": {
+                            "merge_pointer": "0/details/lane",
+                            "type": "integer"
+                        },
+                        "Read1 fastq gz": {
+                            "merge_pointer": "0/details/read_1_fastq_gz",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/visium/{batch id}/{cimac id}/fastq/S1_L00{lane}_R1_001.fastq.gz",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "Read2 fastq gz": {
+                            "merge_pointer": "0/details/read_2_fastq_gz",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/visium/{batch id}/{cimac id}/fastq/S1_L00{lane}_R2_001.fastq.gz",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "Loupe alignment file": {
+                            "merge_pointer": "0/details/loupe_alignment_file",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/visium/{batch id}/{cimac id}/loupe_alignment_file.json",
+                            "type_ref": "assays/components/local_file.json#properties/file_path",
+                            "allow_empty": true
+                        },
+                        "Slide serial code": {
+                            "merge_pointer": "0/details/slide_serial_code",
+                            "type": "string",
+                            "allow_empty": true
+                        },
+                        "Slide capture area": {
+                            "merge_pointer": "0/details/slide_capture_area",
+                            "type": "string",
+                            "allow_empty": true
+                        },
+                        "library yield ng": {
+                            "merge_pointer": "0/details/library_yield_ng",
+                            "type_ref": "assays/components/scrnaseq_input.json#properties/library_yield_ng",
+                            "allow_empty": true
+                        },
+                        "dv200": {
+                            "merge_pointer": "0/details/dv200",
+                            "type_ref": "assays/components/visium_input.json#properties/dv200"
+                        },
+                        "brightfield image": {
+                            "merge_pointer": "0/details/brightfield_image",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/visium/{batch id}/{cimac id}/brightfield.tiff",
+                            "type_ref": "assays/components/local_file.json#properties/file_path",
+                            "allow_empty": true
+                        },
+                        "dark image": {
+                            "merge_pointer": "0/details/dark_image",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/visium/{batch id}/{cimac id}/dark_image.tiff",
+                            "type_ref": "assays/components/local_file.json#properties/file_path",
+                            "allow_empty": true
+                        },
+                        "colorized image": {
+                            "merge_pointer": "0/details/colorized_image",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/visium/{batch id}/{cimac id}/colorized.tiff",
+                            "type_ref": "assays/components/local_file.json#properties/file_path",
+                            "allow_empty": true
+                        },
+                        "cytassist image": {
+                            "merge_pointer": "0/details/cytassist_image",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/visium/{batch id}/{cimac id}/cytassist.tiff",
+                            "type_ref": "assays/components/local_file.json#properties/file_path",
+                            "allow_empty": true
+                        },
+                        "dapi index": {
+                            "merge_pointer": "0/details/dapi_index",
+                            "type": "integer",
+                            "allow_empty": true
+                        },
+                        "comments": {
+                            "merge_pointer": "0/details/comments",
+                            "type": "string",
+                            "allow_empty": true
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}

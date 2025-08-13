@@ -1,0 +1,68 @@
+{
+    "$schema": "metaschema/strict_meta_schema.json#",
+    "$id": "mibi_assay",
+    "title": "MIBI Assay",
+    "type": "object",
+    "$comment": "description used in docs/index.html and docs/assays.mibi.html",
+    "description": "Multiplexed Ion Beam Imaging (MIBI) assay",
+    "additionalProperties": false,
+    "definitions": {
+        "record": {
+            "type": "object",
+            "mergeStrategy": "objectMerge",
+            "description": "A single data record from a MIBI assay.",
+            "additionalProperties": false,
+            "properties": {
+                "cimac_id": {
+                    "description": "Id of an sample within this clinical trial, that this assay record is based upon.",
+                    "$ref": "sample.json#properties/cimac_id"
+                },
+                "files": {
+                    "$ref": "assays/components/mibi_imaging/mibi_input.json"
+                }
+            },
+            "required": [
+                "cimac_id",
+                "files"
+            ]
+        }
+    },
+    "properties": {
+        "assay_creator": {
+            "$ref": "assays/components/assay_core.json#properties/assay_creator"
+        },
+        "batch_id": {
+            "type": "string",
+            "description": "Batch identification number. Unique to every batch."
+        },
+        "metadata_tsv": {
+            "description": "Deidentified metadata as a TSV file",
+            "$ref": "artifacts/artifact_tsv.json"
+        },
+
+        "antibodies": {
+            "type": "array",
+            "items": {
+                "$ref": "assays/components/mibi_antibody.json"
+            },
+            "mergeStrategy": "arrayMergeById",
+            "mergeOptions": {
+                "idRef": "antibody"
+            }
+        },
+        "records": {
+            "type": "array",
+            "description": "A single data record from a MIBI assay.",
+            "items": {
+                "$ref": "assays/mibi_assay.json#definitions/record"
+            },
+            "mergeStrategy": "append"
+        }
+    },
+    "required": [
+        "batch_id",
+        "records",
+        "assay_creator",
+        "antibodies"
+    ]
+}

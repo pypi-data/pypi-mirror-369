@@ -1,0 +1,129 @@
+{
+  "title": "Metadata file for ctDNA Assay",
+  "description": "Metadata information for Circulating Tumor DNA (ctDNA) Assay data submission.",
+  "properties": {
+    "worksheets": {
+      "ctDNA": {
+        "prism_preamble_object_schema" : "assays/ctdna_assay.json",
+        "prism_preamble_object_pointer" : "/assays/ctdna/-",
+        "prism_data_object_pointer" : "/records/-",
+        "preamble_rows": {
+          "protocol identifier": {
+            "merge_pointer": "3/protocol_identifier",
+            "type_ref": "clinical_trial.json#properties/protocol_identifier"
+          },
+          "batch id": {
+            "merge_pointer": "0/batch_id",
+            "type_ref": "assays/ctdna_assay.json#properties/batch_id"
+          },
+          "assay creator": {
+            "merge_pointer": "0/assay_creator",
+            "type_ref": "assays/components/assay_core.json#properties/assay_creator"
+          },
+          "summary plots": {
+              "merge_pointer": "0/summary_plots",
+              "type_ref": "assays/components/local_file.json#properties/file_path",
+              "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/summary_plots.pdf",
+              "is_artifact": 1
+          }
+        },
+        "data_columns": {
+          "Samples": {
+            "cimac id": {
+              "merge_pointer": "0/cimac_id", 
+              "type_ref": "sample.json#properties/cimac_id"
+            },
+            "demultiplexed bam": {
+              "merge_pointer": "0/demultiplexed_bam",
+              "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/demultiplexed.bam",
+              "is_artifact": 1,
+              "type_ref": "assays/components/local_file.json#properties/file_path"
+            },
+            "demultiplexed bam index": {
+              "merge_pointer": "0/demultiplexed_bam_index",
+              "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/demultiplexed.bam.bai",
+              "is_artifact" : 1,
+              "type_ref": "assays/components/local_file.json#properties/file_path"
+            },
+            "genome-wide plots": {
+                "merge_pointer": "0/genome-wide_plots",
+                "type_ref": "assays/components/local_file.json#properties/file_path",
+                "is_artifact": 1,
+                "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/genome-wide_plots.pdf"
+            },
+            "bias qc plots": {
+                "merge_pointer": "0/bias_qc_plots",
+                "type_ref": "assays/components/local_file.json#properties/file_path",
+                "is_artifact": 1,
+                "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/bias_qc_plots.pdf"
+            },
+            "fraction cna subclonal": {
+                "merge_pointer": "0/fraction_cna_subclonal",
+                "type_ref": "assays/ctdna_assay.json#definitions/entry/properties/fraction_cna_subclonal",
+                "allow_empty": true
+            },
+            "fraction genome subclonal": {
+                "merge_pointer": "0/fraction_genome_subclonal",
+                "type_ref": "assays/ctdna_assay.json#definitions/entry/properties/fraction_genome_subclonal"
+            },
+            "gc map correction mad": {
+                "merge_pointer": "0/gc_map_correction_mad",
+                "type_ref": "assays/ctdna_assay.json#definitions/entry/properties/gc_map_correction_mad"
+            },
+            "optimal solution": {
+                "merge_pointer": "0/optimal_solution",
+                "type_ref": "assays/components/local_file.json#properties/file_path",
+                "is_artifact": 1,
+                "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/optimal_solution.zip"
+            },
+            "other solutions": {
+                "merge_pointer": "0/other_solutions",
+                "type_ref": "assays/components/local_file.json#properties/file_path",
+                "is_artifact": 1,
+                "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/other_solutions.zip"
+            },
+            "tumor ploidy": {
+                "merge_pointer": "0/tumor_ploidy",
+                "type_ref": "assays/ctdna_assay.json#definitions/entry/properties/tumor_ploidy"
+            },
+            "subclone fraction": {
+                "merge_pointer": "0/subclone_fraction",
+                "type_ref": "assays/ctdna_assay.json#definitions/entry/properties/subclone_fraction",
+                "allow_empty": true
+            },
+            "tumor fraction": {
+                "merge_pointer": "0/tumor_fraction",
+                "type_ref": "assays/ctdna_assay.json#definitions/entry/properties/tumor_fraction"
+            },
+            "on premise corrected depth file": {
+                "merge_pointer": "0/on_premise_corrected_depth_file",
+                "type_ref": "assays/components/local_file.json#properties/file_path",
+                "is_artifact": 1,
+                "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/OnPrem.correctedDepth.txt",
+                "allow_empty": true
+            },
+            "on premise parameters file": {
+                "merge_pointer": "0/on_premise_parameters_file",
+                "type_ref": "assays/components/local_file.json#properties/file_path",
+                "is_artifact": 1,
+                "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/OnPrem.params.txt",
+                "allow_empty": true
+            },
+            "on premise rdata file": {
+                "merge_pointer": "0/on_premise_rdata_file",
+                "type_ref": "assays/components/local_file.json#properties/file_path",
+                "is_artifact": 1,
+                "gcs_uri_format": "{protocol identifier}/ctdna/{batch id}/{cimac id}/OnPrem.RData",
+                "allow_empty": true
+            },
+            "comments": {
+                "type_ref": "assays/ctdna_assay.json#definitions/entry/properties/comments",
+                "merge_pointer": "0/comments",
+                "allow_empty": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

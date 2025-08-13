@@ -1,0 +1,39 @@
+{
+  "$schema": "metaschema/strict_meta_schema.json#",
+  "$id": "scrnaseq_input",
+  "title": "scRNAseq Input Files and Data",
+  "type": "object",
+  "description": "scRNAseq assay input files and data",
+  "inheritableBase": true,
+  "properties": {
+    "lane": {
+      "description": "Lane used for this run",
+      "type": "string"
+    },
+    "read_1_file": {
+      "description": "Contains the cell barcode and unique molecular identifier",
+      "$ref": "artifacts/artifact_gz.json"
+    },
+    "read_2_file": {
+      "description": "Contains the cDNA (transcript) sequence",
+      "$ref": "artifacts/artifact_gz.json"
+    },
+    "library_yield_ng": {
+      "description": "Resulting yield (in ng) from library construction.",
+      "type": "number"
+    },
+    "rin": {
+      "description": "RNA integrity number. (0-10)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10
+    }
+  },
+  "required": [
+    "lane",
+    "read_1_file",
+    "read_2_file",
+    "library_yield_ng",
+    "rin"
+  ]
+}

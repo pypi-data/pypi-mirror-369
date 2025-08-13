@@ -1,0 +1,194 @@
+{
+  "$schema": "metaschema/strict_meta_schema.json#",
+  "$id": "shipping_core",
+  "title": "Core Shipping Details",
+  "type": "object",
+  "description": "Core shipping details for a manifest.",
+  "additionalProperties": false,
+  "required": [
+    "manifest_id"
+  ],
+  "properties": {
+    "manifest_id": {
+      "description": "Filename of the manifest used to ship this sample. Example: E4412_PBMC.",
+      "type": "string"
+    },
+    "assay_priority": {
+      "description": "Priority of the assay as it appears on the intake form.",
+      "type": "string",
+      "enum": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "Not Reported",
+        "Other"
+      ]
+    },
+    "assay_type": {
+      "description": "Assay and sample type used.",
+      "type": "string",
+      "enum": [
+        "Olink",
+        "WES",
+        "BD Rhapsody",
+        "GeoMx",
+        "RNAseq",
+        "IHC",
+        "CyTOF",
+        "H&E",
+        "ELISA",
+        "EVP",
+        "mIF",
+        "mIHC",
+        "MALDI Glycan",
+        "TCRseq",
+        "ATACseq",
+        "ctDNA",
+        "Microbiome",
+        "Nanostring",
+        "NULISA",
+        "MIBI",
+        "scRNAseq",
+        "snRNA-Seq",
+        "Visium"
+      ]
+    },
+    "courier": {
+      "description": "Courier utilized for shipment.",
+      "type": "string",
+      "enum": ["FedEx", "USPS", "UPS", "Inter-Site Delivery", "DHL"]
+    },
+    "tracking_number": {
+      "description": "Air bill number assigned to shipment. Example: 4567788343.",
+      "type": "string"
+    },
+    "shipping_condition": {
+      "description": "Type of shipment made.",
+      "type": "string",
+      "enum": [
+        "Frozen Dry Ice",
+        "Frozen Shipper",
+        "Ice/Cold Pack",
+        "Ambient",
+        "Not Reported",
+        "Other"
+      ]
+    },
+    "shipping_condition_other": {
+      "description": "Details of shipping condition when shipping_condition value 'Other' is set.",
+      "type": "string"
+    },
+    "date_shipped": {
+      "description": "Date of shipment.",
+      "type": "string",
+      "format": "date"
+    },
+    "date_received": {
+        "description": "Date of receipt.",
+        "type": "string",
+        "format": "date"
+      },
+    "quality_of_shipment": {
+        "description": "Indication that specimens were received in good condition.",
+        "type": "string",
+        "enum": [
+            "Normal",
+            "Damaged",
+            "Leakage",
+            "Opened"
+        ]
+    },
+    "ship_from_sender_person_name": {
+      "description": "Sender person name.",
+      "type": "string"
+    },
+    "ship_from_sender_email": {
+      "description": "Sender email.",
+      "type": "string"
+    },
+    "ship_from_sender_phone": {
+      "description": "Ship from sender phone.",
+      "type": "string"
+    },
+    "ship_from_name": {
+      "description": "Ship from name.",
+      "type": "string"
+    },
+    "ship_from_street1": {
+      "description": "Ship from street1.",
+      "type": "string"
+    },
+    "ship_from_street2": {
+      "description": "Ship from street2.",
+      "type": "string"
+    },
+    "ship_from_city": {
+      "description": "Ship from city.",
+      "type": "string"
+    },
+    "ship_from_state": {
+      "description": "Ship from state.",
+      "type": "string"
+    },
+    "ship_from_zip": {
+      "description": "ship from zip.",
+      "type": "string"
+    },
+    "ship_from_country": {
+      "description": "Ship from country.",
+      "type": "string"
+    },
+    "ship_to_name": {
+      "description": "Ship to name.",
+      "type": "string"
+    },
+    "ship_to_street1": {
+      "description": "Ship to street1.",
+      "type": "string"
+    },
+    "ship_to_street2": {
+      "description": "ship to street2.",
+      "type": "string"
+    },
+    "ship_to_city": {
+      "description": "Ship to city.",
+      "type": "string"
+    },
+    "ship_to_state": {
+      "description": "Ship to state.",
+      "type": "string"
+    },
+    "ship_to_zip": {
+      "description": "Ship to zip.",
+      "type": "string"
+    },
+    "ship_to_country": {
+      "description": "Ship to country.",
+      "type": "string"
+    },
+    "receiving_party": {
+      "description": "Site where sample was shipped to be assayed.",
+      "type": "string"
+    },
+    "upload_type": {
+      "description": "The type of manifest being uploaded",
+      "type": "string"
+    },
+    "date_ingested": {
+      "description": "The date CIDC ingests the manifest",
+      "type": "string"
+    }
+  }
+}
