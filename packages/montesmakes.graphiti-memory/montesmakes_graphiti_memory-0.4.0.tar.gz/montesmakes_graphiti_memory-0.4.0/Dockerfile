@@ -1,0 +1,55 @@
+# syntax=docker/dockerfile:1.9
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv using the installer script to a system location
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh && rm /uv-installer.sh && \
+    mv /root/.local/bin/uv /usr/local/bin/uv && \
+    chmod +x /usr/local/bin/uv
+
+# Add to PATH (though /usr/local/bin should already be in PATH)
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Configure uv for optimal Docker usage
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never \
+    MCP_SERVER_HOST="0.0.0.0" \
+    PYTHONUNBUFFERED=1
+
+# Create non-root user
+RUN groupadd -r app && useradd -r -d /app -g app app
+
+# Copy project files for dependency installation (better caching)
+COPY pyproject.toml uv.lock README.md ./
+
+# Install dependencies first (better layer caching)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+# Copy application code
+COPY src/ ./src/
+
+# Change ownership to app user
+RUN chown -Rv app:app /app
+
+# Switch to non-root user
+USER app
+
+# Expose ports
+# Note: These are the default ports. Actual ports can be configured via:
+# - MCP_SERVER_PORT environment variable (default: 8020)
+# - MCP_INTERNAL_PORT environment variable (default: 8021)
+# The actual port mapping is handled by docker-compose.yml
+EXPOSE 8020 8021
+
+# Command to run the application
+CMD ["uv", "run", "python", "src/graphiti_mcp_server.py"]
