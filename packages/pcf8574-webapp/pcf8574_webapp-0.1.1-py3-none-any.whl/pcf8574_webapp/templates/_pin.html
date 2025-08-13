@@ -1,0 +1,19 @@
+<td>
+    <div class="pin">
+        {% with
+            bus_no = row.bus_no if row and row.bus_no is defined else pin_id.bus_no,
+            address = row.address if row and row.address is defined else pin_id.address,
+            pin_no = pin if pin is defined else pin_id.pin_no
+        %}
+            <label for="pin-{{bus_no}}-{{address}}-{{pin_no}}">
+                {{ label | default("p" ~ pin_no, true) }}
+            </label>
+            <input
+                type="checkbox"
+                id="pin-{{bus_no}}-{{address}}-{{pin_no}}"
+                class="pin-{{bus_no}}-{{address}}-{{pin_no}}"
+                onchange="togglePin({{bus_no}}, {{address}}, {{pin_no}})"
+            >
+        {% endwith %}
+    </div>
+</td>

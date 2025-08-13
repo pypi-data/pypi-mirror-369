@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}PCF8574 IO Port Control{% endblock %}
+
+{% block content %}
+    <h1>PCF8574 IO Port Control</h1>
+    <h2>Digital Inputs</h2>
+    {% with resource=inputs %}
+        {% include '_table.html' %}
+    {% endwith %}
+    <h2>Digital Outputs</h2>
+    {% with resource=outputs %}
+        {% include '_table.html' %}
+    {% endwith %}
+{% endblock %}
