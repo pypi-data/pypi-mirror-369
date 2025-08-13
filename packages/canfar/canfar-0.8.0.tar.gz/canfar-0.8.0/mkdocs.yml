@@ -1,0 +1,134 @@
+site_name: CANFAR
+site_url: https://opencadc.github.io/canfar/
+site_author: Shiny Brar
+site_description: CANFAR Python Client
+repo_url: https://github.com/opencadc/canfar/
+repo_name: opencadc/canfar
+edit_uri: blob/main/docs/
+copyright: Copyright &copy; 1986-2024 Canadian Astronomy Data Centre
+remote_branch: gh-pages
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/toggle-switch
+        name: Hello darkness, my old friend
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Flash the neon lights
+  font:
+    text: Roboto
+    code: Roboto Mono
+  language: en
+  icon:
+    repo: fontawesome/brands/github-alt
+    edit: material/pencil-box
+    view: material/eye-outline
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.prune
+    - navigation.sections
+    - navigation.tracking
+    - navigation.indexes
+    - content.code.annotate
+    - toc.follow
+    # - toc.integrate
+    - navigation.top
+
+plugins:
+  - search
+  - mkdocstrings
+  - git-revision-date-localized:
+        type: date
+        fallback_to_build_date: true
+  - termynal
+
+extra:
+  version:
+    provider: mike
+    default: latest
+
+extra_css:
+  - stylesheets/asciinema-player.css
+
+extra_javascript:
+  - javascripts/asciinema-player.min.js
+
+# Extensions
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.attr_list
+  - markdown.extensions.def_list
+  - markdown.extensions.footnotes
+  - markdown.extensions.meta
+  - markdown.extensions.toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      use_pygments: true
+      linenums_style: pymdownx.inline
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - CANFAR: index.md
+  - What's New:
+    - Updates: updates.md
+    - Migration Guide: migration.md
+    - Changelog: changelog.md
+  - Get Started:
+    - 5-Minute Tutorial: quick-start.md
+    - Installation & Setup: get-started.md
+    - Authentication Guide: authentication-contexts.md
+  - Examples:
+    - Basic: examples.md
+    - Advanced: advanced-examples.md
+  - Reference:
+    - CLI: cli-help.md
+    - Python API:
+      - AsyncSession: async_session.md
+      - Session: session.md
+      - Images: images.md
+      - Context: context.md
+      - Overview: overview.md
+      - Client: client.md
+  - FAQ: faq.md
+  - Contributor Guide:
+    - Contributing: contributing.md
+    - Code of Conduct: conduct.md
+    - OpenSSF Report: https://scorecard.dev/viewer/?uri=github.com/opencadc/canfar
+    - License: license.md
+  - Bug Reports:
+    - Bugs: bug-reports.md
+    - Security Issues: security.md
