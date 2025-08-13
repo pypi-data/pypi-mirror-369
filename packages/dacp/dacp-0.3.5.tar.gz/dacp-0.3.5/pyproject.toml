@@ -1,0 +1,139 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dacp"
+version = "0.3.5"
+description = "Declarative Agent Communication Protocol - A protocol for managing LLM/agent communications and tool function calls"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Andrew Whitehouse", email = "andrew.whitehouse@example.com"}
+]
+keywords = ["llm", "agent", "communication", "protocol", "ai", "ml"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.25.0",
+    "pyyaml>=5.4.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+openai = ["openai>=1.0.0"]
+anthropic = ["anthropic>=0.18.0"]
+local = ["requests>=2.25.0"]
+api = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+]
+all = [
+    "openai>=1.0.0",
+    "anthropic>=0.18.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "types-requests>=2.25.0",
+    "types-PyYAML>=6.0.0",
+]
+
+[project.scripts]
+dacp = "dacp.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/andrewwhitehouse/dacp"
+Repository = "https://github.com/andrewwhitehouse/dacp"
+Documentation = "https://github.com/andrewwhitehouse/dacp#readme"
+Issues = "https://github.com/andrewwhitehouse/dacp/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dacp*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=dacp --cov-report=term-missing"
+
+# Removed Black - using Ruff formatter instead
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = false
+warn_unused_configs = true
+check_untyped_defs = false
+no_implicit_optional = false
+warn_redundant_casts = false
+warn_unused_ignores = false
+warn_no_return = false
+warn_unreachable = false
+strict_equality = false
+ignore_missing_imports = true
+disable_error_code = ["has-type"]
+
+[tool.ruff]
+line-length = 100  # More generous than Black's 88
+target-version = "py38"
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+# Use trailing commas in multi-line collections  
+skip-magic-trailing-comma = false
+# Respect existing line endings
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings  
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+    "RUF", # ruff-specific rules
+]
+ignore = [
+    "E501",  # line length violations (handled by Black)
+    "E203",  # whitespace before ':' (Black compatibility)
+    "I001",  # import sorting (can be auto-fixed later)
+    "RUF022", # __all__ sorting
+    "F541",  # f-string without placeholders
+    "RUF010", # explicit conversion flag
+    "F401",  # unused imports (can be cleaned up later)
+    "F841",  # unused variables (can be cleaned up later)
+    "UP015", # unnecessary mode argument
+    "RUF001", # ambiguous unicode characters
+    "W293",  # blank line whitespace
+    "W291",  # trailing whitespace
+    "E402",  # module level import not at top
+    "RUF013", # implicit optional
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "openai.*",
+    "anthropic.*",
+]
+ignore_missing_imports = true 
