@@ -1,0 +1,39 @@
+###############################################################################
+# (c) Copyright 2021 CERN for the benefit of the LHCb Collaboration           #
+#                                                                             #
+# This software is distributed under the terms of the GNU General Public      #
+# Licence version 3 (GPL Version 3), copied verbatim in the file "COPYING".   #
+#                                                                             #
+# In applying this licence, CERN does not waive the privileges and immunities #
+# granted to it by virtue of its status as an Intergovernmental Organization  #
+# or submit itself to any jurisdiction.                                       #
+###############################################################################
+stages:
+  - test
+  - upload_pypi
+
+pixi:
+  parallel:
+    matrix:
+      - task: pre-commit run --all-files
+      - task: pytest
+      - task: mypy
+  rules:
+    - when: always
+  before_script:
+    - curl -fsSL https://pixi.sh/install.sh | sh
+    - source ~/.bashrc || true
+  script:
+    - pixi run $task
+
+deploy-to-pypi:
+  stage: upload_pypi
+  only:
+    - tags@lhcb-core/lbprodrun
+  image: registry.cern.ch/docker.io/library/python:3
+  before_script:
+    - pip install build twine
+  script:
+    - python -m build
+    - if [ -z "$TWINE_PASSWORD" ] ; then echo "Set TWINE_PASSWORD in CI variables" ; exit 1 ; fi
+    - twine upload -u __token__ dist/*

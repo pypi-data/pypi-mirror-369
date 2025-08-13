@@ -1,0 +1,31 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+default_language_version:
+  python: python3
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: no-commit-to-branch
+        args: [--branch, main]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.12
+    hooks:
+      - id: ruff
+        args: [ --fix ]
+        exclude: '^tests/expected_dumps/.*$'
+      - id: ruff-format
+        exclude: '^tests/expected_dumps/.*$'
+
+  - repo: "https://gitlab.cern.ch/lhcb-core/LbDevTools.git"
+    rev: 2.0.44
+    hooks:
+      - id: lb-add-copyright
+        exclude: '^tests/expected_dumps/.*$'

@@ -1,0 +1,119 @@
+[build-system]
+requires = ["setuptools>=61.2", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "LbProdRun"
+description = "CLI for running LHCb applications from LHCbDIRAC"
+license = {text = "GPL-3.0-only"}
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "click >=8.0",
+    "lbenv",
+    "pydantic >=1.10",
+    "typer >=0.4.1",
+    "packaging",
+    "pyyaml >=6.0",
+    "LbCondaWrappers",
+]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://gitlab.cern.ch/lhcb-core/lbprodrun"
+
+[project.optional-dependencies]
+testing = [
+    # "flake8",
+    # "flake8-bugbear",
+    # "pylint",
+    "pytest",
+    "pytest-cov",
+    "zstandard",
+]
+mypy = [
+    "mypy",
+    "types-PyYAML",
+]
+
+[project.entry-points]
+# ##############################################################################
+# Linting
+# ##############################################################################
+
+[project.scripts]
+lb-prod-run = "LbProdRun.__main__:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+# Enable setuptools_scm to compute the version number from the most recent tag
+# https://github.com/pypa/setuptools_scm/#pyprojecttoml-usage
+[tool.setuptools_scm]
+
+[tool.flake8]
+max-line-length = "80"
+ignore = "E501,W503,B950,B008,B905"
+# max-complexity = 12
+extend-ignore = """
+# See https://github.com/PyCQA/pycodestyle/issues/373
+E203,"""
+select = "C,E,F,W,B,B9"
+exclude = """
+.pyre/"""
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+src_paths = [
+    "src",
+    "tests",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov-report term-missing --cov=LbProdRun . -vvv"
+# ##############################################################################
+# Setuptools
+# ##############################################################################
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "linux-aarch64", "osx-arm64"]
+
+[tool.pixi.dependencies]
+python = ">=3.9,<3.12"
+
+[tool.pixi.pypi-dependencies]
+LbProdRun = { path = ".", editable = true }
+
+[tool.pixi.feature.testing.tasks.pytest]
+cmd = "pytest"
+
+[tool.pixi.feature.mypy.tasks.mypy]
+cmd = "mypy --strict-optional src/LbProdRun"
+
+[tool.pixi.feature.pre-commit.dependencies]
+python = ">=3.9"
+pre-commit = "*"
+
+[tool.pixi.feature.pre-commit.tasks.pre-commit]
+cmd = "pre-commit"
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+testing = { features = ["testing"], solve-group = "default" }
+mypy = { features = ["mypy"], solve-group = "default" }
+pre-commit = { features = ["pre-commit"], no-default-feature = true }
