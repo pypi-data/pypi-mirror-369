@@ -1,0 +1,1269 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+        <link rel="prefetch" href="../../../_static/WORC_Logo.svg" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>WORC.plotting.plot_estimator_performance - WORC 3.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/extra.css?v=a591123b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">WORC 3.7.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/WORC_Logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">WORC 3.7.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/quick_start.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/user_manual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/features.html">Radiomics Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/additionalfunctionality.html">Additional functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/developerdocumentation.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/developerdocumentation.html#references">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../static/changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../autogen/WORC.html">WORC Package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of WORC Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.IOparser.html">IOparser Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.classification.html">classification Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.detectors.html">detectors Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.exampledata.html">exampledata Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.export.html">export Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autogen/WORC.facade.html">facade Package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of facade Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autogen/WORC.facade.helpers.html">helpers Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.fastrconfig.html">fastrconfig Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.featureprocessing.html">featureprocessing Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.plotting.html">plotting Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.processing.html">processing Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autogen/WORC.resources.html">resources Package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of resources Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autogen/WORC.resources.fastr_tests.html">fastr_tests Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autogen/WORC.resources.fastr_tools.html">fastr_tools Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.statistics.html">statistics Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.tests.html">tests Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.tools.html">tools Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autogen/WORC.validators.html">validators Package</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for WORC.plotting.plot_estimator_performance</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Copyright 2016-2021 Biomedical Imaging Group Rotterdam, Departments of</span>
+<span class="c1"># Medical Informatics and Radiology, Erasmus MC, Rotterdam, The Netherlands</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">shuffle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_regressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resample</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">WORC.addexceptions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ae</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">WORC.classification</span><span class="w"> </span><span class="kn">import</span> <span class="n">metrics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">WORC.processing.label_processing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">WORC.statistics.compute_CI</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_confidence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">WORC.statistics.compute_CI</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_confidence_bootstrap</span>
+
+
+<div class="viewcode-block" id="fit_thresholds">
+<a class="viewcode-back" href="../../../autogen/WORC.plotting.html#WORC.plotting.plot_estimator_performance.fit_thresholds">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fit_thresholds</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">label_type</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span>
+                   <span class="n">ensemble_method</span><span class="p">,</span> <span class="n">ensemble_size</span><span class="p">,</span> <span class="n">ensemble_scoring</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fitting thresholds on validation set&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="s1">&#39;cv_iter&#39;</span><span class="p">):</span>
+        <span class="n">cv_iter</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">))</span>
+        <span class="n">estimator</span><span class="o">.</span><span class="n">cv_iter</span> <span class="o">=</span> <span class="n">cv_iter</span>
+
+    <span class="n">p_all</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">thresholds_low</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">thresholds_high</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">it</span><span class="p">,</span> <span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">valid</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">cv_iter</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; - iteration {it + 1} / </span><span class="si">{n_iter}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="c1"># NOTE: Explicitly exclude validation set, elso refit and score</span>
+        <span class="c1"># somehow still seems to use it.</span>
+        <span class="n">X_train_temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">estimator</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">train</span><span class="p">]</span>
+        <span class="n">Y_train_temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">estimator</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">train</span><span class="p">]</span>
+        <span class="n">train_temp</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">))</span>
+
+        <span class="c1"># Refit a SearchCV object with the provided parameters</span>
+        <span class="k">if</span> <span class="n">ensemble_method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">estimator</span><span class="o">.</span><span class="n">create_ensemble</span><span class="p">(</span><span class="n">X_train_temp</span><span class="p">,</span> <span class="n">Y_train_temp</span><span class="p">,</span>
+                                      <span class="n">method</span><span class="o">=</span><span class="n">ensemble_method</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">ensemble_size</span><span class="p">,</span>
+                                      <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">ensemble_scoring</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">estimator</span><span class="o">.</span><span class="n">refit_and_score</span><span class="p">(</span><span class="n">X_train_temp</span><span class="p">,</span> <span class="n">Y_train_temp</span><span class="p">,</span> <span class="n">p_all</span><span class="p">,</span>
+                                      <span class="n">train_temp</span><span class="p">,</span> <span class="n">train_temp</span><span class="p">,</span>
+                                      <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Predict and save scores</span>
+        <span class="n">X_train_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X_train</span><span class="p">]</span>  <span class="c1"># Throw away labels</span>
+        <span class="n">X_train_values_valid</span> <span class="o">=</span> <span class="p">[</span><span class="n">X_train_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">valid</span><span class="p">]</span>
+        <span class="n">Y_valid_score_temp</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train_values_valid</span><span class="p">)</span>
+
+        <span class="c1"># Only take the probabilities for the second class</span>
+        <span class="n">Y_valid_score_temp</span> <span class="o">=</span> <span class="n">Y_valid_score_temp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Select thresholds</span>
+        <span class="n">thresholds_low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">Y_valid_score_temp</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">100.0</span><span class="p">))</span>
+        <span class="n">thresholds_high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">Y_valid_score_temp</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">100.0</span><span class="p">))</span>
+
+    <span class="n">thresholds_val</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">thresholds_low</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">thresholds_high</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Thresholds </span><span class="si">{</span><span class="n">thresholds</span><span class="si">}</span><span class="s1"> converted to </span><span class="si">{</span><span class="n">thresholds_val</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">thresholds_val</span></div>
+
+
+
+<div class="viewcode-block" id="compute_statistics">
+<a class="viewcode-back" href="../../../autogen/WORC.plotting.html#WORC.plotting.plot_estimator_performance.compute_statistics">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_statistics</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span> <span class="n">modus</span><span class="p">,</span> <span class="n">regression</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute statistics on predictions.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;singlelabel&#39;</span><span class="p">:</span>
+        <span class="c1"># Compute singlelabel performance metrics</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">regression</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">metrics</span><span class="o">.</span><span class="n">performance_singlelabel</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span>
+                                                   <span class="n">y_prediction</span><span class="p">,</span>
+                                                   <span class="n">y_score</span><span class="p">,</span>
+                                                   <span class="n">regression</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">metrics</span><span class="o">.</span><span class="n">performance_singlelabel</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span>
+                                                   <span class="n">y_prediction</span><span class="p">,</span>
+                                                   <span class="n">y_score</span><span class="p">,</span>
+                                                   <span class="n">regression</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;multilabel&#39;</span><span class="p">:</span>
+        <span class="c1"># Convert class objects to single label per patient</span>
+        <span class="n">y_truth_temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">y_prediction_temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">yt</span><span class="p">,</span> <span class="n">yp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">):</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ae</span><span class="o">.</span><span class="n">WORCNotImplementedError</span><span class="p">(</span><span class="s1">&#39;Multiclass classification evaluation is not supported in WORC.&#39;</span><span class="p">)</span>
+
+            <span class="n">y_truth_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">yp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">y_prediction_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">y_truth</span> <span class="o">=</span> <span class="n">y_truth_temp</span>
+        <span class="n">y_prediction</span> <span class="o">=</span> <span class="n">y_prediction_temp</span>
+
+        <span class="c1"># Compute multilabel performance metrics</span>
+        <span class="n">predictions_multilabel</span> <span class="o">=</span>\
+            <span class="n">metrics</span><span class="o">.</span><span class="n">performance_multilabel</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span>
+                                           <span class="n">y_prediction</span><span class="p">,</span>
+                                           <span class="n">y_score</span><span class="p">)</span>
+
+        <span class="c1"># Compute all single label performance metrics as well</span>
+        <span class="n">n_labels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_truth</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i_label</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">):</span>
+            <span class="n">y_truth_single</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">==</span> <span class="n">i_label</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">y_truth</span><span class="p">]</span>
+            <span class="n">y_prediction_single</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">==</span> <span class="n">i_label</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">y_prediction</span><span class="p">]</span>
+            <span class="n">y_score_single</span> <span class="o">=</span> <span class="n">y_score</span><span class="p">[:,</span> <span class="n">i_label</span><span class="p">]</span>
+
+            <span class="n">predictions_singlelabel_temp</span> <span class="o">=</span>\
+                <span class="n">metrics</span><span class="o">.</span><span class="n">performance_singlelabel</span><span class="p">(</span><span class="n">y_truth_single</span><span class="p">,</span>
+                                                <span class="n">y_prediction_single</span><span class="p">,</span>
+                                                <span class="n">y_score_single</span><span class="p">,</span>
+                                                <span class="n">regression</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">i_label</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">predictions_singlelabel</span> <span class="o">=</span>\
+                    <span class="p">[[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">predictions_singlelabel_temp</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">predictions_singlelabel_temp</span><span class="p">):</span>
+                    <span class="n">predictions_singlelabel</span><span class="p">[</span><span class="n">num</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">predictions_multilabel</span><span class="p">)</span> <span class="o">+</span> <span class="n">predictions_singlelabel</span>
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ae</span><span class="o">.</span><span class="n">WORCKeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{modus}</span><span class="s1"> is not a valid modus!&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="plot_estimator_performance">
+<a class="viewcode-back" href="../../../autogen/WORC.plotting.html#WORC.plotting.plot_estimator_performance.plot_estimator_performance">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_estimator_performance</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">label_data</span><span class="p">,</span> <span class="n">label_type</span><span class="p">,</span>
+                               <span class="n">crossval_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+                               <span class="n">ensemble_method</span><span class="o">=</span><span class="s1">&#39;top_N&#39;</span><span class="p">,</span>
+                               <span class="n">ensemble_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">ensemble_scoring</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">thresholds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">survival</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                               <span class="n">shuffle_estimators</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                               <span class="n">bootstrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootstrap_N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">overfit_scaler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">save_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">refit_ensemble</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the output of a single estimator, e.g. a SVM.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    prediction: pandas dataframe or string, mandatory</span>
+<span class="sd">        output of trainclassifier function, either a pandas dataframe</span>
+<span class="sd">        or a HDF5 file</span>
+
+<span class="sd">    label_data: string, mandatory</span>
+<span class="sd">        Contains the path referring to a .txt file containing the</span>
+<span class="sd">        patient label(s) and value(s) to be used for learning. See</span>
+<span class="sd">        the Github Wiki for the format.</span>
+
+<span class="sd">    label_type: string, mandatory</span>
+<span class="sd">        Name of the label to extract from the label data to test the</span>
+<span class="sd">        estimator on.</span>
+
+<span class="sd">    alpha: float, default 0.95</span>
+<span class="sd">        Significance of confidence intervals.</span>
+
+<span class="sd">    ensemble_method: string, default &#39;top_N&#39;</span>
+<span class="sd">        Determine which method to use for creating the ensemble.</span>
+<span class="sd">        Choices: top_N or Caruana</span>
+
+<span class="sd">    ensemble_size: int, default 50</span>
+<span class="sd">        Determine the size of the ensemble. Only relevant for top_N</span>
+
+<span class="sd">    verbose: boolean, default True</span>
+<span class="sd">        Plot intermedate messages.</span>
+
+<span class="sd">    ensemble_scoring: string, default None</span>
+<span class="sd">        Metric to be used for evaluating the ensemble. If None,</span>
+<span class="sd">        the option set in the prediction object will be used.</span>
+
+<span class="sd">    output: string, default stats</span>
+<span class="sd">        Determine which results are put out. If stats, the statistics of the</span>
+<span class="sd">        estimator will be returned. If scores, the scores will be returned.</span>
+
+<span class="sd">    thresholds: list of integer(s), default None</span>
+<span class="sd">        If None, use default threshold of sklearn (0.5) on posteriors to</span>
+<span class="sd">        converge to a binary prediction. If one integer is provided, use that one.</span>
+<span class="sd">        If two integers are provided, posterior &lt; thresh[0] = 0, posterior &gt; thresh[1] = 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Depending on the output parameters, the following outputs are returned:</span>
+
+<span class="sd">    If output == &#39;stats&#39;:</span>
+<span class="sd">    stats: dictionary</span>
+<span class="sd">        Contains the confidence intervals of the performance metrics</span>
+<span class="sd">        and the number of times each patient was classifier correctly</span>
+<span class="sd">        or incorrectly.</span>
+
+<span class="sd">    If output == &#39;scores&#39;:</span>
+<span class="sd">    y_truths: list</span>
+<span class="sd">        Contains the true label for each object.</span>
+
+<span class="sd">    y_scores: list</span>
+<span class="sd">        Contains the score (e.g. posterior) for each object.</span>
+
+<span class="sd">    y_predictions: list</span>
+<span class="sd">        Contains the predicted label for each object.</span>
+
+<span class="sd">    pids: list</span>
+<span class="sd">        Contains the patient ID/name for each object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load the prediction object if it&#39;s a hdf5 file</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">prediction</span><span class="p">):</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ae</span><span class="o">.</span><span class="n">WORCIOError</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not an existing file!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">prediction</span><span class="p">)))</span>
+
+    <span class="c1"># Select the estimator from the pandas dataframe to use</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">label_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label_type</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Load the label data</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">label_data</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">label_data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">label_type</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="c1"># Singlelabel: convert to list</span>
+                <span class="n">label_type</span> <span class="o">=</span> <span class="p">[[</span><span class="n">label_type</span><span class="p">]]</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_type</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">label_type</span> <span class="o">=</span> <span class="n">label_type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+
+            <span class="n">label_data</span> <span class="o">=</span> <span class="n">lp</span><span class="o">.</span><span class="n">load_labels</span><span class="p">(</span><span class="n">label_data</span><span class="p">,</span> <span class="n">label_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ae</span><span class="o">.</span><span class="n">WORCValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label data </span><span class="si">{</span><span class="n">label_data</span><span class="si">}</span><span class="s2"> incorrect: not a dictionary, or file does not exist.&quot;</span><span class="p">)</span>
+
+    <span class="n">n_labels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_type</span><span class="p">)</span>
+    <span class="n">patient_IDs</span> <span class="o">=</span> <span class="n">label_data</span><span class="p">[</span><span class="s1">&#39;patient_IDs&#39;</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">label_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">label_type</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="c1"># FIXME: Support for multiple label types not supported yet.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[WORC Warning] Support for multiple label types not supported yet. Taking first label for plot_estimator_performance.&#39;</span><span class="p">)</span>
+        <span class="n">label_type</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Extract the estimators, features and labels</span>
+    <span class="n">regression</span> <span class="o">=</span> <span class="n">is_regressor</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;classifiers&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">)</span>
+    <span class="n">feature_labels</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;feature_labels&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Get some configuration variables if present in the prediction</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">]</span><span class="o">.</span><span class="n">config</span>
+
+    <span class="k">if</span> <span class="n">modus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">modus</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Labels&#39;</span><span class="p">][</span><span class="s1">&#39;modus&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">crossval_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">crossval_type</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;CrossValidation&#39;</span><span class="p">][</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">bootstrap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bootstrap</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Bootstrap&#39;</span><span class="p">][</span><span class="s1">&#39;Use&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">bootstrap_N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bootstrap_N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;Bootstrap&#39;</span><span class="p">][</span><span class="s1">&#39;N_iterations&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">overfit_scaler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">overfit_scaler</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Evaluation&#39;</span><span class="p">][</span><span class="s1">&#39;OverfitScaler&#39;</span><span class="p">]</span>
+
+    <span class="n">ensemble_metric</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Ensemble&#39;</span><span class="p">][</span><span class="s1">&#39;Metric&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Create lists for performance measures</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">regression</span><span class="p">:</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">specificity</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">npv</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">accuracy</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">bca</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">auc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">f1_score_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">val_score</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;multilabel&#39;</span><span class="p">:</span>
+            <span class="n">acc_av</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+            <span class="c1"># Also add scoring measures for all single label scores</span>
+            <span class="n">sensitivity_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+            <span class="n">specificity_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+            <span class="n">precision_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+            <span class="n">npv_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+            <span class="n">accuracy_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+            <span class="n">bca_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+            <span class="n">auc_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+            <span class="n">f1_score_list_single</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">r2score</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">MSE</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">coefICC</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">PearsonC</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">PearsonP</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">SpearmanC</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">SpearmanP</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="n">patient_classification_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">percentages_selected</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">bootstrap</span><span class="p">:</span>
+        <span class="c1"># To be compatible with flake8, initialize some variables</span>
+        <span class="n">y_truth_all</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">y_prediction_all</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">y_score_all</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">test_patient_IDs_or</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">output</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">,</span> <span class="s1">&#39;decision&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">crossval_type</span> <span class="o">==</span> <span class="s1">&#39;LOO&#39;</span><span class="p">:</span>
+        <span class="c1"># Keep track of all groundth truths and scores</span>
+        <span class="n">y_truths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">y_scores</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">y_predictions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">pids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c1"># Extract sample size</span>
+    <span class="n">N_1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_train&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">N_2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_test&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="c1"># Convert tuples to lists if required</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">])</span>
+        <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_train&#39;</span><span class="p">])</span>
+        <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_train&#39;</span><span class="p">])</span>
+        <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_test&#39;</span><span class="p">])</span>
+        <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_test&#39;</span><span class="p">])</span>
+        <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_train&#39;</span><span class="p">])</span>
+        <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;classifiers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;classifiers&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Loop over the test sets, which correspond to cross-validation</span>
+    <span class="c1"># or bootstrapping iterations</span>
+    <span class="n">n_iter</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_test&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">bootstrap</span><span class="p">:</span>
+        <span class="n">iterobject</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bootstrap_N</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">iterobject</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterobject</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bootstrap</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bootstrap </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">bootstrap_N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cross-validation </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">n_iter</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="n">test_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="c1"># When bootstrapping, there is only a single train/test set.</span>
+        <span class="k">if</span> <span class="n">bootstrap</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">X_test_temp_or</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">X_train_temp</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_train&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">Y_train_temp</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_train&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">Y_test_temp_or</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_test&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">test_patient_IDs_or</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_test&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">train_patient_IDs</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_train&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">fitted_model</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;classifiers&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># Objects required for first iteration</span>
+                <span class="n">test_patient_IDs</span> <span class="o">=</span> <span class="n">test_patient_IDs_or</span><span class="p">[:]</span>
+                <span class="n">X_test_temp</span> <span class="o">=</span> <span class="n">X_test_temp_or</span><span class="p">[:]</span>
+                <span class="n">Y_test_temp</span> <span class="o">=</span> <span class="n">Y_test_temp_or</span><span class="p">[:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">X_test_temp</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">X_train_temp</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">Y_train_temp</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">Y_test_temp</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_test&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">test_patient_IDs</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_test&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">train_patient_IDs</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">fitted_model</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;classifiers&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># Check which patients are in the test set.</span>
+        <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="s1">&#39;stats&#39;</span> <span class="ow">and</span> <span class="n">crossval_type</span> <span class="o">!=</span> <span class="s1">&#39;LOO&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i_ID</span> <span class="ow">in</span> <span class="n">test_patient_IDs</span><span class="p">:</span>
+                <span class="c1"># Initiate counting how many times a patient is classified correctly</span>
+                <span class="k">if</span> <span class="n">i_ID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patient_classification_list</span><span class="p">:</span>
+                    <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                    <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">][</span><span class="s1">&#39;N_test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">][</span><span class="s1">&#39;N_correct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">][</span><span class="s1">&#39;N_wrong&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">][</span><span class="s1">&#39;N_test&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="c1"># Check if this is exactly the label of the patient within the label file</span>
+                <span class="k">if</span> <span class="n">i_ID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patient_IDs</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[WORC WARNING] Patient </span><span class="si">{</span><span class="n">i_ID</span><span class="si">}</span><span class="s1"> is not found the patient labels, removing underscore.&#39;</span><span class="p">)</span>
+                    <span class="n">i_ID</span> <span class="o">=</span> <span class="n">i_ID</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">i_ID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patient_IDs</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[WORC WARNING] Did not help, excluding patient </span><span class="si">{</span><span class="n">i_ID</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                <span class="n">test_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">patient_IDs</span> <span class="o">==</span> <span class="n">i_ID</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Extract ground truth</span>
+        <span class="n">y_truth</span> <span class="o">=</span> <span class="n">Y_test_temp</span>
+
+        <span class="c1"># If required, shuffle estimators for &quot;Random&quot; ensembling</span>
+        <span class="k">if</span> <span class="n">shuffle_estimators</span><span class="p">:</span>
+            <span class="c1"># Randomly shuffle the estimators</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Shuffling estimators for random ensembling.&#39;</span><span class="p">)</span>
+            <span class="n">shuffle</span><span class="p">(</span><span class="n">fitted_model</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])</span>
+
+        <span class="c1"># If requested, first let the SearchCV object create an ensemble</span>
+        <span class="k">if</span> <span class="n">bootstrap</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># For bootstrapping, only do this at the first iteration</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">ensemble</span> <span class="ow">or</span> <span class="n">refit_ensemble</span><span class="p">:</span>
+            <span class="c1"># If required, rank according to generalization score instead of mean_validation_score</span>
+            <span class="k">if</span> <span class="n">ensemble_metric</span> <span class="o">==</span> <span class="s1">&#39;generalization&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using generalization score for estimator ranking.&#39;</span><span class="p">)</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;rank_generalization_score&#39;</span><span class="p">]</span>
+                <span class="n">fitted_model</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fitted_model</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">elif</span> <span class="n">ensemble_metric</span> <span class="o">!=</span> <span class="s1">&#39;Default&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ae</span><span class="o">.</span><span class="n">WORCKeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Metric </span><span class="si">{</span><span class="n">ensemble_metric</span><span class="si">}</span><span class="s1"> is not known: use Default or generalization.&#39;</span><span class="p">)</span>
+
+            <span class="c1"># NOTE: Added for backwards compatability</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fitted_model</span><span class="p">,</span> <span class="s1">&#39;cv_iter&#39;</span><span class="p">):</span>
+                <span class="n">cv_iter</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fitted_model</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X_train_temp</span><span class="p">,</span> <span class="n">Y_train_temp</span><span class="p">))</span>
+                <span class="n">fitted_model</span><span class="o">.</span><span class="n">cv_iter</span> <span class="o">=</span> <span class="n">cv_iter</span>
+
+            <span class="c1"># Create the ensemble</span>
+            <span class="n">X_train_temp</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">feature_labels</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X_train_temp</span><span class="p">]</span>
+            <span class="n">fitted_model</span><span class="o">.</span><span class="n">create_ensemble</span><span class="p">(</span><span class="n">X_train_temp</span><span class="p">,</span> <span class="n">Y_train_temp</span><span class="p">,</span>
+                                         <span class="n">method</span><span class="o">=</span><span class="n">ensemble_method</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">ensemble_size</span><span class="p">,</span>
+                                         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">ensemble_scoring</span><span class="p">,</span>
+                                         <span class="n">overfit_scaler</span><span class="o">=</span><span class="n">overfit_scaler</span><span class="p">)</span>
+
+        <span class="c1"># If bootstrap, generate a bootstrapped sample</span>
+        <span class="k">if</span> <span class="n">bootstrap</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">test_patient_IDs</span> <span class="o">=</span>\
+                <span class="n">resample</span><span class="p">(</span><span class="n">y_truth_all</span><span class="p">,</span> <span class="n">y_prediction_all</span><span class="p">,</span>
+                         <span class="n">y_score_all</span><span class="p">,</span> <span class="n">test_patient_IDs_or</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Create prediction</span>
+            <span class="n">y_prediction</span> <span class="o">=</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_temp</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">regression</span><span class="p">:</span>
+                <span class="n">y_score</span> <span class="o">=</span> <span class="n">y_prediction</span>
+            <span class="k">elif</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;multilabel&#39;</span><span class="p">:</span>
+                <span class="n">y_score</span> <span class="o">=</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test_temp</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_score</span> <span class="o">=</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test_temp</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Create a new binary score based on the thresholds if given</span>
+            <span class="k">if</span> <span class="n">thresholds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">y_prediction</span> <span class="o">=</span> <span class="n">y_score</span> <span class="o">&gt;=</span> <span class="n">thresholds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="c1"># X_train_temp = [x[0] for x in X_train_temp]</span>
+
+                    <span class="n">y_score_temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="n">y_prediction_temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="n">y_truth_temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="n">test_patient_IDs_temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+                    <span class="n">thresholds_val</span> <span class="o">=</span> <span class="n">fit_thresholds</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">fitted_model</span><span class="p">,</span>
+                                                    <span class="n">label_type</span><span class="p">,</span> <span class="n">X_train_temp</span><span class="p">,</span>
+                                                    <span class="n">Y_train_temp</span><span class="p">,</span> <span class="n">ensemble_method</span><span class="p">,</span>
+                                                    <span class="n">ensemble_size</span><span class="p">,</span>
+                                                    <span class="n">ensemble_scoring</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">pnum</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_score</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">y_score</span><span class="p">[</span><span class="n">pnum</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">thresholds_val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">y_score</span><span class="p">[</span><span class="n">pnum</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">thresholds_val</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="n">y_score_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_score</span><span class="p">[</span><span class="n">pnum</span><span class="p">])</span>
+                            <span class="n">y_prediction_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">[</span><span class="n">pnum</span><span class="p">])</span>
+                            <span class="n">y_truth_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_truth</span><span class="p">[</span><span class="n">pnum</span><span class="p">])</span>
+                            <span class="n">test_patient_IDs_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_patient_IDs</span><span class="p">[</span><span class="n">pnum</span><span class="p">])</span>
+
+                    <span class="n">perc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_prediction_temp</span><span class="p">))</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">))</span>
+                    <span class="n">percentages_selected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">perc</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">y_prediction_temp</span><span class="p">)</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">perc</span><span class="si">}</span><span class="s2">%) patients using two thresholds.&quot;</span><span class="p">)</span>
+                    <span class="n">y_score</span> <span class="o">=</span> <span class="n">y_score_temp</span>
+                    <span class="n">y_prediction</span> <span class="o">=</span> <span class="n">y_prediction_temp</span>
+                    <span class="n">y_truth</span> <span class="o">=</span> <span class="n">y_truth_temp</span>
+                    <span class="n">test_patient_IDs</span> <span class="o">=</span> <span class="n">test_patient_IDs_temp</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ae</span><span class="o">.</span><span class="n">WORCValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Need None, one or two thresholds on the posterior; got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">crossval_type</span> <span class="o">!=</span> <span class="s1">&#39;LOO&#39;</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">y_prediction</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">y_prediction</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Convert to list for compatability</span>
+                    <span class="n">y_prediction</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_prediction</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+
+                <span class="c1"># If all scores are NaN, the classifier cannot do probabilities, thus</span>
+                <span class="c1"># use hard predictions</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">y_score</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[WORC Warning] All scores NaN, replacing with prediction.&#39;</span><span class="p">)</span>
+                    <span class="n">y_score</span> <span class="o">=</span> <span class="n">y_prediction</span>
+
+        <span class="k">if</span> <span class="n">bootstrap</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Save objects for re-use</span>
+            <span class="n">y_truth_all</span> <span class="o">=</span> <span class="n">y_truth</span><span class="p">[:]</span>
+            <span class="n">y_prediction_all</span> <span class="o">=</span> <span class="n">y_prediction</span><span class="p">[:]</span>
+            <span class="n">y_score_all</span> <span class="o">=</span> <span class="n">y_score</span><span class="p">[:]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Truth: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_truth</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Prediction: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Score: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_score</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="s1">&#39;stats&#39;</span> <span class="ow">and</span> <span class="n">crossval_type</span> <span class="o">!=</span> <span class="s1">&#39;LOO&#39;</span><span class="p">:</span>
+            <span class="c1"># Add if patient was classified correctly or not to counting</span>
+            <span class="k">for</span> <span class="n">i_truth</span><span class="p">,</span> <span class="n">i_predict</span><span class="p">,</span> <span class="n">i_test_ID</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span> <span class="n">test_patient_IDs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;multilabel&#39;</span><span class="p">:</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="p">(</span><span class="n">i_truth</span> <span class="o">==</span> <span class="n">i_predict</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="n">i_truth</span> <span class="o">==</span> <span class="n">i_predict</span>
+
+                <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                    <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_test_ID</span><span class="p">][</span><span class="s1">&#39;N_correct&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_test_ID</span><span class="p">][</span><span class="s1">&#39;N_wrong&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">output</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;decision&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">crossval_type</span> <span class="o">==</span> <span class="s1">&#39;LOO&#39;</span><span class="p">:</span>
+            <span class="c1"># Output the posteriors</span>
+            <span class="n">y_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_score</span><span class="p">)</span>
+            <span class="n">y_truths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_truth</span><span class="p">)</span>
+            <span class="n">y_predictions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">)</span>
+            <span class="n">pids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_patient_IDs</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">output</span> <span class="o">==</span> <span class="s1">&#39;stats&#39;</span><span class="p">:</span>
+            <span class="c1"># Compute statistics</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Computing performance statistics.&#39;</span><span class="p">)</span>
+            <span class="c1"># Compute confusion matrix and use for sensitivity/specificity</span>
+            <span class="n">performances</span> <span class="o">=</span> <span class="n">compute_statistics</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span>
+                                              <span class="n">modus</span><span class="p">,</span> <span class="n">regression</span><span class="p">)</span>
+
+            <span class="c1"># Print AUC to keep you up to date</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">regression</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;singlelabel&#39;</span><span class="p">:</span>
+                    <span class="n">accuracy_temp</span><span class="p">,</span> <span class="n">bca_temp</span><span class="p">,</span> <span class="n">sensitivity_temp</span><span class="p">,</span>\
+                        <span class="n">specificity_temp</span><span class="p">,</span> <span class="n">precision_temp</span><span class="p">,</span> <span class="n">npv_temp</span><span class="p">,</span>\
+                        <span class="n">f1_score_temp</span><span class="p">,</span> <span class="n">auc_temp</span> <span class="o">=</span> <span class="n">performances</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">accuracy_temp</span><span class="p">,</span> <span class="n">sensitivity_temp</span><span class="p">,</span>\
+                        <span class="n">specificity_temp</span><span class="p">,</span> <span class="n">precision_temp</span><span class="p">,</span> <span class="n">npv_temp</span><span class="p">,</span>\
+                        <span class="n">f1_score_temp</span><span class="p">,</span> <span class="n">auc_temp</span><span class="p">,</span> <span class="n">acc_av_temp</span><span class="p">,</span>\
+                        <span class="n">accuracy_temp_single</span><span class="p">,</span>\
+                        <span class="n">bca_temp_single</span><span class="p">,</span> <span class="n">sensitivity_temp_single</span><span class="p">,</span>\
+                        <span class="n">specificity_temp_single</span><span class="p">,</span> <span class="n">precision_temp_single</span><span class="p">,</span>\
+                        <span class="n">npv_temp_single</span><span class="p">,</span> <span class="n">f1_score_temp_single</span><span class="p">,</span>\
+                        <span class="n">auc_temp_single</span> <span class="o">=</span> <span class="n">performances</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">auc_temp</span><span class="p">))</span>
+
+                <span class="c1"># Append performance to lists for all cross validations</span>
+                <span class="n">accuracy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">accuracy_temp</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;singlelabel&#39;</span><span class="p">:</span>
+                    <span class="n">bca</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bca_temp</span><span class="p">)</span>
+
+                <span class="n">sensitivity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sensitivity_temp</span><span class="p">)</span>
+                <span class="n">specificity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">specificity_temp</span><span class="p">)</span>
+                <span class="n">auc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">auc_temp</span><span class="p">)</span>
+                <span class="n">f1_score_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_score_temp</span><span class="p">)</span>
+                <span class="n">precision</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">precision_temp</span><span class="p">)</span>
+                <span class="n">npv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">npv_temp</span><span class="p">)</span>
+                <span class="n">val_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitted_model</span><span class="o">.</span><span class="n">ensemble_validation_score</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;multilabel&#39;</span><span class="p">:</span>
+                    <span class="n">acc_av</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acc_av_temp</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">):</span>
+                        <span class="n">accuracy_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">accuracy_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">bca_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bca_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">sensitivity_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sensitivity_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">specificity_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">specificity_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">auc_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">auc_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">f1_score_list_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_score_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">precision_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">precision_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">npv_single</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">npv_temp_single</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r2score_temp</span><span class="p">,</span> <span class="n">MSE_temp</span><span class="p">,</span> <span class="n">coefICC_temp</span><span class="p">,</span> <span class="n">PearsonC_temp</span><span class="p">,</span>\
+                    <span class="n">PearsonP_temp</span><span class="p">,</span> <span class="n">SpearmanC_temp</span><span class="p">,</span>\
+                    <span class="n">SpearmanP_temp</span> <span class="o">=</span> <span class="n">performances</span>
+
+                <span class="n">r2score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r2score_temp</span><span class="p">)</span>
+                <span class="n">MSE</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MSE_temp</span><span class="p">)</span>
+                <span class="n">coefICC</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coefICC_temp</span><span class="p">)</span>
+                <span class="n">PearsonC</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PearsonC_temp</span><span class="p">)</span>
+                <span class="n">PearsonP</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PearsonP_temp</span><span class="p">)</span>
+                <span class="n">SpearmanC</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SpearmanC_temp</span><span class="p">)</span>
+                <span class="n">SpearmanP</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SpearmanP_temp</span><span class="p">)</span>
+
+        <span class="c1"># Delete some objects to save memory in cross-validtion</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bootstrap</span> <span class="ow">and</span> <span class="n">save_memory</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">fitted_model</span><span class="p">,</span> <span class="n">X_test_temp</span><span class="p">,</span> <span class="n">X_train_temp</span><span class="p">,</span> <span class="n">Y_train_temp</span>
+            <span class="k">del</span> <span class="n">Y_test_temp</span><span class="p">,</span> <span class="n">test_patient_IDs</span><span class="p">,</span> <span class="n">train_patient_IDs</span>
+            <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_test&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_test&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;patient_ID_train&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;classifiers&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">output</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">,</span> <span class="s1">&#39;decision&#39;</span><span class="p">]:</span>
+        <span class="c1"># Return the scores and true values of all patients</span>
+        <span class="k">return</span> <span class="n">y_truths</span><span class="p">,</span> <span class="n">y_scores</span><span class="p">,</span> <span class="n">y_predictions</span><span class="p">,</span> <span class="n">pids</span>
+
+    <span class="k">elif</span> <span class="n">output</span> <span class="o">==</span> <span class="s1">&#39;stats&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">regression</span><span class="p">:</span>
+            <span class="n">metric_names_single</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;BCA&#39;</span><span class="p">,</span> <span class="s1">&#39;Sensitivity&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;Specificity&#39;</span><span class="p">,</span> <span class="s1">&#39;Precision&#39;</span><span class="p">,</span> <span class="s1">&#39;NPV&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;F1-score&#39;</span><span class="p">,</span> <span class="s1">&#39;AUC&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;singlelabel&#39;</span><span class="p">:</span>
+                <span class="n">metric_names</span> <span class="o">=</span> <span class="n">metric_names_single</span>
+            <span class="k">elif</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;multilabel&#39;</span><span class="p">:</span>
+                <span class="n">metric_names_multi</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sensitivity&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;Specificity&#39;</span><span class="p">,</span> <span class="s1">&#39;Precision&#39;</span><span class="p">,</span> <span class="s1">&#39;NPV&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;F1-score&#39;</span><span class="p">,</span> <span class="s1">&#39;AUC&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;Average Accuracy&#39;</span><span class="p">]</span>
+                <span class="n">metric_names</span> <span class="o">=</span> <span class="n">metric_names_multi</span> <span class="o">+</span> <span class="n">metric_names_single</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Regression</span>
+            <span class="n">metric_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R2-score&#39;</span><span class="p">,</span> <span class="s1">&#39;MSE&#39;</span><span class="p">,</span> <span class="s1">&#39;ICC&#39;</span><span class="p">,</span> <span class="s1">&#39;PearsonC&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;PearsonP&#39;</span><span class="p">,</span> <span class="s1">&#39;SpearmanC&#39;</span><span class="p">,</span> <span class="s1">&#39;SpearmanP&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Compute statistics</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">all_performances</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">crossval_type</span> <span class="o">==</span> <span class="s1">&#39;LOO&#39;</span><span class="p">:</span>
+            <span class="n">performances</span> <span class="o">=</span> <span class="n">compute_statistics</span><span class="p">(</span><span class="n">y_truths</span><span class="p">,</span> <span class="n">y_scores</span><span class="p">,</span>
+                                              <span class="n">y_predictions</span><span class="p">,</span>
+                                              <span class="n">modus</span><span class="p">,</span> <span class="n">regression</span><span class="p">)</span>
+
+            <span class="c1"># Put all metrics with their names in the statistics dict</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metric_names</span><span class="p">,</span> <span class="n">performances</span><span class="p">):</span>
+                <span class="n">stats</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">thresholds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="c1"># Compute percentage of patients that was selected</span>
+                    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Percentage Selected&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">percentages_selected</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="n">output</span><span class="p">[</span><span class="s1">&#39;Statistics&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Compute alpha confidence intervals (CIs)</span>
+            <span class="c1"># FIXME: multilabel performance per single label not included</span>
+            <span class="c1"># FIXME: multilabel not working in bootstrap</span>
+            <span class="c1"># FIXME: bootstrap not done in regression</span>
+            <span class="n">all_performances</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">regression</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">bootstrap</span><span class="p">:</span>
+                    <span class="c1"># Compute once for the real test set the performance</span>
+                    <span class="n">X_test_temp</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">y_truth</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="n">label_type</span><span class="p">][</span><span class="s1">&#39;Y_test&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">y_prediction</span> <span class="o">=</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_temp</span><span class="p">)</span>
+                    <span class="n">y_score</span> <span class="o">=</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test_temp</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+                    <span class="n">performances_test</span> <span class="o">=</span>\
+                        <span class="n">metrics</span><span class="o">.</span><span class="n">performance_singlelabel</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span>
+                                                        <span class="n">y_prediction</span><span class="p">,</span>
+                                                        <span class="n">y_score</span><span class="p">,</span>
+                                                        <span class="n">regression</span><span class="p">)</span>
+                    <span class="c1"># Aggregate bootstrapped performances</span>
+                    <span class="n">performances_bootstrapped</span> <span class="o">=</span>\
+                        <span class="p">[</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">bca</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">,</span> <span class="n">specificity</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span>
+                         <span class="n">npv</span><span class="p">,</span> <span class="n">f1_score_list</span><span class="p">,</span> <span class="n">auc</span><span class="p">]</span>
+
+                    <span class="c1"># Compute confidence intervals for all metrics</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">metric_names_single</span><span class="p">)):</span>
+                        <span class="n">k</span> <span class="o">=</span> <span class="n">metric_names_single</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; 95%:&#39;</span>
+                        <span class="n">perf</span> <span class="o">=</span> <span class="n">performances_bootstrapped</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                        <span class="n">perf_test</span> <span class="o">=</span> <span class="n">performances_test</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">perf_test</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence_bootstrap</span><span class="p">(</span><span class="n">perf</span><span class="p">,</span><span class="w"> </span><span class="n">perf_test</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">all_performances</span><span class="p">[</span><span class="n">metric_names_single</span><span class="p">[</span><span class="n">p</span><span class="p">]]</span> <span class="o">=</span> <span class="n">perf</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># From SMAC</span>
+                    <span class="c1"># names = [&#39;Accuracy&#39;, &#39;BCA&#39;, &#39;AUC&#39;, &#39;F1-score&#39;, &#39;Precision&#39;,</span>
+                    <span class="c1">#          &#39;NPV&#39;, &#39;Sensitivity&#39;, &#39;Specificity&#39;, &#39;Validation-score&#39;]</span>
+                    <span class="c1"># performances = [accuracy, bca, auc, f1_score_list,</span>
+                    <span class="c1">#                 precision, npv, sensitivity, specificity, val_score]</span>
+                    <span class="c1"># for name, perf in zip(names, performances):</span>
+                    <span class="c1">#     all_performances[name] = perf</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># stats[&quot;Accuracy 95%:&quot;] = f&quot;{np.nanmean(accuracy)} {str(compute_confidence(accuracy, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;BCA 95%:&quot;] = f&quot;{np.nanmean(bca)} {str(compute_confidence(bca, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;AUC 95%:&quot;] = f&quot;{np.nanmean(auc)} {str(compute_confidence(auc, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;F1-score 95%:&quot;] = f&quot;{np.nanmean(f1_score_list)} {str(compute_confidence(f1_score_list, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;Precision 95%:&quot;] = f&quot;{np.nanmean(precision)} {str(compute_confidence(precision, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;NPV 95%:&quot;] = f&quot;{np.nanmean(npv)} {str(compute_confidence(npv, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;Sensitivity 95%:&quot;] = f&quot;{np.nanmean(sensitivity)} {str(compute_confidence(sensitivity, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;Specificity 95%:&quot;] = f&quot;{np.nanmean(specificity)} {str(compute_confidence(specificity, N_1, N_2, alpha))}&quot;</span>
+                    <span class="c1"># stats[&quot;Validation 95%:&quot;] = f&quot;{np.nanmean(val_score)} {str(compute_confidence(val_score, N_1, N_2, alpha))}&quot;</span>
+
+                    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="s1">&#39;multilabel&#39;</span><span class="p">:</span>
+                        <span class="c1"># Multiclass</span>
+                        <span class="c1"># First gather overall performances</span>
+                        <span class="n">performances</span> <span class="o">=</span> <span class="p">[</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">,</span> <span class="n">specificity</span><span class="p">,</span>
+                                        <span class="n">precision</span><span class="p">,</span> <span class="n">npv</span><span class="p">,</span> <span class="n">f1_score_list</span><span class="p">,</span> <span class="n">auc</span><span class="p">,</span>
+                                        <span class="n">acc_av</span><span class="p">]</span>
+
+                        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">perf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metric_names_multi</span><span class="p">,</span> <span class="n">performances</span><span class="p">):</span>
+                            <span class="n">all_performances</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf</span>
+                            <span class="n">stats</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">perf</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">perf</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                        <span class="c1"># Performance per label</span>
+                        <span class="n">performances</span> <span class="o">=</span> <span class="p">[</span><span class="n">accuracy_single</span><span class="p">,</span> <span class="n">bca_single</span><span class="p">,</span>
+                                        <span class="n">sensitivity_single</span><span class="p">,</span> <span class="n">specificity_single</span><span class="p">,</span>
+                                        <span class="n">auc_single</span><span class="p">,</span> <span class="n">f1_score_list_single</span><span class="p">,</span>
+                                        <span class="n">precision_single</span><span class="p">,</span> <span class="n">npv_single</span><span class="p">]</span>
+
+                        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">perf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metric_names_single</span><span class="p">,</span> <span class="n">performances</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">nlabel</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">label_type</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
+                                <span class="n">all_performances</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf</span><span class="p">[</span><span class="n">nlabel</span><span class="p">]</span>
+                                <span class="n">stats</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">perf</span><span class="p">[</span><span class="n">nlabel</span><span class="p">])</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">perf</span><span class="p">[</span><span class="n">nlabel</span><span class="p">],</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Singleclass</span>
+                        <span class="n">performances</span> <span class="o">=</span> <span class="p">[</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">bca</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">,</span> <span class="n">specificity</span><span class="p">,</span>
+                                        <span class="n">precision</span><span class="p">,</span> <span class="n">npv</span><span class="p">,</span> <span class="n">f1_score_list</span><span class="p">,</span> <span class="n">auc</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">perf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metric_names_single</span><span class="p">,</span> <span class="n">performances</span><span class="p">):</span>
+                            <span class="n">all_performances</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">CI</span> <span class="o">=</span> <span class="n">compute_confidence</span><span class="p">(</span><span class="n">perf</span><span class="p">,</span> <span class="n">N_1</span><span class="p">,</span> <span class="n">N_2</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+                                <span class="c1"># CI not defined, give nan</span>
+                                <span class="n">CI</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
+                                
+                            <span class="n">stats</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">perf</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">CI</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="k">if</span> <span class="n">thresholds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="c1"># Compute percentage of patients that was selected</span>
+                        <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Percentage Selected 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">percentages_selected</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">percentages_selected</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="c1"># Extract statistics on how often patients got classified correctly</span>
+                <span class="n">rankings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">alwaysright</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">alwayswrong</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">percentages</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">timesintestset</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i_ID</span> <span class="ow">in</span> <span class="n">patient_classification_list</span><span class="p">:</span>
+                    <span class="n">percentage_right</span> <span class="o">=</span> <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">][</span><span class="s1">&#39;N_correct&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">][</span><span class="s1">&#39;N_test&#39;</span><span class="p">])</span>
+
+                    <span class="c1"># Check if this is exactly the label of the patient within the label file</span>
+                    <span class="n">check_id</span> <span class="o">=</span> <span class="n">i_ID</span>
+                    <span class="k">if</span> <span class="n">check_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patient_IDs</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[WORC WARNING] Patient </span><span class="si">{</span><span class="n">check_id</span><span class="si">}</span><span class="s1"> is not found the patient labels, removing underscore.&#39;</span><span class="p">)</span>
+                        <span class="n">check_id</span> <span class="o">=</span> <span class="n">check_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">check_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patient_IDs</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[WORC WARNING] Did not help, excluding patient </span><span class="si">{</span><span class="n">check_id</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                            <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">check_id</span> <span class="ow">in</span> <span class="n">patient_IDs</span><span class="p">:</span>
+                        <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">check_id</span> <span class="o">==</span> <span class="n">patient_IDs</span><span class="p">)]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Multiple instance of one patient</span>
+                        <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">check_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">patient_IDs</span><span class="p">)]</span>
+
+                    <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">percentages</span><span class="p">[</span><span class="n">i_ID</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">percentage_right</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span>
+                    <span class="k">if</span> <span class="n">percentage_right</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+                        <span class="n">alwaysright</span><span class="p">[</span><span class="n">i_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Always Right: </span><span class="si">{</span><span class="n">i_ID</span><span class="si">}</span><span class="s2">, label </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+                    <span class="k">elif</span> <span class="n">percentage_right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">alwayswrong</span><span class="p">[</span><span class="n">i_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Always Wrong: </span><span class="si">{</span><span class="n">i_ID</span><span class="si">}</span><span class="s2">, label </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+                    <span class="n">timesintestset</span><span class="p">[</span><span class="n">i_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">patient_classification_list</span><span class="p">[</span><span class="n">i_ID</span><span class="p">][</span><span class="s1">&#39;N_test&#39;</span><span class="p">]</span>
+
+                <span class="n">rankings</span><span class="p">[</span><span class="s2">&quot;Always right&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alwaysright</span>
+                <span class="n">rankings</span><span class="p">[</span><span class="s2">&quot;Always wrong&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alwayswrong</span>
+                <span class="n">rankings</span><span class="p">[</span><span class="s1">&#39;Percentages&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">percentages</span>
+                <span class="n">rankings</span><span class="p">[</span><span class="s1">&#39;timesintestset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timesintestset</span>
+
+                <span class="n">output</span><span class="p">[</span><span class="s1">&#39;Rankings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rankings</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Regression</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R2-score&#39;</span><span class="p">,</span> <span class="s1">&#39;MSE&#39;</span><span class="p">,</span> <span class="s1">&#39;ICC&#39;</span><span class="p">,</span> <span class="s1">&#39;PearsonC&#39;</span><span class="p">,</span> <span class="s1">&#39;PearsonP&#39;</span>
+                         <span class="s1">&#39;SpearmanC&#39;</span><span class="p">,</span> <span class="s1">&#39;SpearmanP&#39;</span><span class="p">]</span>
+                <span class="n">performances</span> <span class="o">=</span> <span class="p">[</span><span class="n">r2score</span><span class="p">,</span> <span class="n">MSE</span><span class="p">,</span> <span class="n">coefICC</span><span class="p">,</span> <span class="n">PearsonC</span><span class="p">,</span>
+                                <span class="n">PearsonP</span><span class="p">,</span> <span class="n">SpearmanC</span><span class="p">,</span> <span class="n">SpearmanP</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">perf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">performances</span><span class="p">):</span>
+                    <span class="n">all_performances</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf</span>
+
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;R2-score 95%: &#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">r2score</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">r2score</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;MSE 95%: &#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">MSE</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">MSE</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;ICC 95%: &#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">coefICC</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">coefICC</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;PearsonC 95%: &#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">PearsonC</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">PearsonC</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;PearsonP 95%: &#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">PearsonP</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">PearsonP</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;SpearmanC 95%: &#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">SpearmanC</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">SpearmanC</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;SpearmanP 95%: &#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">SpearmanP</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">SpearmanP</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Print all CI&#39;s and add to output</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="s1">&#39;Statistics&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span>
+
+        <span class="k">if</span> <span class="n">all_performances</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span><span class="p">[</span><span class="s1">&#39;All_performances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_performances</span>
+
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="combine_multiple_estimators">
+<a class="viewcode-back" href="../../../autogen/WORC.plotting.html#WORC.plotting.plot_estimator_performance.combine_multiple_estimators">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_multiple_estimators</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">label_data</span><span class="p">,</span> <span class="n">N_1</span><span class="p">,</span> <span class="n">N_2</span><span class="p">,</span>
+                                <span class="n">multilabel_type</span><span class="p">,</span> <span class="n">label_types</span><span class="p">,</span>
+                                <span class="n">ensemble</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;argmax&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Combine multiple estimators in a single model.</span>
+
+<span class="sd">    Note: the multilabel_type labels should correspond to the ordering in label_types.</span>
+<span class="sd">    Hence, if multilabel_type = 0, the prediction is label_type[0] etc.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Load the multilabel label data</span>
+    <span class="n">label_data</span> <span class="o">=</span> <span class="n">lp</span><span class="o">.</span><span class="n">load_labels</span><span class="p">(</span><span class="n">label_data</span><span class="p">,</span> <span class="n">multilabel_type</span><span class="p">)</span>
+    <span class="n">patient_IDs</span> <span class="o">=</span> <span class="n">label_data</span><span class="p">[</span><span class="s1">&#39;patient_IDs&#39;</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">label_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Initialize some objects</span>
+    <span class="n">y_truths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">y_scores</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">y_predictions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">pids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="n">y_truths_train</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">y_scores_train</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">y_predictions_train</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">pids_train</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">sensitivity</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">specificity</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">auc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">f1_score_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">precision</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">npv</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">acc_av</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c1"># Extract all the predictions from the estimators</span>
+    <span class="k">for</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">label_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">label_types</span><span class="p">):</span>
+        <span class="n">y_truth</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">y_prediction</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span>\
+            <span class="n">y_truth_train</span><span class="p">,</span> <span class="n">y_score_train</span><span class="p">,</span> <span class="n">y_prediction_train</span><span class="p">,</span> <span class="n">pid_train</span> <span class="o">=</span>\
+            <span class="n">plot_estimator_performance</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">label_data</span><span class="p">,</span> <span class="n">label_type</span><span class="p">,</span>
+                                       <span class="n">ensemble</span><span class="o">=</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;allscores&#39;</span><span class="p">)</span>
+        <span class="n">y_truths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_truth</span><span class="p">)</span>
+        <span class="n">y_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_score</span><span class="p">)</span>
+        <span class="n">y_predictions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">)</span>
+        <span class="n">pids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+
+        <span class="n">y_truths_train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_truth_train</span><span class="p">)</span>
+        <span class="n">y_scores_train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_score_train</span><span class="p">)</span>
+        <span class="n">y_predictions_train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_prediction_train</span><span class="p">)</span>
+        <span class="n">pids_train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pid_train</span><span class="p">)</span>
+
+    <span class="c1"># Combine the predictions</span>
+    <span class="k">for</span> <span class="n">i_crossval</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_truths</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="c1"># Extract all values for this cross validation iteration from all objects</span>
+        <span class="n">y_truth</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i_crossval</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">y_truths</span><span class="p">]</span>
+        <span class="n">y_score</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i_crossval</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">y_scores</span><span class="p">]</span>
+        <span class="n">pid</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i_crossval</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s1">&#39;argmax&#39;</span><span class="p">:</span>
+            <span class="c1"># For each patient, take the maximum posterior</span>
+            <span class="n">y_prediction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_score</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">y_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_score</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s1">&#39;decisiontree&#39;</span><span class="p">:</span>
+            <span class="c1"># Fit a decision tree on the training set</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ae</span><span class="o">.</span><span class="n">WORCValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">strategy</span><span class="si">}</span><span class="s2"> is not a valid estimation combining strategy! Should be one of [argmax].&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Compute multilabel performance metrics</span>
+        <span class="n">y_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">accuracy_temp</span><span class="p">,</span> <span class="n">sensitivity_temp</span><span class="p">,</span> <span class="n">specificity_temp</span><span class="p">,</span> \
+            <span class="n">precision_temp</span><span class="p">,</span> <span class="n">npv_temp</span><span class="p">,</span> <span class="n">f1_score_temp</span><span class="p">,</span> <span class="n">auc_temp</span><span class="p">,</span> <span class="n">acc_av_temp</span> <span class="o">=</span> \
+            <span class="n">metrics</span><span class="o">.</span><span class="n">performance_multilabel</span><span class="p">(</span><span class="n">y_truth</span><span class="p">,</span>
+                                           <span class="n">y_prediction</span><span class="p">,</span>
+                                           <span class="n">y_score</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Truth: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_truth</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Prediction: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_prediction</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">auc_temp</span><span class="p">))</span>
+
+        <span class="c1"># Append performance to lists for all cross validations</span>
+        <span class="n">accuracy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">accuracy_temp</span><span class="p">)</span>
+        <span class="n">sensitivity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sensitivity_temp</span><span class="p">)</span>
+        <span class="n">specificity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">specificity_temp</span><span class="p">)</span>
+        <span class="n">auc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">auc_temp</span><span class="p">)</span>
+        <span class="n">f1_score_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_score_temp</span><span class="p">)</span>
+        <span class="n">precision</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">precision_temp</span><span class="p">)</span>
+        <span class="n">npv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">npv_temp</span><span class="p">)</span>
+        <span class="n">acc_av</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acc_av_temp</span><span class="p">)</span>
+
+    <span class="c1"># Compute confidence intervals</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Accuracy 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Average Accuracy 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">acc_av</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;AUC 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">auc</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">auc</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;F1-score 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">f1_score_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">f1_score_list</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Precision 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">precision</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">precision</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;NPV 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">npv</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">npv</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Sensitivity 95%: &quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Specificity 95%:&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">specificity</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">compute_confidence</span><span class="p">(</span><span class="n">specificity</span><span class="p">,</span><span class="w"> </span><span class="n">N_1</span><span class="p">,</span><span class="w"> </span><span class="n">N_2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Print all CI&#39;s</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../../autogen/WORC.plotting.html#WORC.plotting.plot_estimator_performance.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TODO: Put in an example&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;This function accepts three arguments!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">patientinfo</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">label_type</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">plot_estimator_performance</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">patientinfo</span><span class="p">,</span> <span class="n">label_type</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2016 -- 2025, Biomedical Imaging Group Rotterdam, Department of Radiology and Nuclear Medicine, Erasmus University Medical Center, Rotterdam, The Netherlands
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=229cbe3b"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

@@ -1,0 +1,206 @@
+#!/usr/bin/env python
+
+# Copyright 2016-2023 Biomedical Imaging Group Rotterdam, Departments of
+# Medical Informatics and Radiology, Erasmus MC, Rotterdam, The Netherlands
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from abc import ABC, abstractmethod
+
+from WORC.processing.label_processing import load_labels
+import WORC.addexceptions as ae
+import os
+
+# Global variables
+min_subjects = 10
+recommended_subjects = 50
+
+def run_once(f):
+    """For executing functions only once in the entire WORC run."""
+    def wrapper(*args, **kwargs):
+        if not wrapper.has_run:
+            wrapper.has_run = True
+            return f(*args, **kwargs)
+    wrapper.has_run = False
+    return wrapper
+
+
+class AbstractValidator(ABC):
+    # noinspection PyBroadException
+    def do_validation(self, *args, **kwargs):
+        # try:
+        result = self._validate(*args, **kwargs)
+        if result is None:
+            result = True
+        # except:
+        #     result = False
+
+        msg = self._generate_detector_message(result)
+        if msg:
+            print(msg)
+        return result
+
+    def _generate_detector_message(self, validated_value):
+        return f"{self.__class__.__name__[0:-8]} validated: {validated_value}."
+
+    @abstractmethod
+    def _validate(self, *args, **kwargs):
+        pass
+
+
+class SimpleValidator(AbstractValidator):
+    def _validate(self, simpleworc, *args, **kwargs):
+        # if not simpleworc._labels_file_train:
+        #     if hasattr(simpleworc, 'labels_file_train'):
+        #         if not simpleworc.labels_file_train:
+        #             raise ae.WORCValueError(f'No labels, use SimpleWorc().labels_from_this_file(**) to add labels.')
+        #     else:
+        #         raise ae.WORCValueError(f'No labels, use SimpleWorc().labels_from_this_file(**) to add labels.')
+
+        if not simpleworc._label_names:
+            if not simpleworc.label_names:
+                raise ae.WORCValueError(f'No label(s) to predict selected. Use SimpleWorc().predict_labels(**) to select labels.')
+
+        if not simpleworc._method:
+            raise ae.WORCValueError(f'No method selected. Call function binary_classification(**) or regression(**) or survival(**) on SimpleWorc().')
+
+        if simpleworc._images_train:
+            for num, (ims, segs) in enumerate(zip(simpleworc._images_train, simpleworc._segmentations_train)):
+                if ims.keys() != segs.keys():
+                    raise ae.WORCValueError(f'Subjects in images_train and segmentations_train are not the same for modality {num}.')
+
+        if hasattr(simpleworc, 'images_train'):
+            if simpleworc.images_train:
+                for num, (ims, segs) in enumerate(zip(simpleworc.images_train, simpleworc.segmentations_train)):
+                    if ims.keys() != segs.keys():
+                        raise ae.WORCValueError(f'Subjects in images_train and segmentations_train are not the same for modality {num}.')
+                    
+        if simpleworc._worc.images_train:
+            if len(simpleworc._worc.images_train) != len(simpleworc._image_types):
+                raise ae.WORCValueError(f'Number of image types you said you would provide (image_types: {len(simpleworc._image_types)}) is not the same as the actual number of image types provided (images_train: {len(simpleworc._worc.images_train)}).')
+
+
+class MinSubjectsValidator(AbstractValidator):
+    def _validate(self, simpleworc, *args, **kwargs):
+        if simpleworc._num_subjects < min_subjects:
+            raise ae.WORCValueError(f'Less than {min_subjects} subjects (you have {simpleworc._num_subjects}) will probably make WORC crash due to a split in the test/validation set having only one subject. Use at least {min_subjects} subjects or more.')
+
+
+# class EvaluateValidator(AbstractValidator):
+#     def _validate(self, simpleworc, *args, **kwargs):
+#         if simpleworc._add_evaluation:
+#             if not simpleworc._images_train:
+#                 if hasattr(simpleworc, 'images_train'):
+#                     if not simpleworc.images_train:
+#                         raise ae.WORCValueError(f'You have added the evaluation pipeline, but have not provided images, which is currently required. We will work on this option in a future release.')
+#                 else:
+#                     raise ae.WORCValueError(f'You have added the evaluation pipeline, but have not provided images, which is currently required. We will work on this option in a future release.')
+
+
+class SamplesWarning(AbstractValidator):
+    # Not really a validator, but more a good practice. Hence this won't throw an exception but prints a warning instead.
+    def _validate(self, simpleworc, *args, **kwargs):
+        if simpleworc._method == 'classification':
+            if simpleworc._num_subjects < len(simpleworc._label_names) * recommended_subjects: # at least 100 subjects per label recommended
+                print(f'Warning: at least {len(simpleworc._label_names) * recommended_subjects} subjects is recommended when predicting {len(simpleworc._label_names)} labels. Current subject count is: {simpleworc._num_subjects}')
+        elif simpleworc._method == 'regression':
+            # TODO @martijn not sure how to tackle this, what would be a reasonable amount of subjects for regression?
+            pass
+
+
+class InvalidLabelsValidator(AbstractValidator):
+    def _validate(self, simpleworc):
+        labels_file_train = None
+        labels_file_test = None
+        
+        if simpleworc._labels_file_train:
+            labels_file_train = simpleworc._labels_file_train
+        elif simpleworc.labels_file_train:
+            labels_file_train = simpleworc.labels_file_train
+        elif simpleworc.trained_model is not None or simpleworc._trained_model is not None:
+            # Inference, only testing objects
+            if simpleworc._labels_file_test:
+                labels_file_test = simpleworc._labels_file_test
+            elif simpleworc.labels_file_test:
+                labels_file_test = simpleworc.labels_file_test
+            else:
+                raise ae.WORCValueError(f'No test labels, use SimpleWorc().labels_from_this_file(**) to add labels.')
+        else:
+            raise ae.WORCValueError(f'No training labels, use SimpleWorc().labels_from_this_file(**) to add labels.')
+
+        if labels_file_train is not None:
+            self._validate_labels_file(labels_file_train)
+            
+        if labels_file_test is not None:
+            self._validate_labels_file(labels_file_test)
+
+    def _validate_labels_file(self, labels_file):
+        errstr = None
+        if not os.path.exists(labels_file):
+            raise ae.WORCValueError(f'Given label file {labels_file} does not exist.')
+        
+        try:
+            label_data = load_labels(labels_file)
+        except ae.WORCAssertionError as wae:
+            if 'First column should be patient ID' in str(wae):
+                # TODO: print wrong column name and file so that it is clear what needs to be replaced in which file
+                raise ae.WORCValueError(f'First column in the file given to SimpleWORC().labels_from_this_file(**) needs to be named Patient.')
+
+        # check labels for substrings of eachother
+        labels = label_data['label_name']
+        subjects = label_data['patient_IDs']
+        labels_matches = self._get_all_substrings_for_array(labels)
+
+        if labels_matches:
+            # if not empty we have a problem
+            errstr = "Found label(s) that are a substring of other label(s). This is currently not allowed in WORC. Rename the following label(s):\n"
+            for label, matches in labels_matches.items():
+                for match in matches:
+                    errstr += f"{label} is a substring of {match}\n"
+
+        # check subject names for substrings of eachother
+        subjects_matches = self._get_all_substrings_for_array(subjects)
+        if subjects_matches:
+            # if not empty we have a problem
+            errstr = "Found subject(s) that are a substring of other subject(s). This is currently not allowed in WORC. Rename the following subject(s):\n"
+            for subject, matches in subjects_matches.items():
+                for match in matches:
+                    errstr += f"{subject} is a substring of {match}\n"
+
+        if errstr:
+            raise ae.WORCValueError(errstr)
+        
+        
+    def _get_all_substrings_for_array(self, arr):
+        # generate a dict with substrings of each element in array
+        all_matches = {}
+        for strcmp in arr:
+            matches = [s for s in arr if s != strcmp and strcmp in s]
+            if matches:
+                all_matches[strcmp] = matches
+
+        return all_matches
+
+
+class ValidatorsFactory:
+    @staticmethod
+    def factor_validators():
+        return [
+            SimpleValidator(),
+            MinSubjectsValidator(),
+            SamplesWarning(),
+            InvalidLabelsValidator()
+        ]
+
+
+__all__ = [ValidatorsFactory]

@@ -1,0 +1,1164 @@
+{
+  "id": "WORC_Example_STWStrategyHN_Regression_py311",
+  "version": "0.0",
+  "filename": "c:\\users\\795023\\documents\\github\\worc\\WORC\\WORC.py",
+  "description": "",
+  "link_number": 36,
+  "node_number": 24,
+  "nodelist": [
+    {
+      "id": "config_classification_source",
+      "nodegroup": "conf",
+      "class": "SourceNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "ParameterFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "patientclass_train",
+      "nodegroup": "pctrain",
+      "class": "SourceNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "PatientInfoFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "classify",
+      "class": "Node",
+      "inputs": [
+        {
+          "id": "features_train",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "features_test",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "patientclass_train",
+          "datatype": "PatientInfoFile",
+          "input_group": "default"
+        },
+        {
+          "id": "patientclass_test",
+          "datatype": "PatientInfoFile",
+          "input_group": "default"
+        },
+        {
+          "id": "config",
+          "datatype": "ParameterFile",
+          "input_group": "default"
+        },
+        {
+          "id": "fixedsplits",
+          "datatype": "CSVFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "classification",
+          "datatype": "HDF5",
+          "suboutputs": [],
+          "preferred_types": []
+        },
+        {
+          "id": "smac_results",
+          "datatype": "JsonFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "worc/TrainClassifier:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 6144,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "fingerprinter_classification",
+      "class": "Node",
+      "inputs": [
+        {
+          "id": "images_train",
+          "datatype": "ITKImageFile",
+          "input_group": "default"
+        },
+        {
+          "id": "segmentations_train",
+          "datatype": "ITKImageFile",
+          "input_group": "default"
+        },
+        {
+          "id": "features_train",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "patientclass_train",
+          "datatype": "PatientInfoFile",
+          "input_group": "default"
+        },
+        {
+          "id": "config",
+          "datatype": "ParameterFile",
+          "input_group": "default"
+        },
+        {
+          "id": "type",
+          "datatype": "String",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "config",
+          "datatype": "ParameterFile",
+          "suboutputs": [],
+          "preferred_types": []
+        },
+        {
+          "id": "config_pyradiomics",
+          "datatype": "YamlFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "worc/Fingerprinter:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 12288,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "type_fingerprint_classification",
+      "nodegroup": "train",
+      "class": "ConstantNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "String",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "data": [
+        [
+          [
+            "id_0"
+          ],
+          [
+            {
+              "id": "String",
+              "format": null,
+              "value": "classification"
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "ensemble_method",
+      "class": "ConstantNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "String",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "data": [
+        [
+          [
+            "id_0"
+          ],
+          [
+            {
+              "id": "String",
+              "format": null,
+              "value": "Single"
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "ensemble_size",
+      "class": "ConstantNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "String",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "data": [
+        [
+          [
+            "id_0"
+          ],
+          [
+            {
+              "id": "String",
+              "format": null,
+              "value": "100"
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "LabelType",
+      "class": "ConstantNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "String",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "data": [
+        [
+          [
+            "id_0"
+          ],
+          [
+            {
+              "id": "String",
+              "format": null,
+              "value": "Age"
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "plot_Estimator",
+      "class": "Node",
+      "inputs": [
+        {
+          "id": "prediction",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "pinfo",
+          "datatype": "PatientInfoFile",
+          "input_group": "default"
+        },
+        {
+          "id": "ensemble_method",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "ensemble_size",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "label_type",
+          "datatype": "String",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "output_json",
+          "datatype": "JsonFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "worc/PlotEstimator:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 12288,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "classification",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "HDF5",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "performance",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "JsonFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "config_classification_sink",
+      "nodegroup": "conf",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "ParameterFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "features_train_CT0",
+      "nodegroup": "train",
+      "class": "SourceNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "HDF5",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "plot_Barchart",
+      "class": "Node",
+      "inputs": [
+        {
+          "id": "prediction",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "estimators",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "label_type",
+          "datatype": "String",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "output_png",
+          "datatype": "PNGFile",
+          "suboutputs": [],
+          "preferred_types": []
+        },
+        {
+          "id": "output_tex",
+          "datatype": "TexFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "worc/PlotBarchart:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 12288,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "plot_Hyperparameters",
+      "class": "Node",
+      "inputs": [
+        {
+          "id": "prediction",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "estimators",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "label_type",
+          "datatype": "String",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "output_csv",
+          "datatype": "CSVFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "worc/PlotHyperparameters:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 6144,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "plot_ranked_posteriors",
+      "class": "Node",
+      "inputs": [
+        {
+          "id": "estimator",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "pinfo",
+          "datatype": "PatientInfoFile",
+          "input_group": "default"
+        },
+        {
+          "id": "ensemble_method",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "ensemble_size",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "label_type",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "scores",
+          "datatype": "String",
+          "input_group": "default"
+        },
+        {
+          "id": "images",
+          "datatype": "ITKImageFile",
+          "input_group": "default"
+        },
+        {
+          "id": "segmentations",
+          "datatype": "ITKImageFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "output_zip",
+          "datatype": "ZipFile",
+          "suboutputs": [],
+          "preferred_types": []
+        },
+        {
+          "id": "output_csv",
+          "datatype": "CSVFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "worc/PlotRankedScores:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 20480,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "plot_boxplot_features",
+      "class": "Node",
+      "inputs": [
+        {
+          "id": "features",
+          "datatype": "HDF5",
+          "input_group": "default"
+        },
+        {
+          "id": "patientclass",
+          "datatype": "PatientInfoFile",
+          "input_group": "default"
+        },
+        {
+          "id": "config",
+          "datatype": "ParameterFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "output_zip",
+          "datatype": "ZipFile",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "worc/PlotBoxplotFeatures:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 12288,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none"
+    },
+    {
+      "id": "Barchart_PNG",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "PNGFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "Barchart_Tex",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "TexFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "Hyperparameters_CSV",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "CSVFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "RankedPosteriors_Zip",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "ZipFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "RankedPosteriors_CSV",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "CSVFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "BoxplotsFeatures_Zip",
+      "class": "SinkNode",
+      "inputs": [
+        {
+          "id": "input",
+          "datatype": "ZipFile",
+          "input_group": "default"
+        }
+      ],
+      "outputs": [],
+      "tool": {
+        "id": "fastr/Sink:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "url": null
+    },
+    {
+      "id": "const__plot_ranked_posteriors__scores",
+      "class": "ConstantNode",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "output",
+          "datatype": "String",
+          "suboutputs": [],
+          "preferred_types": []
+        }
+      ],
+      "tool": {
+        "id": "fastr/Source:1.0",
+        "version": "1.0"
+      },
+      "resources": {
+        "cores": 1,
+        "memory": 2048,
+        "time": null,
+        "gpus": null
+      },
+      "merge_dimensions": "none",
+      "data": [
+        [
+          [
+            "id_0"
+          ],
+          [
+            {
+              "id": "String",
+              "format": null,
+              "value": "posteriors"
+            }
+          ]
+        ]
+      ]
+    }
+  ],
+  "linklist": [
+    {
+      "id": "link_0",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/config_classification_source/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/fingerprinter_classification/inputs/config/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_1",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/patientclass_train/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/fingerprinter_classification/inputs/patientclass_train/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_2",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/type_fingerprint_classification/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/fingerprinter_classification/inputs/type/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_3",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/fingerprinter_classification/outputs/config",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/inputs/config/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_4",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/fingerprinter_classification/outputs/config",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/config_classification_sink/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_5",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/patientclass_train/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/inputs/patientclass_train/0",
+      "collapse": [
+        "pctrain"
+      ],
+      "expand": false
+    },
+    {
+      "id": "link_6",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/ensemble_method/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Estimator/inputs/ensemble_method/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_7",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/ensemble_size/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Estimator/inputs/ensemble_size/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_8",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/LabelType/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Estimator/inputs/label_type/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_9",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/outputs/classification",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Estimator/inputs/prediction/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_10",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/patientclass_train/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Estimator/inputs/pinfo/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_11",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/outputs/classification",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classification/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_12",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Estimator/outputs/output_json",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/performance/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_13",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/features_train_CT0/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/inputs/features_train/CT0/0",
+      "collapse": [
+        "train"
+      ],
+      "expand": false
+    },
+    {
+      "id": "link_14",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/features_train_CT0/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/fingerprinter_classification/inputs/features_train/0",
+      "collapse": [
+        "train"
+      ],
+      "expand": false
+    },
+    {
+      "id": "link_15",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Barchart/outputs/output_png",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/Barchart_PNG/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_16",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Barchart/outputs/output_tex",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/Barchart_Tex/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_17",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Hyperparameters/outputs/output_csv",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/Hyperparameters_CSV/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_18",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/outputs/output_zip",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/RankedPosteriors_Zip/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_19",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/outputs/output_csv",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/RankedPosteriors_CSV/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_20",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_boxplot_features/outputs/output_zip",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/BoxplotsFeatures_Zip/inputs/input/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_21",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/const__plot_ranked_posteriors__scores/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/inputs/scores/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_22",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/ensemble_size/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Barchart/inputs/estimators/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_23",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/LabelType/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Barchart/inputs/label_type/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_24",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/ensemble_size/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Hyperparameters/inputs/estimators/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_25",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/LabelType/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Hyperparameters/inputs/label_type/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_26",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/ensemble_method/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/inputs/ensemble_method/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_27",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/ensemble_size/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/inputs/ensemble_size/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_28",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/LabelType/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/inputs/label_type/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_29",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/outputs/classification",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Barchart/inputs/prediction/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_30",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/outputs/classification",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_Hyperparameters/inputs/prediction/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_31",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/features_train_CT0/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_boxplot_features/inputs/features/features_train_CT0/0",
+      "collapse": [
+        "train"
+      ],
+      "expand": false
+    },
+    {
+      "id": "link_32",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/patientclass_train/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_boxplot_features/inputs/patientclass/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_33",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/fingerprinter_classification/outputs/config",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_boxplot_features/inputs/config/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_34",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/classify/outputs/classification",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/inputs/estimator/0",
+      "collapse": [],
+      "expand": false
+    },
+    {
+      "id": "link_35",
+      "source": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/patientclass_train/outputs/output",
+      "target": "fastr:///networks/WORC_Example_STWStrategyHN_Regression_py311/0.0/nodelist/plot_ranked_posteriors/inputs/pinfo/0",
+      "collapse": [],
+      "expand": false
+    }
+  ],
+  "preferred_types": [],
+  "stepids": {
+    "general_sources": [
+      "config_classification_source"
+    ],
+    "train_sources": [
+      "patientclass_train",
+      "features_train_CT0"
+    ],
+    "WorkflowOptimization": [
+      "classify"
+    ],
+    "FingerPrinting": [
+      "fingerprinter_classification",
+      "type_fingerprint_classification"
+    ],
+    "Evaluation": [
+      "ensemble_method",
+      "ensemble_size",
+      "LabelType",
+      "plot_Estimator",
+      "plot_Barchart",
+      "plot_Hyperparameters",
+      "plot_ranked_posteriors",
+      "plot_boxplot_features",
+      "const__plot_ranked_posteriors__scores"
+    ],
+    "general_sinks": [
+      "classification",
+      "performance",
+      "config_classification_sink",
+      "Barchart_PNG",
+      "Barchart_Tex",
+      "Hyperparameters_CSV",
+      "RankedPosteriors_Zip",
+      "RankedPosteriors_CSV",
+      "BoxplotsFeatures_Zip"
+    ]
+  },
+  "namespace": null
+}

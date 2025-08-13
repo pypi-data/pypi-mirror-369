@@ -1,0 +1,643 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Developer documentation" href="developerdocumentation.html" /><link rel="prev" title="Additional functionality" href="additionalfunctionality.html" />
+        <link rel="prefetch" href="../_static/WORC_Logo.svg" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>FAQ - WORC 3.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=a591123b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">WORC 3.7.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/WORC_Logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">WORC 3.7.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Radiomics Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additionalfunctionality.html">Additional functionality</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developerdocumentation.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developerdocumentation.html#references">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../autogen/WORC.html">WORC Package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of WORC Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.IOparser.html">IOparser Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.classification.html">classification Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.detectors.html">detectors Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.exampledata.html">exampledata Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.export.html">export Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../autogen/WORC.facade.html">facade Package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of facade Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../autogen/WORC.facade.helpers.html">helpers Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.fastrconfig.html">fastrconfig Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.featureprocessing.html">featureprocessing Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.plotting.html">plotting Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.processing.html">processing Package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../autogen/WORC.resources.html">resources Package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of resources Package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../autogen/WORC.resources.fastr_tests.html">fastr_tests Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autogen/WORC.resources.fastr_tools.html">fastr_tools Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.statistics.html">statistics Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.tests.html">tests Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.tools.html">tools Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autogen/WORC.validators.html">validators Package</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/static/faq.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="faq">
+<span id="faq-chapter"></span><h1>FAQ<a class="headerlink" href="#faq" title="Link to this heading">¶</a></h1>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<section id="error-modulenotfounderror-no-module-named-numpy">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'numpy'</span></code><a class="headerlink" href="#error-modulenotfounderror-no-module-named-numpy" title="Link to this heading">¶</a></h3>
+<p>Some versions of several packages that WORC uses, such as PyWavelets and
+PyRadiomics, require numpy during their installation. To solve this issue,
+simply first install numpy before installing WORC or any of the dependencies
+, i.e. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">numpy</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">numpy</span></code> when using Anaconda.</p>
+</section>
+<section id="i-get-some-issues-with-package-versions-on-the-snellius-cluster">
+<h3>I get some issues with package versions (on the Snellius cluster)<a class="headerlink" href="#i-get-some-issues-with-package-versions-on-the-snellius-cluster" title="Link to this heading">¶</a></h3>
+<p>For ease of use, we provide a <a class="reference external" href="https://github.com/MStarmans91/WORC/tree/master/WORC/doc/static">pip freeze</a>
+of one of our recent testing environments.</p>
+</section>
+</section>
+<section id="execution-errors">
+<h2>Execution errors<a class="headerlink" href="#execution-errors" title="Link to this heading">¶</a></h2>
+<section id="my-experiment-crashed-where-to-begin-looking-for-errors">
+<h3>My experiment crashed, where to begin looking for errors?<a class="headerlink" href="#my-experiment-crashed-where-to-begin-looking-for-errors" title="Link to this heading">¶</a></h3>
+<p>You can check this FAQ for commonly known errors and how to fix them.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">fastr</span></code> toolbox has a method to trace back errors. For more details,
+see the <a class="reference external" href="https://fastr.readthedocs.io/en/stable/static/user_manual.html#debugging-a-network-run-with-errors">fastr documentation</a>.
+If you want to know the exact error that occured in a job, make sure you trace back to a single sink and single sample,
+e.g. <a href="#id1"><span class="problematic" id="id2">``</span></a>fastr trace $RUNDIR/__sink_data__.json –sinks sink_5 –sample sample_1_1 <a href="#id3"><span class="problematic" id="id4">``</span></a>. See the <span class="xref std std-ref">User Manual chapter</span>
+for more info.</p>
+</section>
+<section id="error-fastr-exceptions-fastrvalueerror-fastrvalueerror-from-fastr-execution-job-py-line-834-output-values-are-not-valid">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">fastr.exceptions.FastrValueError:</span> <span class="pre">[...]</span> <span class="pre">FastrValueError</span> <span class="pre">from</span> <span class="pre">``</span> <span class="pre">``.../fastr/execution/job.py</span> <span class="pre">line</span> <span class="pre">834:</span> <span class="pre">Output</span> <span class="pre">values</span> <span class="pre">are</span> <span class="pre">not</span> <span class="pre">valid!</span></code><a class="headerlink" href="#error-fastr-exceptions-fastrvalueerror-fastrvalueerror-from-fastr-execution-job-py-line-834-output-values-are-not-valid" title="Link to this heading">¶</a></h3>
+<p>This a general error fastr returns when a job failed: since there is no output generated, the output values are obviously not valid for
+what fastr expected. Hence that does not give you any input on why the job failed. What you want is the actual error that occured in the tool,
+e.g., the Python error. If you debug the fastr network, see above, use the fastr trace command to trace back the error
+of a specific sink and a specific sample to track down the exact tool error, e.g., the Python error.</p>
+</section>
+<section id="error-file-h5fdsec2-c-line-941-in-h5fd-sec2-lock-unable-to-lock-file-errno-37-error-message-no-locks-available">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&quot;H5FDsec2.c&quot;,</span> <span class="pre">line</span> <span class="pre">941,</span> <span class="pre">in</span> <span class="pre">H5FD_sec2_lock</span> <span class="pre">unable</span> <span class="pre">to</span> <span class="pre">lock</span> <span class="pre">file,</span></code> <code class="docutils literal notranslate"><span class="pre">errno</span> <span class="pre">=</span> <span class="pre">37,</span> <span class="pre">error</span> <span class="pre">message</span> <span class="pre">=</span> <span class="pre">'No</span> <span class="pre">locks</span> <span class="pre">available'</span></code><a class="headerlink" href="#error-file-h5fdsec2-c-line-941-in-h5fd-sec2-lock-unable-to-lock-file-errno-37-error-message-no-locks-available" title="Link to this heading">¶</a></h3>
+<p>Known HDF5 error, see also <a class="reference external" href="https://github.com/h5py/h5py/issues/1101">https://github.com/h5py/h5py/issues/1101</a>.
+Can be solved by setting the HDF5_USE_FILE_LOCKING environment variable to ‘FALSE’,
+e.g. adding export HDF5_USE_FILE_LOCKING=’FALSE’ to your ~..bashrc on Linux.</p>
+</section>
+<section id="error-failed-building-wheel-for-cryptography-occurs-often-on-bigr-cluster">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">Failed</span> <span class="pre">building</span> <span class="pre">wheel</span> <span class="pre">for</span> <span class="pre">cryptography</span></code> (occurs often on BIGR cluster)<a class="headerlink" href="#error-failed-building-wheel-for-cryptography-occurs-often-on-bigr-cluster" title="Link to this heading">¶</a></h3>
+<p>This bug can be caused when using pyOpenSSL 22.1.0 or recent cryptography versions on the BIGR cluster.
+Cryptography 3.4.7 and PyOpenSSL 20.0.1 should work, so install those (in that order) before installing WORC.</p>
+</section>
+<section id="error-worc-addexceptions-worcvalueerror-first-column-in-the-file-given-to-simpleworc-labels-from-this-file-needs-to-be-named-patient">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">WORC.addexceptions.WORCValueError:</span> <span class="pre">First</span> <span class="pre">column</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">file</span></code> <code class="docutils literal notranslate"><span class="pre">given</span> <span class="pre">to</span> <span class="pre">SimpleWORC().labels_from_this_file(**)</span> <span class="pre">needs</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">named</span> <span class="pre">Patient.</span></code><a class="headerlink" href="#error-worc-addexceptions-worcvalueerror-first-column-in-the-file-given-to-simpleworc-labels-from-this-file-needs-to-be-named-patient" title="Link to this heading">¶</a></h3>
+<p>This means that your label file, i.e. in which the label to be predicted for
+each patient is given, is not formatted correctly. Please see the
+<a class="reference internal" href="configuration.html#config-chapter"><span class="std std-ref">Configuration chapter</span></a>, or the WORC Tutorial Github
+for an <a class="reference external" href="https://github.com/MStarmans91/WORCTutorial/blob/master/Data/Examplefiles/pinfo_HN.csv/">example</a>.</p>
+</section>
+<section id="error-worc-addexceptions-worckeyerror-no-entry-found-in-labeling-for-feature-file-feat-out-0-hdf5">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">WORC.addexceptions.WORCKeyError:</span> <span class="pre">'No</span> <span class="pre">entry</span> <span class="pre">found</span> <span class="pre">in</span> <span class="pre">labeling</span></code> <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">feature</span> <span class="pre">file</span> <span class="pre">.../feat_out_0.hdf5.'</span></code><a class="headerlink" href="#error-worc-addexceptions-worckeyerror-no-entry-found-in-labeling-for-feature-file-feat-out-0-hdf5" title="Link to this heading">¶</a></h3>
+<p>This means for this specific file (../feat_out_0.hdf5), WORC could not
+find a label in your label file. Please make sure that one of the Patient IDs
+from your label file occurs in the filename of your inputs. For example,
+when using the example label file from the <a class="reference external" href="https://github.com/MStarmans91/WORCTutorial/blob/master/Data/Examplefiles/pinfo_HN.csv/">WORC tutorial</a>,
+if your Patient ID is not listed in column 1, this error will occur.</p>
+</section>
+<section id="error-file-lib-site-packages-numpy-lib-function-base-py-line-4406-in-delete-keep-obj-false-indexerror-arrays-used-as-indices-must-be-of-integer-or-boolean-type">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&quot;...\lib\site-packages\numpy\lib\function_base.py&quot;,</span> <span class="pre">line</span> <span class="pre">4406,</span> <span class="pre">in</span> <span class="pre">delete</span></code> <code class="docutils literal notranslate"><span class="pre">keep[obj,]</span> <span class="pre">=</span> <span class="pre">False</span> <span class="pre">IndexError:</span> <span class="pre">arrays</span> <span class="pre">used</span> <span class="pre">as</span> <span class="pre">indices</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">of</span> <span class="pre">integer</span> <span class="pre">(or</span> <span class="pre">boolean)</span> <span class="pre">type</span></code><a class="headerlink" href="#error-file-lib-site-packages-numpy-lib-function-base-py-line-4406-in-delete-keep-obj-false-indexerror-arrays-used-as-indices-must-be-of-integer-or-boolean-type" title="Link to this heading">¶</a></h3>
+<p>This is an error in PyRadiomics 3.0, see also
+<a class="reference external" href="https://github.com/Radiomics/pyradiomics/issues/592/">this issue</a>. It has
+currently to be manually solved by within the PyRadiomics package, in the
+<code class="docutils literal notranslate"><span class="pre">glcm</span></code>, <code class="docutils literal notranslate"><span class="pre">gldm</span></code>, <code class="docutils literal notranslate"><span class="pre">glrlm</span></code>, <code class="docutils literal notranslate"><span class="pre">glszm</span></code> and <code class="docutils literal notranslate"><span class="pre">ngtdm</span></code> functions,
+searching for the line starting with <code class="docutils literal notranslate"><span class="pre">emptyGrayLevels</span> <span class="pre">=</span></code>. After that,
+there will be a line similar to <code class="docutils literal notranslate"><span class="pre">P_ngtdm</span> <span class="pre">=</span> <span class="pre">numpy.delete(P_ngtdm,</span> <span class="pre">emptyGrayLevels,</span> <span class="pre">1)</span></code>.
+Before that line, add a conditional <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">list(emptyGrayLevels):</span></code>, e.g.
+for the NGTDM:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">emptyGrayLevels</span><span class="p">):</span>
+  <span class="n">P_ngtdm</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">P_ngtdm</span><span class="p">,</span> <span class="n">emptyGrayLevels</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See also my fork of PyRadiomics, which you can also install to fix the issue:
+<a class="reference external" href="https://github.com/MStarmans91/pyradiomics">https://github.com/MStarmans91/pyradiomics</a>.</p>
+</section>
+<section id="i-get-many-errors-related-to-pyradiomics">
+<h3>I get (many) errors related to PyRadiomics<a class="headerlink" href="#i-get-many-errors-related-to-pyradiomics" title="Link to this heading">¶</a></h3>
+<p>Both based on our own experience, feedback from WORC users, and the Github issues, PyRadiomics 3.1.0 is extremely buggy.
+If you are using this version, the errors you get may relate to this. We therefore recommend to use the latest
+stable version, 3.0.1.</p>
+</section>
+<section id="error-valueerror-image-mask-geometry-mismatch-potential-fix-increase-tolerance-using-geometrytolerance-see-documentation-usage-customizing-the-extraction-settings-geometrytolerance-for-more-information">
+<h3>Error: <code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">Image/Mask</span> <span class="pre">geometry</span> <span class="pre">mismatch.</span> <span class="pre">Potential</span> <span class="pre">fix:</span> <span class="pre">increase</span> <span class="pre">tolerance</span> <span class="pre">using</span> <span class="pre">geometryTolerance,</span> <span class="pre">see</span> <span class="pre">Documentation:Usage:Customizing</span> <span class="pre">the</span> <span class="pre">Extraction:Settings:geometryTolerance</span> <span class="pre">for</span> <span class="pre">more</span> <span class="pre">information&quot;</span></code><a class="headerlink" href="#error-valueerror-image-mask-geometry-mismatch-potential-fix-increase-tolerance-using-geometrytolerance-see-documentation-usage-customizing-the-extraction-settings-geometrytolerance-for-more-information" title="Link to this heading">¶</a></h3>
+<p>The full error will be similar to the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;...\lib\site-packages</span><span class="se">\r</span><span class="s2">adiomics\imageoperations.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">228</span><span class="p">,</span> <span class="ow">in</span> <span class="n">checkMask</span>
+    <span class="n">lsif</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="n">imageNode</span><span class="p">,</span> <span class="n">maskNode</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;...\lib\site-packages\SimpleITK\SimpleITK.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">16078</span><span class="p">,</span> <span class="ow">in</span> <span class="n">Execute</span>
+    <span class="k">return</span> <span class="n">_SimpleITK</span><span class="o">.</span><span class="n">LabelStatisticsImageFilter_Execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">labelImage</span><span class="p">)</span>
+<span class="ne">RuntimeError</span><span class="p">:</span> <span class="ne">Exception</span> <span class="n">thrown</span> <span class="ow">in</span> <span class="n">SimpleITK</span> <span class="n">LabelStatisticsImageFilter_Execute</span><span class="p">:</span> <span class="n">d</span><span class="p">:</span>\<span class="n">a</span>\<span class="mi">1</span>\<span class="n">sitk</span><span class="o">-</span><span class="n">build</span>\<span class="n">itk</span><span class="o">-</span><span class="n">prefix</span>\<span class="n">include</span>\<span class="n">itk</span><span class="o">-</span><span class="mf">5.1</span>\<span class="n">itkImageSink</span><span class="o">.</span><span class="n">hxx</span><span class="p">:</span><span class="mi">242</span><span class="p">:</span>
+<span class="n">itk</span><span class="p">::</span><span class="n">ERROR</span><span class="p">:</span> <span class="n">itk</span><span class="p">::</span><span class="n">ERROR</span><span class="p">:</span> <span class="n">LabelStatisticsImageFilter</span><span class="p">(</span><span class="mi">00000280</span><span class="n">C42E6A10</span><span class="p">):</span> <span class="n">Inputs</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">occupy</span> <span class="n">the</span> <span class="n">same</span> <span class="n">physical</span> <span class="n">space</span><span class="err">!</span>
+<span class="n">InputImage</span> <span class="n">Origin</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.7624083e+01</span><span class="p">,</span> <span class="mf">9.7990314e+00</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3576663e+01</span><span class="p">],</span> <span class="n">InputImagePrimary</span> <span class="n">Origin</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.7623698e+01</span><span class="p">,</span> <span class="mf">9.7988536e+00</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3576664e+01</span><span class="p">]</span>
+        <span class="n">Tolerance</span><span class="p">:</span> <span class="mf">1.0000000e-04</span>
+
+
+<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
+
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;...\lib\site-packages</span><span class="se">\r</span><span class="s2">adiomics\scripts\segment.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">70</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_extractFeatures</span>
+    <span class="n">feature_vector</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extractor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">imageFilepath</span><span class="p">,</span> <span class="n">maskFilepath</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">label_channel</span><span class="p">))</span>
+  <span class="n">File</span> <span class="s2">&quot;...\lib\site-packages</span><span class="se">\r</span><span class="s2">adiomics</span><span class="se">\f</span><span class="s2">eatureextractor.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">276</span><span class="p">,</span> <span class="ow">in</span> <span class="n">execute</span>
+    <span class="n">boundingBox</span><span class="p">,</span> <span class="n">correctedMask</span> <span class="o">=</span> <span class="n">imageoperations</span><span class="o">.</span><span class="n">checkMask</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="o">**</span><span class="n">_settings</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;...\lib\site-packages</span><span class="se">\r</span><span class="s2">adiomics\imageoperations.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">243</span><span class="p">,</span> <span class="ow">in</span> <span class="n">checkMask</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Image/Mask geometry mismatch. Potential fix: increase tolerance using geometryTolerance, &#39;</span>
+<span class="ne">ValueError</span><span class="p">:</span> <span class="n">Image</span><span class="o">/</span><span class="n">Mask</span> <span class="n">geometry</span> <span class="n">mismatch</span><span class="o">.</span> <span class="n">Potential</span> <span class="n">fix</span><span class="p">:</span> <span class="n">increase</span> <span class="n">tolerance</span> <span class="n">using</span> <span class="n">geometryTolerance</span><span class="p">,</span> <span class="n">see</span> <span class="n">Documentation</span><span class="p">:</span><span class="n">Usage</span><span class="p">:</span><span class="n">Customizing</span> <span class="n">the</span> <span class="n">Extraction</span><span class="p">:</span><span class="n">Settings</span><span class="p">:</span><span class="n">geometryTolerance</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span>
+</pre></div>
+</div>
+<p>Your image and mask do not have exactly the same geometry, i.e., pixel spacing and/or origin, for which PyRadiomics applies a tolerance
+which you do not meet, see also <a class="reference external" href="https://pyradiomics.readthedocs.io/en/latest/faq.html?highlight=resample#geometry-mismatch-between-image-and-mask">https://pyradiomics.readthedocs.io/en/latest/faq.html?highlight=resample#geometry-mismatch-between-image-and-mask</a>.
+Up to you to inspect why this has happened and if this is correct or not. In <code class="docutils literal notranslate"><span class="pre">WORC</span></code>, to fix this issue, you can simply set the
+<code class="docutils literal notranslate"><span class="pre">[&quot;General&quot;][&quot;AssumeSameImageAndMaskMetadata&quot;]</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">True</span></code>: in this way, in the preprocessing step, <code class="docutils literal notranslate"><span class="pre">WORC</span></code> will simply
+copy-paste the metadata from the image to your segmentation to ensure they are the same. If you are using <code class="docutils literal notranslate"><span class="pre">BasicWORC</span></code> or <code class="docutils literal notranslate"><span class="pre">SimpleWORC</span></code>,
+simply add the following:</p>
+</section>
+</section>
+<section id="other">
+<h2>Other<a class="headerlink" href="#other" title="Link to this heading">¶</a></h2>
+<section id="i-am-working-on-the-bigr-cluster-and-would-like-some-jobs-to-be-submitted-to-different-queues">
+<h3>I am working on the BIGR cluster and would like some jobs to be submitted to different queues<a class="headerlink" href="#i-am-working-on-the-bigr-cluster-and-would-like-some-jobs-to-be-submitted-to-different-queues" title="Link to this heading">¶</a></h3>
+<p>Unfortunately, fastr does not support giving a queue argument per job. In
+general, we assume you would like all your jobs to be run on the day queue,
+which you can set as the default, and only the classify job on the week queue.
+The only solution we currently have is to manually hack this into fastr:</p>
+<ol class="arabic simple">
+<li><p>Go to the installation of the fastr package in your (virtual) environment.</p></li>
+<li><p>Open the fastr/resources/plugins/executionplugins/drmaaplugin.py script.</p></li>
+<li><p>Search for the line <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">queue</span> <span class="pre">is</span> <span class="pre">None:</span></code> and replace that if loop</p></li>
+</ol>
+<blockquote>
+<div><p>with the following:</p>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">queue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;classify&#39;</span> <span class="ow">in</span> <span class="n">command</span><span class="p">:</span>
+        <span class="n">fastr</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Detected classify in command: submitting to week queue&#39;</span><span class="p">)</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="s1">&#39;week&#39;</span>
+    <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;classify&#39;</span> <span class="ow">in</span> <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">):</span>
+        <span class="n">fastr</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Detected classify in arguments: submitting to week queue&#39;</span><span class="p">)</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="s1">&#39;week&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_queue</span>
+</pre></div>
+</div>
+</section>
+<section id="can-i-use-my-own-features-instead-of-the-standard-worc-features">
+<h3>Can I use my own features instead of the standard <code class="docutils literal notranslate"><span class="pre">WORC</span></code> features?<a class="headerlink" href="#can-i-use-my-own-features-instead-of-the-standard-worc-features" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">WORC</span></code> also includes an option to use your own features instead of the default
+features included. <code class="docutils literal notranslate"><span class="pre">WORC</span></code> will than simply start at the data mining
+(e.g. classification, regression) step, and thus after the normal
+feature extraction. This requires three steps:</p>
+<section id="convert-your-features-to-the-default-worc-format">
+<h4>1. Convert your features to the default <code class="docutils literal notranslate"><span class="pre">WORC</span></code> format<a class="headerlink" href="#convert-your-features-to-the-default-worc-format" title="Link to this heading">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">WORC</span></code> expects your features per patient in a .hdf5 file, containing a <code class="docutils literal notranslate"><span class="pre">pandas</span></code> series
+with at least a <code class="docutils literal notranslate"><span class="pre">feature_values</span></code> and a <code class="docutils literal notranslate"><span class="pre">feature_labels</span></code> object. The
+<code class="docutils literal notranslate"><span class="pre">feature_values</span></code> object should be a list containing your feature values,
+the <code class="docutils literal notranslate"><span class="pre">feature_labels</span></code> object a list with the corresponding featuree labels.
+Below an example on how to create such a series.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dummy variables</span>
+<span class="n">feature_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">feature_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;label_feature_1&#39;</span><span class="p">,</span> <span class="s1">&#39;label_feature_2&#39;</span><span class="p">,</span> <span class="s1">&#39;label_feature_3&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;label_feature_4&#39;</span><span class="p">]</span>
+
+<span class="c1"># Output filename</span>
+<span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;test.hdf5&#39;</span>
+
+<span class="c1"># Converting features to pandas series and saving</span>
+<span class="n">panda_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">feature_values</span><span class="p">,</span>
+                        <span class="n">feature_labels</span><span class="p">],</span>
+                       <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;feature_values&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_labels&#39;</span><span class="p">],</span>
+                       <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Image features&#39;</span>
+                       <span class="p">)</span>
+
+<span class="n">panda_data</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;image_features&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="alter-feature-selection-on-the-feature-labels">
+<h4>2. Alter feature selection on the feature labels<a class="headerlink" href="#alter-feature-selection-on-the-feature-labels" title="Link to this heading">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">WORC</span></code> by default includes groupwise feature selection, were groups of
+features are randomly turned on or off. Since your feature labels are probably
+not in the default included values, you should turn this of. This can be done
+by setting the <code class="docutils literal notranslate"><span class="pre">config['Featsel']['GroupwiseSearch']</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;False&quot;</span></code>.</p>
+<p>Alternatively, you can use default feature labels in <code class="docutils literal notranslate"><span class="pre">WORC</span></code> and still use
+the groupwise feature selection. This is relatively simple: for example,
+shape features are recognized by looking for <code class="docutils literal notranslate"><span class="pre">&quot;sf_&quot;</span></code> in the feature label
+name. To see which labels are exactly used, please see
+<a class="reference internal" href="../autogen/WORC.featureprocessing.html#module-WORC.featureprocessing.SelectGroups" title="WORC.featureprocessing.SelectGroups"><code class="xref py py-mod docutils literal notranslate"><span class="pre">WORC.featureprocessing.SelectGroups</span></code></a> and the SelectFeatGroup section in the
+<a class="reference internal" href="configuration.html#config-chapter"><span class="std std-ref">Config chapter</span></a>.</p>
+</section>
+<section id="tell-worc-to-use-your-feature-and-not-compute-the-default-ones">
+<h4>3. Tell <code class="docutils literal notranslate"><span class="pre">WORC</span></code> to use your feature and not compute the default ones<a class="headerlink" href="#tell-worc-to-use-your-feature-and-not-compute-the-default-ones" title="Link to this heading">¶</a></h4>
+<p>To this end, <code class="docutils literal notranslate"><span class="pre">SimpleWORC</span></code>, and therefore also <code class="docutils literal notranslate"><span class="pre">BasicWORC</span></code>, include the
+function <code class="docutils literal notranslate"><span class="pre">features_from_this_directory()</span></code>. See the specific WORC tutorial
+on using your own features: <a class="reference external" href="https://github.com/MStarmans91/WORCtutorial/Extra_tutorials/WORCTutorialBasic_OwnFeatures.py">https://github.com/MStarmans91/WORCtutorial/Extra_tutorials/WORCTutorialBasic_OwnFeatures.py</a>.  As explained in the WORCTutorial,
+a default structure of your <code class="docutils literal notranslate"><span class="pre">featuresdatadir</span></code> folder is expected in this
+function: there should be a subfolder for each patient, in which the feature
+file should be. The feature file can have a fixed name, but wildcard are
+allowed in the search, see also the documentation of the <code class="docutils literal notranslate"><span class="pre">features_from_this_directory()</span></code>
+function.</p>
+<p>Altneratively, when using <code class="docutils literal notranslate"><span class="pre">BasicWORC</span></code>, you can append dictionaries to the
+<code class="docutils literal notranslate"><span class="pre">features_train</span></code> object. Each dictionary you append should have as keys
+the patient names, and as values the paths to the feature files, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">code</span><span class="o">-</span><span class="n">block</span><span class="p">::</span> <span class="n">python</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>feature_dict = {‘Patient1’: ‘/path/to/featurespatient1.hdf5’, ‘Patient2’: ‘/path/to/someotherrandandomfolderwith/featurespatient2.hdf5’}</p>
+</div></blockquote>
+</section>
+</section>
+<section id="how-to-change-the-temporary-and-output-folders">
+<h3>How to change the temporary and output folders?<a class="headerlink" href="#how-to-change-the-temporary-and-output-folders" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">WORC</span></code> makes use of the <code class="docutils literal notranslate"><span class="pre">fastr</span></code> workflow engine to manage and execute
+the experiment, and thus also to manage and produce the output. These folders
+can be configured in the <code class="docutils literal notranslate"><span class="pre">fastr</span></code> config (<a class="reference external" href="https://fastr.readthedocs.io/en/stable/static/file_description.html#config-file">https://fastr.readthedocs.io/en/stable/static/file_description.html#config-file</a>).
+The <code class="docutils literal notranslate"><span class="pre">fastr</span></code> config files can be found in a hidden folder .fastr in your home folder.
+<code class="docutils literal notranslate"><span class="pre">WORC</span></code> adds an additional config file to the config.d folder of <code class="docutils literal notranslate"><span class="pre">fastr</span></code>:
+<a class="reference external" href="https://github.com/MStarmans91/WORC/blob/master/WORC/fastrconfig/WORC_config.py">https://github.com/MStarmans91/WORC/blob/master/WORC/fastrconfig/WORC_config.py</a>.</p>
+<p>The two mounts that determine the temporary and output folders and thus which
+you have to change are:
+- Temporary output: <code class="docutils literal notranslate"><span class="pre">mounts['tmp']</span></code> in the ~/.fastr/config.py file
+- Final output: <code class="docutils literal notranslate"><span class="pre">mounts['output']</span></code> in the ~/.fastr/config.d/WORC_config.py file</p>
+</section>
+<section id="how-can-i-get-the-performance-on-the-validation-dataset">
+<h3>How can I get the performance on the validation dataset?<a class="headerlink" href="#how-can-i-get-the-performance-on-the-validation-dataset" title="Link to this heading">¶</a></h3>
+<p>The performance of the top 1 workflow is stored in the fitted estimators in the estimator_all_0.hdf5 file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="s2">&quot;estimator_all_0.hdf5&quot;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span>
+
+<span class="n">validation_performance</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="c1"># Iterate over all train-test cross validations</span>
+<span class="k">for</span> <span class="n">clf</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">classifiers</span><span class="p">:</span>
+    <span class="n">validation_performance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">best_score_</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="my-jobs-on-the-bigr-cluster-get-cancelled-due-to-memory-errors">
+<h3>My jobs on the BIGR cluster get cancelled due to memory errors<a class="headerlink" href="#my-jobs-on-the-bigr-cluster-get-cancelled-due-to-memory-errors" title="Link to this heading">¶</a></h3>
+<p>You can adjust the memory for various jobs through changing the values in the <code class="docutils literal notranslate"><span class="pre">WORC.fastr_memory_parameters</span></code> dictionary
+(accesible in <code class="docutils literal notranslate"><span class="pre">SimpleWORC</span></code> and <code class="docutils literal notranslate"><span class="pre">BasicWORC</span></code> through <code class="docutils literal notranslate"><span class="pre">_worc.fastr_memory_parameters</span></code>.) The fit_and_score job
+memory can be adjusted through the WORC HyperOptimization config, see <a class="reference internal" href="configuration.html#config-chapter"><span class="std std-ref">Configuration chapter</span></a>.</p>
+</section>
+<section id="why-are-you-still-only-supporting-python-3-6-3-7-and-3-8">
+<h3>Why are you still only supporting Python 3.6, 3.7 and 3.8?<a class="headerlink" href="#why-are-you-still-only-supporting-python-3-6-3-7-and-3-8" title="Link to this heading">¶</a></h3>
+<p>Primarily because our dependency on PyRadiomics.
+We would love to change this in the future.
+We have already build MVPs using Python 3.11 for our own feature computation
+toolbox PREDICT (<a class="reference external" href="https://github.com/Svdvoort/PREDICTFastr/tree/py311">https://github.com/Svdvoort/PREDICTFastr/tree/py311</a>) and for
+WORC (<a class="reference external" href="https://github.com/MStarmans91/WORC/tree/newpython">https://github.com/MStarmans91/WORC/tree/newpython</a>). These run, including
+actually using PyRadiomics, but have not been thorougly tested on the resulting performance.</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="developerdocumentation.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Developer documentation</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="additionalfunctionality.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Additional functionality</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2016 -- 2025, Biomedical Imaging Group Rotterdam, Department of Radiology and Nuclear Medicine, Erasmus University Medical Center, Rotterdam, The Netherlands
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">FAQ</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#error-modulenotfounderror-no-module-named-numpy">Error: <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'numpy'</span></code></a></li>
+<li><a class="reference internal" href="#i-get-some-issues-with-package-versions-on-the-snellius-cluster">I get some issues with package versions (on the Snellius cluster)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#execution-errors">Execution errors</a><ul>
+<li><a class="reference internal" href="#my-experiment-crashed-where-to-begin-looking-for-errors">My experiment crashed, where to begin looking for errors?</a></li>
+<li><a class="reference internal" href="#error-fastr-exceptions-fastrvalueerror-fastrvalueerror-from-fastr-execution-job-py-line-834-output-values-are-not-valid">Error: <code class="docutils literal notranslate"><span class="pre">fastr.exceptions.FastrValueError:</span> <span class="pre">[...]</span> <span class="pre">FastrValueError</span> <span class="pre">from</span> <span class="pre">``</span> <span class="pre">``.../fastr/execution/job.py</span> <span class="pre">line</span> <span class="pre">834:</span> <span class="pre">Output</span> <span class="pre">values</span> <span class="pre">are</span> <span class="pre">not</span> <span class="pre">valid!</span></code></a></li>
+<li><a class="reference internal" href="#error-file-h5fdsec2-c-line-941-in-h5fd-sec2-lock-unable-to-lock-file-errno-37-error-message-no-locks-available">Error: <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&quot;H5FDsec2.c&quot;,</span> <span class="pre">line</span> <span class="pre">941,</span> <span class="pre">in</span> <span class="pre">H5FD_sec2_lock</span> <span class="pre">unable</span> <span class="pre">to</span> <span class="pre">lock</span> <span class="pre">file,</span></code> <code class="docutils literal notranslate"><span class="pre">errno</span> <span class="pre">=</span> <span class="pre">37,</span> <span class="pre">error</span> <span class="pre">message</span> <span class="pre">=</span> <span class="pre">'No</span> <span class="pre">locks</span> <span class="pre">available'</span></code></a></li>
+<li><a class="reference internal" href="#error-failed-building-wheel-for-cryptography-occurs-often-on-bigr-cluster">Error: <code class="docutils literal notranslate"><span class="pre">Failed</span> <span class="pre">building</span> <span class="pre">wheel</span> <span class="pre">for</span> <span class="pre">cryptography</span></code> (occurs often on BIGR cluster)</a></li>
+<li><a class="reference internal" href="#error-worc-addexceptions-worcvalueerror-first-column-in-the-file-given-to-simpleworc-labels-from-this-file-needs-to-be-named-patient">Error: <code class="docutils literal notranslate"><span class="pre">WORC.addexceptions.WORCValueError:</span> <span class="pre">First</span> <span class="pre">column</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">file</span></code> <code class="docutils literal notranslate"><span class="pre">given</span> <span class="pre">to</span> <span class="pre">SimpleWORC().labels_from_this_file(**)</span> <span class="pre">needs</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">named</span> <span class="pre">Patient.</span></code></a></li>
+<li><a class="reference internal" href="#error-worc-addexceptions-worckeyerror-no-entry-found-in-labeling-for-feature-file-feat-out-0-hdf5">Error: <code class="docutils literal notranslate"><span class="pre">WORC.addexceptions.WORCKeyError:</span> <span class="pre">'No</span> <span class="pre">entry</span> <span class="pre">found</span> <span class="pre">in</span> <span class="pre">labeling</span></code> <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">feature</span> <span class="pre">file</span> <span class="pre">.../feat_out_0.hdf5.'</span></code></a></li>
+<li><a class="reference internal" href="#error-file-lib-site-packages-numpy-lib-function-base-py-line-4406-in-delete-keep-obj-false-indexerror-arrays-used-as-indices-must-be-of-integer-or-boolean-type">Error: <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&quot;...\lib\site-packages\numpy\lib\function_base.py&quot;,</span> <span class="pre">line</span> <span class="pre">4406,</span> <span class="pre">in</span> <span class="pre">delete</span></code> <code class="docutils literal notranslate"><span class="pre">keep[obj,]</span> <span class="pre">=</span> <span class="pre">False</span> <span class="pre">IndexError:</span> <span class="pre">arrays</span> <span class="pre">used</span> <span class="pre">as</span> <span class="pre">indices</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">of</span> <span class="pre">integer</span> <span class="pre">(or</span> <span class="pre">boolean)</span> <span class="pre">type</span></code></a></li>
+<li><a class="reference internal" href="#i-get-many-errors-related-to-pyradiomics">I get (many) errors related to PyRadiomics</a></li>
+<li><a class="reference internal" href="#error-valueerror-image-mask-geometry-mismatch-potential-fix-increase-tolerance-using-geometrytolerance-see-documentation-usage-customizing-the-extraction-settings-geometrytolerance-for-more-information">Error: <code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">Image/Mask</span> <span class="pre">geometry</span> <span class="pre">mismatch.</span> <span class="pre">Potential</span> <span class="pre">fix:</span> <span class="pre">increase</span> <span class="pre">tolerance</span> <span class="pre">using</span> <span class="pre">geometryTolerance,</span> <span class="pre">see</span> <span class="pre">Documentation:Usage:Customizing</span> <span class="pre">the</span> <span class="pre">Extraction:Settings:geometryTolerance</span> <span class="pre">for</span> <span class="pre">more</span> <span class="pre">information&quot;</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other">Other</a><ul>
+<li><a class="reference internal" href="#i-am-working-on-the-bigr-cluster-and-would-like-some-jobs-to-be-submitted-to-different-queues">I am working on the BIGR cluster and would like some jobs to be submitted to different queues</a></li>
+<li><a class="reference internal" href="#can-i-use-my-own-features-instead-of-the-standard-worc-features">Can I use my own features instead of the standard <code class="docutils literal notranslate"><span class="pre">WORC</span></code> features?</a><ul>
+<li><a class="reference internal" href="#convert-your-features-to-the-default-worc-format">1. Convert your features to the default <code class="docutils literal notranslate"><span class="pre">WORC</span></code> format</a></li>
+<li><a class="reference internal" href="#alter-feature-selection-on-the-feature-labels">2. Alter feature selection on the feature labels</a></li>
+<li><a class="reference internal" href="#tell-worc-to-use-your-feature-and-not-compute-the-default-ones">3. Tell <code class="docutils literal notranslate"><span class="pre">WORC</span></code> to use your feature and not compute the default ones</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-to-change-the-temporary-and-output-folders">How to change the temporary and output folders?</a></li>
+<li><a class="reference internal" href="#how-can-i-get-the-performance-on-the-validation-dataset">How can I get the performance on the validation dataset?</a></li>
+<li><a class="reference internal" href="#my-jobs-on-the-bigr-cluster-get-cancelled-due-to-memory-errors">My jobs on the BIGR cluster get cancelled due to memory errors</a></li>
+<li><a class="reference internal" href="#why-are-you-still-only-supporting-python-3-6-3-7-and-3-8">Why are you still only supporting Python 3.6, 3.7 and 3.8?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=229cbe3b"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
