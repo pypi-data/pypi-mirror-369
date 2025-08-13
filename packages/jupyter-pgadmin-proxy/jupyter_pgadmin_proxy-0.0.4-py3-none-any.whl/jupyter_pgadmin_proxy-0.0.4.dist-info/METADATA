@@ -1,0 +1,105 @@
+Metadata-Version: 2.4
+Name: jupyter-pgadmin-proxy
+Version: 0.0.4
+Summary: Jupyter server proxy for pgAdmin
+Project-URL: Homepage, https://github.com/huntdatacenter/jupyter-pgadmin-proxy
+Author-email: Matus Kosut <matus.kosut@ntnu.no>, Diepiriye Okujagu <diepiriye.d.okujagu@ntnu.no>
+License: MIT License
+        
+        Copyright (c) 2023 HUNT Cloud
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE.md
+Keywords: Jupyter Proxy,Jupyter Server Proxy,JupyterLab
+Classifier: Framework :: Jupyter
+Classifier: Framework :: Jupyter :: JupyterLab
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.8
+Requires-Dist: gunicorn
+Requires-Dist: jupyter-server-proxy
+Requires-Dist: pgadmin4
+Requires-Dist: psycopg
+Requires-Dist: simple-websocket
+Provides-Extra: dev
+Requires-Dist: black; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: ruamel-yaml; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Jupyter pgAdmin proxy
+
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jupyter-pgadmin-proxy.svg)](https://pypi.org/project/jupyter-pgadmin-proxy/)
+
+jupyter-pgadmin-proxy provides Jupyter extension to run [pgAdmin 4](https://pypi.org/project/pgadmin4/). See also official pages for [pgAdmin](https://www.pgadmin.org/).
+
+## Installation
+
+You can install jupyter-pgadmin-proxy inside your environment with Jupyter / Jupyterlab:
+
+```
+python3 -m pip install jupyter-pgadmin-proxy
+```
+
+## Build
+
+```
+python3 -m pip install hatch
+
+hatch build
+
+ls -la dist/*
+```
+
+## Development
+
+Try `make help` to see available commands:
+
+```
+make help
+```
+
+```
+python3 -m pip install git+https://github.com/huntdatacenter/jupyter-pgadmin-proxy.git@main
+```
+
+## Testing in docker
+
+Run/rebuild local Jupyterlab service:
+
+```
+make rebuild
+```
+
+Running the command should open a url in the browser http://127.0.0.1:8888/lab
+
+To stop the service run:
+```
+make down
+```
+
