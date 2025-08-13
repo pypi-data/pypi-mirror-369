@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp-bilibili-mcp-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bilibili-api-python>=17.1.4",
+    "mcp[cli]>=1.4.1",
+    "requests>=2.32.3",
+]
+
+[project.scripts]
+bilibili = "bilibili:main"
+
+[tool.setuptools]
+py-modules = ["bilibili"]
