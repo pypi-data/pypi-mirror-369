@@ -1,0 +1,165 @@
+Metadata-Version: 2.4
+Name: LAGE
+Version: 0.1.0
+Summary: New developer tool!
+Author: ALESSANDRO FAVILLA
+Requires-Python: >=3.7
+Description-Content-Type: text/plain
+Requires-Dist: pytz
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Utility Library Documentation
+
+This library provides three main classes — Math, System, and Time — designed to perform mathematical calculations, manage files and directories, and work with dates and times.
+
+------------------------------------------------------------
+1. Math Class
+Performs basic and advanced mathematical operations.
+EXAMPLE:
+    from LAGE import Math
+
+Math.sqrt(num) → Returns the square root of num.
+Example:
+    Math.sqrt(25)  # 5.0
+
+Math.pow(base, exponent) → Raises base to the power of exponent.
+Example:
+    Math.pow(2, 3)  # 8.0
+
+Math.exp(num) → Returns e raised to the power of num.
+Example:
+    Math.exp(1)  # 2.718281828459045
+
+Math.sin(num) → Returns the sine of num (in radians).
+Example:
+    import math
+    Math.sin(math.pi / 2)  # 1.0
+
+Math.cos(num) → Returns the cosine of num (in radians).
+Example:
+    Math.cos(0)  # 1.0
+
+Math.PI(num) → Returns the area of a circle with radius num.
+Example:
+    Math.PI(5)  # 78.53981633974483
+
+Math.MCM(num, num2) → Returns the greatest common divisor (GCD) of two numbers.
+Example:
+    Math.MCM(12, 15)  # 3
+
+------------------------------------------------------------
+2. System Class
+Handles file system operations, file manipulation, and environment variables.
+EXAMPLE:
+from LAGE import System
+
+-- Directory Methods --
+System.current_directory() → Returns the current working directory.
+Example:
+    System.current_directory()
+
+System.change_directory(path) → Changes the current directory to path.
+Example:
+    System.change_directory('/new/path')
+
+System.make_directory(path) → Creates a new directory at path.
+Example:
+    System.make_directory('new_folder')
+
+System.rename_directory(old_path, new_path) → Renames a directory.
+Example:
+    System.rename_directory('old_folder', 'renamed_folder')
+
+System.move_directory(src, dest) → Moves a directory to a new location.
+Example:
+    System.move_directory('folder1', 'backup/folder1')
+
+System.delete_directory(path) → Deletes the directory at path.
+Example:
+    System.delete_directory('folder_to_delete')
+
+System.copy_directory(src, dest) → Copies a directory and its contents to dest.
+Example:
+    System.copy_directory('source_folder', 'destination_folder')
+
+-- File Methods --
+System.make_file(filename, mode="w", content=0) → Creates a file with optional content.
+Example:
+    System.make_file('example.txt', content='Hello World')
+
+System.file_readline(filename, mode="r") → Reads lines from a file and returns them as a list.
+Example:
+    System.file_readline('example.txt')  # ['Hello World']
+
+System.copy_file(src, dest) → Copies a file from src to dest.
+Example:
+    System.copy_file('file.txt', 'copy.txt')
+
+System.move_file(src, dest) → Moves a file from src to dest.
+Example:
+    System.move_file('file.txt', 'moved/file.txt')
+
+System.rename_file(path, new_name) → Renames a file.
+Example:
+    System.rename_file('file.txt', 'new_file.txt')
+
+System.delete_file(path) → Deletes a file.
+Example:
+    System.delete_file('file.txt')
+
+-- Environment Variable Methods --
+System.get_environ_path(name) → Returns the value of an environment variable.
+Example:
+    System.get_environ_path('PATH')
+
+System.create_environ_path(name, value) → Creates or updates an environment variable.
+Example:
+    System.create_environ_path('MY_VAR', '123')
+
+System.delete_environ_path(name) → Deletes an environment variable.
+Example:
+    System.delete_environ_path('MY_VAR')
+
+-- File Information Methods --
+System.get_file_permission(file, type=0o6464) → Changes the permissions of a file.
+Example:
+    System.get_file_permission('example.txt', 0o644)
+
+System.get_file_attribute(file) → Returns the file size and last modification time.
+Example:
+    size, mtime = System.get_file_attribute('example.txt')
+    print(size, mtime)
+
+------------------------------------------------------------
+3. Time Class
+Provides tools for working with dates, times, and time zones.
+EXAMPLE:
+from LAGE import Time
+Time.jet_lag(timezone) → Returns a timezone object for the given location.
+Example:
+    Time.jet_lag('Europe/London')
+
+Time.jet_lag_time(timezone) → Returns the current time in the given timezone.
+Example:
+    Time.jet_lag_time('Europe/London')
+
+Time.current_datetime() → Returns the current date and time.
+Example:
+    Time.current_datetime()
+
+Time.current_data() → Returns the current date only.
+Example:
+    Time.current_data()
+
+Time.format_time_data(data, format_input, format_output) → Converts a date from one format to another.
+Example:
+    Time.format_time_data('2025-08-12', '%Y-%m-%d', '%d/%m/%Y')  # '12/08/2025'
+
+Time.calculate_age(current_year, birth_year) → Calculates age from the birth year.
+Example:
+    Time.calculate_age(2025, 1990)  # 35
