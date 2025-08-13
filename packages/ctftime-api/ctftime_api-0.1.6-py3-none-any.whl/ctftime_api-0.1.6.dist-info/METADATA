@@ -1,0 +1,93 @@
+Metadata-Version: 2.4
+Name: ctftime_api
+Version: 0.1.6
+Summary: CTFTime API wrapper
+Project-URL: repository, https://github.com/jotonedev/ctftime_api
+Project-URL: documentation, https://jotonedev.github.io/ctftime_api/
+Author-email: John Toniutti <john.toniutti@gmail.com>
+License-Expression: GPL-3.0-or-later
+License-File: LICENSE
+Keywords: api,ctftime,wrapper
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: Pydantic
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.11
+Requires-Dist: httpx<0.29.0,>=0.28.1
+Requires-Dist: pycountry<25.0.0,>=24.6.1
+Requires-Dist: pydantic-extra-types<3.0.0,>=2.10.2
+Requires-Dist: pydantic<3.0.0,>=2.10.6
+Provides-Extra: speed
+Requires-Dist: brotli<2.0.0,>=1.1.0; (platform_python_implementation == 'CPython') and extra == 'speed'
+Requires-Dist: brotlicffi<2.0.0.0,>=1.1.0.0; (platform_python_implementation != 'CPython') and extra == 'speed'
+Requires-Dist: h2<5.0.0,>=4.2.0; extra == 'speed'
+Requires-Dist: uvloop<1.0.0,>=0.21.0; (sys_platform != 'win32') and extra == 'speed'
+Requires-Dist: zstandard<0.24.0,>=0.23.0; extra == 'speed'
+Description-Content-Type: text/markdown
+
+# ctftime_api
+
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ctftime_api?link=https%3A%2F%2Fpypi.org%2Fproject%2Fctftime_api%2F)
+![PyPI - Status](https://img.shields.io/pypi/status/ctftime_api?link=https%3A%2F%2Fpypi.org%2Fproject%2Fctftime_api%2F)
+![PyPI - Version](https://img.shields.io/pypi/v/ctftime_api?link=https%3A%2F%2Fpypi.org%2Fproject%2Fctftime_api%2F)
+
+A simple Python wrapper for the CTFTime API that provides an asynchronous interface to retrieve CTF event and team information.
+
+## Features
+
+- **Asynchronous**: Utilize Python's async/await for non-blocking API requests.
+- **Type Safe**: Fully type annotated using Pydantic models.
+- **Modular**: Organized into client and models modules for easy maintenance and extension.
+- **Tested**: Includes comprehensive unit tests in the [tests](tests/) directory.
+
+## Installation
+
+Install via pip:
+
+```sh
+pip install ctftime_api
+```
+
+## Usage
+
+Create a client to interact with the CTFTime API. For example, to get the top teams for the current year:
+
+```python
+import asyncio
+from ctftime_api.client import CTFTimeClient
+
+async def main():
+    client = CTFTimeClient()
+    top_teams = await client.get_top_teams_per_year()
+    for team in top_teams:
+        print(f"{team.name} (ID: {team.id}) - Points: {team.points}")
+    await client.close()
+
+asyncio.run(main())
+```
+
+For more detailed examples, check the examples directory.
+
+## Documentation
+
+Full API documentation is available at [https://jotonedev.github.io/ctftime_api](https://jotonedev.github.io/ctftime_api).
+
+## Contributing
+
+This project is licensed under the GNU General Public License v3 or later (GPLv3+).
+
+## Additional Resources
+
+- [Project Documentation Website](https://jotonedev.github.io/ctftime_api)
+- [GitHub Repository](https://github.com/jotonedev/ctftime_api)
+
+## License
+
+This project is released under the [GPL 3.0 or later](LICENSE) license.
