@@ -1,0 +1,74 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Commandfile",
+    "description": "A file format used to define the configuration of scientific processing tasks.",
+    "type": "object",
+    "properties": {
+        "header": {
+            "type": "object"
+        },
+        "parameters": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/parameter"
+            }
+        },
+        "inputs": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/filelist"
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/filelist"
+            }
+        }
+    },
+    "required": [
+        "header",
+        "parameters",
+        "inputs",
+        "outputs"
+    ],
+    "definitions": {
+        "parameter": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": [
+                        "string",
+                        "number",
+                        "boolean"
+                    ]
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ]
+        },
+        "filelist": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "key",
+                "files"
+            ]
+        }
+    }
+}
