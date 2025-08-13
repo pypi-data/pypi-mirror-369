@@ -1,0 +1,130 @@
+[tool.poetry]
+name = "go2-sparky"
+version = "0.0.2"
+description = "🤖 Comprehensive Go2 Robot Control Package"
+authors = ["Ranga Reddy Nukala <itsmerr17@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "sparky", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+go2-webrtc-connect = "^0.2.0"
+
+# CLI-only deps (optional)
+typer = { version = "^0.16.0", optional = true, extras = ["all"] }
+rich = { version = "^14.1.0", optional = true }
+
+# Development dependencies
+ruff = { version = ">=0.1.0", optional = true }
+mypy = { version = ">=1.7.0", optional = true }
+pytest = { version = ">=7.4.0", optional = true }
+pytest-cov = { version = ">=4.1.0", optional = true }
+pytest-html = { version = ">=4.1.0", optional = true }
+safety = { version = ">=2.3.0", optional = true }
+deptry = { version = ">=0.12.0", optional = true }
+
+[tool.poetry.extras]
+cli = ["typer", "rich"]
+dev = ["ruff", "mypy", "pytest", "pytest-cov", "pytest-html", "safety", "deptry"]
+all = ["typer", "rich", "ruff", "mypy", "pytest", "pytest-cov", "pytest-html", "safety", "deptry"]
+
+[tool.poetry.scripts]
+sparky = "sparky.cli:app"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+src = ["src"]
+exclude = [
+    "examples/",
+    "driver_examples/",
+    ".venv",
+    "__pycache__",
+    "*.pyc",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by formatter
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+strict_equality = true
+show_error_codes = true
+exclude = [
+    "examples/",
+    "driver_examples/",
+]
+
+[[tool.mypy.overrides]]
+module = ["go2_webrtc_connect.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.deptry]
+root = "."
+extend_exclude = ["tests", "docs"]
+
+[tool.safety]
+ignore = []
