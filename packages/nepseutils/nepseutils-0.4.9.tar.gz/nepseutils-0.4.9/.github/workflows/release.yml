@@ -1,0 +1,62 @@
+name: "Release and Publish"
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  Build:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+        
+      - name: Set ENV
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+        
+      - name: Setup Python
+        run: uv python install 3.11
+
+      - name: Bump package version
+        run: |
+          VERSION=$(echo "${{ env.RELEASE_VERSION }}" | sed 's/v//')
+          sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
+
+      - name: Commit and push version bump
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add -u
+          git commit -m "chore(release): ${{ env.RELEASE_VERSION }} release"
+          git push
+
+      - name: Install Dependencies
+        run: uv sync
+      
+      - name: Build
+        run: uv build
+      
+      - name: Release
+        shell: bash
+        env:
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          uv publish --token $PYPI_API_TOKEN
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          draft: true
+          files: |
+            dist/*.whl
