@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_mcp-doc"
+version = "0.1.0"
+description = "A Docx document processing service based on the FastMCP library"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "MeterLong", email = "noreply@example.com"}
+]
+dependencies = [
+    "python-docx",
+    "mcp"
+]
+requires-python = ">=3.10"
+
+[project.scripts]
+mcp-doc = "server:mcp.run"
+
+[tool.setuptools]
+py-modules = ["server"]
