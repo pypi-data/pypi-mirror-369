@@ -1,0 +1,67 @@
+open_agent_spec: 1.0.8
+
+agent:
+  name: cortex-minimal-agent
+  description: Minimal agent using Cortex intelligence engine
+  role: chat
+
+intelligence:
+  type: llm
+  engine: cortex
+  model: cortex-intelligence
+  config:
+    enable_layer3: true
+    enable_onnx: false
+    openai_api_key: ${OPENAI_API_KEY}
+    claude_api_key: ${CLAUDE_API_KEY}
+    temperature: 0.2
+    max_tokens: 1000
+
+tasks:
+  respond:
+    description: Respond to user input using Cortex intelligence
+    timeout: 60
+    input:
+      type: object
+      properties:
+        message:
+          type: string
+          description: User message to respond to
+          minLength: 1
+          maxLength: 1000
+      required: [message]
+    output:
+      type: object
+      properties:
+        response:
+          type: string
+          description: AI response to the user message
+          minLength: 1
+        reasoning:
+          type: string
+          description: Brief explanation of the reasoning process
+      required: [response, reasoning]
+
+prompts:
+  system: >
+    You are a helpful AI assistant powered by Cortex intelligence engine.
+    Provide thoughtful, well-reasoned responses to user queries.
+    
+    Always explain your reasoning process briefly in the 'reasoning' field.
+    Keep responses concise but informative.
+
+  user: >
+    User message: {{ input.message }}
+    
+    Please provide a helpful response using your Cortex intelligence capabilities.
+
+behavioural_contract:
+  version: "1.0.0"
+  description: "Minimal Cortex agent behavioral contract"
+  behavioural_flags:
+    reasoning_depth: "moderate"
+    creativity_level: "moderate"
+    evidence_based: "moderate"
+  response_contract:
+    output_format:
+      required_fields: ["response", "reasoning"] 
