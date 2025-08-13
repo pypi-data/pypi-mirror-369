@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lizeur"
+version = "0.1.0"
+description = "Lizeur is a MCP server to be able to get content from PDFs."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.12.4",
+    "mistralai>=0.0.10",
+]
+
+[project.scripts]
+lizeur = "main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
