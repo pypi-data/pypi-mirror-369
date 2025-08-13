@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: lms-geotool
+Version: 1.3.0
+Summary: LMS的地理信息工具集
+Home-page: https://github.com/mryugoui/django_plugin_geotool
+Author: MrYuGoui
+Author-email: MrYuGoui@163.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django
+Requires-Dist: numpy
+Requires-Dist: djangorestframework
+Requires-Dist: django-object-actions
+Requires-Dist: drf-spectacular
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# 一、安装
+
+```shell
+pip install lms_geotool
+pip install django_object_actions
+```
+
+# 二、配置
+
+```python
+# settings.py
+INSTALLED_APPS = [
+    # 其他
+    "django_object_actions",
+    "lms_geotool",
+]
+```
+
+```python
+# urls.py
+from django.urls import path, include
+
+urlpatterns = [
+    path("geotool/", include("lms_geotool.urls")),
+]
+```
+
+# 三、页面
+
+- 坐标转换：/geotool/convert/
+- 仿射矩阵：geotool/affinematrix/
+- 线面求和：/geotool/dimsum/
+- 点位平移：/geotool/translation/
+- 线性回归：geotool/linearregression/

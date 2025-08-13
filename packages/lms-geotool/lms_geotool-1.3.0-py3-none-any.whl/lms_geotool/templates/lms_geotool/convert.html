@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>坐标转换</title>
+    {% include "common.html" %}
+</head>
+<body>
+<div id="convert">
+    <h3>坐标系转换</h3>
+    <el-divider></el-divider>
+    <form class="convert-form" method="post" action="{% url 'convert' %}">
+        {% csrf_token %}
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <el-card>
+                    <template #header>
+                        <div class="title">
+                            <h4>原始坐标系</h4>
+                            <el-select v-model="form.inputChoose" placeholder="请选择坐标系类型" style="width: 180px">
+                                <el-option v-for="(each,index) in options"
+                                           :key="index"
+                                           :label="each.label"
+                                           :value="each.value"
+                                           :disabled="each.value === form.outputChoose">
+                                </el-option>
+
+                            </el-select>
+                            <!-- 隐藏字段 -->
+                            <input type="hidden" name="input_choose" :value="form.inputChoose">
+                        </div>
+                    </template>
+
+                    <el-input v-model="form.inputArea"
+                              name="input_area"
+                              type="textarea"
+                              resize="none"
+                              placeholder="输入坐标数据，以中英文逗号分隔，换行可批量转换"
+                              @blur.prevent="formatData()"
+                    >
+                    </el-input>
+                </el-card>
+            </el-col>
+            <el-col :span="12">
+                <el-card>
+                    <template #header>
+                        <div class="title">
+                            <h4>目标坐标系</h4>
+                            <el-select v-model="form.outputChoose" placeholder="请选择坐标系类型" style="width: 180px">
+                                <el-option v-for="(each,index) in options"
+                                           :key="index"
+                                           :label="each.label"
+                                           :value="each.value"
+                                           :disabled="each.value === form.inputChoose">
+                                </el-option>
+                            </el-select>
+                            <!-- 隐藏字段 -->
+                            <input type="hidden" name="output_choose" :value="form.outputChoose">
+                        </div>
+                    </template>
+                    <el-input v-model="form.outputArea"
+                              type="textarea"
+                              resize="none"
+                              placeholder="输出结果，点击复制可复制到剪贴板"
+                              readonly>
+                    </el-input>
+                </el-card>
+            </el-col>
+        </el-row>
+    </form>
+
+    <el-divider></el-divider>
+    <div class="footer">
+        <el-button size="large" type="success" v-if="form.inputChoose && form.outputChoose && form.inputArea" @click="convert">转换</el-button>
+        <el-button size="large" v-else type="info">转换</el-button>
+
+        <el-button size="large" type="primary" v-if="form.outputArea" @click="copy">复制</el-button>
+        <el-button size="large" v-else type="info">复制</el-button>
+
+        <el-button size="large" type="warning" v-if="form.outputChoose && form.outputArea" @click="exchange">替换</el-button>
+        <el-button size="large" v-else type="info">替换</el-button>
+
+        <el-button size="large" type="danger" v-if="form.inputChoose || form.outputChoose || form.inputArea || form.outputArea" @click="clear">重置</el-button>
+        <el-button size="large" v-else type="info">重置</el-button>
+    </div>
+    {% verbatim row_num %}
+        <div v-if="rowNum!==0" class="total">共{{ rowNum }}条数据</div>
+    {% endverbatim row_num %}
+</div>
+</body>
+</html>
+<script>
+    const {createApp, ref, reactive, watch} = Vue
+    const App = {
+        setup() {
+            const options = [
+                {label: "WGS84 经纬度", value: "1"},
+                {label: "WGS84 墨卡托", value: "2"},
+                {label: "GCJ02 经纬度", value: "3"},
+                {label: "GCJ02 墨卡托", value: "4"},
+                {label: "BD09 经纬度", value: "5"},
+                {label: "BD09 墨卡托", value: "6"}
+            ];
+
+            const form = reactive({
+                inputChoose: '{{ input_choose }}',
+                outputChoose: '{{ output_choose }}',
+                inputArea: '{{ input_area }}'.replaceAll("&quot;", "").replaceAll("&#x27;", ""),
+                outputArea: '{{ output_area }}'.replaceAll("&quot;", "").replaceAll("&#x27;", "")
+            })
+            const rowNum = ref(0);
+
+            /**
+             * 替换
+             */
+            const exchange = () => {
+                if (confirm("是否要替换原始坐标系")) {
+                    [form.inputChoose, form.outputChoose] = [form.outputChoose, ""];
+                    [form.inputArea, form.outputArea] = [form.outputArea, ""];
+                }
+            }
+
+            /**
+             * 清空
+             */
+            const clear = () => {
+                if (confirm("是否要重置当前页面的数据")) {
+                    form.inputChoose = "";
+                    form.outputChoose = "";
+                    form.inputArea = "";
+                    form.outputArea = "";
+                    rowNum.value = 0;
+                }
+            }
+
+            /**
+             * 提交
+             */
+            const convert = () => {
+                formatData()
+                let forms = document.getElementsByClassName('convert-form')[0];
+                forms && forms.submit();
+            }
+
+            /**
+             * 复制
+             */
+            const copy = () => {
+                navigator.clipboard.writeText(form.outputArea).then(() => {
+                    alert("复制成功");
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                });
+            }
+
+
+            watch(() => form.inputArea, () => {
+                //连续换行的情况和中文逗号过滤
+                form.inputArea = form.inputArea.replaceAll("\n\n", "\n").replaceAll("，", ",");
+                rowNum.value = form.inputArea ? form.inputArea.split("\n").length : 0;
+            })
+
+            const formatData = () => {
+                form.inputArea = form.inputArea.replace(/^\n|\n$/g, '');
+            }
+
+            return {
+                options,
+                form,
+                rowNum,
+                convert,
+                copy,
+                exchange,
+                clear,
+                formatData
+            }
+        }
+    }
+
+    const app = createApp(App)
+    app.use(ElementPlus, {
+        locale: ElementPlusLocaleZhCn,
+    })
+    app.mount('#convert')
+</script>
+<style>
+    #convert {
+        text-align: center;
+        width: 95%;
+        margin: auto;
+        height: 95vh;
+    }
+
+    /*坐标系标题*/
+    .title {
+        height: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    .el-textarea {
+        width: 100%;
+        background: #f3f5f7;
+        border: none;
+
+        font-size: 20px;
+        color: #000000;
+        line-height: 30px;
+    }
+
+    .el-textarea__inner {
+        height: calc(95vh - 300px);
+        background-color: #f3f5f7;
+        text-align: center;
+    }
+</style>
