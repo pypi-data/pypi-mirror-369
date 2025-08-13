@@ -1,0 +1,105 @@
+Metadata-Version: 2.4
+Name: microservice-utils
+Version: 0.13.17
+License: MIT
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ulid-py<2,>=1
+Requires-Dist: httpx==0.23.0
+Provides-Extra: events
+Requires-Dist: pydantic<2,>=1; extra == "events"
+Provides-Extra: gcp-cloud-run
+Requires-Dist: google-cloud-run<1; extra == "gcp-cloud-run"
+Provides-Extra: gcp-cloud-tasks
+Requires-Dist: google-cloud-tasks<3,>=2; extra == "gcp-cloud-tasks"
+Provides-Extra: gcp-pubsub
+Requires-Dist: google-cloud-pubsub<3,>=2; extra == "gcp-pubsub"
+Requires-Dist: tenacity<9,>=8; extra == "gcp-pubsub"
+Provides-Extra: gcp-storage
+Requires-Dist: gcloud-aio-storage<9,>=8; extra == "gcp-storage"
+Provides-Extra: novu
+Requires-Dist: novu==1.11.0; extra == "novu"
+Provides-Extra: openai
+Requires-Dist: masked-ai<2,>=1; extra == "openai"
+Requires-Dist: numpy<2,>=1; extra == "openai"
+Requires-Dist: openai<1; extra == "openai"
+Provides-Extra: pinecone
+Requires-Dist: pinecone<8,>=6; extra == "pinecone"
+Provides-Extra: nltk
+Requires-Dist: nltk==3.9.1; extra == "nltk"
+Provides-Extra: mailchimp-transactional
+Requires-Dist: mailchimp-transactional==1.0.56; extra == "mailchimp-transactional"
+Provides-Extra: sentence-transformers
+Requires-Dist: sentence-transformers==5.0.0; extra == "sentence-transformers"
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+
+# microservice-utils
+
+Utilities and adapters for speeding up microservice development.
+
+## Optional Dependencies (Extras)
+
+The package offers optional functionality through extras. Extras can be installed with the package using the following syntax:
+
+```bash
+pip install microservice-utils[gcp_pubsub]
+```
+
+**Available extras:**
+
+- **events**: Support for event-driven architectures using pydantic for data validation and parsing.
+- **gcp_cloud_run**: Support for Google Cloud Run with the google-cloud-run client library.
+- **gcp_cloud_tasks**: Support for Google Cloud Tasks with the google-cloud-tasks client library.
+- **gcp_pubsub**: Support for Google Cloud Pub/Sub using the google-cloud-pubsub client library and tenacity for retries.
+- **gcp_storage**: Use GCP Cloud Storage with the async gcloud-aio-storage library.
+- **novu**: Support for the open-source [novu](https://novu.co) notification center.
+- **openai**: Support for completions with the OpenAI API.
+- **pinecone**: Support for semantic search with Pinecone.
+
+To install multiple extras, separate them with commas:
+
+```bash
+pip install microservice-utils[events,gcp_cloud_run,gcp_cloud_tasks,gcp_pubsub,openai,pinecone]
+```
+
+## GCP Pub/Sub
+You can subscribe to multiple subscriptions by subsequently calling `subscribe()`. `wait_for_shutdown` will block IO
+for all the subscriptions and wait for the app to be signaled to shut down.
+
+```python
+from microservice_utils.google_cloud.adapters.pubsub import Subscriber
+
+subscriber = Subscriber("your-gcp-project-id", prepend_value="staging")
+
+with subscriber:
+    subscriber.subscribe(
+        "accounts__users", sample_handler
+    )
+
+    try:
+        subscriber.wait_for_shutdown()
+    except KeyboardInterrupt:
+        # Gracefully shut down in response to Ctrl+C (or other events)
+        subscriber.shutdown()
+```
+
+## Releasing a new version
+- Update the package version using semver rules (`microservice-utils/__init__.py`)
+- Commit and push change
+- Create a new tag with the version (e.g. `git tag -a vx.x.x -m ''`)
+- `git push --tags` to push the new tag and start the release workflow
+
+## Todos
+
+- [x] Events
+- [x] GCP Pub/Sub
+- [x] GCP Cloud Tasks
+- [ ] JWT validation utils
+- [x] Logging
