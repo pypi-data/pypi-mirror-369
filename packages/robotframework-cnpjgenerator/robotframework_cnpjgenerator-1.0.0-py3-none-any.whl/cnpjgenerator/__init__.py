@@ -1,0 +1,4 @@
+from .library import CNPJGenerator
+
+__version__ = '1.0.0'
+__all__ = ['CNPJGenerator']
