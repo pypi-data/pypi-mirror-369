@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools >= 80.0", "wheel", "setuptools_scm", "numpy", "scipy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "upoqa"
+dynamic = ["version"]
+keywords = ["mathematics", "optimization", "derivative free optimization", "partially separable problem"]
+authors = [
+    { name = "Yichuan Liu", email = "liuyichuan2020@outlook.com" },
+    { name = "Yingzhou Li", email = "yingzhouli@fudan.edu.cn" }
+]
+description = "A model-based derivative-free optimizer for unconstrained partially-separable problems."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE",]
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering",
+    "Typing :: Typed",  
+    "Framework :: Jupyter",
+    "Intended Audience :: Science/Research",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "tqdm",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "upoqa.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."] 
+include = ["upoqa"] 
+exclude = [] 
+namespaces = false 
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "dirty-tag"
+
+[project.optional-dependencies]
+dev = [
+    "matplotlib",
+    "IPython",
+    "termcolor",
+]
+profile = [
+    "numpy>=2.0.0",  
+    "scipy>=1.11.0",
+    "matplotlib",
+    "IPython",
+    "termcolor",
+    "spsa",
+    "pdfo",
+    "nlopt",
+    "cobyqa",
+    "Py-BOBYQA",
+    "qiskit",
+    "qiskit-algorithms",
+    "scikit-quant",
+    "cma",
+]
+
+[project.urls]
+Homepage = "https://github.com/Chitius/upoqa"
+Download = "https://github.com/Chitius/upoqa/releases/"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
