@@ -1,0 +1,93 @@
+[package]
+name = "fcb_core"
+version = "0.3.0"
+edition = "2021"
+authors = ["Hidemichi Baba <baba.papa1120.ba@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/HideBa/flatcitybuf"
+description = "FlatCityBuf is a library for reading and writing CityJSON with FlatBuffers. Contains code derived from FlatGeobuf (BSD-2-Clause) for spatial indexing."
+readme = "README.md"
+keywords = ["cityjson", "flatbuffers", "geospatial", "3d", "gis"]
+categories = ["encoding", "data-structures", "science::geo"]
+
+# Attribution notice for derived code
+# Portions of this software are derived from FlatGeobuf (https://github.com/flatgeobuf/flatgeobuf)
+# Licensed under BSD 2-Clause License, Copyright (c) 2018-2024, Björn Harrtell and contributors
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+default = ["http"]
+http = ["http-range-client", "bytes"]
+
+
+[dependencies]
+bytes = { workspace = true, optional = true }
+flatbuffers = { workspace = true }
+byteorder = { workspace = true }
+cjseq = { workspace = true }
+tempfile = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+fallible-streaming-iterator = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+log = { workspace = true }
+ordered-float = { workspace = true }
+serde = { workspace = true }
+chrono = { workspace = true }
+rand = { workspace = true }
+regex = { workspace = true }
+http-range-client = { workspace = true, default-features = false, optional = true, features = [
+  "reqwest-async",
+] }
+thiserror = { workspace = true }
+prettytable = { workspace = true }
+bson = { workspace = true }
+serde_cbor = { workspace = true }
+async-trait = { workspace = true }
+
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+reqwest = { workspace = true }
+
+[lib]
+name = "fcb_core"
+path = "src/lib.rs"
+
+[[bin]]
+name = "read"
+path = "src/bin/read.rs"
+
+[[bin]]
+name = "stats"
+path = "src/bin/stats.rs"
+
+[[bench]]
+name = "read"
+harness = false
+
+[[bench]]
+name = "read_http"
+harness = false
+
+[[bench]]
+name = "read_func"
+harness = false
+
+[[bench]]
+name = "read_attr"
+harness = false
+
+
+[dev-dependencies]
+async-trait = { workspace = true }
+memory-stats.workspace = true
+pretty_assertions = { workspace = true }
+criterion = { workspace = true, features = ["async_tokio", "html_reports"] }
+libc = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+env_logger = { workspace = true }
+
+# --performance comparison
+sysinfo = "0.35.0"
