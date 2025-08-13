@@ -1,0 +1,77 @@
+Metadata-Version: 2.4
+Name: volcengine-tls-bootstrap
+Version: 1.0.2
+Summary: Instrumentation Tools & Auto Instrumentation for OpenTelemetry Python
+Project-URL: Homepage, https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/opentelemetry-instrumentation
+Project-URL: Repository, https://github.com/open-telemetry/opentelemetry-python-contrib
+Author-email: OpenTelemetry Authors <cncf-opentelemetry-contributors@lists.cncf.io>
+License-Expression: Apache-2.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.9
+Requires-Dist: packaging>=23.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: tqdm>=4.66.1
+Description-Content-Type: text/markdown
+
+# Volcengine TLS Bootstrap
+
+[![PyPI version](https://badge.fury.io/py/volcengine-tls-bootstrap.svg)](https://badge.fury.io/py/volcengine-tls-bootstrap)
+
+A Python bootstrap utility for automatically installing and configuring Volcengine's OpenTelemetry instrumentation packages for LLM applications. This package provides a command-line interface similar to `opentelemetry-instrumentation` for seamless integration with Volcengine TLS (Torch Log Service).
+
+## Overview
+
+The `volcengine-tls-bootstrap` package serves as a centralized installer for Volcengine's OpenTelemetry instrumentation ecosystem, specifically designed for:
+
+- **LangChain applications** - Automatic instrumentation of LangChain LLM calls
+- **OpenAI integrations** - Tracing OpenAI API calls and completions  
+- **General Python services** - Comprehensive observability for distributed systems
+
+## Installation
+
+```bash
+pip install volcengine-tls-bootstrap
+```
+
+## Quick Start
+
+### Install All Instrumentation Packages
+
+```bash
+volcengine-tls-bootstrap -a install
+```
+
+### Install Specific Version (Optional)
+
+```bash
+volcengine-tls-bootstrap -a install -v 1.0.1
+```
+
+## Commands
+
+The bootstrap utility supports the following operations:
+
+- `install` - Install all Volcengine OpenTelemetry instrumentation packages (default)
+- `uninstall` - Remove all installed instrumentation packages
+- `requirements` - Install instrumentation packages based on detected dependencies
+
+## Configuration
+
+The installer automatically configures:
+- OpenTelemetry SDK initialization
+- TLS exporter configuration
+- Context propagation settings
+- Auto-instrumentation hooks
+
+## Privacy Notice
+
+By default, this package will record prompts and completions as span attributes in your traces. This behavior can be configured through environment variables or manual instrumentation settings.
