@@ -1,0 +1,29 @@
+[project]
+name = "dcm2niiw"
+version = "0.1.0"
+description = "Thin dcm2niix wrapper with Python and CLI interfaces."
+readme = "README.md"
+authors = [{ name = "Fernando Pérez-García", email = "fepegar@gmail.com" }]
+requires-python = ">=3.9"
+dependencies = [
+    "dcm2niix",
+    "loguru>=0.7.3",
+    "pydicom>=2.4.4",
+    "typer",
+]
+
+[project.scripts]
+dcm2niiw = "dcm2niiw.__main__:app"
+dcm2hdr = "dcm2niiw.headers:app"
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipykernel",
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
