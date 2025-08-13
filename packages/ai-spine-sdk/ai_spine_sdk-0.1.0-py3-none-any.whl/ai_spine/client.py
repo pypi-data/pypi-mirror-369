@@ -1,0 +1,479 @@
+"""Main client for AI Spine SDK."""
+
+import json
+import logging
+import time
+from typing import Optional, Dict, Any, List
+
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+from ai_spine.__version__ import __version__
+from ai_spine.constants import (
+    DEFAULT_BASE_URL,
+    DEFAULT_TIMEOUT,
+    DEFAULT_MAX_RETRIES,
+    DEFAULT_POLLING_INTERVAL,
+    DEFAULT_EXECUTION_TIMEOUT,
+    DEFAULT_HEADERS,
+    ENDPOINTS,
+    RETRY_STATUS_CODES,
+    TERMINAL_STATUSES,
+)
+from ai_spine.exceptions import (
+    AISpineError,
+    AuthenticationError,
+    ValidationError,
+    ExecutionError,
+    TimeoutError,
+    RateLimitError,
+    NetworkError,
+    APIError,
+)
+from ai_spine.utils import (
+    validate_flow_id,
+    validate_execution_id,
+    validate_agent_id,
+    validate_input_data,
+    format_url,
+    clean_dict,
+    poll_with_timeout,
+)
+
+logger = logging.getLogger(__name__)
+
+
+class AISpine:
+    """AI Spine SDK client for Python.
+    
+    Args:
+        api_key: Optional API key for authentication
+        base_url: API base URL (defaults to production)
+        timeout: Request timeout in seconds (default: 30)
+        max_retries: Maximum number of retry attempts (default: 3)
+        debug: Enable debug logging (default: False)
+    
+    Example:
+        >>> client = AISpine()
+        >>> result = client.execute_flow('credit_analysis', {'amount': 50000})
+        >>> execution = client.wait_for_execution(result['execution_id'])
+    """
+    
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
+        timeout: int = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        debug: bool = False
+    ):
+        self.api_key = api_key
+        self.base_url = base_url or DEFAULT_BASE_URL
+        self.timeout = timeout
+        self.debug = debug
+        
+        # Configure logging
+        if debug:
+            logging.basicConfig(level=logging.DEBUG)
+            logger.setLevel(logging.DEBUG)
+        
+        # Configure session with retry strategy
+        self.session = self._create_session(max_retries)
+        
+    def _create_session(self, max_retries: int) -> requests.Session:
+        """Create HTTP session with retry logic."""
+        session = requests.Session()
+        
+        # Add retry strategy
+        retry_strategy = Retry(
+            total=max_retries,
+            backoff_factor=1,
+            status_forcelist=RETRY_STATUS_CODES,
+            allowed_methods=["GET", "POST", "PUT", "DELETE"],
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        
+        # Set default headers
+        headers = DEFAULT_HEADERS.copy()
+        headers["User-Agent"] = f"ai-spine-sdk-python/{__version__}"
+        session.headers.update(headers)
+        
+        if self.api_key:
+            session.headers["Authorization"] = f"Bearer {self.api_key}"
+            
+        return session
+    
+    def _request(
+        self,
+        method: str,
+        endpoint: str,
+        data: Optional[Dict[str, Any]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        **path_params: str
+    ) -> Dict[str, Any]:
+        """Make HTTP request to API.
+        
+        Args:
+            method: HTTP method (GET, POST, etc.)
+            endpoint: API endpoint path
+            data: Request body data
+            params: Query parameters
+            **path_params: Path parameters to replace in endpoint
+            
+        Returns:
+            Response data as dictionary
+            
+        Raises:
+            Various AISpineError subclasses based on response
+        """
+        url = format_url(self.base_url, endpoint, **path_params)
+        
+        if self.debug:
+            logger.debug(f"{method} {url}")
+            if data:
+                logger.debug(f"Request body: {json.dumps(data, indent=2)}")
+        
+        try:
+            response = self.session.request(
+                method=method,
+                url=url,
+                json=data,
+                params=params,
+                timeout=self.timeout
+            )
+            
+            if self.debug:
+                logger.debug(f"Response status: {response.status_code}")
+                logger.debug(f"Response body: {response.text}")
+            
+            # Handle successful response
+            if response.status_code < 300:
+                try:
+                    return response.json()
+                except json.JSONDecodeError:
+                    # Some endpoints might return empty response
+                    if response.status_code == 204 or not response.text:
+                        return {}
+                    raise AISpineError(f"Invalid JSON response: {response.text}")
+            
+            # Handle error responses
+            self._handle_error_response(response)
+            
+        except requests.exceptions.Timeout:
+            raise TimeoutError(f"Request timed out after {self.timeout} seconds")
+        except requests.exceptions.ConnectionError as e:
+            raise NetworkError(f"Connection error: {str(e)}")
+        except requests.exceptions.RequestException as e:
+            raise NetworkError(f"Request failed: {str(e)}")
+    
+    def _handle_error_response(self, response: requests.Response) -> None:
+        """Handle error HTTP responses.
+        
+        Args:
+            response: HTTP response object
+            
+        Raises:
+            Appropriate AISpineError subclass
+        """
+        try:
+            error_data = response.json()
+            message = error_data.get("message", response.text)
+            details = error_data.get("details", {})
+        except json.JSONDecodeError:
+            message = response.text or f"HTTP {response.status_code}"
+            details = {}
+        
+        if response.status_code == 401:
+            raise AuthenticationError(message, details)
+        elif response.status_code == 400:
+            raise ValidationError(message, details)
+        elif response.status_code == 429:
+            retry_after = response.headers.get("Retry-After")
+            raise RateLimitError(message, retry_after=int(retry_after) if retry_after else None, details=details)
+        elif response.status_code >= 500:
+            raise APIError(message, status_code=response.status_code, response_body=response.text, details=details)
+        else:
+            raise APIError(message, status_code=response.status_code, response_body=response.text, details=details)
+    
+    # Flow Execution Methods
+    
+    def execute_flow(
+        self,
+        flow_id: str,
+        input_data: Dict[str, Any],
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """Execute an AI Spine flow.
+        
+        Args:
+            flow_id: Unique identifier of the flow to execute
+            input_data: Input data for the flow execution
+            metadata: Optional metadata to attach to the execution
+        
+        Returns:
+            Dictionary containing:
+                - execution_id (str): Unique execution identifier
+                - status (str): Initial status ('pending')
+                - created_at (str): ISO timestamp of creation
+        
+        Raises:
+            ValidationError: If flow_id or input_data is invalid
+            AuthenticationError: If API key is invalid
+            ExecutionError: If flow execution fails
+            requests.RequestException: If network request fails
+        
+        Example:
+            >>> client = AISpine()
+            >>> result = client.execute_flow(
+            ...     'sentiment-analysis',
+            ...     {'text': 'This product is amazing!'}
+            ... )
+            >>> print(result['execution_id'])
+            'exec-123abc'
+        """
+        validate_flow_id(flow_id)
+        validate_input_data(input_data)
+        
+        request_data = {
+            "flow_id": flow_id,
+            "input_data": input_data,
+        }
+        
+        if metadata:
+            request_data["metadata"] = metadata
+        
+        return self._request("POST", ENDPOINTS["execute_flow"], data=request_data)
+    
+    def get_execution(self, execution_id: str) -> Dict[str, Any]:
+        """Get execution status and results.
+        
+        Args:
+            execution_id: Unique execution identifier
+            
+        Returns:
+            Dictionary containing execution details
+            
+        Raises:
+            ValidationError: If execution_id is invalid
+            APIError: If execution not found
+        """
+        validate_execution_id(execution_id)
+        return self._request("GET", ENDPOINTS["get_execution"], execution_id=execution_id)
+    
+    def wait_for_execution(
+        self,
+        execution_id: str,
+        timeout: int = DEFAULT_EXECUTION_TIMEOUT,
+        interval: int = DEFAULT_POLLING_INTERVAL
+    ) -> Dict[str, Any]:
+        """Wait for execution to complete.
+        
+        Args:
+            execution_id: Unique execution identifier
+            timeout: Maximum time to wait in seconds (default: 300)
+            interval: Polling interval in seconds (default: 2)
+            
+        Returns:
+            Final execution result
+            
+        Raises:
+            TimeoutError: If execution doesn't complete within timeout
+            ExecutionError: If execution fails
+        """
+        validate_execution_id(execution_id)
+        
+        def check_execution():
+            result = self.get_execution(execution_id)
+            status = result.get("status")
+            
+            if status in TERMINAL_STATUSES:
+                if status == "failed":
+                    error_msg = result.get("error_message", "Execution failed")
+                    raise ExecutionError(error_msg, execution_id=execution_id, details=result)
+                return True, result
+            
+            return False, None
+        
+        return poll_with_timeout(
+            check_execution,
+            timeout=timeout,
+            interval=interval,
+            timeout_message=f"Execution {execution_id} timed out after {timeout} seconds"
+        )
+    
+    def cancel_execution(self, execution_id: str) -> Dict[str, Any]:
+        """Cancel a running execution.
+        
+        Args:
+            execution_id: Unique execution identifier
+            
+        Returns:
+            Updated execution status
+            
+        Raises:
+            ValidationError: If execution_id is invalid
+            APIError: If execution cannot be cancelled
+        """
+        validate_execution_id(execution_id)
+        return self._request(
+            "POST",
+            f"/executions/{execution_id}/cancel",
+            execution_id=execution_id
+        )
+    
+    # Flow Management Methods
+    
+    def list_flows(self) -> List[Dict[str, Any]]:
+        """List all available flows.
+        
+        Returns:
+            List of flow dictionaries
+        """
+        response = self._request("GET", ENDPOINTS["list_flows"])
+        # Handle both array and object with 'flows' key responses
+        if isinstance(response, list):
+            return response
+        return response.get("flows", [])
+    
+    def get_flow(self, flow_id: str) -> Dict[str, Any]:
+        """Get flow details by ID.
+        
+        Args:
+            flow_id: Unique flow identifier
+            
+        Returns:
+            Flow details dictionary
+            
+        Raises:
+            ValidationError: If flow_id is invalid
+            APIError: If flow not found
+        """
+        validate_flow_id(flow_id)
+        return self._request("GET", ENDPOINTS["get_flow"], flow_id=flow_id)
+    
+    # Agent Management Methods
+    
+    def list_agents(self) -> List[Dict[str, Any]]:
+        """List all agents.
+        
+        Returns:
+            List of agent dictionaries
+        """
+        response = self._request("GET", ENDPOINTS["list_agents"])
+        # Handle both array and object with 'agents' key responses
+        if isinstance(response, list):
+            return response
+        return response.get("agents", [])
+    
+    def create_agent(self, agent_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Create a new agent.
+        
+        Args:
+            agent_config: Agent configuration dictionary
+            
+        Returns:
+            Created agent details
+            
+        Raises:
+            ValidationError: If agent_config is invalid
+        """
+        if not agent_config:
+            raise ValidationError("Agent configuration cannot be empty")
+        
+        return self._request("POST", ENDPOINTS["create_agent"], data=agent_config)
+    
+    def delete_agent(self, agent_id: str) -> bool:
+        """Delete an agent.
+        
+        Args:
+            agent_id: Unique agent identifier
+            
+        Returns:
+            True if deletion was successful
+            
+        Raises:
+            ValidationError: If agent_id is invalid
+            APIError: If agent not found
+        """
+        validate_agent_id(agent_id)
+        
+        try:
+            self._request("DELETE", ENDPOINTS["delete_agent"], agent_id=agent_id)
+            return True
+        except APIError as e:
+            if e.status_code == 404:
+                return False
+            raise
+    
+    # System Operations
+    
+    def health_check(self) -> Dict[str, Any]:
+        """Check API health status.
+        
+        Returns:
+            Health status dictionary
+        """
+        return self._request("GET", ENDPOINTS["health"])
+    
+    def get_metrics(self) -> Dict[str, Any]:
+        """Get system metrics.
+        
+        Returns:
+            Metrics dictionary
+        """
+        return self._request("GET", ENDPOINTS["metrics"])
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Get system status.
+        
+        Returns:
+            Status dictionary
+        """
+        return self._request("GET", ENDPOINTS["status"])
+    
+    # Convenience Methods
+    
+    def execute_and_wait(
+        self,
+        flow_id: str,
+        input_data: Dict[str, Any],
+        metadata: Optional[Dict[str, Any]] = None,
+        timeout: int = DEFAULT_EXECUTION_TIMEOUT,
+        interval: int = DEFAULT_POLLING_INTERVAL
+    ) -> Dict[str, Any]:
+        """Execute a flow and wait for completion.
+        
+        Args:
+            flow_id: Unique flow identifier
+            input_data: Input data for flow execution
+            metadata: Optional metadata
+            timeout: Maximum wait time in seconds
+            interval: Polling interval in seconds
+            
+        Returns:
+            Final execution result
+            
+        Raises:
+            ValidationError: If inputs are invalid
+            TimeoutError: If execution doesn't complete in time
+            ExecutionError: If execution fails
+        """
+        execution = self.execute_flow(flow_id, input_data, metadata)
+        execution_id = execution["execution_id"]
+        
+        return self.wait_for_execution(execution_id, timeout, interval)
+    
+    def __enter__(self):
+        """Context manager entry."""
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit - close session."""
+        self.session.close()
+    
+    def close(self):
+        """Close the HTTP session."""
+        self.session.close()
