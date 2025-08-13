@@ -1,0 +1,93 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+h1 {
+    text-align: center;
+}
+.table-wrapper {
+    width: fit-content;
+    max-width: 100%;
+    overflow: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+table {
+    min-width: max-content;
+    td {
+        padding-bottom: 0.5rem;
+    }
+}
+.pin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pin input[type="checkbox"] {
+    --checkbox-background-color: lightslategray;
+    --checkbox-background-color-hover: #5e6e7d;
+    appearance: none;
+    margin: 0.3vw;
+    padding: 0;
+    border: 2px solid #767676;
+    &:hover {
+        border-color: #424242;
+    }
+    border-radius: 10%;
+    width: 7.5vw;
+    height: 7.5vw;
+    min-width: 25px;
+    min-height: 25px;
+    max-width: 65px;
+    max-height: 65px;
+    outline: none;
+    background-color: transparent;
+    &:checked {
+        background-size: 85%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: var(--checkbox-background-color);
+        border-color: var(--checkbox-background-color);
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 32 32" xml:space="preserve"><path style="fill: %23ffffff" d="M11.941,28.877l-11.941-11.942l5.695-5.696l6.246,6.246l14.364-14.364L32,8.818"/></svg>');
+        &:hover {
+            background-color: var(--checkbox-background-color-hover);
+            border-color: var(--checkbox-background-color-hover);
+        }
+    }
+    &.overridden {
+        --checkbox-background-color: chocolate;
+        --checkbox-background-color-hover: #a55318;
+
+        border-color: var(--checkbox-background-color);
+    }
+}
+
+.hidden {
+    display: none;
+}
+.overlay {
+    position: fixed;
+    pointer-events: none;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+#status {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    background: #ffc5c5;
+    padding: 0.6rem;
+    border-radius: 0.4rem;
+    box-shadow: 0 0 5px 2px #222;
+}
+
+@media screen and (width < 600px) {
+    h3 {
+        margin-block-end: 0.2em;
+    }
+}
