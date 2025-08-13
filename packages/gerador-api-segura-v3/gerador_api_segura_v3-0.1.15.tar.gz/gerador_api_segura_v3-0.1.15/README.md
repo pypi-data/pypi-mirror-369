@@ -1,0 +1,323 @@
+# gerador-api-segura-v3
+
+**CLI** para gerar uma **API Flask Segura** com suporte a **MongoDB / MariaDB / PostgreSQL**, incluindo:
+
+- Autenticação **JWT**
+- **RBAC** (papéis) e *firewall* por IP para rotas admin
+- **Rate Limiting**
+- **CORS**
+- **Flask-Talisman** (CSP, HSTS e *security headers*)
+- **Swagger UI** (com proteção opcional por JWT admin)
+- **Logs** (arquivo giratório)
+- **Métricas Prometheus**
+- **Docker / Docker Compose** e **NGINX** (opcional)
+
+> O pacote empacota e expõe o script `gerador_api_segura_v3.py` como um **comando de terminal**.
+
+---
+
+## 📚 Índice
+
+- [Requisitos](#️-requisitos)
+- [Instalação e uso (pipx recomendado)](#-instalação-e-uso-pipx-recomendado)
+- [Uso com virtualenv (venv)](#-uso-com-virtualenv-venv)
+- [One-liner (instalar e rodar)](#-one-liner-instalar-e-rodar)
+- [Comandos do CLI](#-comandos-do-cli)
+- [Estrutura-gerada](#-estrutura-gerada)
+- [Variáveis de ambiente (.env)](#-variáveis-de-ambiente-env)
+- [Executando a API gerada](#-executando-a-api-gerada)
+- [Atualizar / Remover o pacote](#-atualizar--remover-o-pacote)
+- [Solução de problemas (FAQ)](#-solução-de-problemas-faq)
+- [Desenvolvimento do pacote (local)](#-desenvolvimento-do-pacote-local)
+- [Licença](#-licença)
+- [Lousa (cola rápida)](#-lousa-cola-rápida)
+
+---
+
+## ⚙️ Requisitos
+
+- **Python 3.10+** (recomendado 3.12/3.13)
+- (Opcional) **Docker** e **Docker Compose**
+- (Opcional) **NGINX** se você optar pelo *stack* com *reverse proxy*
+
+---
+
+## 🚀 Instalação e uso (pipx recomendado)
+
+O `pipx` instala CLIs Python de forma isolada, sem “sujar” o Python do sistema.
+
+```bash
+pip install -U pipx
+pipx ensurepath   # se pedir, feche e reabra o terminal/PowerShell
+```
+
+### Rodar sem instalar “pra sempre”
+
+```bash
+pipx run gerador-api-segura-v3==0.1.12 --dest MinhaAPI
+```
+
+- Troque `MinhaAPI` pelo nome da pasta do seu projeto.
+- O gerador pergunta interativamente o necessário (DB, portas, etc).
+- Você também pode passar `--db mongo|mariadb|postgres`.
+
+### Instalar o comando (opcional)
+
+```bash
+pipx install gerador-api-segura-v3==0.1.12
+gerador-api-segura --version
+# ou, dependendo do entrypoint:
+gerador-api-segura-v3 --version
+```
+
+---
+
+## 🧰 Uso com virtualenv (venv)
+
+### Windows (PowerShell)
+
+```powershell
+# 1) criar a venv
+python -m venv .venv
+
+# 2) ativar
+.\.venv\Scripts\Activate.ps1
+
+# 3) atualizar pip
+python -m pip install -U pip
+
+# 4) instalar o gerador
+python -m pip install "gerador-api-segura-v3>=0.1.12"
+
+# 5) rodar o gerador
+# opção A (sempre funciona)
+python -m gerador_api_segura_v3 --dest MinhaAPI --db postgres
+
+# opção B (executável gerado na venv)
+.\.venv\Scripts\gerador-api-segura.exe --dest MinhaAPI --db postgres
+
+# sair
+deactivate
+```
+
+> **Dica**: Se o PowerShell bloquear a ativação, rode:  
+> `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+
+### Linux / macOS
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+python -m pip install "gerador-api-segura-v3>=0.1.12"
+
+# rodar
+python -m gerador_api_segura_v3 --dest MinhaAPI --db mongo
+# ou
+./.venv/bin/gerador-api-segura --dest MinhaAPI --db mongo
+
+deactivate
+```
+
+---
+
+## ⚡ One-liner (instalar e rodar)
+
+```bash
+python -m pip install -U gerador-api-segura-v3 ; python -m gerador_api_segura_v3 --dest MinhaAPI
+```
+
+---
+
+## 🧾 Comandos do CLI
+
+```text
+gerador-api-segura [opções]
+python -m gerador_api_segura_v3 [opções]
+
+Opções principais:
+  --dest <pasta>         Nome/caminho da pasta de destino do projeto
+  --db <tipo>            Banco de dados: mongo | mariadb | postgres
+  --help                 Mostra a ajuda
+```
+
+> As opções são **opcionais**; se não informar, o gerador pergunta interativamente.
+
+---
+
+## 🗂️ Estrutura-gerada
+
+A estrutura do projeto gerado pode variar dependendo do banco de dados escolhido, mas segue um exemplo típico:
+
+```
+MinhaAPI/
+├─ app/
+│  ├─ __init__.py
+│  ├─ main.py                      # ponto de entrada Flask
+│  ├─ config.py                    # configurações (carrega .env)
+│  ├─ extensions/                  # jwt, limiter, cors, talisman, db, swagger
+│  ├─ models/                      # modelos (SQLAlchemy ou ODM)
+│  ├─ schemas/                     # validações (Marshmallow)
+│  ├─ routes/                      # rotas públicas e protegidas
+│  ├─ controllers/                 # lógica de negócio
+│  ├─ services/                    # serviços (ex.: e-mail, cache)
+│  └─ admin/                       # área admin (RBAC + IP allowlist)
+├─ docs/
+│  └─ swagger.yaml                 # documentação Swagger/OpenAPI
+├─ tests/                          # testes (pytest)
+├─ .env.example
+├─ docker-compose.yml              # app + db + prometheus + nginx (opcional)
+├─ Dockerfile
+├─ nginx.conf                      # reverse proxy seguro (opcional)
+├─ requirements.txt
+├─ pyproject.toml                  # packaging/metadata
+└─ README.md
+```
+
+---
+
+## 🔐 Variáveis de ambiente (.env)
+
+O projeto carrega as configs do `.env`. Exemplo:
+
+```ini
+# App
+FLASK_ENV=production
+SECRET_KEY=troque-esta-chave
+
+# JWT
+JWT_SECRET_KEY=troque-esta-chave-jwt
+JWT_ACCESS_TOKEN_EXPIRES=900
+
+# RBAC / Admin
+ADMIN_JWT_REQUIRED=true
+ADMIN_ALLOWED_IPS=127.0.0.1,10.0.0.0/8
+
+# CORS
+CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+
+# Segurança (Talisman)
+TALISMAN_FORCE_HTTPS=true
+CSP_DEFAULT_SRC='self'
+
+# Banco (escolha um bloco)
+
+## PostgreSQL
+DB_URI=postgresql+psycopg://user:pass@db:5432/minhaapi
+
+## MariaDB
+# DB_URI=mariadb+pymysql://user:pass@db:3306/minhaapi
+
+## MongoDB
+# MONGO_URI=mongodb://user:pass@db:27017/minhaapi?authSource=admin
+
+# Observabilidade
+PROMETHEUS_ENABLED=true
+LOG_LEVEL=INFO
+```
+
+---
+
+## ▶️ Executando a API gerada
+
+### A) Com Docker (recomendado)
+
+Na raiz do projeto gerado:
+
+```bash
+docker compose up -d --build
+# aguarde subir; a API geralmente roda em http://localhost:8000
+```
+
+- **Swagger**: `http://localhost:8000/docs` ou `/swagger`
+- **Métricas**: `http://localhost:8000/metrics`
+
+### B) Sem Docker (local)
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .\.venv\Scripts\Activate.ps1
+python -m pip install -U pip
+python -m pip install -r requirements.txt
+
+# rode a aplicação
+python -m app.main
+# ou conforme o entrypoint gerado:
+flask run --host 0.0.0.0 --port 8000
+```
+
+> **Importante:** garanta que o banco (Postgres/MariaDB/Mongo) esteja rodando e que a URI do `.env` esteja correta.
+
+---
+
+## 🔁 Atualizar / Remover o pacote
+
+### pipx
+
+```bash
+pipx upgrade gerador-api-segura-v3
+pipx uninstall gerador-api-segura-v3
+```
+
+### pip (global/venv)
+
+```bash
+python -m pip install -U gerador-api-segura-v3
+python -m pip uninstall gerador-api-segura-v3
+```
+
+---
+
+## 🛠️ Solução de problemas (FAQ)
+
+**“Instalei com `pip install`, mas o comando não aparece.”**  
+Use `python -m gerador_api_segura_v3 ...` (sempre funciona) **ou** instale via `pipx` e rode `pipx ensurepath`.
+
+**“Comando não reconhecido após pipx install.”**  
+Rode `pipx ensurepath` e **reabra** o terminal/PowerShell.
+
+**“Quero ver qual executável está chamando.”**  
+Windows: `Get-Command gerador-api-segura* -ErrorAction SilentlyContinue`  
+Linux/macOS: `which gerador-api-segura`
+
+**“Como ver a versão instalada do pacote?”**
+```bash
+python - << "PY"
+import importlib.metadata as m
+print("gerador-api-segura-v3:", m.version("gerador-api-segura-v3"))
+PY
+```
+
+**“PowerShell bloqueou a ativação da venv.”**  
+`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+
+---
+
+---
+
+## 📄 Licença
+
+**MIT** — use livremente, com crédito.
+
+---
+
+## 🧻 Lousa (cola rápida)
+
+```bash
+# criar API segura rapidamente (PostgreSQL por padrão)
+pipx run gerador-api-segura-v3==0.1.12 --dest MinhaAPI
+
+# escolher banco
+pipx run gerador-api-segura-v3==0.1.12 --dest MinhaAPI --db mongo
+pipx run gerador-api-segura-v3==0.1.12 --dest MinhaAPI --db mariadb
+pipx run gerador-api-segura-v3==0.1.12 --dest MinhaAPI --db postgres
+
+# rodar sempre, mesmo sem entrypoint no PATH
+python -m gerador_api_segura_v3 --dest MinhaAPI --db postgres
+
+# docker do projeto gerado
+cd MinhaAPI
+docker compose up -d --build
+```
+
+> **Resumo:** Instale com **pipx**, gere com `--dest` e `--db`, configure o `.env`, e rode via **Docker** ou local. Swagger protegido, JWT + RBAC, Rate Limit, CORS, Talisman, logs e métricas prontos.
