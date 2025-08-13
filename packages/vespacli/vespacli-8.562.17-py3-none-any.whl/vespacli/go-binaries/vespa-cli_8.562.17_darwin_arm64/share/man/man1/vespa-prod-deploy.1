@@ -1,0 +1,96 @@
+.nh
+.TH "VESPA-PROD-DEPLOY" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-prod-deploy - Deploy an application to production
+
+
+.SH SYNOPSIS
+\fBvespa prod deploy [application-directory-or-file] [flags]\fP
+
+
+.SH DESCRIPTION
+Deploy an application to production.
+
+.PP
+This commands uploads an application package to Vespa Cloud and deploys it to
+the production zones specified in deployment.xml.
+
+.PP
+Nodes are allocated to the application according to resources specified in
+services.xml.
+
+.PP
+For more information about production deployments in Vespa Cloud see:
+https://docs.vespa.ai/en/cloud/production-deployment.html
+https://docs.vespa.ai/en/cloud/automated-deployments.html
+https://cloud.vespa.ai/en/reference/vespa-cloud-api#submission-properties
+
+
+.SH OPTIONS
+\fB-A\fP, \fB--add-cert\fP[=false]
+	Copy certificate of the configured application to the current application package (default false)
+
+.PP
+\fB--author-email\fP=""
+	Email of the author of the commit being deployed
+
+.PP
+\fB--commit\fP=""
+	Identifier of the source code being deployed. For example a commit hash
+
+.PP
+\fB--description\fP=""
+	Description of the source code being deployed. For example a git commit message
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for deploy
+
+.PP
+\fB--risk\fP=0
+	The risk score of source code being deployed. 0 to ignore (default 0)
+
+.PP
+\fB--source-url\fP=""
+	URL which points to the source code being deployed. For example the build job running the submission
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ mvn package # when adding custom Java components
+$ vespa prod deploy
+.EE
+
+
+.SH SEE ALSO
+\fBvespa-prod(1)\fP

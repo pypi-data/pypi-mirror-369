@@ -1,0 +1,117 @@
+.nh
+.TH "VESPA-AUTH-CERT" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-auth-cert - Create a new self-signed certificate for authentication with Vespa Cloud data plane
+
+
+.SH SYNOPSIS
+\fBvespa auth cert [flags]\fP
+
+
+.SH DESCRIPTION
+Create a new self-signed certificate for authentication with Vespa Cloud data plane.
+
+.PP
+The private key and certificate will be stored in the Vespa CLI home directory
+(see 'vespa help config'). Other commands will then automatically load the
+certificate as necessary. The certificate will be added to your application
+package specified as an argument to this command (default '.').
+
+.PP
+It's possible to override the private key and certificate used through
+environment variables. This can be useful in continuous integration systems.
+
+.PP
+It's also possible override the CA certificate which can be useful when using
+self-signed certificates with a self-hosted Vespa service.
+See https://docs.vespa.ai/en/operations-selfhosted/mtls.html for more
+information.
+
+.PP
+Example of setting the CA certificate, certificate and key in-line:
+
+.EX
+export VESPA_CLI_DATA_PLANE_CA_CERT="my CA cert"
+export VESPA_CLI_DATA_PLANE_CERT="my cert"
+export VESPA_CLI_DATA_PLANE_KEY="my private key"
+.EE
+
+.PP
+Example of loading CA certificate, certificate and key from custom paths:
+
+.EX
+export VESPA_CLI_DATA_PLANE_CA_CERT_FILE=/path/to/cacert
+export VESPA_CLI_DATA_PLANE_CERT_FILE=/path/to/cert
+export VESPA_CLI_DATA_PLANE_KEY_FILE=/path/to/key
+.EE
+
+.PP
+Example of disabling verification of the server's certificate chain and
+hostname:
+
+.EX
+export VESPA_CLI_DATA_PLANE_TRUST_ALL=true
+.EE
+
+.PP
+Note that when overriding key pair through environment variables, that key pair
+will always be used for all applications. It's not possible to specify an
+application-specific key.
+
+.PP
+See https://docs.vespa.ai/en/cloud/security/guide.html for more details.
+
+
+.SH OPTIONS
+\fB-f\fP, \fB--force\fP[=false]
+	Force overwrite of existing certificate and private key
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for cert
+
+.PP
+\fB-N\fP, \fB--no-add\fP[=false]
+	Do not add certificate to the application package
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa auth cert
+$ vespa auth cert -a my-tenant.my-app.my-instance
+$ vespa auth cert -a my-tenant.my-app.my-instance path/to/application/package
+.EE
+
+
+.SH SEE ALSO
+\fBvespa-auth(1)\fP, \fBvespa-auth-cert-add(1)\fP

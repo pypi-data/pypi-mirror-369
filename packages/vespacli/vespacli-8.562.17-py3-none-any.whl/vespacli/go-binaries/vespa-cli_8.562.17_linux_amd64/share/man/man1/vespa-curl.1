@@ -1,0 +1,73 @@
+.nh
+.TH "VESPA-CURL" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-curl - Access Vespa directly using curl
+
+
+.SH SYNOPSIS
+\fBvespa curl [curl-options] path [flags]\fP
+
+
+.SH DESCRIPTION
+Access Vespa directly using curl.
+
+.PP
+Execute curl with the appropriate URL, certificate and private key for your application.
+
+.PP
+For a more high-level interface to query and feeding, see the 'query' and 'document' commands.
+
+
+.SH OPTIONS
+\fB-n\fP, \fB--dry-run\fP[=false]
+	Print the curl command that would be executed
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for curl
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa curl /ApplicationStatus
+$ vespa curl -- -X POST -H "Content-Type:application/json" --data-binary @src/test/resources/A-Head-Full-of-Dreams.json /document/v1/namespace/music/docid/1
+$ vespa curl -- -v --data-urlencode "yql=select * from music where album contains 'head'" /search/\\?hits=5
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP

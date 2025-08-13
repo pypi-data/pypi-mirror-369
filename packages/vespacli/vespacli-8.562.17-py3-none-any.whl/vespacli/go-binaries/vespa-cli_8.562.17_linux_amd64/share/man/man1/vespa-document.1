@@ -1,0 +1,89 @@
+.nh
+.TH "VESPA-DOCUMENT" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-document - Issue a single document operation to Vespa
+
+
+.SH SYNOPSIS
+\fBvespa document json-file [flags]\fP
+
+
+.SH DESCRIPTION
+Issue a single document operation to Vespa.
+
+.PP
+The operation must be on the format documented in
+https://docs.vespa.ai/en/reference/document-json-format.html#document-operations
+
+.PP
+When this returns successfully, the document is guaranteed to be visible in any
+subsequent get or query operation.
+
+.PP
+To feed with high throughput, https://docs.vespa.ai/en/reference/vespa-cli/vespa_feed.html
+should be used instead of this.
+
+
+.SH OPTIONS
+\fB-d\fP, \fB--data\fP=""
+	Document data to use instead of reading from file or stdin
+
+.PP
+\fB--header\fP=[]
+	Add a header to the HTTP request, on the format 'Header: Value'. This can be specified multiple times
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for document
+
+.PP
+\fB-T\fP, \fB--timeout\fP=60
+	Timeout for the document request in seconds
+
+.PP
+\fB-v\fP, \fB--verbose\fP[=false]
+	Print the equivalent curl command for the document operation
+
+.PP
+\fB-w\fP, \fB--wait\fP=0
+	Number of seconds to wait for service(s) to become ready. 0 to disable (default 0)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa document src/test/resources/A-Head-Full-of-Dreams.json
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP, \fBvespa-document-get(1)\fP, \fBvespa-document-put(1)\fP, \fBvespa-document-remove(1)\fP, \fBvespa-document-update(1)\fP

@@ -1,0 +1,86 @@
+.nh
+.TH "VESPA-LOG" "1" "Aug 2025" "" ""
+
+.SH NAME
+vespa-log - Show the Vespa log
+
+
+.SH SYNOPSIS
+\fBvespa log [relative-period] [flags]\fP
+
+
+.SH DESCRIPTION
+Show the Vespa log.
+
+.PP
+The logs shown can be limited to a relative or fixed period. All timestamps are shown in UTC.
+
+.PP
+Logs for the past hour are shown if no arguments are given.
+
+
+.SH OPTIONS
+\fB-f\fP, \fB--follow\fP[=false]
+	Follow logs
+
+.PP
+\fB-F\fP, \fB--from\fP=""
+	Include logs since this timestamp (RFC3339 format)
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for log
+
+.PP
+\fB-l\fP, \fB--level\fP="debug"
+	The maximum log level to show. Must be "error", "warning", "info" or "debug"
+
+.PP
+\fB-n\fP, \fB--nldequote\fP[=true]
+	Dequote LF and TAB characters in log messages
+
+.PP
+\fB-T\fP, \fB--to\fP=""
+	Include logs until this timestamp (RFC3339 format)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB-a\fP, \fB--application\fP=""
+	The application to use (cloud only). Format "tenant.application.instance" - instance is optional
+
+.PP
+\fB-C\fP, \fB--cluster\fP=""
+	The container cluster to use. This is only required for applications with multiple clusters
+
+.PP
+\fB-c\fP, \fB--color\fP="auto"
+	Whether to use colors in output. Must be "auto", "never", or "always"
+
+.PP
+\fB-i\fP, \fB--instance\fP=""
+	The instance of the application to use (cloud only)
+
+.PP
+\fB-q\fP, \fB--quiet\fP[=false]
+	Print only errors
+
+.PP
+\fB-t\fP, \fB--target\fP="local"
+	The target platform to use. Must be "local", "cloud", "hosted" or an URL
+
+.PP
+\fB-z\fP, \fB--zone\fP=""
+	The zone to use. This defaults to a dev zone (cloud only)
+
+
+.SH EXAMPLE
+.EX
+$ vespa log 1h
+$ vespa log --nldequote=false 10m
+$ vespa log --from 2021-08-25T15:00:00Z --to 2021-08-26T02:00:00Z
+$ vespa log --follow
+.EE
+
+
+.SH SEE ALSO
+\fBvespa(1)\fP
