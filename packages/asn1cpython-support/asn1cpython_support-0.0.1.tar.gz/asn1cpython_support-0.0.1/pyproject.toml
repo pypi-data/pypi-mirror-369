@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "asn1cpython-support"
+description = "CMake support files for ASN.1 C extension bindings"
+readme = "README.md"
+dynamic = ["version"]
+authors = [{ name = "MatrixEdior" }]
+keywords = [
+    "asn1",
+    "asn1c",
+    "pyasn1",
+]
+
+[project.urls]
+documentation = "https://matrixeditor.github.io/asn1c-bindings/"
+project = "https://github.com/MatrixEditor/asn1c-bindings"
+
+[tool.hatch]
+
+[tool.hatch.version]
+path = "asn1cpython_support/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["*.cmake"]
