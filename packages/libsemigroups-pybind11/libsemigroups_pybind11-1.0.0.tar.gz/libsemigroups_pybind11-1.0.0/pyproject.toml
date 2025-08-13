@@ -1,0 +1,189 @@
+# TODO:
+#  * Use ruff
+#  * Decide on good configurations for tools
+#  * Remove requirements.txt
+#  * Use pre-commit
+#  * Use MyPy
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+    "pybind11",
+    "pkgconfig",
+    "packaging",
+]
+
+[project]
+authors = [
+    { name = "Reinis Cirpons", email = "rc234@st-andrews.ac.uk" },
+    { name = "Joseph Edwards", email = "jde1@st-andrews.ac.uk" },
+    { name = "James Mitchell", email = "jdm3@st-andrews.ac.uk" },
+    { name = "Maria Tsalakou", email = "mt200@st-andrews.ac.uk" },
+    { name = "Murray Whyte", email = "mw231@st-andrews.ac.uk" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Natural Language :: English",
+]
+dependencies = ["graphviz", "numpy", "typing_extensions"]
+description = "A python package for the libsemigroups C++ library."
+dynamic = ["version"]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+# TODO: Uncomment and update
+# maintainers = [{ name = "My Organization", email = "myemail@email.com" }]
+name            = "libsemigroups_pybind11"
+readme          = "README.md"
+requires-python = ">=3.9"
+
+[project.urls]
+Changelog     = "https://libsemigroups.github.io/libsemigroups_pybind11/changelog.html"
+Documentation = "https://libsemigroups.github.io/libsemigroups_pybind11/"
+Homepage      = "https://github.com/libsemigroups/libsemigroups_pybind11"
+Issues        = "https://github.com/libsemigroups/libsemigroups_pybind11/issues"
+
+[project.optional-dependencies]
+docs = [
+    "sphinx_rtd_theme",
+    "sphinx >=8.2",
+    "sphinx-copybutton",
+    "sphinxcontrib-bibtex",
+]
+test = ["pytest"]
+
+[dependency-groups]
+dev = [
+    "accepts==2020.12.3",
+    "argcomplete==3.6.2",
+    "beautifulsoup4==4.13.4",
+    "colorama==0.4.6",
+    "cpplint==2.0.2",
+    "eventlet==0.40.2",
+    "exceptiongroup==1.3.0",
+    "gevent==25.5.1",
+    "graphviz==0.20.3",
+    "greenlet==3.2.3",
+    "numpy==2.3.2",
+    "ox_profile==0.2.14",
+    "packaging==24.2",
+    "pexpect==4.9.0",
+    "pkgconfig==1.5.5",
+    "pudb==2025.1",
+    "pybind11==3.0.0",
+    "pygments==2.19.2",
+    "pylint==3.3.7",
+    "pyyaml==6.0.2",
+    "ruff==0.12.4",
+    "setuptools==75.8.2",
+    "tomli==2.2.1",
+    "twisted==25.5.0",
+    "typing_extensions==4.14.1",
+    "zope==5.13",
+    { include-group = "docs" },
+    { include-group = "test" },
+]
+docs = [
+    "sphinx_rtd_theme==3.0.2",
+    "sphinx-copybutton==0.5.2",
+    "sphinx==8.2.3",
+    "sphinxcontrib-bibtex==2.6.5",
+]
+test = ["pytest==8.4.1"]
+
+[tool.cibuildwheel]
+build-frontend  = "build"
+build-verbosity = 1
+skip            = "cp314*"
+test-command    = "pytest {project}/tests"
+test-groups     = ["test"]
+
+[tool.cibuildwheel.linux]
+before-all = ["source {project}/etc/make-libsemigroups.sh", "make install"]
+
+
+[tool.cibuildwheel.linux.environment]
+CXX             = "g++"
+CXXFLAGS        = "-O2"
+LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:/usr/lib:/usr/local/lib"
+PKG_CONFIG_PATH = "$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig"
+
+[tool.cibuildwheel.macos]
+before-all = ["source {project}/etc/make-libsemigroups.sh", "sudo make install"]
+
+[tool.cibuildwheel.macos.environment]
+CXX                      = "clang++"
+CXXFLAGS                 = "-O2"
+MACOSX_DEPLOYMENT_TARGET = "11.0"
+
+[tool.codespell]
+ignore-multiline-regex = "codespell:begin-ignore.*codespell:end-ignore"
+ignore-words-list      = "nd,toword,groupe,theses"
+skip                   = "./.git,./docs/_build/*,./gh-pages"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+version_file = "src/libsemigroups_pybind11/_version.py"
+
+[tool.black]
+line-length = 80
+
+[tool.ruff]
+line-length = 100
+lint.ignore = ["F401", "E402"]
+lint.select = ["E", "F", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+
+"src/libsemigroups_pybind11/presentation/examples.py" = ["E501"]
+# Uncomment the following to have more aggressive ruff linting
+# lint.extend-select = ["B", "I", "UP"]
+
+# [tool.ruff.format]
+# docstring-code-format = true
+
+[tool.pytest.ini_options]
+addopts              = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
+console_output_style = "progress"
+filterwarnings       = ["error"]
+log_cli_level        = "INFO"
+markers              = ["quick", "standard", "extreme", "fail"]
+minversion           = "6.0"
+testpaths            = ["tests"]
+verbosity_test_cases = 1
+xfail_strict         = true
+
+[tool.pylint.main]
+ignore-paths = "src/libsemigroups_pybind11/_version.py"
+jobs         = 0
+
+[tool.pylint.miscellaneous]
+# List of note tags to take in consideration, separated by a comma.
+# notes = ["TODO", "FIXME", "REVIEW"]
+disable = ["R0801", "fixme"]
+notes   = []
+
+[tool.pylint.similarities]
+ignore-imports = "yes"
+
+# TODO: Decide if we want to use mypy
+# [tool.mypy]
+# files = "src"
+# python_version = "3.9"
+# strict = true
+# enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+# warn_unreachable = true
+
+# [[tool.mypy.overrides]]
+# module = [ "_libsemigroups_pybind11", ]
+# ignore_missing_imports = true
