@@ -1,0 +1,234 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Service Templates",
+  "description": "Predefined service configuration templates for MCPStore",
+  "type": "object",
+  "properties": {
+    "remote_http": {
+      "title": "Remote HTTP Service Template",
+      "description": "远程HTTP服务模板",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "服务名称"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "服务URL地址"
+        },
+        "transport": {
+          "type": "string",
+          "enum": ["streamable-http", "sse", "http"],
+          "default": "streamable-http",
+          "description": "传输协议类型"
+        },
+        "headers": {
+          "type": "object",
+          "description": "HTTP请求头",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300,
+          "default": 30,
+          "description": "超时时间（秒）"
+        }
+      },
+      "required": ["name", "url"],
+      "template": {
+        "name": "",
+        "url": "",
+        "transport": "streamable-http",
+        "headers": {},
+        "timeout": 30
+      }
+    },
+    "remote_sse": {
+      "title": "Remote SSE Service Template",
+      "description": "远程SSE服务模板",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "服务名称"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "服务URL地址"
+        },
+        "transport": {
+          "type": "string",
+          "enum": ["sse"],
+          "default": "sse",
+          "description": "传输协议类型"
+        },
+        "headers": {
+          "type": "object",
+          "description": "HTTP请求头",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["name", "url"],
+      "template": {
+        "name": "",
+        "url": "",
+        "transport": "sse",
+        "headers": {}
+      }
+    },
+    "local_python": {
+      "title": "Local Python Service Template",
+      "description": "本地Python服务模板",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "服务名称"
+        },
+        "command": {
+          "type": "string",
+          "default": "python",
+          "description": "执行命令"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "命令参数"
+        },
+        "env": {
+          "type": "object",
+          "description": "环境变量",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "working_dir": {
+          "type": "string",
+          "description": "工作目录"
+        }
+      },
+      "required": ["name", "command"],
+      "template": {
+        "name": "",
+        "command": "python",
+        "args": [],
+        "env": {},
+        "working_dir": ""
+      }
+    },
+    "local_node": {
+      "title": "Local Node.js Service Template",
+      "description": "本地Node.js服务模板",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "服务名称"
+        },
+        "command": {
+          "type": "string",
+          "default": "node",
+          "description": "执行命令"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "命令参数"
+        },
+        "env": {
+          "type": "object",
+          "description": "环境变量",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "working_dir": {
+          "type": "string",
+          "description": "工作目录"
+        }
+      },
+      "required": ["name", "command"],
+      "template": {
+        "name": "",
+        "command": "node",
+        "args": [],
+        "env": {},
+        "working_dir": ""
+      }
+    },
+    "local_npx": {
+      "title": "Local NPX Service Template",
+      "description": "本地NPX服务模板",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "服务名称"
+        },
+        "command": {
+          "type": "string",
+          "default": "npx",
+          "description": "执行命令"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "命令参数"
+        },
+        "env": {
+          "type": "object",
+          "description": "环境变量",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["name", "command"],
+      "template": {
+        "name": "",
+        "command": "npx",
+        "args": [],
+        "env": {}
+      }
+    },
+    "known_services": {
+      "title": "Known Services",
+      "description": "已知的常用服务配置",
+      "type": "object",
+      "properties": {
+        "mcpstore-wiki": {
+          "type": "object",
+          "template": {
+            "name": "mcpstore-wiki",
+            "url": "http://mcpstore.wiki/mcp",
+            "transport": "streamable-http",
+            "description": "MCPStore Wiki Service"
+          }
+        },
+        "howtocook": {
+          "type": "object",
+          "template": {
+            "name": "howtocook",
+            "command": "npx",
+            "args": ["-y", "howtocook-mcp"],
+            "description": "How to Cook MCP Service"
+          }
+        }
+      }
+    }
+  }
+}

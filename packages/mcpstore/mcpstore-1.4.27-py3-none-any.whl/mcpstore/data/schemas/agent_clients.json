@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Clients Mapping Schema",
+  "description": "Agent客户端映射文件，定义每个Agent下包含的客户端ID列表",
+  "type": "object",
+  "patternProperties": {
+    "^[a-zA-Z0-9_-]+$": {
+      "type": "array",
+      "description": "Agent下的客户端ID列表",
+      "items": {
+        "type": "string",
+        "pattern": "^client_[0-9]{8}_[0-9]{6}_[a-z0-9]{6}$",
+        "description": "客户端ID，格式：client_YYYYMMDD_HHMMSS_随机字符串"
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "global_agent_store": [
+        "client_20250721_174502_n9cqzj",
+        "client_20250724_003619_hwdsqb"
+      ],
+      "agent1": [
+        "client_20250725_120000_abc123"
+      ]
+    }
+  ],
+  "template": {
+    "global_agent_store": []
+  }
+}

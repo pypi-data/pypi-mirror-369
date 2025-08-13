@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MCP Configuration Schema",
+  "description": "Schema for MCPStore configuration files",
+  "type": "object",
+  "properties": {
+    "mcpServers": {
+      "type": "object",
+      "description": "MCP服务器配置",
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "type": "object",
+          "description": "单个MCP服务配置",
+          "anyOf": [
+            {
+              "title": "Remote HTTP Service",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "服务URL地址"
+                },
+                "transport": {
+                  "type": "string",
+                  "enum": ["streamable-http", "sse", "http"],
+                  "description": "传输协议类型"
+                },
+                "headers": {
+                  "type": "object",
+                  "description": "HTTP请求头",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "timeout": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300,
+                  "description": "超时时间（秒）"
+                }
+              },
+              "required": ["url"],
+              "additionalProperties": true
+            },
+            {
+              "title": "Local Command Service",
+              "properties": {
+                "command": {
+                  "type": "string",
+                  "description": "执行命令"
+                },
+                "args": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "命令参数"
+                },
+                "env": {
+                  "type": "object",
+                  "description": "环境变量",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "working_dir": {
+                  "type": "string",
+                  "description": "工作目录"
+                }
+              },
+              "required": ["command"],
+              "additionalProperties": true
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "version": {
+      "type": "string",
+      "description": "配置文件版本"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "创建者"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "创建时间"
+    },
+    "description": {
+      "type": "string",
+      "description": "配置文件描述"
+    }
+  },
+  "required": ["mcpServers"],
+  "additionalProperties": true,
+  "template": {
+    "mcpServers": {},
+    "version": "1.0.0",
+    "created_by": "MCPStore",
+    "created_at": null,
+    "description": "MCPStore configuration file"
+  }
+}
