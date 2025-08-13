@@ -1,0 +1,88 @@
+Metadata-Version: 2.4
+Name: ludi
+Version: 0.0.1
+Summary: Ludi Unifies Decompiler Interfaces
+Author-email: Han Dai <pypi@han.do>
+License: MIT License
+        
+        Copyright (c) 2025 Han Dai
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: homepage, https://github.com/DennyDai/LUDI
+Project-URL: documentation, https://github.com/DennyDai/LUDI
+Project-URL: repository, https://github.com/DennyDai/LUDI
+Requires-Python: >=3
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: headless-ida
+Requires-Dist: angr
+Requires-Dist: pyhidra
+Requires-Dist: pyyaml
+Dynamic: license-file
+
+<p align="center">
+  <img alt="LUDI" src="https://github.com/DennyDai/LUDI/raw/main/ludi.svg" width="128">
+</p>
+<h1 align="center">LUDI Unifies Decompiler Interface</h1>
+
+[![Latest Release](https://img.shields.io/pypi/v/ludi.svg)](https://pypi.python.org/pypi/ludi/)
+[![PyPI Statistics](https://img.shields.io/pypi/dm/ludi.svg)](https://pypistats.org/packages/ludi)
+[![License](https://img.shields.io/github/license/DennyDai/ludi.svg)](https://github.com/DennyDai/ludi/blob/main/LICENSE)
+
+LUDI provides a unified interface for reverse engineering tools including IDA Pro, Ghidra, and angr. Write once, analyze anywhere.
+
+## ⚠️ Development Status
+
+This project is in **early development**. APIs may change significantly before version 1.0.0. The codebase currently contains AI-generated code that is not yet fully reviewed. Version 1.0.0 will be fully reviewed and stable.
+
+## Quick Start
+
+```bash
+pip install ludi
+
+# Analyze with auto-detected backend
+ludi /bin/ls functions get_all
+
+# Use specific backend  
+ludi --backend ida /bin/ls functions get_decompiled_code main
+
+# Interactive shell
+ludi shell
+```
+
+```python
+import ludi
+
+analyzer = ludi.auto("/path/to/binary")
+
+# Simple, clean iteration
+for func in analyzer.functions:
+    print(func.name, hex(func.start))
+
+for symbol in analyzer.symbols:
+    print(symbol.name)
+
+for xref in analyzer.xrefs:
+    print(hex(xref.from_addr), "->", hex(xref.to_addr))
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit pull requests and open issues for bugs, features, or suggestions.
