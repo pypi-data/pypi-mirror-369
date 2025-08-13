@@ -1,0 +1,16 @@
+{% with template_name = template_name if template_name else '_port.html' %}
+    <div class="table-wrapper">
+        <table>
+            <tbody>
+                {% if additional_template %}
+                    {% include additional_template %}
+                {% endif %}
+                {% for row in resource %}
+                    {% with row_id=loop.index %}
+                        {% include template_name %}
+                    {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endwith %}

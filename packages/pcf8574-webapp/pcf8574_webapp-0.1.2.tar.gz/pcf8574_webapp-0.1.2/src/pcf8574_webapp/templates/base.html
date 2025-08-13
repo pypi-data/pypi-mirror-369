@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='index.css') }}">
+    <script src="{{ url_for('static', path='reconnecting-websocket.js') }}"></script>
+    <script src="{{ url_for('static', path='index.js') }}"></script>
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <div class="overlay">
+        <div id="status">
+            Verbindung zum Server getrennt!
+        </div>
+    </div>
+</body>
+</html>

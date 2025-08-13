@@ -1,0 +1,121 @@
+Metadata-Version: 2.4
+Name: pcf8574_webapp
+Version: 0.1.2
+Summary: This is a Python library designed to be able to easily control your PCF8574 I/O expanders over a Web interface.
+Project-URL: Repository, https://codeberg.org/Foerderverein_DresdnerParkeisenbahn_eV/pcf8574_webapp
+Author-email: Timo Klinge <kl.timo@outlook.de>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.7
+Requires-Dist: fastapi~=0.115.12
+Requires-Dist: jinja2~=3.1.6
+Requires-Dist: pcf8574-interface~=1.1.0
+Requires-Dist: uvicorn~=0.34.3
+Description-Content-Type: text/markdown
+
+# PCF8574 WebApp
+
+This is a Python library designed to be able to easily control your PCF8574 I/O expanders over a Web interface.
+The Library is based on the [pcf8574_interface library](https://pypi.org/project/pcf8574_interface/),
+which extends the functionality of the original [pcf8574 library](https://pypi.org/project/pcf8574/) with some useful features.
+
+## Features
+
+- **Display current I/O states**: The web interface is able to display the current states of your PCF8574 I/O expanders.
+- **Override I/O states**: You can override the current I/O states of your PCF8574 I/O expanders to test your hardware and software without changing the actual states.
+- **Default Web interface**: The Default Web interface provides an overview of all connected PCF8574 I/O expanders and their current states.
+- **Custom Routes**: You can create custom routes with custom templates to display only specific I/O pins.
+
+## Installation
+
+You can install the library with the following command:
+
+```bash
+pip install pcf8574_webapp
+```
+
+## Usage
+
+### Default Web Interface
+
+The default web interface is automatically available at `http://0.0.0.0:5000/`.
+
+### Starting the WebApp
+
+To start the web application, you can use the following code snippet:
+
+```python
+from pcf8574_interface import PCF8574Interface, IoPortType, PCF8574Pool
+from pcf8574_webapp import PCF8574WebApp
+
+from uvicorn import Config, Server
+
+pool = PCF8574Pool()
+
+# Create a few interface instances
+pcf1 = PCF8574Interface(i2c_bus_no=1, address=0x20, io_type=IoPortType.OUT)
+pcf2 = PCF8574Interface(i2c_bus_no=1, address=0x21, io_type=IoPortType.IN)
+
+# Add them to the pool
+pool.add_port(pcf1)
+pool.add_port(pcf2)
+
+fastapi_webapp = PCF8574WebApp(pool)
+pool.set_api(fastapi_webapp.get_notifier())
+config = Config(app=fastapi_webapp.get_app(), host="0.0.0.0", port=5000, log_level="info")
+server = Server(config)
+server.run()
+# or if you want to run it asynchronously:
+# try:
+#     await server.serve()
+# except KeyboardInterrupt:
+#     print("WebApp server stopped.")
+```
+
+### Custom Routes
+
+You can create custom routes to display specific I/O pins or groups of pins.
+For example, to create a route that displays all input ports, you can use the following code snippet after the instantiation of *PCF8574WebApp*:
+
+```python
+fastapi_webapp.add_route(
+    "/inputs",
+    "index.html",
+    {
+        "inputs": pool.get_ports_by_type(IoPortType.IN),
+    }
+)
+```
+
+### Custom Templates
+
+If you want to use custom templates, you need to register the directory containing your custom templates.
+
+#### custom_pins.html
+```html
+{% extends "base.html" %}
+{% block title %}Custom Template{% endblock %}
+
+{% block content %}
+    ...
+    {% with resource=custom_ports %}
+        {% include '_table.html' %}
+    {% endwith %}
+    ...
+{% endblock %}
+```
+
+```python
+from pathlib import Path
+
+fastapi_webapp.add_template_directory(Path(__file__).resolve().parent / "custom_templates")
+fastapi_webapp.add_route(
+    "/custom_ports",
+    "custom_ports.html",
+    {
+        "custom_ports": (pool.get_port(1, 0x20), pool.get_port(1, 0x21))
+    }
+)
+```
