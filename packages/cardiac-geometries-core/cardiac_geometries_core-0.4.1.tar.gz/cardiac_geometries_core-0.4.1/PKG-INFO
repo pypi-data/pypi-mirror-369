@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: cardiac-geometries-core
+Version: 0.4.1
+Summary: Gmsh files for cardiac geometries
+Author-email: Henrik Finsberg <henriknf@simula.no>
+License: MIT
+Project-URL: Homepage, https://github.com/ComputationalPhysiology/cardiac-geometries-core
+Keywords: cardiac,geometry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: gmsh
+Requires-Dist: numpy
+Requires-Dist: rich-click
+Provides-Extra: dev
+Requires-Dist: bump-my-version; extra == "dev"
+Requires-Dist: ipython; extra == "dev"
+Requires-Dist: pdbpp; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: wheel; extra == "dev"
+Provides-Extra: pypi
+Requires-Dist: twine; extra == "pypi"
+Requires-Dist: wheel; extra == "pypi"
+Requires-Dist: build; extra == "pypi"
+Provides-Extra: docs
+Requires-Dist: jupyter-book; extra == "docs"
+Provides-Extra: test
+Requires-Dist: pre-commit; extra == "test"
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Dynamic: license-file
+
+# Cardiac geometries core
+
+Gmsh files for caridac geometries
+
+Source code : https://github.com/ComputationalPhysiology/cardiac-geometries-core
+
+
+## Install
+You can install the package with pip
+```
+python3 -m pip install cardiac-geometries-core
+```
+or you can just run a container without any installation, i.e
+```
+docker run --rm -w /home/shared -v $PWD:/home/shared -it ghcr.io/computationalphysiology/cardiac-geometries-core:latest
+```
+For example the following command will create an lv ellipsoid and save it to a file called `lv-mesh.msh`
+```
+docker run --rm -w /home/shared -v $PWD:/home/shared -it ghcr.io/computationalphysiology/cardiac-geometries-core:latest lv-ellipsoid lv-mesh.msh
+```
+
+## Authors
+Henrik Finsberg (henriknf@simula.no)
+
+## License
+MIT
