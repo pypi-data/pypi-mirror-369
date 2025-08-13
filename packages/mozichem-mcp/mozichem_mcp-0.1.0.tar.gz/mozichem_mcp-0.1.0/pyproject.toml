@@ -1,0 +1,32 @@
+[project]
+name = "mozichem-mcp"
+version = "0.1.0"
+description = "MoziChem MCP tools built on top of the MoziChem framework"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Sina Gilassi", email = "sina.gilassi@gmail.com" }
+]
+requires-python = ">=3.13"
+
+dependencies = [
+  # core deps your scripts need:
+  # add your scientific stack as needed:
+  "mozichem-hub>=0.1.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/sinagilassi/mozichem-mcp"
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "black"]
+
+# Map each script file's main() to a command name
+[project.scripts]
+mozichem-mcp-eos-models = "mozichem_mcp.mcp.eos_models:main"
+mozichem-mcp-flash-calculation = "mozichem_mcp.mcp.flash_calculation:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
