@@ -1,0 +1,143 @@
+Metadata-Version: 2.4
+Name: maria
+Version: 1.4.1
+Summary: A simulator for ground-based millimeter- and submillimeter-wave telescopes.
+Project-URL: Homepage, https://github.com/thomaswmorris/maria
+Project-URL: Bug Reports, https://github.com/thomaswmorris/maria/issues
+Project-URL: Source, https://github.com/thomaswmorris/maria/
+Author-email: Thomas Morris <thomas.w.morris@yale.edu>, Joshiwa van Marrevijk <joshiwavanmarrewijk@eso.org>
+Maintainer-email: Thomas Morris <thomas.w.morris@yale.edu>, Joshiwa van Marrevijk <joshiwavanmarrewijk@eso.org>
+License: BSD 3-Clause License
+        
+        Copyright (c) 2025 Thomas W. Morris
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its contributors
+           may be used to endorse or promote products derived from this software
+           without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+License-File: AUTHORS.rst
+License-File: LICENSE
+Keywords: astronomy,atmosphere,cosmology
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Requires-Python: >=3.9
+Requires-Dist: arrow
+Requires-Dist: astropy
+Requires-Dist: dask
+Requires-Dist: h5py
+Requires-Dist: healpy
+Requires-Dist: jax
+Requires-Dist: matplotlib
+Requires-Dist: numpy>=2
+Requires-Dist: pandas
+Requires-Dist: reproject
+Requires-Dist: requests
+Requires-Dist: scikit-image
+Requires-Dist: scipy
+Requires-Dist: tqdm
+Provides-Extra: dev
+Requires-Dist: coverage; extra == 'dev'
+Requires-Dist: furo; extra == 'dev'
+Requires-Dist: import-linter; extra == 'dev'
+Requires-Dist: ipython; extra == 'dev'
+Requires-Dist: jupyter; extra == 'dev'
+Requires-Dist: matplotlib; extra == 'dev'
+Requires-Dist: mypy; extra == 'dev'
+Requires-Dist: nbsphinx; extra == 'dev'
+Requires-Dist: nbstripout; extra == 'dev'
+Requires-Dist: numpydoc; extra == 'dev'
+Requires-Dist: pandas-stubs; extra == 'dev'
+Requires-Dist: pandoc; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: pre-commit-hooks; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-codecov; extra == 'dev'
+Requires-Dist: ruff; extra == 'dev'
+Requires-Dist: sphinx; extra == 'dev'
+Requires-Dist: sphinx-copybutton; extra == 'dev'
+Requires-Dist: sphinx-rtd-theme; extra == 'dev'
+Requires-Dist: twine; extra == 'dev'
+Requires-Dist: types-pyyaml; extra == 'dev'
+Provides-Extra: mapping
+Requires-Dist: torch; extra == 'mapping'
+Provides-Extra: pre-commit
+Requires-Dist: import-linter; extra == 'pre-commit'
+Requires-Dist: nbstripout; extra == 'pre-commit'
+Requires-Dist: ruff; extra == 'pre-commit'
+Description-Content-Type: text/x-rst
+
+maria
+=====
+
+.. image:: https://github.com/thomaswmorris/maria/actions/workflows/testing.yml/badge.svg
+   :target: https://github.com/thomaswmorris/maria/actions/workflows/testing.yml
+
+.. image:: https://img.shields.io/pypi/v/maria.svg
+   :target: https://pypi.python.org/pypi/maria
+
+*maria blows the stars around / and sends the clouds a-flyin’*
+
+``maria`` is a complete simulator of ground-based millimeter- and submillimeter-wave telescopes. Tutorials for installation and usage can be found in the `documentation <https://www.thomaswmorris.com/maria>`_.
+
+.. Background
+.. ----------
+
+.. Atmospheric modeling is an important step in both experiment design and
+.. subsequent data analysis for ground-based cosmological telescopes
+.. observing the cosmic microwave background (CMB). The next generation of
+.. ground-based CMB experiments will be marked by a huge increase in data
+.. acquisition: telescopes like `AtLAST <https://www.atlast.uio.no>`_ and
+.. `CMB-S4 <https://cmb-s4.org>`_ will consist of hundreds of thousands of
+.. superconducting polarization-sensitive bolometers sampling the sky. This
+.. necessitates new methods of efficiently modeling and simulating
+.. atmospheric emission at small angular resolutions, with algorithms than
+.. can keep up with the high throughput of modern telescopes.
+
+.. maria simulates layers of turbulent atmospheric emission according to a
+.. statistical model derived from observations of the atmosphere in the
+.. Atacama Desert, from the `Atacama Cosmology Telescope
+.. (ACT) <https://lambda.gsfc.nasa.gov/product/act/>`_ and the `Atacama
+.. B-Mode Search (ABS) <https://lambda.gsfc.nasa.gov/product/abs/>`_. It
+.. uses a sparse-precision auto-regressive Gaussian process algorithm that
+.. allows for both fast simulation of high-resolution atmosphere, as well
+.. as the ability to simulate arbitrarily long periods of atmospheric
+.. evolution.
+
+.. Methodology
+.. -----------
+
+.. ``maria`` auto-regressively simulates an multi-layeed two-dimensional
+.. “integrated” atmospheric model that is much cheaper to compute than a
+.. three-dimensional model, which can effectively describe time-evolving
+.. atmospheric emission. maria can thus effectively simulate correlated
+.. atmospheric emission for in excess of 100,000 ArrayList observing the
+.. sky concurrently, at resolutions as fine as one arcminute. The
+.. atmospheric model used is detailed
+.. `here <https://arxiv.org/abs/2111.01319>`_.
