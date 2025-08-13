@@ -1,0 +1,48 @@
+[package]
+name = "libhans"
+version = "0.1.8"
+edition = "2024"
+authors = ["Yixing <yanjizhou312@163.com>"]
+readme = "README.md"
+repository = "https://github.com/Robot-Exp-Platform/libhans-rs"
+license = "Apache-2.0"
+description = "Rust bindings for the Hans robot"
+categories = ["science::robotics"]
+keywords = ["hans", "robot"]
+
+[lib]
+name = "libhans"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3 = { version = "0.25", optional = true, features = [
+    "extension-module",
+    "multiple-pymethods",
+] }
+serde_repr = "0.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_with = "3.12"
+serde-big-array = "0.5.1"
+bitflags = "2.9"
+num-traits = "0.2"
+num-derive = "0.4"
+thiserror = "2.0"
+nalgebra = "0.34"
+bincode = "1.3"
+inventory = "0.3"
+colored = "3.0"
+cxx = { version = "1.0", optional = true }
+crossterm = "0.29"
+paste = "1.0"
+robot_behavior = { path = "crates/robot_behavior", version = "0.4.7" }
+libhans_derive = { path = "src/libhans_derive", version = "0.1.1" }
+
+[features]
+# default = ["no_robot"]
+default = []
+no_robot = []
+ffi = []
+to_c = []
+to_py = ["pyo3", "robot_behavior/to_py", "ffi"]
+to_cxx = ["cxx", "ffi", "robot_behavior/to_cxx"]
