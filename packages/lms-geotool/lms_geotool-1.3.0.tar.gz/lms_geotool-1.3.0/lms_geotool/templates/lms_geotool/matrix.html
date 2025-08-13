@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地图映射</title>
+    {% include "common.html" %}
+</head>
+<body>
+<div id="matrix">
+    <h3>地图映射</h3>
+    <el-divider></el-divider>
+    <el-row :gutter="50">
+        <el-col :span="15">
+            <h4>映射坐标</h4>
+            <el-table :data="anchor">
+                <el-table-column prop="origin_x" label="原始坐标X"></el-table-column>
+                <el-table-column prop="origin_y" label="原始坐标Y"></el-table-column>
+                <el-table-column prop="target_x" label="目标坐标X"></el-table-column>
+                <el-table-column prop="target_y" label="目标坐标Y"></el-table-column>
+            </el-table>
+        </el-col>
+
+        <el-col :span="9">
+            <h4>基础信息</h4>
+            <el-descriptions column="1" border>
+                <el-descriptions-item>
+                    <template #label>地图编码</template>
+                    <span>{{ mapid }}</span>
+                </el-descriptions-item>
+
+                <el-descriptions-item>
+                    <template #label>地图名称</template>
+                    <span>{{ name }}</span>
+                </el-descriptions-item>
+
+                <el-descriptions-item>
+                    <template #label>楼层</template>
+                    <span>{{ floor }}</span>
+                </el-descriptions-item>
+
+                <el-descriptions-item>
+                    <template #label>尺度系数</template>
+                    <span>{{ scale_rate }}</span>
+                </el-descriptions-item>
+
+                <el-descriptions-item>
+                    <template #label>扭曲系数</template>
+                    <span>{{ shear_rate }}</span>
+                </el-descriptions-item>
+
+            </el-descriptions>
+        </el-col>
+    </el-row>
+
+    <el-row :gutter="50">
+        <el-col :span="15">
+            <h4>转换矩阵</h4>
+            <el-table :data="matrix_data" :show-header="false">
+                <el-table-column
+                        v-for="(column, index) in 3"
+                        :key="index"
+                        :label="'Column ' + (index + 1)"
+                        :prop="'col' + index"
+                >
+                </el-table-column>
+            </el-table>
+        </el-col>
+        <el-col :span="9">
+            <canvas id="myCanvas" width="300" height="200"></canvas>
+        </el-col>
+    </el-row>
+
+    <form class="matrix-form" method="post" action="{% url 'matrix' %}?mapid={{ mapid }}">
+        {% csrf_token %}
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <el-card>
+                    <template #header>
+                        <div class="title">
+                            <h4>原始坐标</h4>
+                        </div>
+                    </template>
+
+                    <el-input v-model="form.inputArea"
+                              name="input_area"
+                              type="textarea"
+                              resize="none"
+                              placeholder="输入坐标数据，以中英文逗号分隔，换行可批量转换"
+                              @blur.prevent="formatData()"
+                    >
+                    </el-input>
+                </el-card>
+            </el-col>
+            <el-col :span="12">
+                <el-card>
+                    <template #header>
+                        <div class="title">
+                            <h4>目标坐标</h4>
+                        </div>
+                    </template>
+                    <el-input v-model="form.outputArea"
+                              type="textarea"
+                              resize="none"
+                              placeholder="输出结果，点击复制可复制到剪贴板"
+                              readonly>
+                    </el-input>
+                </el-card>
+            </el-col>
+        </el-row>
+    </form>
+    <el-divider></el-divider>
+
+    <div class="footer">
+        <el-button size="large" type="success" v-if="form.inputArea" @click="convert">转换</el-button>
+        <el-button size="large" v-else type="info">转换</el-button>
+
+        <el-button size="large" type="primary" v-if="form.outputArea" @click="copy">复制</el-button>
+        <el-button size="large" v-else type="info">复制</el-button>
+
+        <el-button size="large" type="danger" v-if="form.inputArea || form.outputArea" @click="clear">重置</el-button>
+        <el-button size="large" v-else type="info">重置</el-button>
+    </div>
+
+
+
+</div>
+
+</body>
+</html>
+<script>
+    const {createApp, ref, reactive, watch, onMounted} = Vue
+    const App = {
+        setup() {
+            anchor = JSON.parse('{{ anchor|safe }}')
+            matrix = JSON.parse('{{ matrix }}')
+            // 转换为 el-table 需要的数据格式
+            const matrix_data = ref(
+                matrix.map(row => ({
+                    col0: row[0],
+                    col1: row[1],
+                    col2: row[2]
+                }))
+            );
+
+            const form = reactive({
+                inputArea: '{{ input_area }}'.replaceAll("&quot;", "").replaceAll("&#x27;", ""),
+                outputArea: '{{ output_area }}'.replaceAll("&quot;", "").replaceAll("&#x27;", "")
+            })
+            const rowNum = ref(0);
+
+            /**
+             * 清空
+             */
+            const clear = () => {
+                if (confirm("是否要重置当前页面的数据")) {
+                    form.inputArea = "";
+                    form.outputArea = "";
+                    rowNum.value = 0;
+                }
+            }
+
+            /**
+             * 提交
+             */
+            const convert = () => {
+                formatData()
+                let forms = document.getElementsByClassName('matrix-form')[0];
+                forms && forms.submit();
+            }
+
+            /**
+             * 复制
+             */
+            const copy = () => {
+                navigator.clipboard.writeText(form.outputArea).then(() => {
+                    alert("复制成功");
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                });
+            }
+
+
+            watch(() => form.inputArea, () => {
+                //连续换行的情况和中文逗号过滤
+                form.inputArea = form.inputArea.replaceAll("\n\n", "\n").replaceAll("，", ",");
+                rowNum.value = form.inputArea ? form.inputArea.split("\n").length : 0;
+            })
+
+            const formatData = () => {
+                form.inputArea = form.inputArea.replace(/^\n|\n$/g, '');
+            }
+
+            onMounted(() => {
+
+                const canvas = document.getElementById('myCanvas');
+                const ctx = canvas.getContext('2d');
+
+                // 清除画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 定义两个向量（从原点出发）
+                const vector1 = { x: matrix[0][0], y: matrix[1][0] }; // 向量1的终点
+                const vector2 = { x: matrix[0][1], y: matrix[1][1] }; // 向量2的终点
+
+                // 平行四边形的四个顶点
+                const pointA = { x: 0, y: 0 }; // 起点（原点）
+                const pointB = { x: vector1.x, y: vector1.y }; // 向量1的终点
+                const pointC = { x: vector1.x + vector2.x, y: vector1.y + vector2.y }; // 向量1终点加上向量2
+                const pointD = { x: vector2.x, y: vector2.y }; // 向量2的终点
+
+                // 计算平行四边形的边界框
+                const minX = Math.min(pointA.x, pointB.x, pointC.x, pointD.x);
+                const minY = Math.min(pointA.y, pointB.y, pointC.y, pointD.y);
+                const maxX = Math.max(pointA.x, pointB.x, pointC.x, pointD.x);
+                const maxY = Math.max(pointA.y, pointB.y, pointC.y, pointD.y);
+                const width = maxX - minX;
+                const height = maxY - minY;
+
+                // 计算缩放比例
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                const scaleX = canvasWidth / width;
+                const scaleY = canvasHeight / height;
+                const scale = Math.min(scaleX, scaleY)*0.9; // 选择较小的缩放比例以保持纵横比
+
+                // 计算平移量以居中显示
+                const translateX = (canvasWidth - width * scale) / 2;
+                const translateY = (canvasHeight - height * scale) / 2 + height * scale; // 调整逻辑使原点居中偏下（若需左下角则调整）
+                // 为简化，这里采用中心对齐并翻转y轴（符合数学坐标系原点左下角，y轴向上）
+                const finalTranslateY = (canvasHeight - height * scale) / 2;
+                ctx.setTransform(scale, 0, 0, -scale, translateX, canvasHeight - finalTranslateY); // 翻转y轴
+
+                // 绘制坐标轴（带箭头）
+                ctx.beginPath();
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 1;
+
+                ctx.stroke();
+
+                // 绘制平行四边形
+                ctx.beginPath();
+                ctx.moveTo(pointA.x, pointA.y); // 起点
+                ctx.lineTo(pointB.x, pointB.y); // 第二个点
+                ctx.lineTo(pointC.x, pointC.y); // 第三个点
+                ctx.lineTo(pointD.x, pointD.y); // 第四个点
+                ctx.closePath(); // 回到起点，闭合路径
+
+                // 填充平行四边形（可选）
+                ctx.fillStyle = 'skyblue';
+                ctx.fill();
+
+                // 绘制边框（可选）
+                ctx.strokeStyle = 'red';
+                ctx.stroke();
+
+                // **解释**：
+                // - 我们计算了坐标轴的长度，使其自适应Canvas的尺寸。
+                // - 在坐标轴的末端添加了箭头，以指示轴的方向。
+                // - 坐标轴的长度是根据Canvas的宽度和高度以及缩放比例动态计算的。
+                // - 我们应用了缩放和平移变换，使平行四边形在Canvas中居中显示，并考虑了坐标系的原点位置。
+            })
+
+
+            return {
+                anchor,
+                matrix_data,
+                form,
+                convert,
+                copy,
+                clear,
+                formatData,
+                rowNum
+            }
+        }
+    }
+
+    const app = createApp(App)
+    app.use(ElementPlus, {
+        locale: ElementPlusLocaleZhCn,
+    })
+    app.mount('#matrix')
+</script>
+<style>
+    #matrix {
+        text-align: center;
+        width: 95%;
+        margin: auto;
+        height: 95vh;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .el-table__body {
+        margin: 0;
+    }
+
+    .el-card__header {
+        padding: 0;
+    }
+
+    h4 {
+        margin: 10px;
+    }
+
+    .el-textarea__inner {
+        height: calc(95vh - 700px);
+        background-color: #f3f5f7;
+        text-align: center;
+    }
+</style>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>点位平移</title>
+    {% include "common.html" %}
+</head>
+<body>
+<div style="text-align: center;width: 95%;margin: auto" id="translation">
+    <h3>点位平移</h3>
+    <el-divider></el-divider>
+    <div class="translation-mainer">
+        <form class="translation-form" method="post" action="{% url 'translation' %}">
+            {% csrf_token %}
+            <el-space direction="vertical">
+
+                <el-input v-model="form.lon" name="lon" size="large">
+                    <template #prepend>原始点位经度</template>
+                    <template #append>度</template>
+                </el-input>
+                <el-input v-model="form.lat" name="lat" size="large">
+                    <template #prepend>原始点位纬度</template>
+                    <template #append>度</template>
+                </el-input>
+
+                <el-input v-model="form.x" name="x" size="large">
+                    <template #prepend>东西方向平移</template>
+                    <template #append>米</template>
+                </el-input>
+
+                <el-input v-model="form.y" name="y" size="large">
+                    <template #prepend>南北方向平移</template>
+                    <template #append>米</template>
+                </el-input>
+
+                <el-button type="primary" @click="onSubmit">提交</el-button>
+
+            </el-space>
+
+        </form>
+
+        <div class="translation-result">
+            {% if error %}
+                <div style="color: red">{{ error }}</div>
+            {% else %}
+                {% if result %}
+                    <h3>输出结果</h3>
+                    <span>{{ result }}</span>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+<script>
+    const {createApp, ref, reactive} = Vue
+    const App = {
+        setup() {
+            const form = reactive({
+                lon: '{{ lon }}',
+                lat: '{{ lat }}',
+                x: '{{ x }}',
+                y: '{{ y }}',
+            })
+
+            const onSubmit = () => {
+                let forms = document.getElementsByClassName('translation-form')[0];
+                forms.submit();
+            }
+            return {
+                form, onSubmit
+            }
+        }
+    }
+
+    const app = createApp(App)
+    app.use(ElementPlus, {
+        locale: ElementPlusLocaleZhCn,
+    })
+    app.mount('#translation')
+</script>
+<style>
+    .translation-mainer {
+        width: 50%;
+        margin: auto;
+    }
+
+    {#.translation-form {#}
+    {#    display: grid;#}
+    {
+    #}#}
+
+
+</style>
