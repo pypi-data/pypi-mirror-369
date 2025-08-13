@@ -1,0 +1,570 @@
+{
+    "$schema": "metaschema/strict_meta_schema.json#",
+    "$id": "sample",
+    "title": "Sample",
+    "type": "object",
+
+	"$comment": "description used in docs/index.html and docs/sample.html",
+    "description": "Any material sample taken from a biological entity for testing, diagnostic, propagation, treatment or research purposes, including a sample obtained from a living organism or taken from the biological object after halting of all its life functions. Biospecimen can contain one or more components including but not limited to cellular molecules, cells, tissues, organs, body fluids, embryos, and body excretory products.",
+
+    "properties": {
+        "cimac_id": {
+            "description": "Specimen identifier assigned by the CIMAC-CIDC Network. Formatted as CTTTPPPSS.AA for trial code TTT, participant PPP, sample SS, and aliquot AA.",
+            "in_doc_ref_pattern": "/participants/*/samples/*/cimac_id",
+            "$comment": "With `in_doc_ref_pattern` here, there's no need to specify it each time cimac_id is $ref'ed, constrain will be pulled in place by ref resolver automatically, assuring that it will be checked for every cimac_id $ref.",
+            "pattern": "^C[A-Z0-9]{3}[A-Z0-9]{3}[A-Z0-9]{2}.[0-9]{2}$",
+            "example": "CTTTP01A1.00",
+            "type": "string"
+        },
+        "shipping_entry_number": {
+            "description": "Provides a numbered identifier for patient (sample) entry in a shipment manifest.",
+            "type": "integer"
+        },
+        "box_number": {
+            "description": "Identifier if sample shipment container includes multiple boxes for each assay.",
+            "type": "string"
+        },
+        "surgical_pathology_report_id": {
+            "description": "A unique identifier so someone can find the surgical pathology report.",
+            "encrypt": true,
+            "type": "string"
+        },
+        "clinical_report_id": {
+            "description": "A unique identifier so someone can find the clinical report.",
+            "encrypt": true,
+            "type": "string"
+        },
+        "parent_sample_id": {
+            "description": "Sample identifier assigned by the biorepository site. Crypto-hashed after upload.",
+            "type": "string",
+            "encrypt": true
+        },
+        "processed_sample_id": {
+            "description": "Aliquot identifier assigned by the biorepository site. Crypto-hashed after upload.",
+            "type": "string",
+            "encrypt": true
+        },
+        "site_description": {
+            "description": "Description of the topography category. e.g LUNG AND BRONCHUS",
+            "type": "string"
+        },
+        "topography_code": {
+            "description": "ICD-0-3 topography site code from which a specimen was isolated. e.g. C34.1",
+            "type": "string"
+        },
+        "topography_description": {
+            "description": "ICD-0-3 site code description. e.g. Upper lobe, lung",
+            "type": "string"
+        },
+        "histology_behavior": {
+            "description": "ICD-0-3 code for histology and behavior. e.g. 9665/3",
+            "type": "string"
+        },
+        "histology_behavior_description": {
+            "description": "ICD-0-3 histology and behavior code description. e.g. Hodgkin lymphoma, nod. scler., grade 1",
+            "type": "string"
+        },
+        "collection_event_name": {
+            "title": "Collection Event Name",
+            "description": "Categorical description of timepoint at which the sample was taken.",
+            "type": "string"
+        },
+        "sample_location": {
+            "description": "Sample location within the shipping container. Example: A1.",
+            "type": "string"
+        },
+        "type_of_sample": {
+            "description": "Type of sample sent.",
+            "type": "string",
+            "enum": [
+                "BAL Cells",
+                "BAL Cell Supernatant",
+                "BAL Fluid",
+                "BMMC",
+                "BMMC Supernatant",
+                "Bone Marrow Aspirate",
+                "Bone Marrow Core",
+                "Bone Marrow Film",
+                "Buccal Cells",
+                "Buffy Coat",
+                "CAR-T Cells",
+                "cfDNA",
+                "CSF",
+                "CSF Cells",
+                "CSF Cell Supernatant",
+                "CTC Cells",
+                "CTC Cell Supernatant",
+                "ctDNA",
+                "Cytospin Film",
+                "DNA",
+                "FFPE Block",
+                "FFPE Block Punch",
+                "FFPE Section",
+                "FFPE Tissue Core",
+                "FFPE Tissue Curl",
+                "FFPE Tissue Scroll",
+                "Fine Needle Aspirate",
+                "Fixed Tissue Slide",
+                "Formalin Fixed Tissue",
+                "Fresh Tissue",
+                "Fresh Tissue Core",
+                "Frozen Tissue",
+                "Frozen Tissue Block",
+                "Frozen Tissue Curl",
+                "Frozen Tissue Core",
+                "Frozen Tissue Section",
+                "Germline DNA",
+                "Germline Nucleic Acid",
+                "Germline RNA",
+                "H&E Fixed Tissue Slide",
+                "Leukapheresis Cells",
+                "Lymph Node Tissue",
+                "Nucleic Acid",
+                "OCT Frozen Tissue",
+                "OCT Frozen Tissue Block",
+                "OCT Frozen Tissue Core",
+                "OCT Frozen Tissue Curl",
+                "OCT Frozen Tissue Section",
+                "PBMC",
+                "PBMC Supernatant",
+                "PBSC",
+                "PBSC Supernatant",
+                "Peptides",
+                "Pericardial Fluid",
+                "Peritoneal Cells",
+                "Peritoneal Cell Supernatant",
+                "Peritoneal Fluid",
+                "Peritoneal Lavage Fluid",
+                "Plasma",
+                "Pleural Cells",
+                "Pleural Cell Supernatant",
+                "Pleural Fluid",
+                "Protein Lysate",
+                "RNA",
+                "Saliva",
+                "Serum",
+                "Skin Tissue",
+                "Stool",
+                "Synovial Fluid",
+                "Tissue Core",
+                "Urine",
+                "WBC",
+                "Whole Blood",
+                "Whole Blood Film",
+                "Other"
+            ]
+        },
+        "type_of_sample_other": {
+            "description": "The description of the sample other.",
+            "type": "string"
+        },
+        "description_of_sample": {
+            "description": "The description of the sample.",
+            "type": "string",
+            "enum": ["Tumor", "Normal"]
+        },
+        "type_of_tumor_sample": {
+            "description": "The type of tumor sample obtained (primary or metastatic).",
+            "type": "string",
+            "enum": ["Metastatic Tumor", "Primary Tumor", "Not Reported"]
+        },
+        "sample_collection_procedure": {
+            "description": "Indicates the specimen source of the sample shipped. Example: Na Heparin blood draw aliquots (2 of three), FFPE block #52",
+            "type": "string",
+            "enum": [
+                "Fine Needle Aspiration",
+                "Phlebotomy",
+                "Bone Marrow Aspiration",
+                "Bone Marrow Core Biopsy",
+                "Core Biopsy",
+                "Endoscopic Biopsy",
+                "Surgical Excision",
+                "Fine Needle Aspiration",
+                "Lumbar Puncture",
+                "FFPE Block Punch Biopsy",
+                "Skin Biopsy",
+                "Apheresis",
+                "Bone Biopsy",
+                "Bronchoalveolar Lavage",
+                "Buccal Swab",
+                "Leukapheresis",
+                "Mid Stream Urine Collection",
+                "Peritoneal Lavage",
+                "Peritoneal Paracentesis",
+                "Pleural Thoracentesis",
+                "Saliva Collection",
+                "Stool Collection",
+                "Surgical Incision",
+                "Urine Voiding",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "sample_collection_procedure_other": {
+            "description": "Details of sample collection procedure when 'Other' is set.",
+            "type": "string"
+        },
+        "core_number": {
+            "description": "The biopsy core number from which the sample was used.",
+            "type": "string"
+        },
+        "fixation_stabilization_type": {
+            "description": "Type of specimen fixation or stabilization that was employed by the site directly after collection.",
+            "type": "string",
+            "enum": [
+                "Ficoll",
+                "Formalin Fixation",
+                "Formalin-Fixed Paraffin-Embedded (FFPE)",
+                "Frozen",
+                "70% Ethanol",
+                "H&E",
+                "Liquid Nitrogen (Frozen)",
+                "OCT (Frozen)",
+                "Proteomic Stabilization",
+                "Thaw-Lyse",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "type_of_primary_container": {
+            "description": "The format in which the sample was sent.",
+            "type": "string",
+            "enum": [
+                "ACD-A Tube",
+                "ACD-B Tube",
+                "Bag",
+                "Box",
+                "CellSave Tube",
+                "Conical Tube",
+                "Container",
+                "CPT Citrate Tube",
+                "CPT Heparin Tube",
+                "Cryovial",
+                "EDTA Tube",
+                "Fecal Collection Container with NA Stabilizer",
+                "FFPE Tissue Cassette",
+                "Formalin Jar",
+                "Lithium Heparin Tube",
+                "OMNIgene",
+                "OMNImet",
+                "PAXgene DNA Tube",
+                "PAXgene RNA Tube",
+                "Plain Red Top Tube",
+                "PPT Tube",
+                "Saliva Tube",
+                "Screw Top Jar",
+                "Slide",
+                "Slide Cassette",
+                "Smart Tube",
+                "Sodium Citrate Tube",
+                "Sodium Heparin Tube",
+                "SST Tube",
+                "Streck Tube",
+                "Other"
+            ]
+        },
+        "type_of_primary_container_other": {
+            "description": "The input for type of primary container if value is other.",
+            "type": "string"
+        },
+        "sample_volume": {
+            "description": "Volume of the parent sample (e.g. Heparin tube volume)",
+            "type": "number"
+        },
+        "sample_volume_units": {
+            "description": "Unit for the parent sample volume.",
+            "type": "string",
+            "enum": ["Microliter", "Milliliter", "Nanoliter", "Not Reported", "Other"]
+        },
+        "processed_sample_type": {
+            "description": "The type of processing that was performed on the collected specimen by the Biobank for storage.",
+            "type": "string",
+            "enum": [
+                "BAL Cells",
+                "BAL Cell Supernatant",
+                "BMMC",
+                "BMMC Supernatant",
+                "Bone Marrow Film",
+                "Buccal Cells",
+                "Buffy Coat",
+                "cfDNA",
+                "CSF Cell Supernatant",
+                "CSF Cells",
+                "CTC Cell Supernatant",
+                "CTC Cells",
+                "ctDNA",
+                "DNA",
+                "FFPE Block",
+                "FFPE Block Punch",
+                "FFPE Section",
+                "FFPE Tissue Core",
+                "FFPE Tissue Curl",
+                "FFPE Tissue Scroll",
+                "Formalin Fixed Tissue",
+                "Germline DNA",
+                "Germline RNA",
+                "Leukapheresis Cells",
+                "Other",
+                "PBMC",
+                "PBMC Supernatant",
+                "PBSC",
+                "PBSC Supernatant",
+                "Peritoneal Cell Supernatant",
+                "Peritoneal Cells",
+                "Plasma",
+                "Pleural Cell Supernatant",
+                "Pleural Cells",
+                "RNA",
+                "Serum",
+                "Whole Blood Film",
+                "Protein Lysate",
+                "Peptides",
+                "Germline Nucleic Acid",
+                "Nucleic Acid",
+                "H&E Fixed Tissue Slide",
+                "Fixed Tissue Slide",
+                "WBC"
+            ]
+        },
+        "processed_sample_volume": {
+            "description": "Volume of the processed sample.",
+            "type": "number"
+        },
+        "processed_sample_volume_units": {
+            "description": "Volume units of each processed sample.",
+            "type": "string",
+            "enum": ["Microliters", "Milliliters", "Not Reported", "Other"]
+        },
+        "processed_sample_concentration": {
+            "description": "The concentration of the processed sample.",
+            "type": "number"
+        },
+        "processed_sample_concentration_units": {
+            "description": "The concentration units for the processed sample.",
+            "type": "string",
+            "enum": [
+                "Nanogram per Microliter",
+                "Milligram per Milliliter",
+                "Micrograms per Microliter",
+                "Cells per Vial",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "processed_sample_quantity": {
+            "description": "Quantity of the processed sample (e.g. number of slides cut for DNA extraction).",
+            "type": "number"
+        },
+        "processed_sample_derivative": {
+            "description": "The type of derivative or analyte extracted from the specimen to be shipped for testing.",
+            "type": "string",
+            "enum": [
+                "cfDNA",
+                "ctDNA",
+                "Germline DNA",
+                "Germline RNA",
+                "Other",
+                "Protein Lysate",
+                "Peptides",
+                "Tumor DNA",
+                "Tumor RNA",
+                "Stool DNA"
+            ]
+        },
+        "sample_derivative_volume": {
+            "description": "Volume of the analyte or derivative shipped.",
+            "type": "number"
+        },
+        "sample_derivative_volume_units": {
+            "description": "Volume units of each analyte or derivative shipped.",
+            "type": "string",
+            "enum": ["Microliters", "Milliliters", "Not Reported", "Other"]
+        },
+        "sample_derivative_concentration": {
+            "description": "The concentration of analyte or derivative shipped.",
+            "type": "number"
+        },
+        "sample_derivative_concentration_units": {
+            "description": "The concentration units for the analyte or derivative shipped.",
+            "type": "string",
+            "enum": [
+                "Nanogram per Microliter",
+                "Milligram per Milliliter",
+                "Micrograms per Microliter",
+                "Cells per Vial",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "tumor_tissue_total_area_percentage": {
+            "type": ["number","string"],
+            "description": "Score the percentage of tumor (including tumor bed) tissue area of the slide (e.g. vs non-malignant or normal tissue) (0-100)"
+        },
+        "viable_tumor_area_percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Score the percentage of viable tumor cells comprising the tumor bed area"
+        },
+        "viable_stroma_area_percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Score the evaluation of stromal elements (this indicates the % area of tumor bed occupied by non-tumor cells, including inflammatory cells [lymphocytes, histiocytes, etc], endothelial cells, fibroblasts, etc)"
+        },
+        "necrosis_area_percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Score the percentage area of necrosis"
+        },
+        "fibrosis_area_percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Score the percentage area of Fibrosis"
+        },
+        "din": {
+            "type": ["number", "string"],
+            "description": "Provides a DNA Integrity Number as an indication of extraction quality (values of 1-10)"
+        },
+        "a260_a280": {
+            "type": ["number", "string"],
+            "description": "Provides an absorbance percentage ratio indicating purity of DNA (values of 0 to 2)"
+        },
+        "a260_a230": {
+            "type": ["number", "string"],
+            "description": "Provides an absorbance percentage ratio indicating presence of contaminants (values of 0 to 3)"
+        },
+        "pbmc_viability": {
+            "description": "Receiving site determines the percent recovered cells that are viable after thawing.",
+            "type": "number"
+        },
+        "pbmc_recovery": {
+            "description": "Receiving site determines number for PBMCs per vial recovered upon receipt.",
+            "type": "number"
+        },
+        "pbmc_resting_period_used": {
+            "description": "Receiving site indicates if a resting period was used after PBMC recovery.",
+            "type": "string",
+            "enum": ["Yes", "No", "Not Reported", "Other"]
+        },
+        "material_used": {
+            "description": "Receiving site indicates how much material was used for assay purposes.",
+            "type": "number"
+        },
+        "material_used_units": {
+            "description": "Units for the amount of material used; should be the same value as Specimen Analyte units.",
+            "type": "string",
+            "enum": [
+                "Microliters",
+                "Milligrams",
+                "Milliliters",
+                "Nanogram per Microliter",
+                "Milligram per Milliliter",
+                "Micrograms per Microliter",
+                "Cells per Vial",
+                "Slides",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "material_remaining": {
+            "description": "Receiving site indicates how much material remains after assay use.",
+            "type": "number"
+        },
+        "material_remaining_units": {
+            "description": "Units for the amount of material remaining.",
+            "type": "string",
+            "enum": [
+                "Microliters",
+                "Milligrams",
+                "Milliliters",
+                "Nanogram per Microliter",
+                "Milligram per Milliliter",
+                "Micrograms per Microliter",
+                "Cells per Vial",
+                "Slides",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "material_storage_condition": {
+            "description": "Storage condition of the material once it was received.",
+            "type": "string",
+            "enum": ["Ambient", "RT", "4 Celsius Degree", "-20 Degrees Celsius Or Minus 20 Degrees Celsius", "-80 Degrees Celsius Or Minus 80 Degrees Celsius", "-150 Degrees Celsius Or Minus 150 Degrees Celsius", "LN", "Dry Ice", "Not Reported", "Other"]
+        },
+        "quality_of_sample": {
+            "description": "Final status of sample after QC and pathology review.",
+            "type": "string",
+            "enum": ["QC Pass", "Pass at Risk", "QC Failed", "QC Lost", "QC Not Shipped"]
+        },
+        "sample_replacement": {
+            "description": "Indication if sample replacement is/was requested.",
+            "type": "string",
+            "enum": [
+                "Replacement Not Requested",
+                "Replacement Requested",
+                "Replacement Tested",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "residual_sample_use": {
+            "description": "Indication if sample was sent to another location or returned back to biorepository.",
+            "type": "string",
+            "enum": [
+                "Sample Returned",
+                "Sample Sent to Another Lab",
+                "Sample received from CIMAC",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "comments": {"description": "Comments on sample testing.", "type": "string"},
+        "diagnosis_verification": {
+            "title": "Diagnosis verification",
+            "description": "Indicates whether the local pathology review was consistent with the diagnostic pathology report.",
+            "type": "string",
+            "enum": [
+                "Local pathology review was not consistent",
+                "Local pathology review was consistent with site of tissue procurement diagnostic pathology report",
+                "Not Available",
+                "Not Reported",
+                "Other"
+            ]
+        },
+        "intended_assay": {
+            "type": "string",
+            "description": "The assay that this sample is expected to be used as input for."
+        },
+        "manifest_id": {
+            "type": "string",
+            "description": "Id of the manifest"
+        },
+        "upload_type": {
+            "type": "string",
+            "description": "Type of manifest"
+        },
+        "date_ingested": {
+            "type": "string",
+            "description": "Date CIDC ingested the sample/manifest"
+        },
+        "assay_type": {
+            "type": "string",
+            "description": "Assay type of sample"
+        },
+        "ship_to_name": {
+            "type": "string",
+            "description": "Recipient of sample"
+        },
+        "ship_from_name": {
+            "type": "string",
+            "description": "Sender of sample"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "cimac_id"
+    ]
+}

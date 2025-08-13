@@ -1,0 +1,74 @@
+{
+    "$schema": "metaschema/strict_meta_schema.json#",
+    "$id": "scrnaseq_assay",
+    "title": "scRNAseq Assay",
+    "type": "object",
+    "$comment": "description used in docs/index.html and docs/assays.scrnaseq.html",
+    "description": "Single Cell RNA Sequencing (scRNAseq) assay",
+    "additionalProperties": false,
+    "definitions": {
+        "record": {
+            "type": "object",
+            "mergeStrategy": "objectMerge",
+            "description": "A single data record from a scRNAseq assay.",
+            "additionalProperties": false,
+            "required": [
+                "cimac_id",
+                "details"
+            ],
+            "properties": {
+                "cimac_id": {
+                    "description": "Id of an sample within this clinical trial, that this assay record is based upon.",
+                    "$ref": "sample.json#properties/cimac_id"
+                },
+                "details": {
+                    "$ref": "assays/components/scrnaseq_input.json"
+                }
+            }
+        }
+    },
+    "properties": {
+        "assay_creator": {
+            "$ref": "assays/components/assay_core.json#properties/assay_creator"
+        },
+        "batch_id": {
+            "description": "Batch identification number. Unique to every upload.",
+            "type": "string"
+        },
+        "azimuth_reference": {
+            "$ref": "assays/components/scrnaseq_preamble.json#properties/azimuth_reference"
+        },
+        "tabula_sapiens_reference": {
+            "$ref": "assays/components/scrnaseq_preamble.json#properties/tabula_sapiens_reference"
+        },
+        "assay_chemistry_version": {
+            "$ref": "assays/components/scrnaseq_preamble.json#properties/assay_chemistry_version"
+        },
+        "barcode_include_file_version": {
+            "$ref": "assays/components/scrnaseq_preamble.json#properties/barcode_include_file_version"
+        },
+        "total_barcode_and_umi_length_in_read": {
+            "$ref": "assays/components/scrnaseq_preamble.json#properties/total_barcode_and_umi_length_in_read"
+        },
+
+        "samples_metadata_csv": {"$ref": "artifacts/artifact_csv.json"},
+
+
+        "records": {
+            "type": "array",
+            "description": "A single data record from a scrnaseq assay.",
+            "items": {
+                "$ref": "assays/scrnaseq_assay.json#definitions/record"
+            },
+            "mergeStrategy": "append"
+        }
+    },
+    "required": [
+        "assay_creator",
+        "batch_id",
+        "assay_chemistry_version",
+        "barcode_include_file_version",
+        "samples_metadata_csv",
+        "records"
+    ]
+}

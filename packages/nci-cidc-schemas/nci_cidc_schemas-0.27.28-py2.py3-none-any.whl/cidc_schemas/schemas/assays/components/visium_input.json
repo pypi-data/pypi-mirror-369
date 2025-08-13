@@ -1,0 +1,60 @@
+{
+  "$schema": "metaschema/strict_meta_schema.json#",
+  "$id": "visium_input",
+  "title": "Visium Input Files and Data",
+  "type": "object",
+  "description": "Visium assay input files and data",
+  "inheritableBase": true,
+  "properties": {
+    "lane": {
+      "description": "Lane used for this run from 1-9",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9
+    },
+    "read_1_fastq_gz": {
+      "$ref": "artifacts/artifact_gz.json"
+    },
+    "read_2_fastq_gz": {
+      "$ref": "artifacts/artifact_gz.json"
+    },
+    "loupe_alignment_file": {
+      "$ref": "artifacts/artifact_json.json"
+    },
+    "slide_serial_code": {
+      "type": "string",
+      "description": "Visium slide serial number"
+    },
+    "slide_capture_area": {
+      "type": "string",
+      "description": "Visium capture area identifier"
+    },
+    "library_yield_ng": {
+      "description": "Resulting yield (in ng) from library construction.",
+      "type": "number"
+    },
+    "dv200": {
+      "description": "The percentage of fragments > 200 nucleotides. (0-1)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "brightfield_image":  { "$ref": "artifacts/artifact_tiff.json"},
+    "dark_image":  { "$ref": "artifacts/artifact_tiff.json"},
+    "colorized_image":  { "$ref": "artifacts/artifact_tiff.json"},
+    "cytassist_image": { "$ref": "artifacts/artifact_tiff.json"},
+    "dapi_index": {
+      "type": "integer",
+      "description": "Index of DAPI channel (1-indexed) of fluorescence image."
+    },
+    "comments": {
+      "type": "string",
+      "description": "Comments on visium run"
+    }
+  },
+  "required": [
+    "lane",
+    "read_1_fastq_gz",
+    "read_2_fastq_gz"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+	"$schema": "metaschema/strict_meta_schema.json#",
+	"$id": "visium_analysis",
+	"title": "Analysis for Assay of visium",
+
+	"definitions": {
+
+		"entry": {
+			"type": "object",
+			"mergeStrategy": "objectMerge",
+			"description": "A single analysis record from visium analysis.",
+			"additionalProperties": false,
+			"required": [
+                "cimac_id",
+                "spatial_variable_features_rds",
+                "report_html",
+                "visium_spaceranger_output_zip"
+			],
+			"properties": {
+                "cimac_id": {"$ref": "assays/components/ngs/ngs_assay_record.json#properties/cimac_id"},
+                "spatial_variable_features_rds": { "$ref": "artifacts/artifact_rds.json"},
+                "report_html": { "$ref": "artifacts/artifact_html.json"},
+                "visium_spaceranger_output_zip": { "$ref": "artifacts/artifact_zip.json"},
+                "comments": {
+                  "type": "string",
+                  "description": "Comments on the visium analysis run."
+                }
+			}
+		}
+	},
+
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+        "records",
+        "samples_metadata_csv",
+        "config_yaml",
+        "r_package_versions",
+        "merged_rds",
+        "batch_id"
+	],
+	"properties": {
+        "batch_id":{
+            "$ref": "assays/scrnaseq_assay.json#properties/batch_id"
+        },
+        "records": {
+            "type": "array",
+            "mergeStrategy": "arrayMergeById",
+            "mergeOptions": { "idRef": "/cimac_id" },
+            "items": {
+                "$ref": "assays/visium_analysis.json#definitions/entry"
+            }
+        },
+        "excluded_samples": {
+            "$ref": "assays/components/excluded_samples.json"
+        },
+        "samples_metadata_csv": { "$ref": "artifacts/artifact_csv.json"},
+        "config_yaml": { "$ref": "artifacts/artifact_yaml.json"},
+        "r_package_versions": { "$ref": "artifacts/artifact_csv.json"},
+        "merged_rds": { "$ref": "artifacts/artifact_rds.json"}
+    }
+}

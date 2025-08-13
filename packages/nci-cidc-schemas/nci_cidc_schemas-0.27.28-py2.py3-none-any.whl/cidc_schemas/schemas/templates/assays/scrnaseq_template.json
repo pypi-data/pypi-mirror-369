@@ -1,0 +1,97 @@
+{    "title": "scRNAseq assay template",
+    "description": "Single Cell RNA Sequencing (scRNAseq) submission.",
+    "prism_template_root_object_schema": "assays/scrnaseq_assay.json",
+    "prism_template_root_object_pointer": "/assays/scrnaseq/0",
+    "properties":
+    {
+        "worksheets":
+        {
+            "scRNAseq":
+            {
+                "preamble_rows":
+                {
+                    "protocol identifier":
+                    {
+                        "merge_pointer": "3/protocol_identifier",
+                        "type_ref": "clinical_trial.json#properties/protocol_identifier"
+                    },
+                    "assay creator":
+                    {
+                        "merge_pointer": "0/assay_creator",
+                        "type_ref": "assays/scrnaseq_assay.json#properties/assay_creator"
+                    },
+                    "batch id": {
+                        "merge_pointer": "0/batch_id",
+                        "type_ref": "assays/scrnaseq_assay.json#properties/batch_id"
+                    },
+                    "azimuth reference": {
+                        "merge_pointer": "0/azimuth_reference",
+                        "type_ref": "assays/components/scrnaseq_preamble.json#properties/azimuth_reference",
+                        "allow_empty": true
+                    },
+                    "tabula sapiens reference": {
+                        "merge_pointer": "0/tabula_sapiens_reference",
+                        "type_ref": "assays/components/scrnaseq_preamble.json#properties/tabula_sapiens_reference",
+                        "allow_empty": true
+                    },
+                    "assay chemistry version": {
+                        "merge_pointer": "0/assay_chemistry_version",
+                        "type_ref": "assays/components/scrnaseq_preamble.json#properties/assay_chemistry_version"
+                    },
+                    "barcode include file version": {
+                        "merge_pointer": "0/barcode_include_file_version",
+                        "type_ref": "assays/components/scrnaseq_preamble.json#properties/barcode_include_file_version"
+                    },
+                    "total barcode and umi length in read 1": {
+                        "merge_pointer": "0/total_barcode_and_umi_length_in_read",
+                        "type_ref": "assays/components/scrnaseq_preamble.json#properties/total_barcode_and_umi_length_in_read"
+                    },
+                    "sample metadata csv": {
+                        "merge_pointer": "0/samples_metadata_csv",
+                        "gcs_uri_format": "{protocol identifier}/scrnaseq/{batch id}/samples_metadata.csv",
+                        "is_artifact": 1,
+                        "type_ref": "assays/components/local_file.json#properties/file_path"
+                    }
+                },
+                "prism_data_object_pointer": "/records/-",
+                "data_columns":
+                {
+                    "Samples":
+                    {
+                        "Cimac ID":
+                        {
+                            "merge_pointer": "0/cimac_id",
+                            "type_ref": "sample.json#properties/cimac_id"
+                        },
+                        "Lane": {
+                            "merge_pointer": "0/details/lane",
+                            "type": "string"
+                        },
+                        "Read 1": {
+                            "merge_pointer": "0/details/read_1_file",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/scrnaseq/{batch id}/{cimac id}/read_1.gz",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "Read 2": {
+                            "merge_pointer": "0/details/read_2_file",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/scrnaseq/{batch id}/{cimac id}/read_2.gz",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "library yield ng": {
+                            "merge_pointer": "0/details/library_yield_ng",
+                            "type_ref": "assays/components/scrnaseq_input.json#properties/library_yield_ng",
+                            "allow_empty": true
+                        },
+                        "rin": {
+                            "merge_pointer": "0/details/rin",
+                            "type_ref": "assays/components/scrnaseq_input.json#properties/rin",
+                            "allow_empty": true
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

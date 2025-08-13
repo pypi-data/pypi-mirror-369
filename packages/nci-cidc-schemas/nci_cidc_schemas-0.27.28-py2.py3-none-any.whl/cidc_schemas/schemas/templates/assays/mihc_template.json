@@ -1,0 +1,225 @@
+{    "title": "mIHC assay template",
+    "description": "Multiplex Immunohistochemistry (mIHC) submission.",
+    "prism_template_root_object_schema": "assays/mihc_assay.json",
+    "prism_template_root_object_pointer": "/assays/mihc/0",
+    "properties":
+    {
+        "worksheets":
+        {
+            "mIHC":
+            {
+                "preamble_rows":
+                {
+                    "protocol identifier":
+                    {
+                        "merge_pointer": "3/protocol_identifier",
+                        "type_ref": "clinical_trial.json#properties/protocol_identifier"
+                    },
+                    "assay creator":
+                    {
+                        "merge_pointer": "0/assay_creator",
+                        "type_ref": "assays/mihc_assay.json#properties/assay_creator"
+                    },
+                    "slide scanner model":
+                    {
+                        "merge_pointer": "0/slide_scanner_model",
+                        "type_ref": "assays/mihc_assay.json#properties/slide_scanner_model"
+                    },
+                    "image analysis software":
+                    {
+                        "merge_pointer": "0/image_analysis_software",
+                        "type_ref": "assays/mihc_assay.json#properties/image_analysis_software",
+                        "allow_empty": true
+                    },
+                    "image analysis software version":
+                    {
+                        "merge_pointer": "0/image_analysis_software_version",
+                        "type_ref": "assays/mihc_assay.json#properties/image_analysis_software_version",
+                        "allow_empty": true
+                    },
+                    "cell segmentation model":
+                    {
+                        "merge_pointer": "0/cell_segmentation_model",
+                        "type_ref": "assays/mihc_assay.json#properties/cell_segmentation_model",
+                        "allow_empty": true
+                    },
+                    "positive cell detection model":
+                    {
+                        "merge_pointer": "0/positive_cell_detection",
+                        "type_ref": "assays/mihc_assay.json#properties/positive_cell_detection",
+                        "allow_empty": true
+                    },
+                    "staining":
+                    {
+                        "merge_pointer": "0/staining",
+                        "type_ref": "assays/mihc_assay.json#properties/staining",
+                        "allow_empty": true
+                    },
+                    "staining date":
+                    {
+                        "merge_pointer": "0/staining_date",
+                        "type_ref": "assays/components/imaging_data.json#properties/staining_date",
+                        "allow_empty": true
+                    },
+                    "imaging date":
+                    {
+                        "merge_pointer": "0/imaging_date",
+                        "type_ref": "assays/components/imaging_data.json#properties/imaging_date",
+                        "allow_empty": true
+                    },
+                    "imaging status":
+                    {
+                        "merge_pointer": "0/imaging_status",
+                        "type_ref": "assays/components/imaging_data.json#properties/imaging_status",
+                        "allow_empty": true
+                    },
+                    "panel":
+                    {
+                        "merge_pointer": "0/panel",
+                        "type_ref": "assays/mihc_assay.json#properties/panel"
+                    },
+                    "batch id": {
+                        "merge_pointer": "0/batch_id",
+                        "type_ref": "assays/mihc_assay.json#properties/batch_id"
+                    },
+                    "sample mapping report": {
+                        "merge_pointer": "0/samples_file",
+                        "type_ref": "assays/components/local_file.json#properties/file_path",
+                        "gcs_uri_format": "{protocol identifier}/mihc/{batch id}/sample_report.csv",
+                        "is_artifact": 1
+                    }
+                },
+                "prism_data_object_pointer": "/records/-",
+                "data_columns":
+                {
+                    "Samples":
+                    {
+                        "CIMAC ID":
+                        {
+                            "merge_pointer": "0/cimac_id",
+                            "type_ref": "sample.json#properties/cimac_id"
+                        },
+                        "Tilemap file": {
+                            "merge_pointer": "0/files/tilemap_file",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/mihc/{cimac id}/tilemap.ome.tiff",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "Tilestats file": {
+                            "merge_pointer": "0/files/tilestats_file",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/mihc/{cimac id}/tilestats.csv",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "H5ad file": {
+                            "merge_pointer": "0/files/h5ad_file",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/mihc/{cimac id}/h5ad.h5ad",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "Multitiffs gzip": {
+                            "merge_pointer": "0/files/multitiffs_gzip",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/mihc/{cimac id}/multitiffs.tar.gz",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "Stain Zip": {
+                            "merge_pointer": "0/files/stain_zip",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/mihc/{cimac id}/stains.zip",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        },
+                        "Geojsons Zip": {
+                            "merge_pointer": "0/files/geojsons_zip",
+                            "is_artifact": 1,
+                            "gcs_uri_format": "{protocol identifier}/mihc/{cimac id}/geo_jsons.zip",
+                            "type_ref": "assays/components/local_file.json#properties/file_path"
+                        }
+                    }
+                }
+            },
+            "Antibodies":
+            {
+                "prism_data_object_pointer": "/antibodies/-",
+                "data_columns":
+                {
+                    "antibodies":
+                    {
+                        "Antibody":
+                        {
+                            "merge_pointer": "0/antibody",
+                            "type_ref": "assays/components/antibody.json#properties/antibody"
+                        },
+                        "Export name":
+                        {
+                            "merge_pointer": "0/export_name",
+                            "allow_empty": true,
+                            "type_ref": "assays/components/mihc_antibody.json#properties/export_name"
+                        },
+                        "Clone":
+                        {
+                            "merge_pointer": "0/clone",
+                            "type_ref": "assays/components/antibody.json#properties/clone"
+                        },
+                        "Antibody Company":
+                        {
+                            "merge_pointer": "0/company",
+                            "type_ref": "assays/components/antibody.json#properties/company"
+                        },
+                        "Cat#":
+                        {
+                            "merge_pointer": "0/cat_num",
+                            "type_ref": "assays/components/antibody.json#properties/cat_num"
+                        },
+                        "Lot#":
+                        {
+                            "merge_pointer": "0/lot_num",
+                            "type_ref": "assays/components/antibody.json#properties/lot_num"
+                        },
+                        "Staining Order":
+                        {
+                            "merge_pointer": "0/staining_order",
+                            "type_ref": "assays/components/mihc_antibody.json#properties/staining_order"
+                        },
+                        "Fluor Wavelength":
+                        {
+                            "merge_pointer": "0/fluor_wavelength",
+                            "allow_empty": true,
+                            "type_ref": "assays/components/mihc_antibody.json#properties/fluor_wavelength"
+                        },
+                        "Primary ab Dilution":
+                        {
+                            "merge_pointer": "0/primary_ab_dilution",
+                            "type_ref": "assays/components/mihc_antibody.json#properties/primary_ab_dilution"
+                        },
+                        "Dilutent":
+                        {
+                            "merge_pointer": "0/dilutent",
+                            "type_ref": "assays/components/mihc_antibody.json#properties/dilutent"
+                        },
+                        "Fluor dilution":
+                        {
+                            "merge_pointer": "0/fluor_dilution",
+                            "type_ref": "assays/components/mihc_antibody.json#properties/fluor_dilution"
+                        },
+                        "Antigen Retrieval Time":
+                        {
+                            "merge_pointer": "0/antigen_retrieval_time",
+                            "type_ref": "assays/components/mihc_antibody.json#properties/antigen_retrieval_time"
+                        },
+                        "Primary Incubation Time":
+                        {
+                            "merge_pointer": "0/primary_incubation_time",
+                            "type_ref": "assays/components/mihc_antibody.json#properties/primary_incubation_time"
+                        },
+                        "Amplification Time":
+                        {
+                            "merge_pointer": "0/amplification_time",
+                            "type_ref": "assays/components/mihc_antibody.json#properties/amplification_time"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

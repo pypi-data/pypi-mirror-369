@@ -1,0 +1,238 @@
+{
+  "title": "scRNAseq analysis template",
+  "description": "Assay by scRNA analysis submission.",
+  "prism_template_root_object_schema": "assays/scrnaseq_analysis.json",
+  "prism_template_root_object_pointer": "/analysis/scrnaseq_analysis/0",
+  "properties": {
+    "worksheets": {
+      "scRNAseq Analysis": {
+        "preamble_rows": {
+          "protocol identifier": {
+            "merge_pointer": "3/protocol_identifier",
+            "type_ref": "clinical_trial.json#properties/protocol_identifier"
+          },
+          "folder": {
+            "do_not_merge": true,
+            "type": "string",
+            "allow_empty": true
+          },
+          "batch id": {
+            "merge_pointer": "0/batch_id",
+            "type_ref": "assays/scrnaseq_assay.json#properties/batch_id"
+          },
+          "samples metadata csv": {
+            "merge_pointer": "0/samples_metadata_csv",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/samples_metadata.csv",
+            "is_artifact": 1
+          },
+          "config yaml": {
+            "merge_pointer": "0/config_yaml",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/config.yaml",
+            "is_artifact": 1
+          },
+          "r package versions": {
+            "merge_pointer": "0/r_package_versions",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/R_package_versions.csv",
+            "is_artifact": 1
+          },
+          "integration rds": {
+            "merge_pointer": "0/integration_rds",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/integration.rds",
+            "is_artifact": 1
+          },
+          "integration heatmap plots": {
+            "merge_pointer": "0/integration_heatmap_plots",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/integration_heatmap_plots.zip",
+            "is_artifact": 1
+          },
+          "integration markers zip": {
+            "merge_pointer": "0/integration_markers_zip",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/integration_markers.zip",
+            "is_artifact": 1
+          },
+          "integration split percent plots": {
+            "merge_pointer": "0/integration_split_percent_plots",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/integration_split_percent_plots.zip",
+            "is_artifact": 1
+          },
+          "integration split umap plots": {
+            "merge_pointer": "0/integration_split_umap_plots",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/integration_split_umap_plots.zip",
+            "is_artifact": 1
+          },
+          "integration umap plots": {
+            "merge_pointer": "0/integration_umap_plots",
+            "type_ref": "assays/components/local_file.json#properties/file_path",
+            "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/integration_umap_plots.zip",
+            "is_artifact": 1
+          }
+        },
+        "prism_data_object_pointer": "/records/-",
+        "data_columns": {
+          "scRNAseq Runs": {
+            "cimac id": {
+              "merge_pointer": "/cimac_id",
+              "type_ref": "sample.json#properties/cimac_id",
+              "process_as": [
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}clustering/{id}_clustering.rds'",
+                  "merge_pointer": "0/clustering_rds",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/clustering.rds",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}report/{id}_report.html'",
+                  "merge_pointer": "0/report_html",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/report.html",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Aligned.sortedByCoord.out.bam'",
+                  "merge_pointer": "0/star_sorted_by_coord_bam",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/star_sorted_by_cord.bam",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Aligned.sortedByCoord.out.bam.bai'",
+                  "merge_pointer": "0/star_sorted_by_coord_bam_bai",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/star_sorted_by_cord.bam.bai",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Log.final.out'",
+                  "merge_pointer": "0/star_log_final_out",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/log_final.out",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Log.out'",
+                  "merge_pointer": "0/star_log_out",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/log.out",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Log.progress.out'",
+                  "merge_pointer": "0/star_log_progress_out",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/log_progress.out",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.SJ.out.tab'",
+                  "merge_pointer": "0/star_sj_out",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/sj_out.tab",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Barcodes.stats'",
+                  "merge_pointer": "0/star_barcode_stats",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/barcodes.stats",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/Features.stats'",
+                  "merge_pointer": "0/star_gene_features_stats",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_features.stats",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/Summary.csv'",
+                  "merge_pointer": "0/star_gene_summary_csv",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_summary.csv",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/UMIperCellSorted.txt'",
+                  "merge_pointer": "0/star_gene_umi_per_cell_sorted",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_umi_per_cell_sorted.txt",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/filtered/features.tsv'",
+                  "merge_pointer": "0/star_gene_filtered_features_tsv",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_filtered_features.tsv",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/filtered/barcodes.tsv'",
+                  "merge_pointer": "0/star_gene_filtered_barcodes",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_filtered_barcodes.tsv",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/filtered/matrix.mtx'",
+                  "merge_pointer": "0/star_gene_filtered_matrix",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_filtered_matrix.mtx",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/raw/features.tsv'",
+                  "merge_pointer": "0/star_gene_raw_features_tsv",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_raw_features.tsv",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/raw/barcodes.tsv'",
+                  "merge_pointer": "0/star_gene_raw_barcodes",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_raw_barcodes.tsv",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                },
+                {
+                  "parse_through": "lambda id: f'{folder or \"\"}star/{id}.Solo.out/Gene/raw/matrix.mtx'",
+                  "merge_pointer": "0/star_gene_raw_matrix",
+                  "gcs_uri_format": "{protocol identifier}/scrnaseq_analysis/{batch id}/{cimac id}/gene_raw_matrix.mtx",
+                  "type_ref": "assays/components/local_file.json#properties/file_path",
+                  "is_artifact": 1
+                }
+              ]
+            },
+            "comments": {
+              "type_ref": "assays/scrnaseq_analysis.json#definitions/entry/properties/comments",
+              "merge_pointer": "0/comments",
+              "allow_empty": true
+            }
+          }
+        }
+      },
+      "Excluded Samples": {
+        "prism_data_object_pointer": "/excluded_samples/-",
+        "data_columns": {
+          "Samples Excluded From Analysis": {
+            "cimac id": {
+              "type_ref": "sample.json#properties/cimac_id",
+              "merge_pointer": "0/cimac_id"
+            },
+            "reason": {
+              "type_ref": "assays/components/excluded_samples.json#items/properties/reason_excluded",
+              "merge_pointer": "0/reason_excluded"
+            }
+          }
+        }
+      }
+    }
+  }
+}

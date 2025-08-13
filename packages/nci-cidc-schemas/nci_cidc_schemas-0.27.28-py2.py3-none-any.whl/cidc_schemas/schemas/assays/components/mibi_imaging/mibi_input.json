@@ -1,0 +1,56 @@
+{
+  "$schema": "metaschema/strict_meta_schema.json#",
+  "$id": "mibi_input",
+  "title": "MIBI Input Files",
+  "type": "object",
+  "description": "MIBI assay input files.",
+  "inheritableBase": true,
+  "properties": {
+    "roi_id": {
+      "description": "Identifier of a region of interest within one mibi slide, e.g. 1, 2, 3 or [123 x 321]",
+      "type": "string"
+    },
+    "dataset": {
+      "description": "Dataset the record belongs to",
+      "type": "string"
+    },
+    "mibi_ome_tiff_file_name": {
+      "type": "string",
+      "description": "A (short) name of the file. Do not include the .ome.tiff extension"
+    },
+    "mibi_ome_tiff_file": {
+      "description": "Image for MIBI in OME TIFF format",
+      "$ref": "artifacts/artifact_ome_tiff.json"
+    },
+    "roi_description": {
+      "description": "A text description of this ROI",
+      "type": "string"
+    },
+    "he_file": {
+      "inheritableBase": true,
+      "mergeStrategy": "objectMerge",
+      "anyOf": [
+        {
+          "$comment": "Path to the H & E image in SVS format.",
+          "$ref": "artifacts/artifact_image.json"
+        },
+        {
+          "$comment": "Path to the H & E image in JPG format.",
+          "$ref": "artifacts/artifact_jpg.json"
+        }
+      ]
+    },
+    "comment": {
+      "description": "A text comment regarding this slide.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "roi_id",
+    "dataset",
+    "mibi_ome_tiff_file_name",
+    "mibi_ome_tiff_file",
+    "roi_description",
+    "he_file"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+    "$schema": "metaschema/strict_meta_schema.json#",
+    "$id": "visium_assay",
+    "title": "Visium Assay",
+    "type": "object",
+    "$comment": "description used in docs/index.html and docs/assays.visium.html",
+    "description": "Visium assay",
+    "additionalProperties": false,
+    "definitions": {
+        "record": {
+            "type": "object",
+            "mergeStrategy": "objectMerge",
+            "description": "A single data record from a Visium assay.",
+            "additionalProperties": false,
+            "required": [
+                "cimac_id",
+                "details"
+            ],
+            "properties": {
+                "cimac_id": {
+                    "description": "Id of an sample within this clinical trial, that this assay record is based upon.",
+                    "$ref": "sample.json#properties/cimac_id"
+                },
+                "details": {
+                    "$ref": "assays/components/visium_input.json"
+                }
+            }
+        }
+    },
+    "properties": {
+        "assay_creator": {
+            "$ref": "assays/components/assay_core.json#properties/assay_creator"
+        },
+        "batch_id": {
+            "description": "Batch identification number. Unique to every upload.",
+            "type": "string"
+        },
+        "azimuth_reference": {
+            "$ref": "assays/components/scrnaseq_preamble.json#properties/azimuth_reference"
+        },
+        "tabula_sapiens_reference": {
+            "$ref": "assays/components/scrnaseq_preamble.json#properties/tabula_sapiens_reference"
+        },
+        "spatial_gene_expression_platform": {
+            "$ref": "assays/components/visium_preamble.json#properties/spatial_gene_expression_platform"
+        },
+        "human_transcriptome_probe_set_version": {
+            "$ref": "assays/components/visium_preamble.json#properties/human_transcriptome_probe_set_version"
+        },
+        "samples_metadata_csv": {"$ref": "artifacts/artifact_csv.json"},
+
+
+        "records": {
+            "type": "array",
+            "description": "A single data record from a visium assay.",
+            "items": {
+                "$ref": "assays/visium_assay.json#definitions/record"
+            },
+            "mergeStrategy": "append"
+        }
+    },
+    "required": [
+        "assay_creator",
+        "batch_id",
+        "samples_metadata_csv",
+        "records"
+    ]
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "metaschema/strict_meta_schema.json#",
+  "$id": "scrnaseq_preamble",
+  "title": "ScRNA Preamble",
+  "description": "Preamble information in an scRNAseq assay",
+  "type": "object",
+  "inheritableBase": true,
+  "properties": {
+    "azimuth_reference": {
+      "description": "Cell type annotation will be performed with this Azimuth reference for all samples in the batch.",
+      "type": "string",
+      "enum": [
+        "adiposeref",
+        "bonemarrowref",
+        "fetusref",
+        "heartref",
+        "humancortexref",
+        "kidneyref",
+        "lungref",
+        "pancreasref",
+        "pbmcref",
+        "tonsilref",
+        "none"
+      ]
+    },
+    "tabula_sapiens_reference": {
+      "description": "Cell type annotation will be performed with this Tabula Sapiens reference for all samples in the batch.",
+      "type": "string",
+      "enum": [
+        "bladder",
+        "blood",
+        "bone marrow",
+        "eye",
+        "fat",
+        "immune",
+        "mammary",
+        "prostrate",
+        "skin",
+        "endothelial",
+        "none"
+      ]
+    },
+    "assay_chemistry_version": {
+      "description": "The specific version of the 10x Genomics single-cell gene expression assay chemistry used to prepare and sequence a sample.",
+      "type": "string",
+      "enum": [
+        "Single Cell 3' v2",
+        "Single Cell 3' v3",
+        "Single Cell 3' v3.1",
+        "Single Cell 3' HT v3.1",
+        "Single Cell 3' v4"
+      ]
+    },
+    "barcode_include_file_version": {
+      "description": "Barcode inclusion file version for the 10x Genomics single-cell gene expression assay. Refer to https://kb.10xgenomics.com/hc/en-us/articles/115004506263-What-is-a-barcode-whitelist for more information. '2' for 737K-august-2016.txt (Single Cell 3' v2), '3' for 3M-february-2018.txt.gz (Single Cell 3' v3, Single Cell 3' v3.1, Single Cell 3' HT v3.1), '4' for 3M-3pgex-may-2023.txt.gz (Single Cell 3' v4)",
+      "type": "string",
+      "enum": ["2","3","4"]
+    },
+
+    "total_barcode_and_umi_length_in_read": {
+      "description": "Should be a a positive integer around 26-28 bp. Equals to the sum of the cell barcode and the unique molecular identifier (UMI) in read 1.",
+      "type": "integer"
+    }
+  }
+}

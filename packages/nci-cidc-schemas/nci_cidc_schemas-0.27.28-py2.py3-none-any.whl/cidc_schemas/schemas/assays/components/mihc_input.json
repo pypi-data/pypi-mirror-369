@@ -1,0 +1,36 @@
+{
+  "$schema": "metaschema/strict_meta_schema.json#",
+  "$id": "mihc_input",
+  "title": "MIHC Input Files",
+  "type": "object",
+  "description": "MIHC assay input files.",
+  "inheritableBase": true,
+  "properties": {
+    "tilemap_file": {
+      "$ref": "artifacts/artifact_ome_tiff.json"
+    },
+    "tilestats_file": {
+      "$ref": "artifacts/artifact_csv.json"
+    },
+    "h5ad_file": {
+      "$ref": "artifacts/artifact_h5ad.json"
+    },
+    "multitiffs_gzip": {
+      "$ref": "artifacts/artifact_gz.json"
+    },
+    "stain_zip": {
+      "$ref": "artifacts/artifact_zip.json"
+    },
+    "geojsons_zip": {
+      "$ref": "artifacts/artifact_zip.json"
+    }
+  },
+  "required": [
+    "tilemap_file",
+    "tilestats_file",
+    "h5ad_file",
+    "multitiffs_gzip",
+    "stain_zip",
+    "geojsons_zip"
+  ]
+}
