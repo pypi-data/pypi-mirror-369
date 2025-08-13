@@ -1,0 +1,82 @@
+Metadata-Version: 2.4
+Name: cbe-verify
+Version: 0.1.0
+Summary: A simple package to verify CBE payment receipts
+Home-page: https://github.com/yohaboy/cbe_verifier
+Author: yohnnes gizaw
+Author-email: yohnnesgizaw777@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.1
+Requires-Dist: pdfplumber>=0.7.4
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# CBE Payment Receipt Verifier
+
+![Python Version](https://img.shields.io/badge/python-3.7%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+A robust Python package for verifying Commercial Bank of Ethiopia (CBE) payment receipts by reference number and account suffix.
+
+## Features
+
+- **Receipt Verification**: Validate CBE payment receipts using transaction references
+- **PDF Parsing**: Extract transaction details from CBE PDF receipts
+- **Error Handling**: Comprehensive error handling with retry mechanism
+- **Multiple Date Formats**: Supports various date formats found in receipts
+- **SSL Configuration**: Configurable SSL verification for secure connections
+
+## Installation
+
+```bash
+pip install cbe-verify
+
+```
+## Usage 
+
+```python
+
+from cbe_verify import CBEVerifier
+
+verifier = CBEVerifier()
+result = verifier.verify("FT12345678", "1234578")  # Reference + last 8 digits
+
+if result["success"]:
+    print(f"Verified payment of {result['amount']} ETB")
+    print(f"Transaction date: {result['date']}")
+else:
+    print(f"Verification failed: {result['error']}")
+
+```
+
+```
+
+
+```
+## Response Format
+
+```bash
+
+{
+    "success": True,
+    "payer": "John Doe",
+    "payer_account": "XXXX1234",
+    "receiver": "ABC Company",
+    "receiver_account": "XXXX5678",
+    "amount": 1500.00,
+    "date": "2023-10-15T14:30:00",
+    "reference": "FT12345678"
+}
+
+```
