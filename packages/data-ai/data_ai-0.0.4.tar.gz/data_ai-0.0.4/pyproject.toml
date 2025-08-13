@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "data-ai"
+version = "0.0.4"
+description = "Chat with your data"
+readme = "README.md"
+authors = [{name = "Jonas Eschmann", email = "jonas.eschmann@gmail.com"}]
+license = {text = "MIT"}
+dependencies = [
+    "numpy",
+    "ipython"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["data_ai"]
+
+[project.scripts]
+data-ai = "data_ai:main"

@@ -1,0 +1,1 @@
+Reads data and drops you into an interactive Python shell to explore it for now. Future: use LLM to generate one/few-liner evaluations/plotting code
