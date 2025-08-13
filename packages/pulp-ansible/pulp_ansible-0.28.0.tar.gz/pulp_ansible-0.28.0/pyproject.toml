@@ -1,0 +1,146 @@
+[build-system]
+requires = [
+    "setuptools >= 40.8.0",
+    "wheel >= 0.29.0",
+]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "pulp-ansible"
+version = "0.28.0"
+description = "Pulp plugin to manage Ansible content, e.g. roles"
+readme = "README.rst"
+authors = [
+  {name="Pulp Ansible Plugin Project Developers", email="pulp-dev@redhat.com"}
+]
+classifiers = [
+  "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+  "Operating System :: POSIX :: Linux",
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: Django",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.11"
+dependencies = [
+  "galaxy_importer>=0.4.27,<0.5",
+  "GitPython>=3.1.24,<3.2",
+  "jsonschema>=4.9,<4.26",
+  "Pillow>=10.3,<11.4",
+  "pulpcore>=3.63.0,<3.100",
+  "PyYAML>=6.0.2,<7.0",
+  "semantic_version>=2.9,<2.11",
+]
+
+[project.urls]
+Homepage = "https://pulpproject.org"
+Documentation = "https://pulpproject.org/pulp_ansible/"
+Repository = "https://github.com/pulp/pulp_ansible"
+"Bug Tracker" = "https://github.com/pulp/pulp_ansible/issues"
+Changelog = "https://pulpproject.org/pulp_ansible/changes/"
+
+[project.entry-points."pulpcore.plugin"]
+pulp_ansible = "pulp_ansible:default_app_config"
+
+[project.entry-points."pytest11"]
+pulp_ansible = "pulp_ansible.pytest_plugin"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.towncrier]
+package = "pulp_ansible"
+filename = "CHANGES.md"
+directory = "CHANGES/"
+title_format = "## {version} ({project_date}) {{: #{version} }}"
+template = "CHANGES/.TEMPLATE.md"
+issue_format = "[#{issue}](https://github.com/pulp/pulp_ansible/issues/{issue})"
+start_string = "[//]: # (towncrier release notes start)\n"
+underlines = ["", "", ""]
+
+[tool.black]
+line-length = 100
+target-version = ["py36", "py37"]
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.venv
+  | _build
+  | build
+  | dist
+  | migrations
+  | docs
+)/
+'''
+
+[tool.check-manifest]
+ignore = [
+    ".bumpversion.cfg",
+    "CHANGES/**",
+    "CONTRIBUTING.rst",
+    "CODEOWNERS",
+    "HISTORY.rst",
+    "dev_requirements.txt",
+    "doc_requirements.txt",
+    "docs/**",
+    "staging_docs/**",
+    "pulp_ansible/tests/assets/**",
+    "template_config.yml",
+    ".travis/**",
+    ".travis.yml",
+    ".pep8speaks.yml",
+    ".ci/**",
+    ".github/**",
+    "lint_requirements.txt",
+    ".flake8",
+]
+
+[tool.bumpversion]
+# This section is managed by the plugin template. Do not edit manually.
+
+current_version = "0.28.0"
+commit = false
+tag = false
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<alpha>0a)?(?P<patch>\\d+)(\\.(?P<release>[a-z]+))?"
+serialize = [
+  "{major}.{minor}.{patch}.{release}",
+  "{major}.{minor}.{patch}",
+  "{major}.{minor}.{alpha}{patch}.{release}",
+  "{major}.{minor}.{alpha}{patch}",
+]
+
+[tool.bumpversion.parts.alpha]
+# This section is managed by the plugin template. Do not edit manually.
+
+# This is sort of a hack. In PEP440 prerelease markers work quite differently.
+# But this fits best with the way we have been doing release versions.
+optional_value = "final"
+values = [
+  "0a",
+  "final",
+]
+independent = true
+
+[tool.bumpversion.parts.release]
+# This section is managed by the plugin template. Do not edit manually.
+
+optional_value = "prod"
+values = [
+  "dev",
+  "prod",
+]
+
+[[tool.bumpversion.files]]
+# This section is managed by the plugin template. Do not edit manually.
+
+filename = "./pulp_ansible/app/__init__.py"
+search = "version = \"{current_version}\""
+replace = "version = \"{new_version}\""
+
+[[tool.bumpversion.files]]
+# This section is managed by the plugin template. Do not edit manually.
+
+filename = "./pyproject.toml"
+search = "version = \"{current_version}\""
+replace = "version = \"{new_version}\""
