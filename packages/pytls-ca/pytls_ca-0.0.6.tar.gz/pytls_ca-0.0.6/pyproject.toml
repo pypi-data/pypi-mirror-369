@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "pytls-ca"
+version = "0.0.6"
+description = "Quickly create self-signed TLS certificates for your local development environment."
+authors = ["Rodney Rodriguez"]
+repository = "https://github.com/rodneyxr/pytls-ca"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+click = "^8.1.7"
+cryptography = "^42.0.2"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+pytls = 'pytls_ca.pytls:cli'
+
+[tool.ruff]
+line-length = 120
