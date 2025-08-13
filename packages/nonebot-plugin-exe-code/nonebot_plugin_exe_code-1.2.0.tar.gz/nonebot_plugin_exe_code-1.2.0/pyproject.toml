@@ -1,0 +1,161 @@
+[project]
+name = "nonebot-plugin-exe-code"
+version = "1.2.0"
+description = "在聊天中执行带有上下文的 Python 代码"
+authors = [{ name = "wyf7685", email = "wyf7685@163.com" }]
+dependencies = [
+  "nonebot2>=2.4.0",
+  "nonebot-plugin-alconna>=0.57.0",
+  "nonebot-plugin-localstore>=0.7.0",
+  "nonebot-plugin-uninfo>=0.7.0",
+  "nonebot-plugin-user>=0.5.0",
+  "nonebot-plugin-waiter>=0.8.0",
+  "tarina>=0.6.1",
+  "anyio>=4.6.2.post1",
+]
+requires-python = ">=3.12,<4.0"
+readme = "README.md"
+license = { text = "MIT" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+pillow = ["Pillow"]
+
+[project.urls]
+homepage = "https://github.com/wyf7685/nonebot-plugin-exe-code"
+repository = "https://github.com/wyf7685/nonebot-plugin-exe-code"
+documentation = "https://github.com/wyf7685/nonebot-plugin-exe-code"
+
+[dependency-groups]
+dev = [
+  "nonebot2[fastapi,httpx,websockets]>=2.4.0",
+  "nonebot-adapter-onebot>=2.4.6",
+  "pre-commit>=4.1.0",
+  "ruff>=0.12.0",
+]
+test = [
+  "nonebot-adapter-console>=0.9.0",
+  "nonebot-adapter-qq>=1.6.0",
+  "nonebot-adapter-satori>=0.13.1",
+  "nonebot-adapter-telegram>=0.1.0b20",
+  "nonebot-plugin-orm[aiosqlite]>=0.7.7",
+  "trio>=0.27.0",
+  "nonebug>=0.4.1,<0.5.0",
+  "pytest-cov>=6.0.0,<7.0.0",
+  "pytest-mock>=3.14.0,<4.0.0",
+  "pytest-xdist>=3.0.2,<4.0.0",
+  "coverage-conditional-plugin>=0.9.0,<0.10.0",
+  "respx>=0.22.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+  "F",     # Pyflakes
+  "W",     # pycodestyle warnings
+  "E",     # pycodestyle errors
+  "UP",    # pyupgrade
+  "RUF",   # Ruff-specific rules
+  "ERA",   # eradicate
+  "FLY",   # flynt
+  "FURB",  # refurb
+  "I",     # isort
+  "N",     # PEP8-naming
+  "PD",    # pandas-vet
+  "PERF",  # Perflint
+  "PGH",   # pygrep-hooks
+  "TRY",   # tryceratops
+  "ASYNC", # flake8-async
+  "ANN",   # flake8-annotations
+  "S",     # flake8-bandit
+  "FBT",   # flake8-boolean-trap
+  "A",     # flake8-builtins
+  "B",     # flake8-bugbear
+  "COM",   # flake8-commas
+  "C4",    # flake8-comprehensions
+  "DTZ",   # flake8-datetimez
+  "T10",   # flake8-debugger
+  "EM",    # flake8-errmsg
+  "FA",    # flake8-future-annotations
+  "ISC",   # flake8-implicit-str-concat
+  "ICN",   # flake8-import-conventions
+  "PIE",   # flake8-pie
+  "T20",   # flake8-print
+  "PYI",   # flake8-pyi
+  "PT",    # flake8-pytest-style
+  "Q",     # flake8-quotes
+  "RSE",   # flake8-raise
+  "RET",   # flake8-return
+  "SLF",   # flake8-self
+  "SIM",   # flake8-simplify
+  "SLOT",  # flake8-slots
+  "TID",   # flake8-tidy-imports
+  "ARG",   # flake8-unused-arguments
+  "PTH",   # flake8-use-pathlib
+  "YTT",   # flake8-2020
+]
+ignore = [
+  "C408",   # unnecessary-collection-call
+  "E402",   # module-import-not-at-top-of-file
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+  "TRY003", # raise-vanilla-args
+  "EM102",  # f-string-in-exception
+  "COM812", # missing-trailing-comma
+  "ERA001", # commented-out-code
+  "EM101",  # raw-string-in-exception
+  "TID252", # relative-imports
+  "ANN401", # any-type
+  "N811",   # constant-imported-as-non-constant
+  "S101",   # assert
+  "ISC001", # single-line-implicit-string-concatenation
+]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.ruff.lint.flake8-builtins]
+builtins-allowed-modules = ["code"]
+builtins-ignorelist = ["id", "dir"]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.isort]
+known-first-party = ["nonebot_plugin_exe_code", "tests/*"]
+extra-standard-library = ["typing_extensions"]
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.pyright]
+pythonVersion = "3.12"
+pythonPlatform = "All"
+typeCheckingMode = "standard"
+reportShadowedImports = false
+disableBytesTypePromotions = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=nonebot_plugin_exe_code --cov-report=term-missing -n auto"
+filterwarnings = ["ignore::DeprecationWarning", "ignore::RuntimeWarning"]
+
+# https://github.com/he0119/nonebot-plugin-wordcloud/blob/5fa48dc5/pyproject.toml#L104-L117
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "@overload",
+  "except ImportError:",
+]
+omit = ["*/compat.py", "*/migrations/*"]
