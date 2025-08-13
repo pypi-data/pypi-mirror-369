@@ -1,0 +1,41 @@
+Metadata-Version: 2.4
+Name: pytractions
+Version: 0.0.10
+Summary: Pytractions is python framework for modular programming.
+Author-email: Jindrich Luza <jluza@redhat.com>
+License: LGPL-3.0-only
+Project-URL: Homepage, https://github.com/midnightercz/pytractions
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyyaml
+Requires-Dist: lark
+Requires-Dist: jsonschema
+Requires-Dist: typing_extensions
+Requires-Dist: protobuf<6.0.0
+Requires-Dist: ray
+Dynamic: license-file
+
+Pytractions
+===========
+
+Pytractions is python framework for modular pipeline programming
+
+Getting started
+---------------
+
+Pytractions contains documentation packaged in the container. To build the container locally simply run
+```
+tox -e build
+```
+Then you can run the container like:
+```
+podman run pytractions:latest web
+```
+If you want to explore documentation without running the container, you can install pytractions like
+```
+pip install -r requirements.txt
+pip install .
+````
+and run:
+`python -m pytractions.cli web`
