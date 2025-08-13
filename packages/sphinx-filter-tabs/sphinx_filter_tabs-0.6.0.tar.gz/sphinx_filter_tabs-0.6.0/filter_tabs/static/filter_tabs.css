@@ -1,0 +1,95 @@
+/* Sphinx Filter Tabs -- Static Stylesheet */
+/* This file provides the structural and base theme styles for the component.
+   The core filtering logic (showing the active panel) is handled by a small,
+   dynamically generated <style> block created by extension.py. */
+
+/* Main container for the tab component */
+.sft-container {
+    border: 1px solid #e0e0e0;
+    /* THEME: The border-radius is controlled by a CSS variable from conf.py. */
+    border-radius: var(--sft-border-radius, 8px);
+    overflow: hidden;
+    margin: 1.5em 0;
+}
+
+/* The <fieldset> provides semantic grouping for accessibility. */
+.sft-fieldset { border: none; padding: 0; margin: 0; }
+
+/* The <legend> is visually hidden but essential for screen reader users. */
+.sft-legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* The <input type="radio"> buttons are the functional core, but are not visible. */
+.sft-tab-bar > input[type="radio"] {
+    display: none;
+}
+
+/* The tab bar containing the clickable labels. */
+.sft-tab-bar { 
+    display: flex; 
+    flex-wrap: wrap; 
+    /* THEME: The background color is controlled by a CSS variable. */
+    background-color: var(--sft-tab-background, #f0f0f0); 
+    border-bottom: 1px solid #e0e0e0; 
+    padding: 0 10px; 
+}
+.sft-tab-bar > label { 
+    padding: 12px 18px; 
+    cursor: pointer; 
+    transition: border-color 0.2s ease-in-out, color 0.2s ease-in-out; 
+    border-bottom: 3px solid transparent; 
+    color: #555; 
+    font-weight: 500; 
+    /* THEME: The font size is controlled by a CSS variable. */
+    font-size: var(--sft-tab-font-size, 1em); 
+    line-height: 1.5; 
+}
+
+/* THEME: The active tab label is highlighted using a CSS variable for the color.
+   The adjacent sibling selector (+) is robust and efficient. */
+.sft-tab-bar > input[type="radio"]:checked + label {
+    border-bottom-color: var(--sft-tab-highlight-color, #007bff);
+    color: #000;
+}
+
+/* The container for all content panels. */
+.sft-content { padding: 20px; }
+
+/* By default, hide all tab-specific panels. */
+.sft-container .sft-panel {
+    display: none;
+}
+/* The "General" panel, however, is always visible. */
+.sft-container .sft-panel[data-filter="General"] {
+    display: block;
+}
+/* The dynamically generated <style> block handles showing the one active panel. */
+
+
+/* Styles for collapsible sections, matching the golden record. */
+.collapsible-section {
+    border: 1px solid #e0e0e0;
+    /* THEME: The accent color is controlled by a CSS variable. */
+    border-left: 4px solid var(--sft-collapsible-accent-color, #17a2b8);
+    border-radius: 4px;
+    margin-top: 1em;
+}
+.collapsible-section summary {
+    display: block;
+    cursor: pointer;
+    padding: 12px;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    outline: none;
+}
+/* Hide the default disclosure triangle in browsers like Chrome/Safari. */
+.collapsible-section summary::-webkit-details-marker {
+    display: none;
+}
+/* Hide the default disclosure triangle in browsers like Firefox. */
+.collapsible-section summary {
+    list-style: none;
+}
+.collapsible-section[open] > summary { border-bottom: 1px solid #e0e0e0; }
+.custom-arrow { display: inline-block; width: 1em; margin-right: 8px; transition: transform 0.2s; }
+.collapsible-section[open] > summary .custom-arrow { transform: rotate(90deg); }
+.collapsible-content { padding: 15px; }
