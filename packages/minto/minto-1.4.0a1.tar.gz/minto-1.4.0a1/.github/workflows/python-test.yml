@@ -1,0 +1,62 @@
+name: Python Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  Python-Test:
+    if: ${{ !contains(github.head_ref, 'dependabot/github_actions') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11']
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        shell: bash
+        run:  |
+          set -eux
+          uv sync --all-extras
+      - name: Test
+        shell: bash
+        run: |
+          set -eux
+          uv run pytest
+      - name:  Generate Coverage File
+        shell: bash
+        if: always()
+        run: |
+          set -eux
+          uv run coverage xml
+          uv run coverage json
+          uv run coverage lcov
+      - uses:              codecov/codecov-action@v4
+        if: always()
+        continue-on-error: true
+        env:
+          OS: ${{ matrix.os }}
+          PYTHON: ${{ matrix.python-version }}
+        with:
+          token:            ${{ secrets.CODECOV_TOKEN }}
+          env_vars:         OS,PYTHON
+          files:            coverage.xml, coverage.json, coverage.lcov
+          fail_ci_if_error: false
+          verbose:          true

@@ -1,0 +1,60 @@
+name: Upload Files Public Repository
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+concurrency:
+  group: "publish-public-repo"
+  cancel-in-progress: false
+
+jobs:
+  prepere:
+    name: Prepere
+    runs-on: ubuntu-latest
+    env: 
+      TZ: "Asia/Tokyo" 
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+         name: prepare
+         retention-days: 1
+         compression-level: 0
+         path: |
+           **/*
+           !**/.*  # 隠しファイルを除外
+           !.* # 隠しファイルを除外
+           !.coveragerc
+           !.gitignore
+           !.nojekyll
+           !.github
+           !.git
+
+  upload-public-repositry:
+    name: Upload Files To Public Repositry
+    runs-on: ubuntu-latest
+    needs: prepere
+    environment:
+      name: publish-public-repo
+      url: https://github.com/Jij-Inc/MINTO-Public
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: prepare
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.MINTO_PUBLIC_DEPLOY_KEY }}
+          external_repository: Jij-Inc/MINTO-Public
+          publish_branch: main
+          publish_dir: ./
+          destination_dir: ./
+          user_name: 'GitHub Action'
+          user_email: 'action@github.com'
+          enable_jekyll: false
+          disable_nojekyll: true
+          allow_empty_commit: true
+          keep_files: false
+          force_orphan: true
+  

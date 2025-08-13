@@ -1,0 +1,118 @@
+name: Build Documentation
+
+on:
+  push:
+    branches:
+      - main
+      - hotfix/run_method
+  pull_request:
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        lang: [ja, en]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: |
+          uv sync --dev
+          uv add --dev jupyter-book sphinxcontrib-mermaid
+
+      - name: Build Jupyter Book
+        run: |
+          cd docs/${{ matrix.lang }}
+          uv run jupyter-book build .
+          ERROR_LOGS=$(find _build -type f -name "*.err.log" 2>/dev/null || true)
+          if [ -n "$ERROR_LOGS" ]; then 
+            while IFS= read -r log; do 
+              echo "[ERROR LOG] $log" && cat "$log"
+            done <<< "$ERROR_LOGS" 
+            exit 1
+          fi
+
+      - name: Upload HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: doc-jupyter-book-${{ matrix.lang }}
+          path: ./docs/${{ matrix.lang }}/_build/html
+          retention-days: 30
+
+  package-docs:
+    needs: build-docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare redirect structure
+        run: |
+          mkdir -p doc
+          cp -r docs/redirect/* doc/
+
+      - name: Download HTML of JupyterBook (ja)
+        uses: actions/download-artifact@v4
+        with:
+          name: doc-jupyter-book-ja
+          path: ./doc/ja
+
+      - name: Download HTML of JupyterBook (en)
+        uses: actions/download-artifact@v4
+        with:
+          name: doc-jupyter-book-en
+          path: ./doc/en
+
+      - name: Upload combined documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: doc
+          path: doc
+          retention-days: 30
+
+  deploy:
+    concurrency:
+      group: "pages-deploy"
+      cancel-in-progress: true
+    if: github.ref == 'refs/heads/main'
+    needs: package-docs
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download HTML
+        uses: actions/download-artifact@v4
+        with:
+          name: doc
+          path: .
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
