@@ -1,0 +1,61 @@
+{
+  "name": "basic-peptide-search",
+  "version": "1.0.0",
+  "display_name": "Basic Peptide Search",
+  "description": "Simple peptide search module demonstrating basic API usage",
+  "author": "HLA-Compass Platform",
+  "template_type": "no-ui",
+  "compute_type": "lambda",
+  "category": "analysis",
+  "tags": ["peptide", "search", "basic", "template"],
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "peptide_sequences": {
+        "type": "array",
+        "description": "List of peptide sequences to search for",
+        "example": ["SIINFEKL", "GILGFVFTL"],
+        "minItems": 1,
+        "maxItems": 100
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Maximum number of results per sequence",
+        "default": 10,
+        "minimum": 1,
+        "maximum": 100
+      }
+    },
+    "required": ["peptide_sequences"]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": ["success", "error"]
+      },
+      "results": {
+        "type": "array",
+        "description": "Search results for each input sequence"
+      },
+      "summary": {
+        "type": "object",
+        "description": "Summary statistics of the search"
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Execution metadata"
+      }
+    }
+  },
+  "requirements": {
+    "memory": 256,
+    "timeout": 30,
+    "permissions": {
+      "database": ["read"],
+      "storage": false,
+      "network": []
+    }
+  }
+}
