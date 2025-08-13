@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myxagent"
+version = "0.1.11"
+description = "Multi-Modal AI Agent System"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "ZJun", email = "zhangjun310@live.com"}
+]
+keywords = ["ai", "agent", "openai", "chatbot", "async"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "httpx",
+    "pydantic",
+    "streamlit",
+    "redis",
+    "boto3",
+    "openai",
+    "langfuse", 
+    "fastmcp",
+    "python-dotenv",
+    "pyyaml",
+    "tenacity",
+]
+
+[project.scripts]
+xagent-server = "xagent.core.server:main"
+xagent-cli = "xagent.core.cli:main"
+xagent-web = "xagent.frontend.launcher:main"
+
+[project.urls]
+Repository = "https://github.com/ZJCODE/xagent"
+
+[tool.setuptools]
+packages = {find = {include = ["xagent*", "toolkit*"], exclude = ["examples*", "tests*"]}}
