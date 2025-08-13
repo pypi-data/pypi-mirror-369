@@ -1,0 +1,86 @@
+### 项目
+- 名称： mcp_searxng_python
+__author__ = "ferock"
+__email__ = "ferock@gmail.com"
+
+- 参考项目：https://github.com/ferocknew/mcp-searxng# （这个项目是 node js 实现）
+- 区别：
+  - 用 python 实现
+  - 支持代理
+
+- 当前版本：0.1.2
+
+
+### 功能
+
+- 网络搜索：一般查询、新闻、文章，带翻页。 
+- 翻页：控制检索哪一页的结果。 
+- 时间过滤：按时间范围（日、月、年）过滤结果。 
+- 语言选择：按首选语言过滤结果。 
+- 安全搜索：控制搜索结果的内容过滤级别。
+- 代理支持（暂时支持http代理，socks5代理未测试）
+
+#### tools
+
+- searxng_web_search
+
+访问 searxng
+Inputs:
+* query (string): The search query. This string is passed to external search services.
+* pageno (number, optional): Search page number, starts at 1 (default 1)
+* time_range (string, optional): Filter results by time range - one of: "day", "month", "year" (default: none)
+* language (string, optional): Language code for results (e.g., "en", "fr", "de") or "all" (default: "all")
+* safesearch (number, optional): Safe search filter level (0: None, 1: Moderate, 2: Strict) (default: instance setting)
+
+
+- web_url_read
+
+Read and convert the content from a URL to markdown
+Inputs:
+* url (string): The URL to fetch and process
+
+
+### 技术参数
+- python 3.11
+- 框架使用 FastMCP
+- dist 为打包输出目录
+- python 工具：uv
+
+#### 运行参数
+- SEARXNG_URL :  searxng 服务器地址
+- PROXY_TYPE : 代理类型（代理开关，不填写时候，不启用代理，填写时候，启用代理。http 为 http 代理，socks5 为 socks5 代理）
+- PROXY_HOST : 代理地址，socks5 代理填写 127.0.0.1
+- PROXY_PORT : 代理端口， socks5 代理填写 1080
+- PROXY_URL : 代理地址， http 代理填写 http://127.0.0.1:10809（暂时不支持代理登录，优先考虑本地代理）
+
+#### 测试
+- SEARXNG_URL=
+- PROXY_TYPE=HTTP
+- PROXY_URL=http://127.0.0.1:7892
+
+### 使用
+
+```bash
+uvx  --from mcp-searxng-python mcp_searxng_python --help
+
+```
+
+```json
+{
+  "searxng": {
+    "command": "uvx",
+    "args": [
+      "--from",
+      "mcp-searxng-python",
+      "mcp_searxng_python",
+      "stdio"
+    ],
+    "env": {
+      "SEARXNG_URL": "",
+      "PROXY_TYPE": "HTTP",
+      "PROXY_URL": "http://127.0.0.1:7892"
+    }
+  }
+}
+```
+
