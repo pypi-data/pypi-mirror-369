@@ -1,0 +1,21 @@
+#
+# Example DICOM nodes file. Only used as fall back if none defined elsewhere
+# The fields are:
+# Name  AET/EndPoint  Host  Port  Facilities Context
+# Fields are delimited with whitespace so no fields may themselves contain whitespace
+# The facility codes are F: C-FIND, G: C-GET, W: DICOMweb, S: use https for DICOMweb
+# (X: changes the query behaviour slightly and would normnally also be included when F is specified)
+# For a server using the DICOM protocol AET/Endpoint is the Dicom destiation AET
+# but for a node using the DICOMweb protocol it is the api endpoint.
+# The (optional) Context field is used for the web credentials in DICOMweb 
+#
+
+# Example Public nodes
+DicomSvr DICOMSvr www.dicomserver.co.uk 11112 FGX
+Orthanc dicom-web demo.orthanc-server.com 80 W orthanc:orthanc
+
+# Example internal nodes at University Hospitals Bristol only
+PHYSICSQA orthanc-physicsqa/dicom-web rt-dicom-01.ubht.nhs.uk 443 WS api-physicsqa:XXXXXXXXX
+MRIQA orthanc-mriqa/dicom-web rt-dicom-01.ubht.nhs.uk 443 WS api-mriqa:XXXXXXXXX
+BIRCHQA  dicom-web 192.168.23.223 80 W orthanc:XXXXXXXX
+
