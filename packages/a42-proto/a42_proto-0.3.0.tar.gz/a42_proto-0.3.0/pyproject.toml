@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "a42_proto"
+version = "0.3.0"
+description = "Protobuf Python bindings for A42 sensor data"
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "MIT" }
+authors = [
+  { name = "Alexander Baumann", email = "alexander.baumann@hs-esslingen.de" }
+]
+urls = { Homepage = "https://github.com/HSE-VSV/DataReaderA42" }
+dependencies = [
+  "protobuf",
+  "numpy",
+  "betterproto"
+]
+
+[project.optional-dependencies]
+dev = []
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["examples", "scripts.*"]

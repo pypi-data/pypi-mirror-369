@@ -1,0 +1,58 @@
+# 📦 A42 Protobuf Bindings (`a42_proto`)
+
+Dieses Python-Paket enthält die **Protobuf-Bindings für Sensordaten im A42-Format**. Es erlaubt das einfache Einlesen und Verarbeiten von LiDAR-Scans und zugehörigen Objektinformationen.
+
+---
+
+## 🔽 Datendownload
+
+👉 [KIT Sync & Share Download](https://bwsyncandshare.kit.edu/s/6pLYbjB9Etxe3gY)
+
+---
+
+## 📥 Installation
+
+```bash
+pip install a42_proto
+```
+
+---
+
+## 🧪 Beispielskripte
+
+- [`analyze_proto.py`](https://github.com/HSE-VSV/DataReaderA42/blob/581dea222b6871f6ef4e66ad9e998c3d5a60af08/scripts/analyze_proto.py) – aggregierte Auswertung über Frames, Scans, Punkte, Objekte  
+- [`visualize_pointcloud.py`](https://github.com/HSE-VSV/DataReaderA42/blob/581dea222b6871f6ef4e66ad9e998c3d5a60af08/scripts/visualize_pointcloud.py) – zeigt eine Punktwolke in Open3D
+
+---
+
+## 📄 Datenstruktur
+
+Die `.pb`-Dateien enthalten serialisierte `Frame`-Nachrichten:
+
+- `Frame`  
+  enthält:  
+  - `frame_timestamp_ns`: globaler Zeitstempel  
+  - `lidars`: Liste von `LidarScan`
+
+- `LidarScan`  
+  enthält:  
+  - `laser_name`: Sensor-ID (enum)  
+  - `scan_timestamp_ns`: Zeitstempel des Scans  
+  - `pointcloud.points`: Liste von 3D-Punkten (`LidarPoint`)  
+  - `object_list.objects`: erkannte Objekte (`ObjectBBox`)  
+  - `calibration`: `SensorCalibration` mit extrinsischer Pose
+
+- `SensorCalibration`  
+  enthält:  
+  - `sensor_name`: Klartextname  
+  - `extrinsic.matrix`: 4×4-Transform (row-major, Länge 16)  
+  - optionale Felder: FOV, Winkelauflösung, Scan-Modus
+
+- `LidarPoint`  
+  Felder: `x`, `y`, `z`, `intensity`, `timestamp_offset_ns`
+
+- `ObjectBBox`  
+  Felder:  
+  - `position.x/y/z` (Mittelpunkt der Box)  
+  - `dimension.x/y/z` (Länge, Breite, Höhe)  
+  - `pointcloud.points` (Punkte innerhalb der Box)
