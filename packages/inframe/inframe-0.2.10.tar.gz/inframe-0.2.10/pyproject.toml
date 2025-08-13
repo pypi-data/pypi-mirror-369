@@ -1,0 +1,37 @@
+[build-system]
+requires = [ "setuptools>=61.0", "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inframe"
+version = "0.2.10"
+description = "Screen Context Recording and Querying SDK"
+readme = "README.md"
+classifiers = [ "Development Status :: 3 - Alpha", "Intended Audience :: Developers", "Operating System :: MacOS :: MacOS X", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3.8", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11",]
+keywords = [ "screen recording", "context", "AI", "transcription", "video processing",]
+requires-python = ">=3.8"
+dependencies = [ "mss>=9.0.0", "numpy>=1.21.0,<3.0.0", "httpx>=0.24.0", "pyobjc-core>=9.0; platform_system == 'Darwin'", "pyobjc-framework-Cocoa>=9.0; platform_system == 'Darwin'", "pyobjc-framework-AVFoundation>=9.0; platform_system == 'Darwin'", "pyobjc-framework-Quartz>=9.0; platform_system == 'Darwin'", "pyobjc-framework-ScreenCaptureKit>=9.0; platform_system == 'Darwin'",]
+[[project.authors]]
+name = "Inframe"
+email = "bendgeist99@gmail.com"
+
+[project.license]
+text = "Proprietary"
+
+[project.optional-dependencies]
+dev = [ "pytest>=6.0", "pytest-asyncio>=0.21.0", "black>=22.0", "flake8>=4.0", "python-dotenv>=1.0.0", "PyJWT[crypto]", "build", "wheel", "setuptools>=61.0", "toml", "Cython>=3.0.0",]
+deploy = [ "modal-client", "fastapi[standard]", "weaviate-client>=3.26.7,<4.0.0", "opencv-python-headless", "pillow", "torch", "torchvision", "transformers", "accelerate", "pydantic", "httpx>=0.24.0",]
+gpu = [ "bitsandbytes>=0.43.1",]
+ml = [ "torch>=1.11.0", "transformers>=4.20.0",]
+
+[project.urls]
+Source = "https://github.com/BenDGeist/inframe-public"
+Documentation = "https://github.com/BenDGeist/inframe-public"
+
+[tool.setuptools.package-data]
+inframe = [ "_src/*.so",]
+
+[tool.setuptools.packages.find]
+where = [ ".",]
+include = [ "inframe*",]
+exclude = [ "tests*", "src*",]
