@@ -1,0 +1,192 @@
+import httpx
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+from uuid import UUID
+from Crypto.PublicKey.RSA import RsaKey
+from httpx import Response
+from pydantic import ConfigDict, Field
+from redis.asyncio.client import Redis
+from typing import AsyncGenerator, Generator, Optional
+from maleo.soma.dtos.configurations.cache.redis import RedisCacheNamespaces
+from maleo.soma.dtos.configurations.client.maleo import MaleoClientConfigurationDTO
+from maleo.soma.enums.environment import Environment
+from maleo.soma.exceptions import from_resource_http_request
+from maleo.soma.managers.client.base import (
+    ClientManager,
+    # ClientHTTPControllerManager,
+    # ClientControllerManagers,
+    # ClientHTTPController,
+    # ClientServiceControllers,
+    ClientService,
+    # ClientControllers,
+)
+from maleo.soma.managers.credential import CredentialManager
+from maleo.soma.schemas.authentication import Authentication
+from maleo.soma.schemas.operation.context import (
+    OperationContextSchema,
+    OperationOriginSchema,
+)
+from maleo.soma.schemas.operation.resource.action import AllResourceOperationAction
+from maleo.soma.schemas.operation.timestamp import OperationTimestamp
+from maleo.soma.schemas.request import RequestContext
+from maleo.soma.schemas.resource import Resource
+from maleo.soma.schemas.service import ServiceContext
+from maleo.soma.utils.logging import ClientLogger, SimpleConfig
+
+
+class BearerAuth(httpx.Auth):
+    def __init__(self, token: str) -> None:
+        self._auth_header = self._build_auth_header(token)
+
+    def auth_flow(
+        self, request: httpx.Request
+    ) -> Generator[httpx.Request, httpx.Response, None]:
+        request.headers["Authorization"] = self._auth_header
+        yield request
+
+    def _build_auth_header(self, token: str) -> str:
+        return f"Bearer {token}"
+
+
+# class MaleoClientHTTPController(ClientHTTPController):
+#     def __init__(
+#         self,
+#         manager: ClientHTTPControllerManager,
+#         credential_manager: CredentialManager,
+#         private_key: RsaKey,
+#     ):
+#         super().__init__(manager)
+#         self._credential_manager = credential_manager
+#         self._private_key = private_key
+
+
+# class MaleoClientServiceControllers(ClientServiceControllers):
+#     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+#     http: MaleoClientHTTPController = Field(  # type: ignore
+#         ..., description="Maleo's HTTP Client Controller"
+#     )
+
+
+class MaleoClientService(ClientService):
+    def __init__(
+        self,
+        environment: Environment,
+        key: str,
+        service_context: ServiceContext,
+        operation_origin: OperationOriginSchema,
+        logger: ClientLogger,
+        redis: Redis,
+        redis_namespaces: RedisCacheNamespaces,
+    ):
+        super().__init__(service_context, operation_origin, logger)
+        self._environment = environment
+        self._key = key
+        self._redis = redis
+        self._redis_namespaces = redis_namespaces
+
+    def _raise_resource_http_request_error(
+        self,
+        response: Response,
+        operation_id: UUID,
+        operation_context: OperationContextSchema,
+        executed_at: datetime,
+        operation_action: AllResourceOperationAction,
+        request_context: Optional[RequestContext],
+        authentication: Optional[Authentication],
+        resource: Resource,
+    ):
+        """Handle HTTP error response and raise appropriate exception"""
+
+        completed_at = datetime.now(tz=timezone.utc)
+        timestamp = OperationTimestamp(
+            executed_at=executed_at,
+            completed_at=completed_at,
+            duration=(completed_at - executed_at).total_seconds(),
+        )
+
+        error = from_resource_http_request(
+            status_code=response.status_code,
+            service_context=self._service_context,
+            operation_id=operation_id,
+            operation_context=operation_context,
+            operation_timestamp=timestamp,
+            operation_action=operation_action,
+            request_context=request_context,
+            authentication=authentication,
+            resource=resource,
+            logger=self._logger,
+        )
+        raise error
+
+
+class MaleoClientManager(ClientManager):
+    def __init__(
+        self,
+        configurations: MaleoClientConfigurationDTO,
+        log_config: SimpleConfig,
+        credential_manager: CredentialManager,
+        private_key: RsaKey,
+        redis: Redis,
+        redis_namespaces: RedisCacheNamespaces,
+        service_context: Optional[ServiceContext] = None,
+    ):
+        super().__init__(
+            configurations.key,
+            configurations.name,
+            log_config,
+            service_context,
+        )
+        self._environment = configurations.environment
+        if (
+            self._operation_origin.details is not None
+            and "identifier" in self._operation_origin.details.keys()
+            and isinstance(self._operation_origin.details["identifier"], dict)
+        ):
+            self._operation_origin.details["identifier"][
+                "environment"
+            ] = self._environment
+        self._url = configurations.url
+        self._http_client = httpx.AsyncClient()
+        self._credential_manager = credential_manager
+        self._private_key = private_key
+        self._redis = redis
+        self._redis_namespaces = redis_namespaces
+
+    async def _http_client_handler(self) -> AsyncGenerator[httpx.AsyncClient, None]:
+        """Reusable generator for client handling."""
+        if self._http_client is None or (
+            self._http_client is not None and self._http_client.is_closed
+        ):
+            self._http_client = httpx.AsyncClient()
+        yield self._http_client
+
+    async def inject_http_client(self) -> AsyncGenerator[httpx.AsyncClient, None]:
+        return self._http_client_handler()
+
+    @asynccontextmanager
+    async def get_http_client(self) -> AsyncGenerator[httpx.AsyncClient, None]:
+        """
+        Async context manager for manual HTTP client handling.
+        Supports `async with HTTPClientManager.get() as client:`
+        """
+        async for client in self._http_client_handler():
+            yield client
+
+    @property
+    def environment(self) -> Environment:
+        return self._environment
+
+    # def _initialize_controllers(self) -> None:
+    #     # * Initialize managers
+    #     http_controller_manager = ClientHTTPControllerManager(url=self._url)
+    #     self._controller_managers = ClientControllerManagers(
+    #         http=http_controller_manager
+    #     )
+    #     # * Initialize controllers
+    #     #! This initialied an empty controllers. Extend this function in the actual class to initialize all controllers.
+    #     self._controllers = ClientControllers()
+
+    # @property
+    # def controllers(self) -> ClientControllers:
+    #     return self._controllers
