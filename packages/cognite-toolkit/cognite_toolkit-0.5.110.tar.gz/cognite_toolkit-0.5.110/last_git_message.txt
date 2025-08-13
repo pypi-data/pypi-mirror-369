@@ -1,0 +1,28 @@
+[CDF-25435] 🛑 Stop-gap solution solution to function queuing problem (#1822)
+
+# Description
+
+This is a stop-gap solution to avoid hammering the function API when the
+queue on the server side is full. The issue with the solution is that it
+uses private methods in the Cognite-SDK. We will be able to implement a
+better solution once the #1737 along with a few PRs stacked on this is
+implemented. I have captured the fixing of this in the task
+https://cognitedata.atlassian.net/browse/CDF-25485
+
+
+## Changelog
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## cdf
+
+### Fixed
+
+- When deploying functions, the Toolkit now accounts retrying on 429
+responses.
+
+## templates
+
+No changes.
