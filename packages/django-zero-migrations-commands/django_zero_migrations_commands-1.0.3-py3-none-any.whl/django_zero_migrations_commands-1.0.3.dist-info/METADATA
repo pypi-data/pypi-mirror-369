@@ -1,0 +1,57 @@
+Metadata-Version: 2.4
+Name: django-zero-migrations-commands
+Version: 1.0.3
+Summary: Management commands for creating and applying zero migrations.
+Project-URL: Homepage, https://gitlab.com/software-design-public/django-zero-migrations-commands
+Project-URL: Issues, https://gitlab.com/software-design-public/django-zero-migrations-commands/-/issues
+Author-email: Julian Bürklin <jb@software-design.de>
+License-File: LICENSE
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# django-zero-migrations-commands
+
+Provides a `zeromigrations` management-command that creates and applies zero migrations
+## Quick start
+1. Install with `pip install django-zero-migrations-commands`
+2. Add `"django_zero_migrations_commands"` to your `INSTALLED_APPS` setting like this:
+    ```python
+    INSTALLED_APPS = [
+        # ...
+        "django_zero_migrations_commands",
+    ]
+    ```
+3. (Optional) Change the settings described in the next section in your `settings.py`
+4. Create zero migrations using `python manage.py zeromigrations create`
+5. Apply them on other systems using `python manage.py zeromigrations apply`
+
+## Available settings
+```python
+ZERO_MIGRATIONS_APPS: Optional[list[str]] = None
+"""The apps to reset migrations for. default: `None`.
+Will reset migrations for all local apps if `None`."""
+
+ZERO_MIGRATIONS_ALLOW_CREATE_DEBUG_FALSE: bool = False
+"""Whether the create action can be run in `DEBUG = False` mode. default: `False`"""
+
+ZERO_MIGRATIONS_CONFIRM_CREATE_DEBUG_FALSE: bool = False
+"""Whether to ask for confirmation before running the create action in `DEBUG = False` mode.
+default: `False`"""
+
+ZERO_MIGRATIONS_ALLOW_APPLY_DEBUG_FALSE: bool = True
+"""Whether the apply action can be run in `DEBUG = False` mode. default: `True`"""
+
+ZERO_MIGRATIONS_CONFIRM_APPLY_DEBUG_FALSE: bool = True
+"""Whether to ask for confirmation before running the apply action in `DEBUG = False` mode.
+default: `True`"""
+
+ZERO_MIGRATIONS_BEFORE_CREATE_HOOK: Optional[Callable[[], None]] = None
+"""The hook to run before creating new migrations. default: `None`."""
+```
+
+## What it does
+- `create` removes the migrations of your apps and replaces them by a new initial migration.
+- `apply` resets the migration history after creating or receiving the new migrations by other means (i.e. version control)
