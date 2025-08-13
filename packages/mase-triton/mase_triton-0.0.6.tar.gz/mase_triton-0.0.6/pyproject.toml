@@ -1,0 +1,52 @@
+[build-system]
+    build-backend="hatchling.build"
+    requires=["hatchling>=1.27", "versioningit"]
+
+[project]
+    name="mase-triton"
+    description="Triton kernels for MASE"
+    authors=[{ name="Cheng Zhang", email="chengzhang98@outlook.com" }]
+    maintainers=[{ name="Cheng Zhang", email="chengzhang98@outlook.com" }]
+    requires-python=">=3.11"
+    readme="README.md"
+    license="Apache-2.0"
+    keywords=["triton", "mase", "deep-learning"]
+    dynamic=["version"]
+    dependencies=["numpy", "triton>=2.6.0", "colorlog>=6.9.0", "torch>=2.6.0"]
+    urls.Repository="https://github.com/DeepWok/mase-triton.git"
+
+[dependency-groups]
+    dev=[
+        { include-group="core" },
+        { include-group="test" },
+        { include-group="lint" },
+        { include-group="debug" },
+        { include-group="beautify" },
+        { include-group="publish" },
+    ]
+    core=["numpy", "triton>=2.6.0", "torch>=2.6.0"]
+    test=["pytest"]
+    lint=["ruff"]
+    debug=["ipdb", "ipython"]
+    beautify=["tabulate", "tqdm", "colorlog>=6.9.0"]
+    publish=["versioningit"]
+
+[tool.pytest.ini_options]
+    minversion="6.0"
+    testpaths=["test"]
+    norecursedirs=["test/deprecated"]
+
+[tool.hatch]
+    build.dev-mode-dirs=["src"]
+    build.targets.sdist.include=["/src", "/test"]
+
+    [tool.hatch.version]
+        source="versioningit"
+
+[tool.versioningit.write]
+    file="src/mase_triton/VERSION"
+
+[tool.versioningit.format]
+    distance="{base_version}.post{distance}+{vcs}{rev}"
+    dirty="{base_version}+d{build_date:%Y%m%d}"
+    distance-dirty="{base_version}.post{distance}+{vcs}{rev}.d{build_date:%Y%m%d}"
