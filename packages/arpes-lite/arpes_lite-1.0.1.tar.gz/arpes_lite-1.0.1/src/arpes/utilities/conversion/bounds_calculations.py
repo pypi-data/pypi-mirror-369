@@ -1,0 +1,256 @@
+"""Calculates momentum bounds from the angular coordinates.
+
+Mostly these are used as common helper routines to the coordinate conversion code,
+which is responsible for actually outputing the desired bounds.
+"""
+
+import numpy as np
+
+from arpes.constants import K_INV_ANGSTROM
+from arpes.typing import DataType
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import xarray as xr
+
+__all__ = (
+    "calculate_kp_kz_bounds",
+    "calculate_kx_ky_bounds",
+    "calculate_kp_bounds",
+    "full_angles_to_k",
+    "full_angles_to_k_approx",
+)
+
+
+def full_angles_to_k(
+    kinetic_energy, phi, psi, alpha, beta, theta, chi, inner_potential
+):
+    """Converts from the full set of standard PyARPES angles to momentum.
+
+    More details on angle to momentum conversion can be found at
+    `the momentum conversion notes <https://arpes.readthedocs.io/momentum-conversion>`_.
+
+    Args:
+        kinetic_energy ([float]): [kinetic energy]
+        phi ([float]): [angle along analyzer]
+        psi ([float]): [analyzer deflector angle]
+        alpha ([float]): [analyzer rotation angle]
+        beta ([float]): [scan angle perpendicular to theta]
+        theta ([float]): [goniometer azimuthal angle]
+        chi ([float]): [sample azimuthal angle]
+        inner_potential ([float]): [material inner potential in eV]
+
+    Returns:
+        [(float, float, float)]: [(kx, ky, kz)]
+    """
+    theta, beta, chi, psi = theta, beta, -chi, psi
+
+    # use the full direct momentum conversion
+    sin_alpha, cos_alpha = np.sin(alpha), np.cos(alpha)
+    sin_beta, cos_beta = np.sin(beta), np.cos(beta)
+    sin_theta, cos_theta = np.sin(theta), np.cos(theta)
+    sin_chi, cos_chi = np.sin(chi), np.cos(chi)
+    sin_phi, cos_phi = np.sin(phi), np.cos(phi)
+    sin_psi, cos_psi = np.sin(psi), np.cos(psi)
+
+    vx = cos_alpha * cos_psi * sin_phi - sin_alpha * sin_psi
+    vy = sin_alpha * cos_psi * sin_phi + cos_alpha * sin_psi
+    vz = cos_phi * cos_psi
+
+    # perform theta rotation
+    vrtheta_x = cos_theta * vx - sin_theta * vz
+    vrtheta_y = vy
+    vrtheta_z = sin_theta * vx + cos_theta * vz
+
+    # perform beta rotation
+    vrbeta_x = vrtheta_x
+    vrbeta_y = cos_beta * vrtheta_y - sin_beta * vrtheta_z
+    vrbeta_z = sin_beta * vrtheta_y + cos_beta * vrtheta_z
+
+    # Perform chi rotation
+    vrchi_x = cos_chi * vrbeta_x - sin_chi * vrbeta_y
+    vrchi_y = sin_chi * vrbeta_x + cos_chi * vrbeta_y
+    vrchi_z = vrbeta_z
+
+    v_par_sq = vrchi_x**2 + vrchi_y**2
+
+    """
+    velocity -> momentum in each of parallel and perpendicular directions
+    in the perpendicular case, we need the value of the cos^2(zeta) for the polar declination
+    angle zeta in the sample (emission) frame. The total in plane velocity v_parallel is proportional
+    to sin(zeta), so by the trig identity:
+
+    1 = cos^2(zeta) + sin^2(zeta)
+
+    we may substitute cos^2(zeta) for 1 - sin^2(zeta) which is 1 - (vrchi_x **2 + vrchi_y ** 2) above.
+    """
+    k_par = K_INV_ANGSTROM * np.sqrt(kinetic_energy)
+    k_perp = K_INV_ANGSTROM * np.sqrt(kinetic_energy * (1 - v_par_sq) + inner_potential)
+
+    return k_par * vrchi_x, k_par * vrchi_y, k_perp * vrchi_z
+
+
+def euler_to_kx(kinetic_energy, phi, beta, theta=0, slit_is_vertical=False):
+    """Calculates kx from the phi/beta Euler angles given the experimental geometry."""
+    if slit_is_vertical:
+        return K_INV_ANGSTROM * np.sqrt(kinetic_energy) * np.sin(beta) * np.cos(phi)
+    else:
+        return K_INV_ANGSTROM * np.sqrt(kinetic_energy) * np.sin(phi + theta)
+
+
+def euler_to_ky(kinetic_energy, phi, beta, theta=0, slit_is_vertical=False):
+    """Calculates ky from the phi/beta Euler angles given the experimental geometry."""
+    if slit_is_vertical:
+        return (
+            K_INV_ANGSTROM
+            * np.sqrt(kinetic_energy)
+            * (np.cos(theta) * np.sin(phi) + np.cos(beta) * np.cos(phi) * np.sin(theta))
+        )
+    else:
+        return (
+            K_INV_ANGSTROM
+            * np.sqrt(kinetic_energy)
+            * (np.cos(phi + theta) * np.sin(beta),)
+        )
+
+
+def euler_to_kz(
+    kinetic_energy, phi, beta, theta=0, inner_potential=10, slit_is_vertical=False
+):
+    """Calculates kz from the phi/beta Euler angles given the experimental geometry."""
+    if slit_is_vertical:
+        beta_term = -np.sin(theta) * np.sin(phi) + np.cos(theta) * np.cos(
+            beta
+        ) * np.cos(phi)
+
+    else:
+        beta_term = np.cos(phi + theta) * np.cos(beta)
+
+    return K_INV_ANGSTROM * np.sqrt(kinetic_energy * beta_term**2 + inner_potential)
+
+
+def spherical_to_kx(
+    kinetic_energy: np.ndarray, theta: np.float64, phi: np.ndarray
+) -> np.ndarray:
+    """Calculates kx from the sample spherical (emission, not measurement) coordinates."""
+    return K_INV_ANGSTROM * np.sqrt(kinetic_energy) * np.sin(theta) * np.cos(phi)
+
+
+def spherical_to_ky(kinetic_energy, theta, phi):
+    """Calculates ky from the sample spherical (emission, not measurement) coordinates."""
+    return K_INV_ANGSTROM * np.sqrt(kinetic_energy) * np.sin(theta) * np.sin(phi)
+
+
+def spherical_to_kz(
+    kinetic_energy: np.ndarray, theta: np.float64, phi: np.ndarray, inner_V: np.float64
+) -> np.ndarray:
+    r"""Calculates the out of plane momentum from sample spherical (not measurement) coordinates.
+
+    K_INV_ANGSTROM encodes that k_z = \frac{\sqrt{2 * m * E_kin * \cos^2\theta + V_0}}{\hbar}
+
+    Args:
+        kinetic_energy
+        theta
+        phi
+        inner_V
+
+    Returns:
+        The out of plane momentum, kz.
+    """
+    return K_INV_ANGSTROM * np.sqrt(kinetic_energy * np.cos(theta) ** 2 + inner_V)
+
+
+def calculate_kp_kz_bounds(data: DataType):
+    """Calculates kp and kz bounds for angle-hv Fermi surfaces."""
+    phi_offset = data.S.phi_offset
+    phi_min = np.min(data.coords["phi"].values) - phi_offset
+    phi_max = np.max(data.coords["phi"].values) - phi_offset
+
+    binding_energy_min, binding_energy_max = np.min(data.coords["eV"].values), np.max(
+        data.coords["eV"].values
+    )
+    hv_min, hv_max = np.min(data.coords["hv"].values), np.max(data.coords["hv"].values)
+
+    wf = data.S.work_function
+    kx_min = min(
+        spherical_to_kx(hv_max - binding_energy_max - wf, phi_min, 0),
+        spherical_to_kx(hv_min - binding_energy_max - wf, phi_min, 0),
+    )
+    kx_max = max(
+        spherical_to_kx(hv_max - binding_energy_max - wf, phi_max, 0),
+        spherical_to_kx(hv_min - binding_energy_max - wf, phi_max, 0),
+    )
+
+    angle_max = max(abs(phi_min), abs(phi_max))
+    inner_V = data.S.inner_potential
+    kz_min = spherical_to_kz(hv_min + binding_energy_min - wf, angle_max, 0, inner_V)
+    kz_max = spherical_to_kz(hv_max + binding_energy_max - wf, 0, 0, inner_V)
+
+    return (
+        (round(kx_min, 2), round(kx_max, 2)),  # kp
+        (round(kz_min, 2), round(kz_max, 2)),  # kz
+    )
+
+
+def calculate_kp_bounds(data: DataType, phi_offset: float, perpendicular_offset: float):
+    """Calculates kp bounds for a single ARPES cut."""
+    phi_coords = data.coords["phi"].values - phi_offset
+    phi_bounds = np.min(phi_coords), np.max(phi_coords)
+    kinetic_energy_sqrt = np.sqrt(
+        data.S.hv - data.S.work_function + data.coords["eV"].values.max()
+    )
+
+    kp_bounds: np.ndarray = (
+        K_INV_ANGSTROM
+        * kinetic_energy_sqrt
+        * np.cos(perpendicular_offset)
+        * np.sin(phi_bounds)
+    )
+
+    return kp_bounds.round(2)
+
+
+def calculate_kx_ky_bounds(
+    data: DataType, phi_offset: float, scan_offset: float, scan_axis: str = "beta"
+):
+    """Calculate the kx and ky range for a dataset with a fixed photon energy.
+
+    This is used to infer the gridding that should be used for a k-space conversion.
+    Based on Jonathan Denlinger's old codes
+
+    Args
+    ----
+    data : DataType
+        Dataset that includes a key indicating the photon energy of the scan
+
+    Returns
+    -------
+        ((kx_low, kx_high,), (ky_low, ky_high,))
+    """
+    kinetic_energy_sqrt = np.sqrt(
+        data.S.hv - data.S.work_function + data.coords["eV"].values.max()
+    )
+
+    phi_coords: "xr.DataArray" = data.S.lookup_coord("phi") - phi_offset
+    scan_coords: "xr.DataArray" = data.S.lookup_coord(scan_axis) - scan_offset
+    phi_checkpoints = [phi_coords.min(), phi_coords.mean(), phi_coords.max()]
+    scan_checkpoints = [scan_coords.min(), scan_coords.mean(), scan_coords.max()]
+
+    potential_kx_bounds = []
+    potential_ky_bounds = []
+    for phi_checkpoint in phi_checkpoints:
+        potential_kx_bounds.append(
+            np.sin(phi_checkpoint) * kinetic_energy_sqrt * K_INV_ANGSTROM
+        )
+        for scan_checkpoint in scan_checkpoints:
+            potential_ky_bounds.append(
+                np.sin(scan_checkpoint)
+                * np.cos(phi_checkpoint)
+                * kinetic_energy_sqrt
+                * K_INV_ANGSTROM
+            )
+    return (min(potential_kx_bounds), max(potential_kx_bounds)), (
+        min(potential_ky_bounds),
+        max(potential_ky_bounds),
+    )
