@@ -1,0 +1,76 @@
+Metadata-Version: 2.4
+Name: fastled_wasm_compiler
+Version: 1.1.6
+Summary: Fastled Wasm Compiler
+Home-page: https://github.com/zackees/fastled-wasm-compiler
+Maintainer: Zachary Vorhies
+License: BSD 3-Clause License
+Keywords: template-python-cmd
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: black>=25.1.0
+Requires-Dist: fasteners==0.19
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: tomli>=2.2.1
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-xdist; extra == "test"
+Requires-Dist: ruff; extra == "test"
+Requires-Dist: pyright; extra == "test"
+Requires-Dist: isort; extra == "test"
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: maintainer
+
+# fastled-wasm-compiler
+
+The compiler and build system for FastLED for WASM.
+
+[![Linting](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/lint.yml/badge.svg)](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/lint.yml)
+
+[![Win_Tests](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/test_win.yml/badge.svg)](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/test_win.yml)
+[![Ubuntu_Tests](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/test_ubuntu.yml/badge.svg)](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/test_ubuntu.yml)
+[![MacOS_Tests](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/test_macos.yml/badge.svg)](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/test_macos.yml)
+
+[![Build and Push Multi Docker Image](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/build_multi_docker_image.yml/badge.svg)](https://github.com/zackees/fastled-wasm-compiler/actions/workflows/build_multi_docker_image.yml)
+
+
+
+```bash
+# Option 1: Clone only main branch
+git clone -b main --single-branch https://github.com/zackees/fastled-wasm-compiler.git
+
+# Option 2: Clone normally then configure to exclude gh-pages
+git clone https://github.com/zackees/fastled-wasm-compiler.git
+cd fastled-wasm-compiler
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/* ^refs/heads/gh-pages"
+```
+
+## Development
+
+Run `./install` to install the dependencies.
+
+Run `./lint` to run the linter.
+
+Run `./test` to run the tests.
+
+## Thin Precompiled Headers (Thin PCH)
+
+The FastLED WASM compiler now supports Thin Precompiled Headers (Thin PCH), which provide faster rebuild times and better cacheability compared to traditional PCH.
+
+To enable Thin PCH:
+- Set the `THIN_PCH=1` environment variable
+- Or use the `--thin-pch` flag with the build scripts
+
+Example:
+```bash
+# Using environment variable
+THIN_PCH=1 ./build_tools/build_lib.sh --all
+
+# Using command line flag
+./build_tools/build_lib.sh --thin-pch --all
+```
+
+# Notes:
