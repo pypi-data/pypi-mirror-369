@@ -1,0 +1,79 @@
+Metadata-Version: 2.4
+Name: mlops-quality-assurance
+Version: 0.1.1
+Summary: Add your description here
+Requires-Python: >=3.12
+Requires-Dist: nbformat>=5.10.4
+Requires-Dist: pytest>=8.4.1
+Requires-Dist: typer>=0.16.0
+Description-Content-Type: text/markdown
+
+# MLOps Quality Assurance
+
+This repository provides tools for quality assurance in MLOps projects, focusing on code and dependency best practices for Python and Jupyter notebooks.
+
+## Features
+- **LibraryChecker**: Scans Jupyter notebooks for unpinned pip installs to ensure reproducibility.
+- **CLI**: Command-line interface for running quality checks (see `src/achs_mlops_quality/cli.py`).
+- **Utilities**: Helpers for finding Python scripts and notebooks.
+
+## Project Structure
+```
+mlops_quality_assurance/
+├── main.py
+├── pyproject.toml
+├── pytest.ini
+├── README.md
+├── uv.lock
+├── src/
+│   └── achs_mlops_quality/
+│       ├── __init__.py
+│       ├── cli.py
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── library_checker.py
+│       └── utils/
+│           └── __init__.py
+└── tests/
+	 └── unit/
+		  └── test_library_checker.py
+```
+
+## Installation
+1. Clone the repository:
+	```bash
+	git clone <repo-url>
+	cd mlops_quality_assurance
+	```
+2. Install dependencies (using [uv](https://github.com/astral-sh/uv) or pip):
+	```bash
+	uv sync
+	```
+
+## Usage
+### LibraryChecker
+You can use the `LibraryChecker` class to scan notebooks for pip install issues:
+```python
+from achs_mlops_quality.models.library_checker import LibraryChecker
+checker = LibraryChecker(src_path="path/to/your/notebooks")
+checker.analize_notebooks()
+print(f"Issues detected: {checker.issues_detected}")
+```
+
+### CLI
+A command-line interface is available. Run:
+```bash
+uv run main.py --help
+```
+
+## Testing
+Run unit tests with pytest:
+```bash
+uv run pytest
+```
+
+## Contributing
+Contributions are welcome! Please open issues or pull requests for improvements or bug fixes.
+
+## License
+[MIT License](LICENSE)
