@@ -1,0 +1,94 @@
+[build-system]
+requires = ['setuptools>=42']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "fitspy"
+dynamic = ["version"]
+authors = [
+    { name = "Patrick Quéméré", email = "patrick.quemere@cea.fr" },
+    { name = "Killian Pavy", email = "killian.pavy@cea.fr" },
+]
+description = "Fitspy: a generic tool to fit spectra in python"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "Fitspy",
+    "fit",
+    "spectra",
+    "spectrum",
+    "map",
+    "1D",
+    "2D",
+    "decomposition",
+    "Gaussian",
+    "Lorentzian",
+    "Pseudovoigt",
+    "GUI",
+]
+license = { text = "GPL v3" }
+classifiers = [
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: POSIX :: Linux',
+    'Operating System :: MacOS :: MacOS X',
+    'Environment :: Console',
+]
+dependencies = [
+    "pyside6",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "scipy",
+    "lmfit",
+    "parse",
+    "dill",
+    "superqt[cmap]",
+    "pyqt-toast-notification",
+    "rosettasciio",
+    "h5py",
+    "pywin32; platform_system == 'Windows'",
+]
+
+[tool.setuptools.package-data]
+"fitspy" = ["resources/iconpack/*.png", "resources/iconpack/*.svg"]
+
+[project.scripts]
+fitspy = "fitspy.apps.pyside.main:fitspy_launcher"
+fitspy-tk = "fitspy.apps.tkinter.gui:fitspy_launcher"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = { attr = "fitspy.VERSION" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fitspy*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+
+[project.urls]
+Homepage = "https://github.com/CEA-MetroCarac/fitspy"
+Documentation = "https://cea-metrocarac.github.io/fitspy/index.html"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    'pytest-mock',
+    "watchdog",
+    "esbonio",
+    "sphinx",
+    "doc8",
+    "rstcheck",
+    "sphinx-rtd-theme",
+    "sphinx-copybutton",
+]
