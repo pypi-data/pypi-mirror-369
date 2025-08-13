@@ -1,0 +1,206 @@
+"""Authentication commands."""
+
+import os
+import shutil
+from pathlib import Path
+
+import click
+
+from ..config import TOKEN_FILE, get_config_info, CLIENT_SECRETS_FILE, CONFIG_DIR
+from ..core.auth import authenticate_youtube
+from ..core.youtube_api import get_playlists
+
+
+@click.group()
+def auth() -> None:
+  """Authentication commands."""
+  pass
+
+
+@auth.command()
+@click.option(
+  "--force",
+  is_flag=True,
+  help="Force reauthentication by removing existing credentials",
+)
+def login(force: bool) -> None:
+  """Authenticate with YouTube and store credentials."""
+  try:
+    token_file = TOKEN_FILE
+    if os.path.exists(token_file):
+      click.echo(
+        f"🔑 Found existing credentials at: {click.style(token_file, fg='cyan')}"
+      )
+      service = authenticate_youtube(force=force)
+      if not force:  # Check if existing credentials are valid
+        click.echo(
+          f"🔍 {click.style('Checking existing YouTube API credentials...', fg='yellow')}"
+        )
+        playlists = get_playlists(service, max_results=1)
+        if playlists is not None:
+          click.echo(
+            f"✅ {click.style('Authentication verified! Using cached credentials.', fg='green', bold=True)}"
+          )
+        else:
+          click.echo("❌ Authentication failed or no access to playlists.")
+    else:
+      click.echo(
+        f"🔑 {click.style('Starting YouTube API authentication flow...', fg='cyan', bold=True)}"
+      )
+      service = authenticate_youtube()
+
+  except Exception as error:
+    click.echo(f"❌ An error occurred during authentication: {error}", err=True)
+
+
+@auth.command()
+def status() -> None:
+  """Check authentication status."""
+  try:
+    token_file = TOKEN_FILE
+    if not os.path.exists(token_file):
+      click.echo(
+        f"❌ {click.style('Not authenticated.', fg='red', bold=True)} Run {click.style('ytplay auth login', fg='cyan', bold=True)} first."
+      )
+      return
+
+    click.echo(f"🔍 {click.style('Checking authentication status...', fg='yellow')}")
+    service = authenticate_youtube()
+    playlists = get_playlists(service, max_results=1)
+
+    if playlists is not None:
+      click.echo(f"✅ {click.style('Authentication is valid.', fg='green', bold=True)}")
+    else:
+      click.echo(
+        f"❌ Authentication failed. Try {click.style('ytplay auth login --force', fg='cyan', bold=True)}."
+      )
+
+  except Exception as error:
+    click.echo(f"❌ Authentication check failed: {error}", err=True)
+
+
+@auth.command()
+def logout() -> None:
+  """Remove stored credentials."""
+  try:
+    token_file = TOKEN_FILE
+    if os.path.exists(token_file):
+      os.remove(token_file)
+      click.echo(
+        f"✅ {click.style('Credentials removed successfully.', fg='green', bold=True)}"
+      )
+    else:
+      click.echo(f"ℹ️  {click.style('No stored credentials found.', fg='blue')}")
+
+  except Exception as error:
+    click.echo(f"❌ Failed to remove credentials: {error}", err=True)
+
+
+@click.group()
+def config() -> None:
+  """Configuration management commands."""
+  pass
+
+
+@config.command("show")
+def config_show() -> None:
+  """Show current configuration paths."""
+  try:
+    config_info = get_config_info()
+    
+    click.echo(f"\n🔧 {click.style('Current Configuration:', fg='blue', bold=True)}")
+    click.echo(f"   Config Directory: {click.style(config_info['config_dir'], fg='cyan')}")
+    if config_info['using_custom_config_dir']:
+      click.echo(f"     {click.style('(custom location)', fg='yellow')}")
+    
+    click.echo(f"\n📁 {click.style('File Locations:', fg='blue', bold=True)}")
+    click.echo(f"   Client Secrets:  {click.style(config_info['client_secrets'], fg='cyan')}")
+    if config_info['using_custom_client_secrets']:
+      click.echo(f"     {click.style('(custom location)', fg='yellow')}")
+    
+    exists_secrets = os.path.exists(config_info['client_secrets'])
+    status_secrets = click.style("✅ exists" if exists_secrets else "❌ missing", 
+                                fg='green' if exists_secrets else 'red')
+    click.echo(f"     Status: {status_secrets}")
+    
+    click.echo(f"   Token File:      {click.style(config_info['token_file'], fg='cyan')}")
+    if config_info['using_custom_token_file']:
+      click.echo(f"     {click.style('(custom location)', fg='yellow')}")
+      
+    exists_token = os.path.exists(config_info['token_file'])
+    status_token = click.style("✅ exists" if exists_token else "❌ missing", 
+                              fg='green' if exists_token else 'red')
+    click.echo(f"     Status: {status_token}")
+    
+    click.echo(f"\n🌐 {click.style('Environment Variables:', fg='blue', bold=True)}")
+    env_vars = [
+      ("YTPLAY_CONFIG_DIR", "Configuration directory"),
+      ("YTPLAY_CLIENT_SECRETS", "Client secrets file path"), 
+      ("YTPLAY_TOKEN_FILE", "Token file path")
+    ]
+    
+    for env_var, description in env_vars:
+      value = os.getenv(env_var)
+      if value:
+        click.echo(f"   {click.style(env_var, fg='green')}: {click.style(value, fg='cyan')}")
+      else:
+        click.echo(f"   {click.style(env_var, fg='white')}: {click.style('not set', fg='white', dim=True)}")
+    
+    if not exists_secrets:
+      click.echo(f"\n💡 {click.style('Next Steps:', fg='yellow', bold=True)}")
+      click.echo("   1. Download client_secrets.json from Google Cloud Console")
+      click.echo(f"   2. Run: {click.style('ytplay auth config add <path_to_secrets>', fg='green')}")
+      click.echo(f"   3. Run: {click.style('ytplay auth login', fg='green')}")
+      
+  except Exception as error:
+    click.echo(f"❌ Failed to show configuration: {error}", err=True)
+
+
+@config.command("add")
+@click.argument("source_path", type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--name", 
+    default="client_secrets.json",
+    help="Name for the copied file (default: client_secrets.json)"
+)
+@click.option(
+    "--force", 
+    is_flag=True,
+    help="Overwrite existing file if it exists"
+)
+def config_add(source_path: Path, name: str, force: bool) -> None:
+  """Copy a configuration file to the default config directory.
+  
+  SOURCE_PATH: Path to the file to copy (e.g., your downloaded client_secrets.json)
+  """
+  try:
+    # Ensure config directory exists
+    Path(CONFIG_DIR).mkdir(parents=True, exist_ok=True)
+    
+    # Determine destination path
+    dest_path = Path(CONFIG_DIR) / name
+    
+    # Check if destination already exists
+    if dest_path.exists() and not force:
+      click.echo(f"❌ File already exists at: {click.style(str(dest_path), fg='cyan')}")
+      click.echo(f"   Use {click.style('--force', fg='yellow')} to overwrite")
+      return
+    
+    # Copy the file
+    shutil.copy2(source_path, dest_path)
+    
+    click.echo(f"✅ {click.style('Configuration file copied successfully!', fg='green', bold=True)}")
+    click.echo(f"   From: {click.style(str(source_path), fg='cyan')}")
+    click.echo(f"   To:   {click.style(str(dest_path), fg='cyan')}")
+    
+    # Show next steps
+    if name == "client_secrets.json":
+      click.echo(f"\n💡 {click.style('Next Steps:', fg='yellow', bold=True)}")
+      click.echo(f"   Run: {click.style('ytplay auth login', fg='green')} to authenticate")
+    
+  except Exception as error:
+    click.echo(f"❌ Failed to copy configuration file: {error}", err=True)
+
+
+# Add the config subgroup to auth
+auth.add_command(config)
