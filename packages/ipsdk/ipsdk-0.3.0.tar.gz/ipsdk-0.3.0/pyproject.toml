@@ -1,0 +1,74 @@
+[project]
+name = "ipsdk"
+description = "Itential Python SDK"
+
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+    "httpx>=0.28.1"
+]
+
+dynamic = [
+    "version"
+]
+
+keywords = [
+    "itential",
+    "automation",
+    "platform",
+    "gateway",
+    "rest",
+    "api",
+]
+
+
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+
+[[project.authors]]
+name = "Itential"
+email = "opensource@itential.com"
+
+[project.urls]
+Homepage = "https://itential.com"
+Repository = "https://github.com/itential/ipsdk"
+Documentation = "https://github.com/itential/ipsdk"
+
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+    "q",
+    "ruff",
+    "mypy",
+    "coverage",
+    "build",
+]
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning>=0.7.0"]
+build-backend = "hatchling.build"
+
+[tool.setuptools.dynamic]
+version = { attr = "ipsdk.metadata.version" } 
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+vcs = "git"
+style = "pep440"
+bump = true
+fallback-version = "0.0.0"
