@@ -1,0 +1,183 @@
+# NLPToolkitX
+
+A lightweight yet powerful **Natural Language Processing (NLP) preprocessing toolkit** with configurable options for tokenization, lemmatization, negation scope handling, slang expansion, emoji demojization, and more. Designed for quick integration into ML/NLP pipelines. Includes optional GPU acceleration with PyTorch for certain operations.
+
+---
+
+## Installation
+
+```bash
+pip install NLPToolkitX
+```
+
+**Notes:**
+
+* First-time use will download required NLTK data packages automatically.
+* If you want GPU acceleration for vectorization and encoding, install with:
+
+  ```bash
+  pip install NLPToolkitX[torch]
+  ```
+
+---
+
+## Quick Start
+
+```python
+from NLPToolkitX import (
+    PreprocessConfig,
+    process_text,
+    process_dataframe,
+    validate_config,
+    contractions_source,
+    has_torch,
+    build_vocab,
+    texts_to_sequences,
+    pad_sequences,
+    label_encode,
+    one_hot_encode,
+)                           # import as needed, all shown for demo purposes
+
+cfg = PreprocessConfig(
+    lowercase=True,
+    strip_html=True,
+    urls="remove",           # keep | remove | mask
+    mentions="mask",         # keep | remove | mask
+    hashtags="split",        # keep | remove | split
+    numbers="mask",          # keep | remove | mask  → replaces digits with "NUM"
+    emojis="demojize",       # keep | remove | demojize
+    contractions=True,        # expand "don't" → "do not"
+    accents=True,
+    repeats_to=2,             # cool → coo, soooo → soo
+    punctuation="remove",    # keep | remove | space
+    tokenize="smart",        # simple | smart
+    stopwords=None,           # use default list if None
+    negation_scope=True,      # adds _NEG after not/never/no up to short scope
+    lemmatize=True,
+    stem=False,
+    slang_dict={              # optional: inline slang mapping
+        "idk": "i do not know",
+        "brb": "be right back",
+        "imo": "in my opinion",
+    },
+)
+
+text = "BRB, idk what's going on 😂! Check this out: https://example.com @Kazuma-sama #ExplosionMagic I won't say I'm not impressed!!! 100%"
+
+processed = preprocess_text(text, config)
+print(processed)
+```
+
+**Output Example:**
+
+```
+['brb', 'not', 'know_NEG', 'going_NEG', 'facewithtearsofjoy_NEG', 'check', 'usersama', 'explosion', 'magic', 'not', 'say_NEG', 'not', 'impressed_NEG', 'num_NEG']
+```
+
+---
+
+## Configuration Options
+
+| Parameter             | Type | Description                                       |
+| --------------------- | ---- | ------------------------------------------------- |
+| `contractions_source` | str  | `'pypi'` or `'local'` for contractions expansion. |
+| `tokenize`            | str  | `'basic'` or `'smart'` tokenization.              |
+| `negation_scope`      | bool | Add `_NEG` suffix to words in negation scope.     |
+| `lemmatize`           | bool | Enable lemmatization (requires NLTK).             |
+| `stem`                | bool | Enable stemming (requires NLTK).                  |
+| `urls`                | str  | `'remove'` or `'mask'` URLs.                      |
+| `mentions`            | str  | `'remove'` or `'mask'` mentions (@user).          |
+| `hashtags`            | str  | `'split'` to break hashtag into words.            |
+| `numbers`             | str  | `'mask'` or `'remove'` numbers.                   |
+| `emojis`              | str  | `'demojize'` or `'remove'`.                       |
+| `punctuation`         | str  | `'remove'` or `'keep'`.                           |
+
+---
+
+## DataFrame Example
+
+You can process multiple rows at once:
+
+```python
+import pandas as pd
+
+texts = [
+    "Not ever say never",
+    "Numbers like 123 are masked",
+    "Laughing Loud soo good"
+]
+
+df = pd.DataFrame({'text': texts})
+df['tokens'] = df['text'].apply(lambda x: preprocess_text(x, config))
+print(df)
+```
+
+---
+
+## Using Vectorization
+
+```python
+from NLPToolkitX import vectorize_texts
+
+corpus = [
+    "Explosion magic is the best magic",
+    "Kazuma-sama is amazing"
+]
+
+vectors, vocab = vectorize_texts(corpus)
+print(vectors.shape)
+print(vocab)
+```
+
+**Note:**
+If PyTorch is installed, `vectorize_texts` can run on GPU for faster processing. Otherwise, it will run on CPU.
+
+---
+
+## Custom Slang Dictionary
+
+You can load your own slang mappings:
+
+```python
+from NLPToolkitX import load_slang_dictionary
+
+load_slang_dictionary("slang.txt")  # one slang mapping per line: word=replacement
+```
+
+---
+
+## Optional Dependencies & Warnings
+
+If PyTorch (`torch`) is not installed, certain functions like `label_encode` and `one_hot_encode` will fall back to slower CPU-based processing.
+When falling back, the system will display a tip:
+
+```
+[Tip] Install torch for faster GPU-accelerated encoding: pip install NLPToolkitX[torch]
+```
+
+---
+
+## Troubleshooting
+
+* **Negation scope markers (`_NEG`)** are intentional for better sentiment/context detection.
+* **Masked numbers/URLs** appear as `num` or `url` in tokens.
+* **Windows users**: If you see `CRLF` warnings in Git, run:
+
+  ```bash
+  git config core.autocrlf true
+  ```
+
+---
+
+## Performance Tips
+
+* Reuse the same `PreprocessConfig` instance for speed.
+* Use batch processing for large datasets.
+* Masking instead of removing can help preserve sentence structure.
+* Install PyTorch for GPU acceleration.
+
+---
+
+## License
+
+MIT License. See LICENSE file for details.
