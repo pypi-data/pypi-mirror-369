@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: lottery-tool
+Version: 1.0.1
+Summary: Tiny library for weighted random allocation
+Author-email: Your Name <you@example.com>
+Keywords: random,weighted,lottery,distribution
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+
+lotteryLightning-fast, zero-dependency weighted random allocation for Python. ⚡ Quick Startbashpython📖 API lottery(n: int, weights: dict[str, int]) -> dict[str, int] 表格Parameter Type Description  n   int ≥ 0  Total number of allocations  dict[str, int]   weights  Non-negative integer weights (at least one > 0)  dict[str, int]  Returns Actual counts per key summing to  n  Examplepython🔍 Why lottery?Zero dependencies – only the Python standard libraryBlazing fast – 1 000 000 allocations in ~50 ms on CPython 3.11 (M1 Mac)Reproducible – set your own seed via  random.seed python❓ FAQ<details>
+<summary>Can I use float weights?</summary>Scale them to integers first:python</details><details>
+<summary>Need exact proportions without random error?</summary>We plan to ship a deterministic allocator ( lottery.exact ) in v1.1.0. Until then, use  lottery  for statistical sampling.</details>
