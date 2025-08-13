@@ -1,0 +1,110 @@
+Metadata-Version: 2.4
+Name: qmcpy
+Version: 2.0
+Summary: Quasi-Monte Carlo point generators, automatic transformations, and adaptive stopping criteria
+Keywords: quasi,monte,carlo,community,software,cubature,numerical,integration,discrepancy,sobol,lattice
+Author: Aleksei G Sorokin, Fred Hickernell, Sou-Cheng T. Choi, Jagadeeswaran Rathinavel, Mike McCourt
+License-Expression: Apache-2.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Project-URL: Documentation, https://qmcsoftware.github.io/QMCSoftware/
+Project-URL: Repository, https://github.com/QMCSoftware/QMCSoftware
+Project-URL: Issues, https://github.com/QMCSoftware/QMCSoftware/issues
+Requires-Python: >=3.5
+Requires-Dist: numpy>=1.17.0
+Requires-Dist: scipy>=1.1.0
+Requires-Dist: qmctoolscl>=1.1.5
+Provides-Extra: torch
+Requires-Dist: torch>=2.0.0; extra == "torch"
+Provides-Extra: gpytorch
+Requires-Dist: gpytorch>=1.7.0; extra == "gpytorch"
+Provides-Extra: botorch
+Requires-Dist: botorch>=0.10.0; extra == "botorch"
+Provides-Extra: umbridge
+Requires-Dist: umbridge>=1.2.1; extra == "umbridge"
+Provides-Extra: test
+Requires-Dist: pytest==8.3.5; extra == "test"
+Requires-Dist: pytest-cov==6.1.1; extra == "test"
+Requires-Dist: phmutest==1.0.1; extra == "test"
+Requires-Dist: pytest-accept==0.1.10; extra == "test"
+Provides-Extra: test-torch
+Requires-Dist: torch==2.7.0; extra == "test-torch"
+Provides-Extra: test-gpytorch
+Requires-Dist: gpytorch==1.11; extra == "test-gpytorch"
+Provides-Extra: test-botorch
+Requires-Dist: botorch==0.10.0; extra == "test-botorch"
+Provides-Extra: test-umbridge
+Requires-Dist: umbridge==1.2.4; extra == "test-umbridge"
+Provides-Extra: docs
+Requires-Dist: nbval>=0.10.0; extra == "docs"
+Requires-Dist: mkdocs>=1.5.0; extra == "docs"
+Requires-Dist: mkdocs-material>=9.6.12; extra == "docs"
+Requires-Dist: mkdocs-jupyter>=0.25.0; extra == "docs"
+Requires-Dist: mkdocstrings-python>=1.16.0; extra == "docs"
+Requires-Dist: mkdocs-with-pdf>=0.9.3; extra == "docs"
+Requires-Dist: mkdocs-glightbox>=0.4.0; extra == "docs"
+Requires-Dist: graphviz>=0.20.0; extra == "docs"
+Requires-Dist: phmutest>=1.0.1; extra == "docs"
+Requires-Dist: mkpdfs-mkdocs>=1.0.1; extra == "docs"
+Requires-Dist: mkdocs-print-site-plugin>=2.7.2; extra == "docs"
+Requires-Dist: mkdocs-exclude>=1.0.2; extra == "docs"
+Requires-Dist: pylint>=2.14.4; extra == "docs"
+Provides-Extra: dev
+Requires-Dist: qmcpy[docs,test,test_botorch,test_gpytorch,test_umbridge]; extra == "dev"
+Requires-Dist: jupyterlab>=4.0.0; extra == "dev"
+Requires-Dist: matplotlib>=3.9.0; extra == "dev"
+Requires-Dist: tueplots>=0.2.0; extra == "dev"
+Requires-Dist: pandas>=2.0.0; extra == "dev"
+Requires-Dist: scikit-learn>=1.0.0; extra == "dev"
+Requires-Dist: scikit-optimize>=0.10.2; extra == "dev"
+Description-Content-Type: text/markdown
+
+# QMCPy: Quasi-Monte Carlo Community Software in Python
+
+[![](https://img.shields.io/badge/qmcpy.org-15bfa9)](https://qmcpy.org/)
+[![Docs](https://github.com/QMCSoftware/QMCSoftware/actions/workflows/docs.yml/badge.svg?branch=master)](https://qmcsoftware.github.io/QMCSoftware/)
+[![Tests](https://github.com/QMCSoftware/QMCSoftware/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/QMCSoftware/QMCSoftware/actions/workflows/tests.yml)
+[![GitHub stars](https://img.shields.io/github/stars/QMCSoftware/QMCSoftware?style=social)](https://github.com/QMCSoftware/QMCSoftware)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3964489.svg)](https://doi.org/10.5281/zenodo.3964489)
+[![](https://img.shields.io/badge/PyPI-fc7303)](https://pypi.org/project/qmcpy/)
+
+Quasi-Monte Carlo (QMC) methods are used to approximate multivariate integrals. They have four main components: a discrete distribution, a true measure of randomness, an integrand, and a stopping criterion. Information about the integrand is obtained as a sequence of values of the function sampled at the data-sites of the discrete distribution. The stopping criterion tells the algorithm when the user-specified error tolerance has been satisfied. We are developing a framework that allows collaborators in the QMC community to develop plug-and-play modules in an effort to produce more efficient and portable QMC software. Each of the above four components is an abstract class. Abstract classes specify the common properties and methods of all subclasses. The ways in which the four kinds of classes interact with each other are also specified. Subclasses then flesh out different integrands, sampling schemes, and stopping criteria. Besides providing developers a way to link their new ideas with those implemented by the rest of the QMC community, we also aim to provide practitioners with state-of-the-art QMC software for their applications.
+
+## Resources
+
+The [QMCPy documentation](https://QMCSoftware.github.io/QMCSoftware/) contains a detailed **package reference** documenting functions and classes including thorough doctests. A number of example notebook **demos** are also rendered into the documentation from `QMCSoftware/demos/`. We recommend the following resources to start learning more about QMCPy
+
+- [mathematical description of QMCPy software and components](https://qmcsoftware.github.io/QMCSoftware/components).
+- [Aleksei Sorokin's 2023 PyData Chicago video tutorial](https://www.youtube.com/watch?v=bRcKiLA2yBQ) and [corresponding notebook](https://qmcsoftware.github.io/QMCSoftware/demos/talk_paper_demos/pydata.chi.2023/)
+- [Fred Hickernell's 2020 MCQMC video tutorial](https://www.youtube.com/watch?v=gL8M_7c-YUE) and [corresponding notebook](https://qmcsoftware.github.io/QMCSoftware/demos/talk_paper_demos/MCQMC_Tutorial_2020/MCQMC_2020_QMC_Software_Tutorial/)
+- The QMCPy [introduction notebook](https://qmcsoftware.github.io/QMCSoftware/demos/qmcpy_intro) and [quickstart notebook](https://qmcsoftware.github.io/QMCSoftware/demos/quickstart)
+
+## Installation
+
+```bash
+pip install qmcpy
+```
+
+To install from source, please see the [contributing guidelines](https://qmcsoftware.github.io/QMCSoftware/CONTRIBUTING/).
+
+## Citation
+
+If you find QMCPy helpful in your work, please support us by citing the following work, which is also available as a [QMCPy BibTex citation](https://github.com/QMCSoftware/QMCSoftware/blob/master/cite_qmcpy.bib)
+
+~~~
+Sou-Cheng T. Choi, Fred J. Hickernell, Michael McCourt, Jagadeeswaran Rathinavel, Aleksei G. Sorokin,
+QMCPy: A Quasi-Monte Carlo Python Library. 2025.
+https://qmcsoftware.github.io/QMCSoftware/
+~~~
+
+We maintain a list of [publications on the development and use of QMCPy](https://qmcpy.org/publications/) as well as a [list of select references upon which QMCPy was built](https://qmcsoftware.github.io/QMCSoftware/community/#select-references).
+
+## Development
+
+Want to contribute to QMCPy? Please see our [guidelines for contributors](https://qmcsoftware.github.io/QMCSoftware/CONTRIBUTING/) which includes instructions on installation for developers, running tests, and compiling documentation.
+
+This software would not be possible without the efforts of the [QMCPy community](https://qmcsoftware.github.io/QMCSoftware/community) including our steering council, collaborators, contributors, and sponsors.
+
+QMCPy is distributed under an [Apache 2.0 license from the Illinois Institute of Technology](https://github.com/QMCSoftware/QMCSoftware/blob/master/LICENSE).
