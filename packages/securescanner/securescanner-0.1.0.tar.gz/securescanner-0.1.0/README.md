@@ -1,0 +1,170 @@
+# Security Port Scanner
+
+A comprehensive security assessment tool built in Python that performs advanced port scanning, service detection, and vulnerability analysis. This tool is designed to demonstrate professional-grade security testing capabilities while maintaining ethical usage standards.
+
+## Features
+
+- High-performance multi-threaded port scanning
+- Advanced service detection and banner grabbing
+- Operating system fingerprinting
+- Built-in vulnerability database and checking
+- Stealth mode for careful enumeration
+- Professional security reporting (JSON and CSV formats)
+- Detailed logging system for audit trails
+- Configurable rate limiting for stealth operations
+- Cross-platform compatibility (Windows, Linux, macOS)
+
+## Installation
+
+You can install SecureScanner directly from PyPI:
+
+```bash
+pip install securescanner
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/BreyeFoka/securescanner.git
+cd securescanner
+pip install .
+```
+
+## Usage
+
+### Command Line Interface
+
+The tool provides an intuitive command-line interface for security testing operations.
+
+Basic usage:
+
+```bash
+securescanner 192.168.1.1
+```
+
+Advanced options:
+
+```bash
+securescanner 192.168.1.1 -s 1 -e 1024 -t 50 --stealth -o ./reports
+```
+
+Available options:
+
+- `-s, --start`: Start port number (default: 1)
+- `-e, --end`: End port number (default: 1024)
+- `-t, --threads`: Number of concurrent threads (default: 50)
+- `--stealth`: Enable stealth mode for careful scanning
+- `-o, --output-dir`: Custom directory for reports and logs
+- `-v, --version`: Display version information
+- `-d, --debug`: Enable detailed debug logging
+
+### Python API
+
+```python
+from securescanner import SecurityScanner
+
+# Create a scanner instance
+scanner = SecurityScanner('192.168.1.1', output_dir='./reports')
+
+# Optional: Enable stealth mode
+scanner.rate_limit = 0.5  # 500ms between connection attempts
+
+# Run the scan
+scanner.scan(start_port=1, end_port=1024, num_threads=50)
+```
+
+## Output Files
+
+The scanner generates three types of output files:
+
+1. `security_scan.log`: Detailed scan logs
+2. `security_report.json`: Comprehensive JSON report
+3. `security_report.csv`: Spreadsheet-friendly report
+
+### Sample JSON Report
+
+```json
+{
+    "scan_info": {
+        "target": "192.168.1.1",
+        "timestamp": "2025-08-12 10:00:00",
+        "os_detection": "Linux (Apache)"
+    },
+    "open_ports": [
+        {
+            "port": 80,
+            "service": "http",
+            "banner": "Apache/2.4.41 (Ubuntu)",
+            "vulnerabilities": [
+                "Directory Traversal",
+                "SQL Injection",
+                "XSS"
+            ]
+        }
+    ]
+}
+```
+
+## Security Considerations
+
+This tool should only be used for authorized security testing. Unauthorized port scanning may be illegal in some jurisdictions. Always ensure you have permission to scan the target system.
+
+Features like stealth mode and rate limiting are provided to help avoid triggering security systems, but they should be used responsibly.
+
+## Development
+
+### Setting up development environment
+
+```bash
+git clone https://github.com/BreyeFoka/securescanner.git
+cd securescanner
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+pip install -e .
+```
+
+### Running tests
+
+```bash
+python -m pytest tests/
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Version History
+
+- 0.1.0
+  - Initial release with core functionality
+  - Multi-threaded port scanning implementation
+  - Vulnerability assessment system
+  - Professional reporting system
+
+## Project Status
+
+This project is actively maintained and part of a cybersecurity learning and demonstration portfolio. It showcases:
+
+- Network security testing methodologies
+- Multi-threaded application development
+- Security report generation
+- Professional-grade Python package development
+
+## Contact & Support
+
+For questions, feature requests, or bug reports, please:
+
+1. Open an issue in the GitHub repository
+2. Contact the maintainer at [breyefokalagloire@gmail.com](mailto:breyefokalagloire@gmail.com)
+
+Project Repository: [Security Port Scanner on GitHub](https://github.com/BreyeFoka/securescanner)
