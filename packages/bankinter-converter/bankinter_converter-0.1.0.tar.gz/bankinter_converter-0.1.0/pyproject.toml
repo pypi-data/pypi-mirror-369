@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bankinter-converter"
+version = "0.1.0"
+description = "A CLI tool to convert Bankinter bank statements (checking accounts and credit cards) from Excel to CSV"
+authors = [
+    { name = "Joan Perez Guerrero", email = "joanperezguerrero@gmail.com" },
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+keywords = ["bankinter", "excel", "csv", "converter", "banking", "finance"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Utilities",
+]
+dependencies = ["pandas>=2.0.0", "openpyxl>=3.0.0", "xlrd>=2.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/barbarity/bankinter-converter"
+Repository = "https://github.com/barbarity/bankinter-converter"
+Issues = "https://github.com/barbarity/bankinter-converter/issues"
+
+[project.scripts]
+bankinter-converter = "bankinter_converter.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0", "ruff>=0.1.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bankinter_converter"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "B", "C4", "UP"]
+ignore = ["E501", "B008", "B904"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
