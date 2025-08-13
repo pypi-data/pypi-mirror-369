@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lims2-sdk"
+dynamic = ["version"]
+description = "生信云平台 Python SDK，提供图表上传和文件存储功能"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Lims2 Team", email = "support@lims2.com"}
+]
+license = {text = "MIT"}
+
+dependencies = [
+    "requests>=2.25.0",
+    "click>=8.0.0",
+    "plotly>=5.0.0",
+    "oss2>=2.15.0",
+    "orjson>=3.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+lims2 = "lims2_cli.main:cli"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["lims2", "lims2_cli"]
+
+[tool.setuptools.dynamic]
+version = {attr = "lims2.__version__"}
+
+# 明确指定包含的包数据
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+# 排除开发和测试文件
+[tool.setuptools.exclude-package-data]
+"*" = ["tests", "tests.*", "*.tests", "*.tests.*"]
+
+# Black 配置
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+# isort 配置，与 black 兼容
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
