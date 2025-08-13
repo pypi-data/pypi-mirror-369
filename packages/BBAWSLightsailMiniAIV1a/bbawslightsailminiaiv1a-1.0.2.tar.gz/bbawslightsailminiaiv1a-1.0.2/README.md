@@ -1,0 +1,192 @@
+# BBAWSLightsailMiniAIV1a
+
+AI-enhanced AWS Lightsail Container Service deployment with AWS Bedrock integration.
+
+## Overview
+
+BBAWSLightsailMiniAIV1a extends the base BBAWSLightsailMiniV1a stack to add AI capabilities through AWS Bedrock services. It provides infrastructure for AI-powered document processing, embeddings, and chat applications.
+
+## Features
+
+- **AI-Ready Infrastructure**: AWS Bedrock integration for LLM and embedding models
+- **Document Processing**: S3 storage with AI-optimized folder structure
+- **Training Data Management**: Support for URL-based content ingestion
+- **Containerized Deployment**: Lightsail Container Service with AI workloads
+- **Scalable Storage**: S3 buckets for documents, embeddings, and processed content
+
+## Installation
+
+```bash
+pip install BBAWSLightsailMiniAIV1a
+```
+
+## Quick Start
+
+```python
+from cdktf import App
+from BBAWSLightsailMiniAIV1a import BBAWSLightsailMiniAIV1a
+
+app = App()
+
+# Get archetype for configuration
+archetype = BBAWSLightsailMiniAIV1a.get_archetype(
+    product='ai-app',
+    app='smart-docs',
+    tier='development',
+    organization='your-org',
+    region='us-east-1'
+)
+
+# Create AI-enhanced stack
+ai_stack = BBAWSLightsailMiniAIV1a(
+    app, "my-ai-stack",
+    
+    # Base configuration
+    project_name=archetype.get_project_name(),
+    environment=archetype.get_tier(),
+    region=archetype.get_region(),
+    secret_name=archetype.get_secret_name(),
+    profile="default",
+    
+    # AI configuration
+    model="anthropic.claude-3-sonnet-20240229-v1:0",
+    training_urls=[
+        "https://docs.aws.amazon.com/bedrock/",
+        "https://your-docs.com"
+    ]
+)
+
+archetype.set_stack(ai_stack)
+app.synth()
+```
+
+## Configuration
+
+### AI Models
+
+The stack supports various AWS Bedrock models:
+
+- **Claude Models**: `anthropic.claude-3-sonnet-20240229-v1:0`, `anthropic.claude-3-haiku-20240307-v1:0`
+- **Titan Models**: `amazon.titan-text-express-v1`, `amazon.titan-embed-text-v1`
+- **Llama Models**: `meta.llama2-13b-chat-v1`, `meta.llama2-70b-chat-v1`
+
+### Training Data
+
+Configure training URLs for document ingestion:
+
+```python
+training_urls = [
+    "https://docs.aws.amazon.com/bedrock/",
+    "https://your-company.com/api-docs",
+    "https://your-company.com/knowledge-base"
+]
+```
+
+### Chunking Configuration
+
+Customize document processing:
+
+```python
+chunk_size = 2000      # Characters per chunk
+chunk_overlap = 400    # Character overlap between chunks
+```
+
+## Architecture
+
+The AI stack creates:
+
+1. **S3 Buckets**:
+   - `documents/` - Raw document storage
+   - `embeddings/` - Processed embeddings
+   - `training/` - Training data from URLs
+
+2. **IAM Roles**:
+   - Bedrock access permissions
+   - S3 read/write permissions
+   - Container service access
+
+3. **Lightsail Container Service**:
+   - AI application deployment
+   - Auto-scaling configuration
+   - Custom domain support
+
+## Examples
+
+### Basic Deployment
+
+```python
+# See examples/basic_deployment.py
+```
+
+### Advanced Configuration
+
+```python
+# See examples/advanced_deployment.py
+```
+
+## Environment Variables
+
+The following environment variables are available in your container:
+
+- `AWS_BEDROCK_MODEL`: The configured Bedrock model
+- `AWS_BEDROCK_EMBEDDING_MODEL`: The embedding model
+- `S3_DOCUMENTS_BUCKET`: Documents bucket name
+- `S3_EMBEDDINGS_BUCKET`: Embeddings bucket name
+- `CHUNK_SIZE`: Document chunk size
+- `CHUNK_OVERLAP`: Chunk overlap size
+
+## Development
+
+### Building the Package
+
+```bash
+python prepare.py
+python setup.py build
+```
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+### Semantic Versioning
+
+This package uses semantic-release for automated versioning:
+
+```bash
+semantic-release publish
+```
+
+## Architecture Flags
+
+Use architecture flags to customize deployment:
+
+```python
+ArchitectureFlags = BBAWSLightsailMiniAIV1a.get_architecture_flags()
+
+flags = [
+    ArchitectureFlags.SKIP_DATABASE._value_,  # Skip database for AI-only workload
+    # Add other flags as needed
+]
+```
+
+## Dependencies
+
+- `BBAWSLightsailMiniV1a>=1.0.0` - Base Lightsail stack
+- `cdktf>=0.20.0` - CDK for Terraform
+- `constructs>=10.0.0` - AWS CDK constructs
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Support
+
+For issues and questions:
+- GitHub Issues: [Repository issues](https://github.com/your-org/bb-aws-lightsail-mini-ai-v1a/issues)
+- Documentation: [Full documentation](https://your-docs.com)
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and changes.
