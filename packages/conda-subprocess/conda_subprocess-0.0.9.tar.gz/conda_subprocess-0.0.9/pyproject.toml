@@ -1,0 +1,99 @@
+[build-system]
+requires = [
+    "conda>=22.9.0,<=25.7.0",
+    "hatchling==1.27.0",
+    "hatch-vcs==0.5.0",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "conda_subprocess"
+description = "Run a subprocess in a different conda environment."
+authors = [
+    { name = "Jan Janssen", email = "janssen@mpie.de" },
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["conda", "subprocess"]
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "conda>=22.9.0,<=25.7.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/pyiron/conda_subprocess"
+
+[project.optional-dependencies]
+executorlib = [
+    "executorlib==1.6.1",
+]
+
+[tool.ruff]
+exclude = [".ci_support", "tests", "setup.py", "_version.py"]
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # flake8-comprehensions
+    "C4",
+    # eradicate
+    "ERA",
+    # pylint
+    "PL",
+]
+ignore = [
+    # Too many arguments in function definition
+    "PLR0913",
+    # ignore unsafe arguments
+    "PLW1509",
+]
+
+[tool.hatch.build]
+include = [
+    "conda_subprocess"
+]
+
+[tool.hatch.build.hooks.vcs]
+version-file = "conda_subprocess/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "conda_subprocess"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "conda_subprocess"
+]
+
+[tool.hatch.version]
+source = "vcs"
+path = "conda_subprocess/_version.py"
+
+[tool.coverage.run]
+omit = ["conda_subprocess/_version.py", "tests/*"]
+command_line = "-m unittest discover tests"
