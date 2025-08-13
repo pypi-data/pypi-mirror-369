@@ -1,0 +1,81 @@
+[project]
+name = "bolt-agent-toolkit"
+version = "0.1.0"
+description = "Bolt Agent Toolkit"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Bolt", email = "support@bolt.com" }]
+keywords = ["mcp", "modelcontextprotocol", "bolt"]
+
+dependencies = [
+    "bolt-api-sdk==0.3.0",
+    "fastmcp>=2.10.2",
+    "langchain>=0.3.26",
+    "langchain-community>=0.3.27",
+    "langchain-openai>=0.3.28",
+    "langgraph>=0.5.3",
+    "openai>=1.99.6",
+    "openai-agents>=0.2.5",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+]
+
+[project.urls]
+"Bug Tracker" = "https://github.com/BoltApp/agent-toolkit/issues"
+"Source Code" = "https://github.com/BoltApp/agent-toolkit/python"
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "build>=1.2.2.post1",
+    "isort>=6.0.1",
+    "mypy>=1.17.1",
+    "pylint>=3.3.7",
+    "pytest>=8.4.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.isort]
+profile = "black"
+src_paths = ["bolt_agent_toolkit", "tests"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '(tests|bolt_agent_toolkit)/.*\.pyi?$'
+
+[tool.mypy]
+python_version = "3.11"
+# Strict mode settings
+strict = true
+# Additional strict settings
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+# Error on missing imports
+ignore_missing_imports = false
+# Exclude examples
+exclude = "^examples/"
+
+
+[tool.pylint."FORMAT"]
+max-line-length = 88   # Match Black
+indent-string = "    "
+
+[tool.pylint.main]
+jobs = 1
+ignore = ["tests", "examples", ".venv", "dist"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["bolt_agent_toolkit"]
