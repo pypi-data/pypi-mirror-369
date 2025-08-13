@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "buildmode-ai"
+version = "0.1.0"
+description = "BuildMode.AI backend service"
+authors = ["BuildMode Team <team@buildmode.ai>"]
+readme = "docs/README.md"
+packages = [{include = "server"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+fastapi = "0.104.1"
+pydantic = "2.5.0"
+pydantic-settings = "2.1.0"
+PyYAML = "6.0.1"
+requests = "2.32.4"
+httpx = "0.27.0"
+SQLAlchemy = "2.0.30"
+itsdangerous = "2.1.2"
+uvicorn = "0.29.0"
+psycopg = {version = "^3.2", extras = ["binary"]}
+networkx = "3.3"
+python-dotenv = "1.1.1"
+APScheduler = "3.10.4"
+qdrant-client = "1.15.1"
+slowapi = "^0.1.9"
+numpy = "^2.3.2"
+openai = "^1.13.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.2.1"
+pytest-cov = "6.2.1"
+pytest-asyncio = "^1.1.0"
+flake8 = "7.3.0"
+alembic = "1.11.1"
+pydocstyle = "^6.3.0"
+ruff = "^0.12.8"
+black = "^25.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+extend-select = ["E"]
+
+[tool.black]
+line-length = 79
+
+[tool.pydocstyle]
+convention = "google"
