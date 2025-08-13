@@ -1,0 +1,54 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0"]  # Minimum version of setuptools needed
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rbceq2"
+version = "2.3.1rc1"
+description = "Call ISBT alleles from VCF/s"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
+authors = [
+    { name = "Liam McIntyre", email = "limcintyre@redcrossblood.org.au" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "pandas>=2.2.2",
+    "polars>=0.20.26",
+    "icecream>=2.1",
+    "loguru>=0.7.2",
+    "pyarrow>=18.1",
+    "reportlab>=4.3.1",
+]
+
+
+[project.scripts]
+rbceq2 = "rbceq2.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "flake8>=3.9.2",
+    "coverage>=7.0",
+]
+
+
+[tool.setuptools]
+include-package-data = true # Corresponds to include_package_data in [options]
+
+[tool.setuptools.packages.find]
+where = ["src"]  # Corresponds to package_dir = = src and where = src
+
+[tool.setuptools.package-data]
+
+rbceq2 = ["resources/*.tsv"]
