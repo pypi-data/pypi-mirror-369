@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools"]
+
+[project]
+name = "sagemaker-kernel-wrapper"
+version = "0.0.6"
+description = "SageMaker Kernel Wrapper Package"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+authors = [
+    { name = "Amazon Web Services" },
+]
+classifiers = [
+"Intended Audience :: Developers",
+"Intended Audience :: Science/Research",
+"License :: OSI Approved :: Apache Software License",
+"Programming Language :: Python",
+"Programming Language :: Python :: 3.8",
+"Programming Language :: Python :: 3.9",
+"Programming Language :: Python :: 3.10",
+"Programming Language :: Python :: 3.11",
+]
+
+dependencies = ['boto3']
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "build",
+]
+test = [
+    "pytest",
+    "parameterized"
+]
+
+[project.urls]
+homepage = "https://aws.amazon.com/sagemaker"
+
+[tool.isort]
+# required for compatibility with black:
+profile = "black"
+
+[tool.pytest.ini_options]
+markers = []
+
