@@ -1,0 +1,1326 @@
+//
+// libsemigroups_pybind11
+// Copyright (C) 2024 James Mitchell
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+#include <string>
+
+// libsemigroups headers
+#include <libsemigroups/bipart.hpp>
+#include <libsemigroups/bmat8.hpp>
+#include <libsemigroups/froidure-pin.hpp>
+#include <libsemigroups/knuth-bendix.hpp>
+#include <libsemigroups/matrix.hpp>
+#include <libsemigroups/pbr.hpp>
+#include <libsemigroups/transf.hpp>
+
+// pybind11....
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <type_traits>
+
+// libsemigroups_pybind11....
+#include "kbe.hpp"
+#include "main.hpp"  // for init_froidure_pin
+
+namespace libsemigroups {
+  namespace py = pybind11;
+
+  namespace {
+
+    // Functionality that doesn't depend on the Element type is bound by this
+    // function
+    template <typename FroidurePin_>
+    void
+    bind_froidure_pin_core(py::module&                                m,
+                           py::class_<FroidurePin_, FroidurePinBase>& thing) {
+      thing.def("__repr__", [](FroidurePin_ const& x) {
+        return to_human_readable_repr(x);
+      });
+
+      thing.def("__copy__",
+                [](FroidurePin_ const& self) { return FroidurePin_(self); });
+
+      thing.def(
+          "init",
+          [](FroidurePin_& self) -> FroidurePin_& { return self.init(); },
+          R"pbdoc(
+:sig=(self: FroidurePin) -> FroidurePin:
+
+Reinitialize a :any:`FroidurePin` object.
+
+This function re-initializes a :any:`FroidurePin` object so that it is in
+the same state as if it had just been default constructed.
+
+:returns: *self*.
+:rtype: FroidurePin
+)pbdoc");
+
+      thing.def(
+          "copy",
+          [](FroidurePin_ const& self) { return FroidurePin_(self); },
+          R"pbdoc(
+:sig=(self: FroidurePin) -> FroidurePin:
+
+Copy a :any:`FroidurePin` object.
+
+:returns: A copy.
+:rtype: FroidurePin
+)pbdoc");
+
+      thing.def(
+          "position_of_generator",
+          [](FroidurePinBase const& self, size_t i) {
+            return self.position_of_generator(i);
+          },
+          py::arg("i"),
+          R"pbdoc(
+:sig=(self: FroidurePin, i: int) -> int:
+
+Returns the position in of the generator with specified index.
+
+In many cases :any:`FroidurePin.current_position` called with argument *i* will
+return *i*, examples of when this will not be the case are:
+
+* there are duplicate generators;
+* :any:`FroidurePin.add_generators` was called after the semigroup was
+  already partially enumerated.
+
+:param i: the index of the generator.
+:type i: int
+
+:returns: The position of the generator with index *i*.
+:rtype: int
+
+:raises LibsemigroupsError:
+  if *i* is greater than or equal to :any:`FroidurePin.number_of_generators`.
+
+:complexity: Constant.
+)pbdoc");
+
+      thing.def("fast_product",
+                &FroidurePin_::fast_product,
+                py::arg("i"),
+                py::arg("j"),
+                R"pbdoc(
+:sig=(self: FroidurePin, i: int, j: int) -> int:
+
+Multiply elements via their indices.
+
+This function returns the position of the product of the element with
+index *i* and the element with index *j*.
+
+This function either:
+
+* follows the path in the right or left Cayley graph from *i* to *j*,
+  whichever is shorter using :any:`froidure_pin.product_by_reduction`; or
+
+* multiplies the elements in positions *i* and *j* together;
+
+whichever is better.
+
+For example, if the complexity of the multiplication is linear and *self* is
+a semigroup of transformations of degree 20, and the shortest paths in the left
+and right Cayley graphs from *i* to *j* are of length 100 and 1131, then it is
+better to just multiply the transformations together.
+
+:param i: the index of the first element to multiply.
+:type i: int
+
+:param j: the index of the second element to multiply.
+:type j: int
+
+:returns: The index of the product.
+:rtype: int
+
+:raises LibsemigroupsError:
+    if the values *i* and *j* are greater than or equal to
+    :any:`FroidurePin.current_size`.
+)pbdoc");
+
+      thing.def("is_finite",
+                &FroidurePin_::is_finite,
+                R"pbdoc(
+:sig=(self: FroidurePin) -> tril:
+
+Check finiteness.
+
+This function returns :any:`tril.true` if the semigroup represented by *self*
+is finite, :any:`tril.false` if it is infinite, and :any:`tril.unknown` if it
+is not known. For some types of elements, such as matrices over the integers,
+for example, it is undecidable, in general, if the semigroup generated by these
+elements is finite or infinite. On the other hand, for other types, such as
+transformation, the semigroup is always finite.
+
+:returns:
+   If the :any:`FroidurePin` object is finite, or not finite, or it isn't possible to
+   answer this question without performing a full enumeration.
+:rtype:
+   tril
+)pbdoc");
+
+      thing.def("is_idempotent",
+                &FroidurePin_::is_idempotent,
+                py::arg("i"),
+                R"pbdoc(
+:sig=(self: FroidurePin, i: int) -> bool:
+
+Check if an element is an idempotent via its index.
+
+This function returns ``True`` if the element in position *i* is an
+idempotent and ``False`` if it is not.
+
+:param i: the index of the element.
+:type i: int
+
+:returns: A value of type ``bool``.
+:rtype: bool
+
+:raises LibsemigroupsError:
+  if *i* is greater than or equal to the size of the :any:`FroidurePin`
+  instance.
+)pbdoc");
+
+      thing.def("number_of_generators",
+                &FroidurePin_::number_of_generators,
+                R"pbdoc(
+:sig=(self: FroidurePin) -> int:
+
+Returns the number of generators.
+
+This function returns the number of generators of a :any:`FroidurePin` instance.
+
+:returns:
+   The number of generators.
+:rtype:
+   int
+)pbdoc");
+
+      thing.def("number_of_idempotents",
+                &FroidurePin_::number_of_idempotents,
+                R"pbdoc(
+:sig=(self: FroidurePin) -> int:
+
+Returns the number of idempotents.
+
+This function returns the number of idempotents in the semigroup represented by
+a :any:`FroidurePin` instance. Calling this function triggers a full enumeration.
+
+:returns:
+   The number of idempotents.
+:rtype:
+   int
+)pbdoc");
+
+      thing.def("reserve",
+                &FroidurePin_::reserve,
+                py::arg("val"),
+                R"pbdoc(
+:sig=(self: FroidurePin, val: int) -> FroidurePin:
+
+Requests the given capacity for elements.
+
+The parameter *val* is also used to initialise certain data members of a
+:any:`FroidurePin` instance. If you know a good upper bound for the size of
+your semigroup, then it might be a good idea to call this function with that
+upper bound as an argument; this can significantly improve the performance of
+the :any:`Runner.run` function, and consequently every other function too.
+
+:param val: the number of elements to reserve space for.
+:type val: int
+
+:returns: *self*.
+:rtype: FroidurePin
+)pbdoc");
+
+      thing.def("to_sorted_position",
+                &FroidurePin_::to_sorted_position,
+                py::arg("i"),
+                R"pbdoc(
+:sig=(self: FroidurePin, i: int) -> int | Undefined:
+
+Returns the sorted index of an element via its index.
+
+This function returns the position of the element with index *i* when the
+elements are sorted, or :any:`UNDEFINED` if *i* is greater than
+:any:`FroidurePin.size`.
+
+:param i: the index of the element.
+:type i: int
+
+:returns: The sorted position of the element with position *i*.
+:rtype: int | Undefined
+ )pbdoc");
+
+      ////////////////////////////////////////////////////////////////////////
+      // Helper functions
+      ////////////////////////////////////////////////////////////////////////
+
+      m.def(
+          "froidure_pin_current_position",
+          [](FroidurePinBase const& fpb, word_type const& w) {
+            return from_int(froidure_pin::current_position(fpb, w));
+          },
+          py::arg("fpb"),
+          py::arg("w"),
+          R"pbdoc(
+:sig=(fp: FroidurePin, w: list[int]) -> int | Undefined:
+:only-document-once:
+
+Returns the position corresponding to a word.
+
+This function returns the position in *fp* corresponding to the the word
+*w* (in the generators). No enumeration is performed, and :any:`UNDEFINED`
+is returned if the position of the element corresponding to *w* cannot be
+determined.
+
+:param fp: the :any:`FroidurePin` instance.
+:type fp: FroidurePin
+
+:param w: a word in the generators.
+:type w: list[int]
+
+:returns: The current position of the element represented by a word.
+:rtype: int | Undefined
+
+:raises LibsemigroupsError:
+    if *w* contains a value that is not strictly less than
+    :any:`FroidurePin.number_of_generators`.
+
+:complexity: :math:`O(n)` where :math:`n` is the length of the word *w*.
+  )pbdoc");
+
+      m.def(
+          "froidure_pin_equal_to",
+          [](FroidurePin_& fp, word_type const& x, word_type const& y) {
+            return froidure_pin::equal_to(fp, x, y);
+          },
+          py::arg("fp"),
+          py::arg("x"),
+          py::arg("y"),
+          R"pbdoc(
+:sig=(fp: FroidurePin, x: list[int], y: list[int]) -> bool:
+:only-document-once:
+
+Check equality of words in the generators.
+
+This function returns ``True`` if the parameters *x* and *y* represent the same
+element of *fp* and ``False`` otherwise.
+
+:param fp: the :any:`FroidurePin` instance.
+:type fp: FroidurePin
+
+:param x: the first word for comparison.
+:type x: list[int]
+
+:param y: the second word for comparison.
+:type y: list[int]
+
+:returns: Whether or not the words *x* and *y* represent the same element.
+:rtype: bool
+
+:raises LibsemigroupsError:
+    if *x* or *y* contains any value that is not strictly less than
+    :any:`FroidurePin.number_of_generators`.
+
+.. note::
+    No enumeration of *fp* is triggered by calls to this function.)pbdoc");
+
+      // Documented in the Element overload.
+      m.def(
+          "froidure_pin_factorisation",
+          [](FroidurePinBase& fpb, FroidurePinBase::element_index_type pos) {
+            return froidure_pin::factorisation(fpb, pos);
+          },
+          py::arg("fpb"),
+          py::arg("pos"),
+          R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+:only-document-once:
+
+Returns a word containing a factorisation (in the generators) of an
+element.
+
+This function returns a word in the generators that equals the given element
+*x*. The key difference between this function and :any:`minimal_factorisation`,
+is that the resulting factorisation may not be minimal.
+
+:param fp: the :any:`FroidurePin` instance.
+:type fp: FroidurePin
+
+:param x: a possible element, or index of element, to factorise.
+:type x: Element | int
+
+:returns: Returns a word in the generators which evaluates to *x*.
+:rtype: list[int]
+
+:raises LibsemigroupsError:
+  if *x* is an ``Element`` and *x* does not belong to *fp*.
+
+:raises LibsemigroupsError:
+  if *x* is an :any:`int` and *x* is greater than or equal to :any:`FroidurePin.size`.
+
+)pbdoc");
+
+      m.def(
+          "froidure_pin_minimal_factorisation",
+          [](FroidurePin_& fp, size_t i) {
+            return froidure_pin::minimal_factorisation(fp, i);
+          },
+          py::arg("fp"),
+          py::arg("i"),
+          R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+:only-document-once:
+Returns a word containing a minimal factorisation (in the generators)
+of an element.
+
+This function returns the short-lex minimum word (if any) in the generators
+that evaluates to *x*.
+
+:param fp: the :any:`FroidurePin` instance.
+:type fp: FroidurePin
+
+:param x: a possible element, or index of element, to factorise.
+:type x: Element | int
+
+:returns: A word in the generators that evaluates to *x*.
+:rtype: list[int]
+
+:raises LibsemigroupsError:
+  if *x* is an ``Element`` and *x* does not belong to *fp*.
+
+:raises LibsemigroupsError:
+  if *x* is an :any:`int` and *x* is greater than or equal to :any:`FroidurePin.size`.
+)pbdoc");
+
+      m.def(
+          "froidure_pin_position",
+          [](FroidurePin_& fp, word_type const& w) {
+            return froidure_pin::position(fp, w);
+          },
+          py::arg("fp"),
+          py::arg("w"),
+          R"pbdoc(
+:sig=(fp: FroidurePin, w: list[int]) -> int:
+:only-document-once:
+
+Returns the position corresponding to a word.
+
+This function returns the position in *fp* corresponding to the word *w*. A
+full enumeration is triggered by calls to this function.
+
+:param fp: the :any:`FroidurePin` instance.
+:type fp: FroidurePin
+
+:param w: a word in the generators.
+:type w: list[int]
+
+:returns: The position of the element represented by a word.
+:rtype: int
+
+:raises LibsemigroupsError:
+    if *w* contains any values that are not strictly less than
+    :any:`FroidurePin.number_of_generators`.
+
+:complexity: :math:`O(n)` where :math:`n` is the length of the word *w*.)pbdoc");
+    }  // bind_froidure_pin_core
+
+    template <typename Element>
+    void bind_froidure_pin_stateless(py::module& m, std::string const& name) {
+      using FroidurePin_ = FroidurePin<Element>;
+
+      static_assert(std::is_void_v<typename FroidurePin_::state_type>);
+
+      std::string pyclass_name = std::string("FroidurePin") + name;
+      py::class_<FroidurePin_, FroidurePinBase> thing(
+          m,
+          pyclass_name.c_str(),
+          // To change the top-level signature of a class, :sig=...: should be
+          // specified here in the class docstring. This is most likely the
+          // desired behaviour if a constructor is not overloaded.
+          // If the constructor is overloaded and the signature of an
+          // individual overload is to be changed, :sig=...: should be
+          // specified in the docstring of that py::init function.
+          R"pbdoc(
+:sig=(self: FroidurePin, gens: list[Element]) -> None:
+
+Class implementing the Froidure-Pin algorithm.
+
+A :any:`FroidurePin` instance represents a semigroup or monoid defined by a
+collection of generators such as transformations, partial permutations, or
+matrices.
+
+In the following documentation the type of the elements of the semigroup
+represented by a :any:`FroidurePin` instance is denoted by ``Element``.
+
+The class :any:`FroidurePin` implements the Froidure-Pin algorithm as described
+in the article :cite:`Froidure1997aa`. A :any:`FroidurePin` instance is defined
+by a generating set, and the main function is :any:`Runner.run`, which
+implements the Froidure-Pin Algorithm. If :any:`Runner.run` is invoked and
+:any:`Runner.finished` returns ``True``, then the size :any:`FroidurePin.size`,
+the left and right Cayley graphs :any:`FroidurePin.left_cayley_graph` and
+:any:`FroidurePin.right_cayley_graph` are determined, and a confluent
+terminating presentation :any:`froidure_pin.rules` for the semigroup is known.
+
+.. seealso:: :any:`Runner`.
+
+.. |name| replace:: :any:`FroidurePin`
+
+.. include:: ../../_static/runner_non_inherit.rst
+)pbdoc");
+
+      bind_froidure_pin_core(m, thing);
+
+      // thing.attr("Element") = py::class_<Element>(m);
+      thing.def("__getitem__", &FroidurePin_::at, py::is_operator());
+      thing.def("__iter__", [](FroidurePin_& self) {
+        self.run();
+        return py::make_iterator(self.begin(), self.end());
+      });
+
+      thing.def(
+          "current_elements",
+          [](FroidurePin_ const& self) {
+            return py::make_iterator(self.begin(), self.end());
+          },
+          R"pbdoc(
+:sig=(self: FroidurePin) -> collections.abc.Iterator[Element]:
+
+Returns an iterator yielding the so-far enumerated elements.
+
+This function returns an iterator yielding the so-far enumerated elements.
+Calling this function does not trigger any enumeration.
+
+:param self: the :any:`FroidurePin` instance.
+:type self: FroidurePin
+
+:returns: An iterator yielding the so-far enumerated elements.
+:rtype: collections.abc.Iterator[Element]
+)pbdoc");
+
+      thing.def(py::init([](std::vector<Element> const& gens) {
+                  return make<FroidurePin>(gens);
+                }),
+                py::arg("gens"),
+                R"pbdoc(
+:sig=(self: FroidurePin, gens: list[Element]) -> None:
+
+Construct from a list of generators.
+
+This function constructs a :any:`FroidurePin` instance with generators
+in the list *gens*.
+
+:param gens: the list of generators.
+:type gens: list[Element]
+
+:raises LibsemigroupsError: if the generators do not all have the same degree.
+)pbdoc");
+
+      // This function should really throw a ValueError if the degree of x is
+      // incompatible with the existing degree, but this doesn't get detected
+      // at the Python level, so a LibsemigroupsError is thrown instead. It
+      // would be possible to intercept this, but it probably isn't worth the
+      // effort.
+
+      thing.def("add_generator",
+                &FroidurePin_::add_generator,
+                py::arg("x"),
+                R"pbdoc(
+:sig=(self: FroidurePin, x: Element) -> FroidurePin:
+
+Add a copy of an element to the generators.
+
+This function can be used to add new generators to an existing
+:any:`FroidurePin` instance in such a way that any previously enumerated data
+is preserved and not recomputed, or copied. This can be faster than recomputing
+the semigroup generated by the old generators and the new generators.This
+function changes the semigroup in-place, thereby invalidating possibly
+previously known data about the semigroup, such as the left or right Cayley
+graphs, number of idempotents, and so on.
+
+The generator in *x* is added regardless of whether or not it is already an
+element of the semigroup. After calling this function the generator *x* will be
+the generator with the largest index. There can be duplicate generators and
+although they do not count as distinct elements, they do count as distinct
+generators.
+
+The :any:`FroidurePin` instance is returned in a state where all of the
+previously enumerated elements which had been multiplied by all of the old
+generators, have now been multiplied by all of the old and new generators. This
+means that after this function is called the semigroup might contain many more
+elements than before (whether it is fully enumerating or not).
+
+:param x: the generator to add.
+:type x: Element
+
+:returns: *self*.
+:rtype: FroidurePin
+
+:raises LibsemigroupsError:
+   if the degree of *x* is incompatible with the existing degree (if any).
+
+:raises TypeError:
+   if *x* is not of the same type as the existing generators (if any).
+)pbdoc");
+
+      thing.def(
+          "add_generators",
+          [](FroidurePin_&               self,
+             std::vector<Element> const& gens) -> FroidurePin_& {
+            froidure_pin::add_generators(self, gens);
+            return self;
+          },
+          py::arg("gens"),
+          R"pbdoc(
+:sig=(self: FroidurePin, gens: list[Element]) -> FroidurePin:
+
+Add a list of generators.
+
+See :any:`add_generator` for a detailed description.
+
+:param gens: the list of generators.
+:type gens: list[Element]
+
+:returns: *self*.
+:rtype: FroidurePin
+
+:raises TypeError:
+   if *gens* is not a list.
+
+:raises TypeError:
+   if any item in *gens* is not of the same type as the existing generators (if any).
+
+:raises LibsemigroupsError:
+   if the degree of any item in *gens* is incompatible with the existing degree (if any).
+)pbdoc");
+
+      thing.def(
+          "current_position",
+          [](FroidurePin_ const& self, Element const& x) {
+            return from_int(self.current_position(x));
+          },
+          py::arg("x").noconvert(),
+          R"pbdoc(
+:sig=(self: FroidurePin, x: Element) -> int | Undefined:
+
+Find the position of an element with no enumeration.
+
+This function returns the position of the element *x* in the semigroup if it
+is already known to belong to the semigroup or :any:`UNDEFINED`. This
+function finds the position of the element *x* if it is already known to belong
+to a :any:`FroidurePin` instance, and :any:`UNDEFINED` if not. If a
+:any:`FroidurePin` instance is not yet fully enumerated, then this function
+may return :any:`UNDEFINED` when *x* does belong to the fully enumerated instance.
+
+:param x: a possible element.
+:type x: Element
+
+:returns:
+    The position of *x* if it belongs to a :any:`FroidurePin` instance and
+    :any:`UNDEFINED` if not.
+:rtype: int | Undefined
+
+.. seealso::  :any:`position` and :any:`sorted_position`.
+)pbdoc");
+
+      thing.def(
+          "idempotents",
+          [](FroidurePin_& self) {
+            return py::make_iterator(self.cbegin_idempotents(),
+                                     self.cend_idempotents());
+          },
+          R"pbdoc(
+:sig=(self: FroidurePin) -> collections.abc.Iterator[Element]:
+
+Returns an iterator yielding the idempotents.
+
+If ``next`` is called on the returned iterator, then it yields the first
+idempotent in the semigroup, and every subsequent call to ``next`` yields
+the next idempotent.
+
+:returns:
+   An iterator yielding the idempotents.
+:rtype:
+   collections.abc.Iterator[Element]
+)pbdoc");
+
+      thing.def(
+          "sorted_elements",
+          [](FroidurePin_& self) {
+            return py::make_iterator(self.cbegin_sorted(), self.cend_sorted());
+          },
+          R"pbdoc(
+:sig=(self: FroidurePin) -> collections.abc.Iterator[Element]:
+
+Returns an iterator yielding the sorted elements of a :any:`FroidurePin`
+instance.
+
+:returns:
+  An iterator yielding the sorted elements.
+:rtype:
+  collections.abc.Iterator[Element]
+)pbdoc");
+
+      thing.def(
+          "closure",
+          [](FroidurePin_&               self,
+             std::vector<Element> const& gens) -> FroidurePin_& {
+            froidure_pin::closure(self, gens);
+            return self;
+          },
+          py::arg("gens"),
+          R"pbdoc(
+:sig=(self: FroidurePin, gens: list[Element]) -> FroidurePin:
+
+Add non-redundant generators in list.
+
+This function differs from :any:`FroidurePin.add_generators` in that it
+tries to add the new generators one by one, and only adds those generators that
+are not products of existing generators (including any new generators that were
+added before). The generators are added in the order they occur in *gens*.
+
+This function changes a :any:`FroidurePin` instance in-place, thereby invalidating
+some previously computed information, such as the left or right Cayley graphs,
+or number of idempotents, for example.
+
+:param gens: the list of generators.
+:type gens: list[Element]
+
+:returns: *self*.
+:rtype: FroidurePin
+
+:raises LibsemigroupsError:
+    if any of the elements in *gens* do not have degree compatible with any
+    existing elements of the :any:`FroidurePin` instance.
+
+:raises LibsemigroupsError:
+    if the elements in *gens* do not all have the same degree.
+)pbdoc");
+
+      thing.def("contains",
+                &FroidurePin_::contains,
+                py::arg("x"),
+                R"pbdoc(
+:sig=(self: FroidurePin, x: Element) -> bool:
+
+Test membership of an element.
+
+This function returns ``True`` if *x* belongs to a :any:`FroidurePin`
+instance and ``False`` if it does not.
+
+:param x: a possible element.
+:type x: Element
+
+:returns:
+  Whether or not the element *x* is contained in a :any:`FroidurePin`
+  instance.
+:rtype: bool
+      )pbdoc");
+
+      thing.def(
+          "copy_add_generators",
+          [](FroidurePin_&               self,
+             std::vector<Element> const& gens) -> FroidurePin_ {
+            return froidure_pin::copy_add_generators(self, gens);
+          },
+          py::arg("gens"),
+          R"pbdoc(
+:sig=(self: FroidurePin, gens: list[Element]) -> FroidurePin:
+
+Copy and add a list of generators.
+
+This function is equivalent to copying a :any:`FroidurePin`
+instance and then calling :any:`FroidurePin.add_generators` on the copy.
+But this function avoids copying the parts of the initial instance that are
+immediately invalidated by :any:`FroidurePin.add_generators`.
+
+:param gens: the list of generators.
+:type gens: list[Element]
+
+:returns:
+   A new :any:`FroidurePin` instance by value generated by the generators of
+   *self* and *gens*.
+:rtype:
+   FroidurePin
+
+:raises LibsemigroupsError:
+    if any of the elements in *gens* do not have degree compatible with any
+    existing elements of the :any:`FroidurePin` instance.
+
+:raises LibsemigroupsError:
+    if the elements in *gens* do not all have the same degree.
+)pbdoc");
+
+      thing.def(
+          "copy_closure",
+          [](FroidurePin_&               self,
+             std::vector<Element> const& gens) -> FroidurePin_ {
+            return froidure_pin::copy_closure(self, gens);
+          },
+          py::arg("gens"),
+          R"pbdoc(
+:sig=(self: FroidurePin, gens: list[Element]) -> FroidurePin:
+
+Copy and add non-redundant generators.
+
+This function is equivalent to copying a :any:`FroidurePin`
+instance and then calling :any:`closure` on the copy. But this function
+avoids copying the parts of the initial :any:`FroidurePin` instance that are
+immediately discarded by :any:`closure`.
+
+:param gens: the list of generators.
+:type gens: list[Element]
+
+:returns:
+   A new :any:`FroidurePin` instance by value generated by the generators of
+   *self* and the non-redundant generators in *gens*.
+:rtype:
+   FroidurePin
+
+:raises LibsemigroupsError:
+    if any of the elements in *gens* do not have degree compatible with any
+    existing elements of the :any:`FroidurePin` instance.
+
+:raises LibsemigroupsError:
+    if the elements in *gens* do not all have the same degree.
+)pbdoc");
+
+      thing.def(
+          "generator",
+          [](FroidurePin_ const& self, size_t i) -> Element const& {
+            return self.generator(i);
+          },
+          py::return_value_policy::reference_internal,
+          py::arg("i"),
+          R"pbdoc(
+:sig=(self: FroidurePin, i: int) -> Element:
+
+Returns the generator with specified index.
+
+This function returns the generator with index *i*, where the order
+is that in which the generators were added at construction, or via
+:any:`init`, :any:`add_generator`, :any:`add_generators`,
+:any:`closure`, :any:`copy_closure`, or :any:`copy_add_generators`.
+
+:param i: the index of a generator.
+:type i: int
+
+:returns: The generator with given index.
+:rtype: Element
+
+:raises LibsemigroupsError:
+  if *i* is greater than or equal to :any:`number_of_generators()`.
+)pbdoc");
+
+      thing.def(
+          "init",
+          [](FroidurePin_&               self,
+             std::vector<Element> const& gens) -> FroidurePin_& {
+            FroidurePin_::throw_if_inconsistent_degree(gens.cbegin(),
+                                                       gens.cend());
+            return froidure_pin::init(self, gens);
+          },
+          py::arg("gens"),
+          R"pbdoc(
+:sig=(self: FroidurePin, gens: list[Element]) -> FroidurePin:
+
+Reinitialize a :any:`FroidurePin` object from a list of generators.
+
+This function re-initializes a :any:`FroidurePin` object so that it is
+in the same state as if it had just been constructed from *gens*.
+
+:param gens: the generators.
+:type gens: list[Element]
+
+:returns: *self*.
+:rtype: FroidurePin
+
+:raises LibsemigroupsError:
+    if the elements in *gens* do not all have the same degree.
+)pbdoc");
+
+      thing.def(
+          "position",
+          [](FroidurePin_& self, Element const& x) { return self.position(x); },
+          py::arg("x"),
+          R"pbdoc(
+:sig=(self: FroidurePin, x: Element) -> int | Undefined:
+
+Find the position of an element with enumeration if necessary.
+
+This function the position of *x* in a :any:`FroidurePin` instance, or
+:any:`UNDEFINED` if *x* is not an element.
+
+:param x: a possible element.
+:type x: Element
+
+:returns: The position of *x*.
+:rtype: int | Undefined
+
+.. seealso::  :any:`current_position` and :any:`sorted_position`.
+)pbdoc");
+
+      thing.def(
+          "sorted_at",
+          [](FroidurePin_& self, size_t i) -> Element const& {
+            return self.sorted_at(i);
+          },
+          py::return_value_policy::reference_internal,
+          py::arg("i"),
+          R"pbdoc(
+:sig=(self: FroidurePin, i: int) -> Element:
+
+Access element specified by sorted index with bound checks.
+
+This function triggers a full enumeration, and the parameter *i* is
+the index when the elements are sorted.
+
+:param i: the sorted index of the element to access.
+:type i: int
+
+:returns: The element with index *i* (if any).
+:rtype: Element
+
+:raises LibsemigroupsError:
+  if *i* is greater than or equal to the return value of
+  :any:`FroidurePin.size`.
+)pbdoc");
+
+      thing.def("sorted_position",
+                &FroidurePin_::sorted_position,
+                py::arg("x"),
+                R"pbdoc(
+:sig=(self: FroidurePin, x: Element) -> int | Undefined:
+
+Returns the sorted index of an element.
+
+This function returns the position of *x* in the elements of a
+:any:`FroidurePin` when they are sorted, or :any:`UNDEFINED`
+if *x* is not an element.
+
+:param x: a possible element.
+:type x: Element
+
+:returns: The position of *x* in the sorted list of elements.
+:rtype: int | Undefined
+
+.. seealso::  :any:`current_position` and :any:`position`.
+)pbdoc");
+
+      ////////////////////////////////////////////////////////////////////////
+      // Helper functions
+      ////////////////////////////////////////////////////////////////////////
+
+      // Documented in the size_t overload.
+      m.def(
+          "froidure_pin_factorisation",
+          [](FroidurePin_& fp, Element const& x) {
+            return froidure_pin::factorisation(fp, x);
+          },
+          py::arg("fp"),
+          py::arg("x"),
+          R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+)pbdoc");
+
+      m.def(
+          "froidure_pin_minimal_factorisation",
+          [](FroidurePin_& fp, Element const& x) {
+            return froidure_pin::minimal_factorisation(fp, x);
+          },
+          py::arg("fp"),
+          py::arg("x"),
+          R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+)pbdoc");
+
+      m.def(
+          "froidure_pin_to_element",
+          [](FroidurePin_& fp, word_type const& w) -> Element const& {
+            return froidure_pin::to_element(fp, w);
+          },
+          py::return_value_policy::reference_internal,
+          py::arg("fp"),
+          py::arg("w").noconvert(),
+          R"pbdoc(
+:sig=(fp: FroidurePin, w: list[int]) -> Element:
+:only-document-once:
+
+Convert a word in the generators to an element.
+
+This function returns the element of *fp* obtained by evaluating *w*.
+
+:param fp: the :any:`FroidurePin` instance.
+:type fp: FroidurePin
+
+:param w: the word in the generators to evaluate.
+:type w: list[int]
+
+:returns: The element of *fp* corresponding to the word *w*.
+:rtype: Element
+
+:raises LibsemigroupsError:
+  if *w* is not a valid word in the generators, i.e. if it contains a value
+  greater than or equal to the number of generators.
+
+.. note::
+  No enumeration of *fp* is triggered by calls to this function.
+
+.. seealso::  :any:`current_position`.
+)pbdoc");
+    }  // bind_froidure_pin_stateless
+
+    template <typename FroidurePin_>
+    auto from_element(FroidurePin_ const&                    fp,
+                      typename FroidurePin_::const_reference x) {
+      return ElementStateful<FroidurePin_>(x, fp.state().get());
+    }
+
+    template <typename FroidurePin_,
+              typename Range,
+              typename = std::enable_if_t<rx::is_input_range<Range>::value>>
+    auto from_element(FroidurePin_ const& fp, Range r) {
+      auto rr
+          = r | rx::transform([&fp](typename FroidurePin_::const_reference x) {
+              return from_element(fp, x);
+            });
+      return py::make_iterator(rx::begin(rr), rx::end(rr));
+    }
+
+    template <typename FroidurePin_, typename Iterator>
+    auto from_element(FroidurePin_ const& fp, Iterator first, Iterator last) {
+      return from_element(fp, rx::iterator_range(first, last));
+    }
+
+    template <typename FroidurePin_>
+    typename FroidurePin_::const_reference
+    to_element(ElementStateful<FroidurePin_> const& x) {
+      return x.element;
+    }
+
+    template <typename FroidurePin_>
+    auto to_element(std::vector<ElementStateful<FroidurePin_>> const& vec) {
+      std::vector<typename FroidurePin_::element_type> copy;
+      for (auto const& x : vec) {
+        copy.push_back(x.element);
+      }
+      return copy;
+    }
+
+    template <typename FroidurePin_,
+              typename Word,
+              typename = std::enable_if_t<std::is_same_v<std::string, Word>
+                                          || std::is_same_v<word_type, Word>>>
+    typename FroidurePin_::element_type to_element(FroidurePin_ const& fp,
+                                                   Word const&         x) {
+      return typename FroidurePin_::element_type(*fp.state().get(), x);
+    }
+
+    template <typename FroidurePin_,
+              typename Word,
+              typename = std::enable_if_t<!std::is_integral_v<Word>>>
+    std::vector<typename FroidurePin_::element_type>
+    to_element(FroidurePin_ const& fp, std::vector<Word> const& vec) {
+      std::vector<typename FroidurePin_::element_type> copy;
+      for (auto const& x : vec) {
+        copy.push_back(to_element(fp, x));
+      }
+      return copy;
+    }
+
+    template <typename Element>
+    void bind_froidure_pin_stateful(py::module& m, std::string const& name) {
+      using FroidurePin_ = FroidurePin<Element>;
+
+      static_assert(!std::is_void_v<typename FroidurePin_::state_type>);
+
+      std::string pyclass_name = std::string("FroidurePin") + name;
+      py::class_<FroidurePin_, FroidurePinBase> thing(m, pyclass_name.c_str());
+
+      bind_froidure_pin_core(m, thing);
+
+      if constexpr (!std::is_same_v<detail::TCE, Element>) {
+        // TODO implement for TCE also
+        using Word = typename Element::native_word_type;
+        thing.def(py::init(
+            [](std::vector<ElementStateful<FroidurePin_>> const& gens) {
+              using state_type       = typename FroidurePin_::state_type;
+              auto         real_gens = to_element(gens);
+              FroidurePin_ result(
+                  std::make_shared<state_type>(*gens[0].state_ptr));
+              result.add_generators(real_gens.begin(), real_gens.end());
+              return result;
+            }));
+
+        thing.def(
+            "__getitem__",
+            [](FroidurePin_& self, size_t i) {
+              return from_element(self, self.at(i));
+            },
+            py::is_operator());
+
+        thing.def("__iter__", [](FroidurePin_& self) {
+          self.run();
+          return from_element(self, self.begin(), self.end());
+        });
+
+        thing.def("add_generator",
+                  [](FroidurePin_&                        self,
+                     ElementStateful<FroidurePin_> const& x) -> FroidurePin_& {
+                    return self.add_generator(to_element(x));
+                  });
+
+        thing.def("add_generator",
+                  [](FroidurePin_& self, Word const& x) -> FroidurePin_& {
+                    return self.add_generator(to_element(self, x));
+                  });
+
+        thing.def("add_generators",
+                  [](FroidurePin_&                                     self,
+                     std::vector<ElementStateful<FroidurePin_>> const& gens)
+                      -> FroidurePin_& {
+                    froidure_pin::add_generators(self, to_element(gens));
+                    return self;
+                  });
+
+        thing.def("add_generators",
+                  [](FroidurePin_&            self,
+                     std::vector<Word> const& gens) -> FroidurePin_& {
+                    froidure_pin::add_generators(self, to_element(self, gens));
+                    return self;
+                  });
+
+        thing.def("closure",
+                  [](FroidurePin_&                                     self,
+                     std::vector<ElementStateful<FroidurePin_>> const& gens)
+                      -> FroidurePin_& {
+                    froidure_pin::closure(self, to_element(gens));
+                    return self;
+                  });
+
+        thing.def("closure",
+                  [](FroidurePin_&            self,
+                     std::vector<Word> const& gens) -> FroidurePin_& {
+                    froidure_pin::closure(self, to_element(self, gens));
+                    return self;
+                  });
+
+        thing.def(
+            "contains",
+            [](FroidurePin_& self, ElementStateful<FroidurePin_> const& x) {
+              return self.contains(to_element(x));
+            });
+
+        thing.def("contains", [](FroidurePin_& self, Word const& x) {
+          return self.contains(to_element(self, x));
+        });
+
+        thing.def("copy_add_generators",
+                  [](FroidurePin_&                                     self,
+                     std::vector<ElementStateful<FroidurePin_>> const& gens)
+                      -> FroidurePin_ {
+                    return froidure_pin::copy_add_generators(self,
+                                                             to_element(gens));
+                  });
+
+        thing.def("copy_add_generators",
+                  [](FroidurePin_&            self,
+                     std::vector<Word> const& gens) -> FroidurePin_ {
+                    return froidure_pin::copy_add_generators(
+                        self, to_element(self, gens));
+                  });
+
+        thing.def("copy_closure",
+                  [](FroidurePin_&                                     self,
+                     std::vector<ElementStateful<FroidurePin_>> const& gens)
+                      -> FroidurePin_ {
+                    return froidure_pin::copy_closure(self, to_element(gens));
+                  });
+
+        thing.def("copy_closure",
+                  [](FroidurePin_&            self,
+                     std::vector<Word> const& gens) -> FroidurePin_ {
+                    return froidure_pin::copy_closure(self,
+                                                      to_element(self, gens));
+                  });
+
+        thing.def("current_elements", [](FroidurePin_ const& self) {
+          return from_element(self, self.begin(), self.end());
+        });
+
+        thing.def("current_position",
+                  [](FroidurePin_ const&                  self,
+                     ElementStateful<FroidurePin_> const& x) {
+                    return from_int(self.current_position(to_element(x)));
+                  });
+
+        thing.def("current_position", [](FroidurePin_& self, Word const& x) {
+          return from_int(self.current_position(to_element(self, x)));
+        });
+
+        thing.def("generator", [](FroidurePin_ const& self, size_t i) {
+          return from_element(self, self.generator(i));
+        });
+
+        thing.def("idempotents", [](FroidurePin_& self) {
+          return from_element(
+              self, self.cbegin_idempotents(), self.cend_idempotents());
+        });
+
+        thing.def("init",
+                  [](FroidurePin_&                                     self,
+                     std::vector<ElementStateful<FroidurePin_>> const& gens)
+                      -> FroidurePin_& {
+                    return froidure_pin::init(self, to_element(gens));
+                  });
+
+        thing.def("init",
+                  [](FroidurePin_&            self,
+                     std::vector<Word> const& gens) -> FroidurePin_& {
+                    return froidure_pin::init(self, to_element(self, gens));
+                  });
+
+        thing.def(
+            "position",
+            [](FroidurePin_& self, ElementStateful<FroidurePin_> const& x) {
+              return self.position(to_element(x));
+            });
+
+        thing.def("position", [](FroidurePin_& self, Word const& x) {
+          return self.position(to_element(self, x));
+        });
+
+        thing.def("sorted_at", [](FroidurePin_& self, size_t i) {
+          return from_element(self, self.sorted_at(i));
+        });
+
+        thing.def(
+            "sorted_position",
+            [](FroidurePin_& self, ElementStateful<FroidurePin_> const& x) {
+              return self.sorted_position(to_element(x));
+            });
+
+        thing.def("sorted_position", [](FroidurePin_& self, Word const& x) {
+          return self.sorted_position(to_element(self, x));
+        });
+
+        thing.def("sorted_elements", [](FroidurePin_& self) {
+          return from_element(self, self.cbegin_sorted(), self.cend_sorted());
+        });
+
+        ////////////////////////////////////////////////////////////////////////
+        // Helpers
+        ////////////////////////////////////////////////////////////////////////
+
+        m.def(
+            "froidure_pin_factorisation",
+            [](FroidurePin_& fp, ElementStateful<FroidurePin_> const& x) {
+              return froidure_pin::factorisation(fp, to_element(x));
+            },
+            R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+)pbdoc");
+
+        m.def(
+            "froidure_pin_factorisation",
+            [](FroidurePin_& fp, Word const& x) {
+              return froidure_pin::factorisation(fp, to_element(fp, x));
+            },
+            R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+)pbdoc");
+
+        m.def(
+            "froidure_pin_minimal_factorisation",
+            [](FroidurePin_& fp, ElementStateful<FroidurePin_> const& x) {
+              return froidure_pin::minimal_factorisation(fp, to_element(x));
+            },
+            R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+)pbdoc");
+
+        m.def(
+            "froidure_pin_minimal_factorisation",
+            [](FroidurePin_& fp, Word const& x) {
+              return froidure_pin::minimal_factorisation(fp, to_element(fp, x));
+            },
+            R"pbdoc(
+:sig=(fp: FroidurePin, x: Element | int) -> list[int]:
+)pbdoc");
+
+        m.def("froidure_pin_to_element",
+              [](FroidurePin_& fp, word_type const& w) {
+                return from_element(fp, froidure_pin::to_element(fp, w));
+              });
+      }
+    }  // bind_froidure_pin_stateful
+  }    // namespace
+
+  void init_froidure_pin(py::module& m) {
+    // TODO(0) uncomment bind_froidure_pin<HPCombiTransf<16>>(m, "Transf16");
+    bind_froidure_pin_stateless<Transf<0, uint8_t>>(m, "Transf1");
+    bind_froidure_pin_stateless<Transf<0, uint16_t>>(m, "Transf2");
+    bind_froidure_pin_stateless<Transf<0, uint32_t>>(m, "Transf4");
+    // TODO(0) uncomment bind_froidure_pin_stateless<LeastPPerm<16>>(m,
+    // "PPerm16");
+    bind_froidure_pin_stateless<PPerm<0, uint8_t>>(m, "PPerm1");
+    bind_froidure_pin_stateless<PPerm<0, uint16_t>>(m, "PPerm2");
+    bind_froidure_pin_stateless<PPerm<0, uint32_t>>(m, "PPerm4");
+    // TODO(0) uncomment bind_froidure_pin_stateless<LeastPerm<16>>(m,
+    // "Perm16");
+    bind_froidure_pin_stateless<Perm<0, uint8_t>>(m, "Perm1");
+    bind_froidure_pin_stateless<Perm<0, uint16_t>>(m, "Perm2");
+    bind_froidure_pin_stateless<Perm<0, uint32_t>>(m, "Perm4");
+
+    bind_froidure_pin_stateless<Bipartition>(m, "Bipartition");
+    bind_froidure_pin_stateless<PBR>(m, "PBR");
+
+    bind_froidure_pin_stateless<BMat8>(m, "BMat8");
+    bind_froidure_pin_stateless<BMat<>>(m, "BMat");
+    bind_froidure_pin_stateless<IntMat<0, 0, int64_t>>(m, "IntMat");
+    bind_froidure_pin_stateless<MaxPlusMat<0, 0, int64_t>>(m, "MaxPlusMat");
+    bind_froidure_pin_stateless<MinPlusMat<0, 0, int64_t>>(m, "MinPlusMat");
+    bind_froidure_pin_stateless<ProjMaxPlusMat<0, 0, int64_t>>(
+        m, "ProjMaxPlusMat");
+    bind_froidure_pin_stateless<MaxPlusTruncMat<0, 0, 0, int64_t>>(
+        m, "MaxPlusTruncMat");
+    bind_froidure_pin_stateless<MinPlusTruncMat<0, 0, 0, int64_t>>(
+        m, "MinPlusTruncMat");
+    bind_froidure_pin_stateless<NTPMat<0, 0, 0, 0, int64_t>>(m, "NTPMat");
+
+    bind_froidure_pin_stateful<
+        detail::KBE<KnuthBendix<std::string, detail::RewriteFromLeft>>>(
+        m, "KBEStringRewriteFromLeft");
+    bind_froidure_pin_stateful<
+        detail::KBE<KnuthBendix<std::string, detail::RewriteTrie>>>(
+        m, "KBEStringRewriteTrie");
+    bind_froidure_pin_stateful<
+        detail::KBE<KnuthBendix<word_type, detail::RewriteFromLeft>>>(
+        m, "KBEWordRewriteFromLeft");
+    bind_froidure_pin_stateful<
+        detail::KBE<KnuthBendix<word_type, detail::RewriteTrie>>>(
+        m, "KBEWordRewriteTrie");
+
+    bind_froidure_pin_stateful<detail::KE<std::string>>(m, "KEString");
+    bind_froidure_pin_stateful<detail::KE<detail::MultiView<std::string>>>(
+        m, "KEMultiViewString");
+    bind_froidure_pin_stateful<detail::KE<word_type>>(
+        m, "KEWord");  // codespell:ignore keword
+
+    bind_froidure_pin_stateful<detail::TCE>(m, "TCE");
+  }
+}  // namespace libsemigroups
