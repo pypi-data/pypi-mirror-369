@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: aws-toolbox
+Version: 0.0.6
+Summary: AWS Toolbox
+Home-page: https://github.com/gmarciani/aws-toolbox
+Author: Giacomo Marciani
+License: MIT License
+Project-URL: Changelog, https://github.com/gmarciani/aws-toolbox/CHANGELOG.md
+Project-URL: Issue Tracker, https://github.com/gmarciani/aws-toolbox/issues
+Project-URL: Documentation, https://github.com/gmarciani/aws-toolbox
+Classifier: Development Status :: 1 - Planning
+Classifier: Environment :: Console
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3~=1.40.8
+Requires-Dist: click~=8.2.1
+Requires-Dist: colored~=2.3.1
+Requires-Dist: pyfiglet~=1.0.3
+Requires-Dist: setuptools~=80.9.0
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+ # AWS Toolbox
+AWS Toolbox extends the AWS CLI commands with some handy solutions, such as
+executing a command on every region and resources matching a given pattern.
+
+## Installation
+```
+pip install aws-toolbox
+```
+
+## Usage
+
+### DryRun Mode
+Every command can be executed in dryrun mode, by adding the option `--dryrun`.
+With dryrun mode, the actual AWS operations will be logged but not executed.
+
+For example:
+```
+~> aws-toolbox s3 delete-bucket --name "integ-tests-.*" --dryrun
+INFO:aws_toolbox.commands.s3.delete_bucket:Deleting Buckets with name pattern integ-tests-.*, dryrun True
+INFO:botocore.credentials:Found credentials in shared credentials file: ~/.aws/credentials
+INFO:aws_toolbox.commands.s3.delete_bucket:The following 2 buckets would be deleted, but dryrun mode is enabled and nothing will be done: test-1, test-2, test-3
+```
+
+### S3
+Delete (emptying, if necessary) all buckets whose name matches the provided regular expression:
+```
+aws-toolbox s3 delete-bucket \
+  --name "cdk-hnb659fds-assets-319414405305-(?\!us-east-1|eu-west-1)"
+```
+
+### Secrets Manager
+List all secrets whose name and regions match the provided regular expressions:
+```
+aws-toolbox secretsmanager list-secrets \
+  --region "us-west-.*" \
+  --name ".*"
+```
+
+Delete all secrets whose name and regions match the provided regular expressions:
+```
+aws-toolbox secretsmanager delete-secrets \
+  --region "us-west-.*" \
+  --name "Sample.*"
+```
+
+### EC2 AMIs
+```
+aws-toolbox ec2 delete-ami \
+  --region "eu-.*" \
+  --owners 319414405305 \
+  --name ".*aws-parallelcluster.*" \
+  --before 2023-06-01T00:00:00.000Z
+```
+
+### EC2 Snapshots
+Delete (emptying, if necessary) all snapshots whose name matches the provided regular expression:
+```
+aws-toolbox ec2 delete-snapshot \
+  --region "eu-.*" \
+  --owners 319414405305 \
+  --description "Copied for DestinationAmi .*"
+```
+
+### CloudFormation Stacks
+Delete all stacks whose name and region matches the provided patterns and have been created before given datetime:
+```
+aws-toolbox cloudformation delete-stacks \
+  --region "us-.*" \
+  --name "aws-parallelcluster-3-8-0-amzn2.*"
+  --before 2023-12-01T00:00:00.000Z
+```
