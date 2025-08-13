@@ -1,0 +1,17 @@
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2024 J. D. Mitchell
+#
+# Distributed under the terms of the GPL license version 3.
+#
+# The full license is in the file LICENSE, distributed with this software.
+
+"""
+This page contains the documentation for the ``blocks`` subpackage, that
+contains helper functions for the :any:`Blocks` class.
+"""
+
+from _libsemigroups_pybind11 import (  # pylint: disable=no-name-in-module,unused-import
+    blocks_underlying_partition as underlying_partition,
+    Blocks,
+)
