@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: auto_remove_with_dependencies
+Version: 0.3.2
+Summary: A pip auxiliar that uninstall the packages passed and its unused dependencies.
+Home-page: https://github.com/mayronjr/pip-remove-with-dependencies
+Author: Mayron Moura Soares Junior
+Author-email: mayronjunior5@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: packaging>=20.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# auto_remove_with_dependencies
+
+A CLI tool that removes a Python package along with all of its unused dependencies.
+
+Useful when you want to clean up after uninstalling something like `pandas`, and don't want to leave `numpy`, `tzdata`, and other unused packages behind.
+
+# How to use
+
+After installing it, you can use it as ```auto_remove uninstall modules*```.
+
+You can pass any amount of modules that you want. It will analyse all of them.
+
+To not delete your entire enviroment, the CLI client only execute the modifications if you provide the arg ```--commit```. If it is ommited, it will only show what modules would be uninstalled.
