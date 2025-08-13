@@ -1,0 +1,53 @@
+# YUA Compressor (`yua-compressor`)
+
+> 自作フォーマット + 可逆圧縮 (zlib / zstd) + **AES-GCM暗号化（任意）** のPythonライブラリ & CLI。
+
+- 拡張子: 推奨 `*.yuac`
+- 形式: ヘッダー（固定長+可変） + ペイロード
+- 暗号化: AES-256-GCM（`cryptography`）/ PBKDF: scrypt（塩付き）
+- 圧縮: zlib（標準）/ zstd（オプション依存 `pip install yua-compressor[zstd]`）
+
+## インストール
+```bash
+pip install .
+# もしくは zstd有効化
+pip install .[zstd]
+```
+
+## 使い方（Python API）
+```python
+from yua_compressor import compress_bytes, decompress_bytes
+
+data = b"Hello YUA!" * 1000
+blob = compress_bytes(data, algo="zstd", level=3, password="secret")  # bytes -> .yuac相当
+plain = decompress_bytes(blob, password="secret")
+assert plain == data
+```
+
+## CLI
+```bash
+# 圧縮
+yuac c input.bin -o output.yuac -a zstd -l 6 -p "pass"
+# 展開
+yuac x output.yuac -o restored.bin -p "pass"
+```
+
+## ヘッダー仕様（v1）
+```
+offset size desc
+0      4    magic = "YUAC"
+4      1    version = 1
+5      1    flags: bit0 = encrypted(1/0)
+6      1    algo: 0=store 1=zlib 2=zstd
+7      1    reserved
+8      8    original_size (little endian, uint64)
+16     16   checksum = blake2s(original, 16 bytes)
+32     16   salt (present if encrypted)
+48     12   nonce (present if encrypted)
+# 以降 payload:
+#   encrypted ? AES-GCM(ciphertext) : compressed-bytes
+```
+検証は復号→伸長→チェックサム照合の順で行います。
+
+## ライセンス
+MIT

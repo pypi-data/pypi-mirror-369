@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yua-compressor"
+version = "0.1.2"
+description = "YUA Compressor: custom compression format with optional AES-GCM encryption (zlib/zstd)"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "結愛ちゃん", email = "example@example.com" }]
+requires-python = ">=3.9"
+dependencies = [
+    "cryptography>=42.0.0",
+]
+keywords = ["compression", "zstd", "zlib", "encryption", "AES-GCM", "archive", "cli"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://example.com/yua-compressor"
+Repository = "https://example.com/yua-compressor"
+
+[project.optional-dependencies]
+zstd = ["zstandard>=0.22.0"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[project.scripts]
+yuac = "yua_compressor.__main__:main"
