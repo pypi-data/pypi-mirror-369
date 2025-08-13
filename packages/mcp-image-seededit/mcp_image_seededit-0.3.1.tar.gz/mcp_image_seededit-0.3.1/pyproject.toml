@@ -1,0 +1,87 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-image-seededit"
+version = "0.3.1"
+description = "MCP服务器，提供火山引擎SeedEdit 3.0图像指令编辑和人物写真生成功能"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    {name = "fengjinchao", email = "your-email@example.com"},
+]
+maintainers = [
+    {name = "fengjinchao", email = "your-email@example.com"},
+]
+keywords = [
+    "mcp",
+    "image-editing",
+    "ai",
+    "volcengine",
+    "seededit",
+    "portrait-generation",
+    "model-context-protocol"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "httpx[socks]>=0.28.1",
+    "mcp[cli]>=1.12.0",
+    "volcengine>=1.0.0",
+    "pillow>=9.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/mcp-image-seededit"
+Repository = "https://github.com/yourusername/mcp-image-seededit"
+Documentation = "https://github.com/yourusername/mcp-image-seededit#readme"
+"Bug Tracker" = "https://github.com/yourusername/mcp-image-seededit/issues"
+
+[project.scripts]
+mcp-image-seededit = "mcp_image_seededit.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_image_seededit"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src/mcp_image_seededit",
+    "/README.md",
+    "/LICENSE",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
