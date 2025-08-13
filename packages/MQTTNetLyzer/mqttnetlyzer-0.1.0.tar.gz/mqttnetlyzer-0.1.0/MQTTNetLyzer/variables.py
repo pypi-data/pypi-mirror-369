@@ -1,0 +1,16 @@
+input_pcap_file = ''
+batch_size = 10000
+display_batch_status = True
+display_batch_stats = False
+restricted_topics = []
+output_csv_file = 'output.csv'
+csv_initialized = False
+csv_writer_batch_size = 10000
+label = 'normal'
+default_keep_alive = 60
+module_dir = ''
+total_packets_count = 0
+total_mqtt_packets_count = 0
+sessions_count = 0
+active_sessions = {}
+completed_sessions = []
