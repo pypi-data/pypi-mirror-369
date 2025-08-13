@@ -1,0 +1,82 @@
+QLineEdit, QLineEdit::clear-button, QDoubleSpinBox, QSpinBox, QComboBox {
+    background-color: @input-color;
+    border: 1px solid @border-color;
+    border-radius: 5px;
+    padding: 4px 4px;
+}
+
+QLineEdit::disabled,
+QSpinBox::disabled {
+    background-color: @disabled-background;
+    border: 0px;
+    color: @disabled-color;
+}
+
+QLineEdit[status=information] {
+    background-color: @disabled-background;
+    border: 0px;
+    color: @on-background;
+}
+
+QSpinBox::up-button,
+QDoubleSpinBox::up-button {
+    background-image: url("@arrow-up-image-icon");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 15px;       
+    height: 15px;
+}
+
+QSpinBox::up-button:hover,
+QDoubleSpinBox::up-button:hover,
+QSpinBox::down-button:hover,
+QDoubleSpinBox::down-button:hover {
+    background-color: @hover-arrow-color;
+    border-radius: 2px;
+}
+
+QSpinBox::up-button:disabled,
+QDoubleSpinBox::up-button:disabled {
+    background-image: url("@arrow-up-disabled-image-icon");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: @disabled-background;
+}
+
+QSpinBox::down-button,
+QDoubleSpinBox::down-button {
+    background-image: url("@arrow-down-image-icon");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 15px;       
+    height: 15px;
+}
+
+QSpinBox::down-button:disabled,
+QDoubleSpinBox::down-button:disabled {
+    background-image: url("@arrow-down-disabled-image-icon");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: @disabled-background;
+}
+
+
+QComboBox::drop-down:button {
+    background-image: url("@arrow-down-image-icon");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: @input-color;
+    border-radius: @border-radius;
+}
+
+QComboBox::drop-down:hover {
+    background-color: @hover-arrow-color;
+}
+
+QComboBox::drop-down:disabled {
+    background-color: @disabled-background;
+}
+
+QComboBox QAbstractItemView::item:hover{
+    background-color: @background-variant;
+}
