@@ -1,0 +1,57 @@
+from tecton_proto.workflows import state_machine_workflow__client_pb2 as _state_machine_workflow__client_pb2
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
+from google.protobuf import descriptor as _descriptor
+from typing import ClassVar as _ClassVar
+
+DESCRIPTOR: _descriptor.FileDescriptor
+
+class MaterializationTaskState(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    MATERIALIZATION_TASK_STATUS_UNSPECIFIED: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_RUNNING: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_DRAINING: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_DRAINED: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_MANUAL_CANCELLATION_REQUESTED: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_MANUALLY_CANCELLED: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_SUCCESS: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_PERMANENT_FAILURE: _ClassVar[MaterializationTaskState]
+    MATERIALIZATION_TASK_STATUS_MANUAL_RETRY: _ClassVar[MaterializationTaskState]
+
+class MaterializationTaskAttemptState(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    MATERIALIZATION_ATTEMPT_STATUS_UNSPECIFIED: _ClassVar[MaterializationTaskAttemptState]
+    MATERIALIZATION_ATTEMPT_STATUS_PENDING: _ClassVar[MaterializationTaskAttemptState]
+    MATERIALIZATION_ATTEMPT_STATUS_RUNNING: _ClassVar[MaterializationTaskAttemptState]
+    MATERIALIZATION_ATTEMPT_STATUS_SUCCESS: _ClassVar[MaterializationTaskAttemptState]
+    MATERIALIZATION_ATTEMPT_STATUS_ERROR: _ClassVar[MaterializationTaskAttemptState]
+    MATERIALIZATION_ATTEMPT_STATUS_CANCELLED: _ClassVar[MaterializationTaskAttemptState]
+    MATERIALIZATION_ATTEMPT_STATUS_CANCELLING: _ClassVar[MaterializationTaskAttemptState]
+
+class OnlineStoreCopierTaskState(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    COPIER_STATUS_UNSPECIFIED: _ClassVar[OnlineStoreCopierTaskState]
+    COPIER_STATUS_PENDING: _ClassVar[OnlineStoreCopierTaskState]
+    COPIER_STATUS_RUNNING: _ClassVar[OnlineStoreCopierTaskState]
+    COPIER_STATUS_SUCCESS: _ClassVar[OnlineStoreCopierTaskState]
+    COPIER_STATUS_ERROR: _ClassVar[OnlineStoreCopierTaskState]
+MATERIALIZATION_TASK_STATUS_UNSPECIFIED: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_RUNNING: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_DRAINING: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_DRAINED: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_MANUAL_CANCELLATION_REQUESTED: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_MANUALLY_CANCELLED: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_SUCCESS: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_PERMANENT_FAILURE: MaterializationTaskState
+MATERIALIZATION_TASK_STATUS_MANUAL_RETRY: MaterializationTaskState
+MATERIALIZATION_ATTEMPT_STATUS_UNSPECIFIED: MaterializationTaskAttemptState
+MATERIALIZATION_ATTEMPT_STATUS_PENDING: MaterializationTaskAttemptState
+MATERIALIZATION_ATTEMPT_STATUS_RUNNING: MaterializationTaskAttemptState
+MATERIALIZATION_ATTEMPT_STATUS_SUCCESS: MaterializationTaskAttemptState
+MATERIALIZATION_ATTEMPT_STATUS_ERROR: MaterializationTaskAttemptState
+MATERIALIZATION_ATTEMPT_STATUS_CANCELLED: MaterializationTaskAttemptState
+MATERIALIZATION_ATTEMPT_STATUS_CANCELLING: MaterializationTaskAttemptState
+COPIER_STATUS_UNSPECIFIED: OnlineStoreCopierTaskState
+COPIER_STATUS_PENDING: OnlineStoreCopierTaskState
+COPIER_STATUS_RUNNING: OnlineStoreCopierTaskState
+COPIER_STATUS_SUCCESS: OnlineStoreCopierTaskState
+COPIER_STATUS_ERROR: OnlineStoreCopierTaskState
