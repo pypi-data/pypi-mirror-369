@@ -1,0 +1,82 @@
+from enum import StrEnum
+
+
+class MLBTeams(StrEnum):
+    ARIZONA = 'ARI'
+    DIAMONDBACKS = 'ARI'
+    ATLANTA = 'ATL'
+    BRAVES = 'ATL'
+    BALTIMORE = 'BAL'
+    ORIOLES = 'BAL'
+    BOSTON = 'BOS'
+    RED_SOX = 'BOS'
+    CHICAGO_CUBS = 'CHC'
+    CUBS = 'CHC'
+    CHICAGO_WHITE_SOX = 'CWS'
+    WHITE_SOX = 'CWS'
+    CINCINNATI = 'CIN'
+    REDS = 'CIN'
+    CLEVELAND = 'CLE'
+    GUARDIANS = 'CLE'
+    COLORADO = 'COL'
+    ROCKIES = 'COL'
+    DETROIT = 'DET'
+    TIGERS = 'DET'
+    FLORIDA = 'FLA'
+    MARLINS = 'FLA'
+    HOUSTON = 'HOU'
+    ASTROS = 'HOU'
+    KANSAS_CITY = 'KAN'
+    ROYALS = 'KAN'
+    LOS_ANGELES_ANGELS = 'LAA'
+    ANGELS = 'LAA'
+    ANAHEIM = 'LAA'
+    LOS_ANGELES_DODGERS = 'LAD'
+    DODGERS = 'LAD'
+    MILWAUKEE = 'MIL'
+    BREWERS = 'MIL'
+    MINNESOTA = 'MIN'
+    TWINS = 'MIN'
+    NEW_YORK_METS = 'NYM'
+    METS = 'NYM'
+    NEW_YORK_YANKEES = 'NYY'
+    YANKEES = 'NYY'
+    OAKLAND = 'OAK'
+    ATHLETICS = 'OAK'
+    PHILADELPHIA = 'PHI'
+    PHILLIES = 'PHI'
+    PITTSBURGH = 'PIT'
+    PIRATES = 'PIT'
+    SAN_DIEGO = 'SD'
+    PADRES = 'SD'
+    SAN_FRANCISCO = 'SF'
+    GIANTS = 'SF'
+    SEATTLE = 'SEA'
+    MARINERS = 'SEA'
+    ST_LOUIS = 'STL'
+    CARDINALS = 'STL'
+    TAMPA_BAY = 'TB'
+    RAYS = 'TB'
+    TEXAS = 'TEX'
+    RANGERS = 'TEX'
+    TORONTO = 'TOR'
+    BLUE_JAYS = 'TOR'
+    WASHINGTON = 'WAS'
+    NATIONALS = 'WAS'
+
+
+CHAPMAN_PARTICIPATING_TEAMS = (
+    MLBTeams.ASTROS,
+    MLBTeams.BREWERS,
+    MLBTeams.CARDINALS,
+    MLBTeams.DIAMONDBACKS,
+    MLBTeams.GUARDIANS,
+    MLBTeams.MARINERS,
+    MLBTeams.PADRES,
+    MLBTeams.RANGERS,
+    MLBTeams.REDS,
+    MLBTeams.ROCKIES,
+    MLBTeams.ROYALS,
+    MLBTeams.TIGERS,
+    MLBTeams.TWINS
+)

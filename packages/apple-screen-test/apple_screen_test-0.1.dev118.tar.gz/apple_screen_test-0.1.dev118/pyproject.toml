@@ -1,0 +1,64 @@
+# pyproject.toml
+[build-system]
+requires = [
+    "setuptools>=70.2",
+    "setuptools-scm>=8.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apple-screen-test" # Your distribution name (with hyphen)
+dynamic = ["version"]
+authors = [
+  { name="Isabel Cuddihy", email="i_cuddihy@apple.com" },
+]
+description = "A package containing functions and classes to access and use the UTS QA screentest database"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = { text = "Apple Internal" }
+
+dependencies = [
+    'autocertifi',
+    'apple-certifi',
+    'requests',
+    'flake8',
+    'pytest',
+    'charlesutils',
+    'jsonpath-ng',
+    'jsonschema',
+    'pyresultsservice',
+    'assertpy',
+    'pytest-rerunfailures',
+    'pytest-xdist',
+    'python-magic',
+    'ampplato',
+    'faker',
+    'sphinx',
+    'sphinx_rtd_theme',
+    'allure-pytest',
+    'urllib3',
+    'cryptography',
+    'PyJWT',
+    'setuptools',
+    'apple-pytest-epilog',
+    'allpairspy',
+    'appleconnect-utils==1.5.2',
+    'google',
+    'protobuf>=5.29',
+    'grpcio-tools'
+]
+
+[project.urls]
+"Homepage" = "https://github.pie.apple.com/apple/apple-screen-test"
+"Bug Tracker" = "https://github.pie.apple.com/apple/apple-screen-test/issues"
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["screen_test*"] # <--- Specify your package name (with underscore)
+exclude = ["rio_scripts/*"]
