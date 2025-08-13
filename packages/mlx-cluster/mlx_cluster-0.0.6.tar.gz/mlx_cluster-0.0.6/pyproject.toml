@@ -1,0 +1,59 @@
+[project]
+name = "mlx_cluster"
+version = "0.0.6"
+authors = [
+  { name = "Vinay Pandya", email = "vinayharshadpandya27@gmail.com" },
+]
+description = "C++ extension for generating random graphs"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: C++",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+]
+
+[project.optional-dependencies]
+dev = []
+docs = [
+  "mlx>=0.27.1",
+  "mlx-graphs>=0.0.8",
+  "ipython==8.21.0",
+  "sphinx>=7.2.6",
+  "sphinx-book-theme==1.1.0",
+  "sphinx-autodoc-typehints==1.25.2",
+  "nbsphinx==0.9.3",
+  "sphinx-gallery==0.15.0",
+]
+
+test = [
+  "mlx-graphs>=0.0.8",
+  "torch>=2.2.0",
+  "mlx>=0.26.0",
+  "pytest==7.4.4",
+  "scipy>=1.13.0",
+  "requests==2.31.0",
+  "fsspec[http]==2024.2.0",
+  "tqdm==4.66.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/vinayhpandya/mlx_cluster"
+Issues = "https://github.com/vinayhpandya/mlx_cluster/Issues"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+markers = [
+    "slow: marks tests that download data, compile kernels, or are otherwise time-consuming (deselect with -m 'not slow')",
+]
+
+[build-system]
+requires = [
+  "nanobind==2.4.0",
+  "setuptools>=42",
+  "cmake>=3.24",
+  "mlx>=0.26.0", 
+]
+build-backend = "setuptools.build_meta"
