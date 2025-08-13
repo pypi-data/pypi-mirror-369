@@ -1,0 +1,192 @@
+#!/usr/bin/env python3
+# kate: replace-tabs on; indent-width 4;
+
+from struct_frame import version, NamingStyleC
+import time
+
+StyleC = NamingStyleC()
+
+ts_types = {
+    "int8":     'Int8',
+    "uint8":    'UInt8',
+    "int16":    'Int16LE',
+    "uint16":   'UInt16LE',
+    "bool":     'Boolean8',
+    "double":   'Float64LE',
+    "float":    'Float32LE',
+    "int32":  'Int32LE',
+    "uint32": 'UInt32LE',
+    "uint64": 'BigInt64LE',
+    "int64":  'BigUInt64LE',
+}
+
+
+class EnumTsGen():
+    @staticmethod
+    def generate(field, packageName):
+        leading_comment = field.comments
+        result = ''
+        if leading_comment:
+            for c in leading_comment:
+                result = '%s\n' % c
+
+        result += 'export enum %s%s' % (packageName,
+                                        StyleC.enum_name(field.name))
+
+        result += ' {\n'
+
+        enum_length = len(field.data)
+        enum_values = []
+        for index, (d) in enumerate(field.data):
+            leading_comment = field.data[d][1]
+
+            if leading_comment:
+                for c in leading_comment:
+                    enum_values.append(c)
+
+            comma = ","
+            if index == enum_length - 1:
+                # last enum member should not end with a comma
+                comma = ""
+
+            enum_value = "    %s = %d%s" % (
+                StyleC.enum_entry(d), field.data[d][0], comma)
+
+            enum_values.append(enum_value)
+
+        result += '\n'.join(enum_values)
+        result += '\n}'
+
+        return result
+
+
+class FieldTsGen():
+    @staticmethod
+    def generate(field, packageName):
+        result = ''
+        isEnum = False
+#        isEnum = field.pbtype in ('ENUM', 'UENUM')
+        var_name = StyleC.var_name(field.name)
+        type_name = field.fieldType
+        if type_name in ts_types:
+            type_name = ts_types[type_name]
+        else:
+            type_name = '%s_%s' % (packageName, StyleC.struct_name(type_name))
+
+        if isEnum:
+            result += '    .UInt8(\'%s\', typed<%s>())' % (var_name, type_name)
+        else:
+            result += '    .%s(\'%s\')' % (type_name, var_name)
+
+        leading_comment = field.comments
+        if leading_comment:
+            for c in leading_comment:
+                result = c + "\n" + result
+
+        return result
+
+
+# ---------------------------------------------------------------------------
+#                   Generation of messages (structures)
+# ---------------------------------------------------------------------------
+
+
+class MessageTsGen():
+    @staticmethod
+    def generate(msg, packageName):
+        leading_comment = msg.comments
+
+        result = ''
+        if leading_comment:
+            for c in msg.comments:
+                result = '%s\n' % c
+
+        package_msg_name = '%s_%s' % (packageName, msg.name)
+
+        result += 'export const %s = new typed_struct.Struct(\'%s\') ' % (
+            package_msg_name, package_msg_name)
+
+        result += '\n'
+
+        size = 1
+        if not msg.fields:
+            # Empty structs are not allowed in C standard.
+            # Therefore add a dummy field if an empty message occurs.
+            result += '    .UInt8(\'dummy_field\');'
+        else:
+            size = msg.size
+
+        result += '\n'.join([FieldTsGen.generate(f, packageName)
+                            for key, f in msg.fields.items()])
+        result += '\n    .compile();\n\n'
+
+        result += 'export const %s_max_size = %d;\n' % (package_msg_name, size)
+
+        if msg.id:
+            result += 'export const %s_msgid = %d\n' % (
+                package_msg_name, msg.id)
+
+            result += 'export function %s_encode(buffer: struct_frame_buffer, msg: any) {\n' % (
+                package_msg_name)
+            result += '    msg_encode(buffer, msg, %s_msgid)\n}\n' % (package_msg_name)
+
+            result += 'export function %s_reserve(buffer: struct_frame_buffer) {\n' % (
+                package_msg_name)
+            result += '    const msg_buffer = msg_reserve(buffer, %s_msgid, %s_max_size);\n' % (
+                package_msg_name, package_msg_name)
+            result += '    if (msg_buffer){\n'
+            result += '        return new %s(msg_buffer)\n    }\n    return;\n}\n' % (
+                package_msg_name)
+
+            result += 'export function %s_finish(buffer: struct_frame_buffer) {\n' % (
+                package_msg_name)
+            result += '    msg_finish(buffer);\n}\n'
+        return result + '\n'
+
+    @staticmethod
+    def get_initializer(msg, null_init):
+        if not msg.fields:
+            return '{0}'
+
+        parts = []
+        for field in msg.fields:
+            parts.append(field.get_initializer(null_init))
+        return '{' + ', '.join(parts) + '}'
+
+
+class FileTsGen():
+    @staticmethod
+    def generate(package):
+        yield '/* Automatically generated struct frame header */\n'
+        yield '/* Generated by %s at %s. */\n\n' % (version, time.asctime())
+
+        yield 'const typed_struct = require(\'typed-struct\')\n'
+        yield 'const ExtractType = typeof typed_struct.ExtractType;\n'
+        yield 'const type = typeof typed_struct.ExtractType;\n\n'
+
+        yield "import { struct_frame_buffer } from './struct_frame_types';\n"
+
+        yield "import { msg_encode, msg_reserve, msg_finish } from './struct_frame';\n\n"
+
+        # include additional header files here if available in the future
+
+        if package.enums:
+            yield '/* Enum definitions */\n'
+            for key, enum in package.enums.items():
+                yield EnumTsGen.generate(enum, package.name) + '\n\n'
+
+        if package.messages:
+            yield '/* Struct definitions */\n'
+            for key, msg in package.sortedMessages().items():
+                yield MessageTsGen.generate(msg, package.name) + '\n'
+            yield '\n'
+
+        if package.messages:
+            yield 'export function get_message_length(msg_id : number){\n switch (msg_id)\n {\n'
+            for key, msg in package.sortedMessages().items():
+
+                package_msg_name = '%s_%s' % (package.name, msg.name)
+                yield '  case %s_msgid: return %s_max_size;\n' % (package_msg_name, package_msg_name)
+
+            yield '  default: break;\n } return 0;\n}'
+            yield '\n'
