@@ -1,0 +1,154 @@
+# Cursor Credits Checker
+
+[![PyPI Version](https://img.shields.io/pypi/v/cursor-credits.svg)](https://pypi.org/project/cursor-credits/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/cursor-credits.svg)](https://pypi.org/project/cursor-credits/)
+[![License](https://img.shields.io/pypi/l/cursor-credits.svg)](https://github.com/CaptainCodeAU/cursor_credits/blob/master/LICENSE)
+
+**Version 0.2.0** - A clean, command-line tool to check your remaining "Fast" (GPT-4) request credits for your [Cursor](https://cursor.com/) account directly from your terminal.
+
+## Features
+
+-   **🚀 Auto-Detection:** Automatically detects your Cursor installation - no configuration needed!
+-   **📊 Usage Statistics:** Shows your up-to-the-minute Fast (GPT-4) request usage with percentages.
+-   **🔐 Secure Authentication:** Automatically extracts authentication tokens from Cursor's local database.
+-   **🌍 Cross-Platform:** Works seamlessly on Windows, macOS, and Linux.
+-   **🎨 Clean Output:** Color-coded, emoji-enhanced display for a pleasant user experience.
+-   **⚡ Fast & Reliable:** Direct API integration with proper session token handling.
+-   **🛠️ Zero Configuration:** Works out-of-the-box with standard Cursor installations.
+
+## Installation
+
+You can install the tool directly from PyPI.
+
+**Prerequisites:**
+
+-   Python 3.13+
+-   `pip` or `uv` for installation.
+
+```bash
+# Using uv (recommended)
+uv pip install cursor-credits
+
+# Or using pip
+pip install cursor-credits
+```
+
+## Quick Start
+
+Simply install and run - no configuration needed!
+
+```bash
+# Install
+uv pip install cursor-credits
+
+# Run
+cursor-credits
+```
+
+## Usage
+
+### Basic Usage
+
+```bash
+cursor-credits
+```
+
+### Options
+
+```bash
+cursor-credits --help          # Show help
+cursor-credits --version       # Show version
+cursor-credits -v             # Verbose output with debug info
+```
+
+### Example Output
+
+**Normal output:**
+
+```
+👤 User ID: user_01JYA111KEE9Q4PE54ZA6LR4SG
+⭐ Fast: 46/500 (9.2%)
+📝 Slow: Not available
+```
+
+**With verbose flag:**
+
+```bash
+cursor-credits -v
+```
+
+```
+DEBUG: Found Cursor data at standard location
+DEBUG: Token found in SQLite database
+DEBUG: Created session token for user ID: user_01JYA111KEE9Q4PE54ZA6LR4SG
+DEBUG: Successfully retrieved usage information
+👤 User ID: user_01JYA111KEE9Q4PE54ZA6LR4SG
+⭐ Fast: 46/500 (9.2%)
+📝 Slow: Not available
+```
+
+**Error cases:**
+
+```
+❌ Error: Could not find Cursor authentication token.
+Please make sure:
+1. Cursor is installed and you're logged in
+2. Cursor application has been opened at least once
+```
+
+## Requirements
+
+-   Python 3.13+
+-   Cursor AI editor installed and configured
+-   Internet connection for API requests
+
+## Project Structure
+
+```
+src/cursor_credits/
+├── __init__.py     # Package initialization and version info
+├── api.py          # Handles communication with the Cursor API
+├── auth.py         # Manages token extraction from storage
+├── cli.py          # Command-line interface entry point
+├── display.py      # User-facing output formatting
+├── main.py         # Core application logic
+└── paths.py        # Cross-platform path discovery
+tests/
+├── __init__.py     # Test package initialization
+└── test_main.py    # Main functionality tests
+```
+
+## How It Works
+
+The tool works by:
+
+1. **Auto-Detection:** Automatically detects your Cursor installation location based on your operating system
+2. **Token Extraction:** Extracts JWT authentication tokens from Cursor's SQLite database (`state.vscdb`)
+3. **Token Processing:** Converts JWT tokens into proper session tokens for API authentication
+4. **API Requests:** Makes authenticated requests to Cursor's usage API to fetch current usage statistics
+5. **Display:** Shows your Fast (GPT-4) request usage with clean, color-coded output
+
+The tool only reads data and never modifies any files or account settings.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+### Development Setup
+
+1. Clone the repository
+2. Install dependencies: `uv pip install -e .[dev]`
+3. Run tests: `uv run pytest`
+4. Run linting: `uv run ruff check`
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
+
+## Disclaimer
+
+This is an unofficial, third-party tool and is not affiliated with, endorsed, or supported by Cursor. It is intended for personal use only. The tool only reads local data and makes read-only requests to public APIs; it does not modify any of your files or account data. Use at your own risk.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
