@@ -1,0 +1,285 @@
+Metadata-Version: 2.3
+Name: mcp_ohmy_sql
+Version: 0.1.4
+Summary: A powerful Model Context Protocol (MCP) server that provides universal SQL database connectivity with intelligent query optimization, schema introspection, and built-in safety features for AI assistants.
+License: AGPL-3.0-or-later
+Author: Sanhe Hu, Jiazhen Zhu
+Author-email: husanhe@email.com
+Maintainer: Sanhe Hu, Jiazhen Zhu
+Maintainer-email: husanhe@email.com
+Requires-Python: >=3.10,<4.0
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: auto
+Provides-Extra: aws
+Provides-Extra: aws-redshift
+Provides-Extra: dev
+Provides-Extra: doc
+Provides-Extra: mssql
+Provides-Extra: mysql
+Provides-Extra: oracle
+Provides-Extra: postgres
+Provides-Extra: sqlite
+Provides-Extra: test
+Requires-Dist: PyMySQL (>=1.1.1,<2.0.0) ; extra == "mysql"
+Requires-Dist: Sphinx (>=7.4.7,<8.0.0) ; extra == "doc"
+Requires-Dist: aws-cdk-lib (>=2.179.0,<2.180.0) ; extra == "dev"
+Requires-Dist: aws_sdk_polars (>=0.1.4,<1.0.0) ; extra == "test"
+Requires-Dist: boto3 (>=1.37.38,<2.0.0) ; extra == "aws"
+Requires-Dist: boto3 (>=1.37.38,<2.0.0) ; extra == "aws-redshift"
+Requires-Dist: boto3 (>=1.37.38,<2.0.0) ; extra == "dev"
+Requires-Dist: boto3 (>=1.37.38,<2.0.0) ; extra == "test"
+Requires-Dist: boto_session_manager (>=1.8.1,<2.0.0) ; extra == "aws"
+Requires-Dist: boto_session_manager (>=1.8.1,<2.0.0) ; extra == "aws-redshift"
+Requires-Dist: boto_session_manager (>=1.8.1,<2.0.0) ; extra == "dev"
+Requires-Dist: boto_session_manager (>=1.8.1,<2.0.0) ; extra == "test"
+Requires-Dist: build (>=1.2.1,<2.0.0) ; extra == "dev"
+Requires-Dist: cdk_mate (>=0.1.6,<1.0.0) ; extra == "dev"
+Requires-Dist: claude-desktop-config (>=0.2.1,<1.0.0) ; extra == "dev"
+Requires-Dist: diskcache (>=5.6.3,<6.0.0)
+Requires-Dist: docfly (==3.0.0) ; extra == "doc"
+Requires-Dist: enum_mate (>=0.1.1,<1.0.0)
+Requires-Dist: furo (==2024.8.6) ; extra == "doc"
+Requires-Dist: ipython (>=8.18.1,<8.19.0) ; extra == "doc"
+Requires-Dist: jinja2 (>=3.0.0,<4.0.0) ; extra == "aws-redshift"
+Requires-Dist: jinja2 (>=3.0.0,<4.0.0) ; extra == "test"
+Requires-Dist: mcp[cli] (>=1.9.3,<2.0.0)
+Requires-Dist: nbsphinx (>=0.8.12,<1.0.0) ; extra == "doc"
+Requires-Dist: oracledb (>=3.0.0,<4.0.0) ; extra == "oracle"
+Requires-Dist: polars (>=1.27.1,<2.0.0) ; extra == "dev"
+Requires-Dist: psycopg2-binary (>=2.9.1,<3.0.0) ; extra == "postgres"
+Requires-Dist: pygments (>=2.18.0,<3.0.0) ; extra == "doc"
+Requires-Dist: pymssql (>2.3.0,<3.0.0) ; extra == "mssql"
+Requires-Dist: pytest (>=8.2.2,<9.0.0) ; extra == "test"
+Requires-Dist: pytest-asyncio (>=1.0.0,<2.0.0) ; extra == "test"
+Requires-Dist: pytest-cov (>=6.0.0,<7.0.0) ; extra == "test"
+Requires-Dist: redshift_connector (>=2.1.0,<3.0.0) ; extra == "aws-redshift"
+Requires-Dist: redshift_connector (>=2.1.0,<3.0.0) ; extra == "test"
+Requires-Dist: requests (>=2.32.3,<3.0.0) ; extra == "test"
+Requires-Dist: rich (>=13.8.1,<14.0.0) ; extra == "dev"
+Requires-Dist: rstobj (==1.2.1) ; extra == "doc"
+Requires-Dist: s3pathlib (>=2.3.3,<3.0.0) ; extra == "aws-redshift"
+Requires-Dist: s3pathlib (>=2.3.3,<3.0.0) ; extra == "test"
+Requires-Dist: simple_aws_redshift (>=0.3.1,<1.0.0) ; extra == "aws-redshift"
+Requires-Dist: simple_aws_redshift (>=0.3.1,<1.0.0) ; extra == "test"
+Requires-Dist: sphinx-copybutton (>=0.5.2,<1.0.0) ; extra == "doc"
+Requires-Dist: sphinx-design (>=0.6.1,<1.0.0) ; extra == "doc"
+Requires-Dist: sphinx-jinja (>=2.0.2,<3.0.0) ; extra == "doc"
+Requires-Dist: sqlalchemy (>=2.0.33,<3.0.0)
+Requires-Dist: sqlalchemy_mate (>=2.0.0.3,<3.0.0.0) ; extra == "dev"
+Requires-Dist: tabulate (>=0.9.0,<1.0.0)
+Requires-Dist: twine (>=6.0.0,<7.0.0) ; extra == "dev"
+Requires-Dist: vislog (>=0.1.2,<1.0.0)
+Requires-Dist: vislog (>=0.1.2,<1.0.0) ; extra == "dev"
+Requires-Dist: wheel (>=0.45.0,<1.0.0) ; extra == "dev"
+Requires-Dist: which_runtime (>=0.1.1,<1.0.0)
+Project-URL: Changelog, https://github.com/MacHu-GWU/mcp_ohmy_sql-project/blob/main/release-history.rst
+Project-URL: Documentation, https://mcp-ohmy-sql.readthedocs.io/en/latest/
+Project-URL: Download, https://pypi.org/pypi/mcp-ohmy-sql#files
+Project-URL: Homepage, https://github.com/MacHu-GWU/mcp_ohmy_sql-project
+Project-URL: Issues, https://github.com/MacHu-GWU/mcp_ohmy_sql-project/issues
+Project-URL: Repository, https://github.com/MacHu-GWU/mcp_ohmy_sql-project
+Description-Content-Type: text/x-rst
+
+
+.. image:: https://readthedocs.org/projects/mcp-ohmy-sql/badge/?version=latest
+    :target: https://mcp-ohmy-sql.readthedocs.io/en/latest/
+    :alt: Documentation Status
+
+.. image:: https://github.com/MacHu-GWU/mcp_ohmy_sql-project/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/MacHu-GWU/mcp_ohmy_sql-project/actions?query=workflow:CI
+
+.. image:: https://codecov.io/gh/MacHu-GWU/mcp_ohmy_sql-project/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/MacHu-GWU/mcp_ohmy_sql-project
+
+.. image:: https://img.shields.io/pypi/v/mcp-ohmy-sql.svg
+    :target: https://pypi.python.org/pypi/mcp-ohmy-sql
+
+.. image:: https://img.shields.io/pypi/l/mcp-ohmy-sql.svg
+    :target: https://pypi.python.org/pypi/mcp-ohmy-sql
+
+.. image:: https://img.shields.io/pypi/pyversions/mcp-ohmy-sql.svg
+    :target: https://pypi.python.org/pypi/mcp-ohmy-sql
+
+.. image:: https://img.shields.io/badge/✍️_Release_History!--None.svg?style=social&logo=github
+    :target: https://github.com/MacHu-GWU/mcp_ohmy_sql-project/blob/main/release-history.rst
+
+.. image:: https://img.shields.io/badge/⭐_Star_me_on_GitHub!--None.svg?style=social&logo=github
+    :target: https://github.com/MacHu-GWU/mcp_ohmy_sql-project
+
+------
+
+.. image:: https://img.shields.io/badge/Link-API-blue.svg
+    :target: https://mcp-ohmy-sql.readthedocs.io/en/latest/py-modindex.html
+
+.. image:: https://img.shields.io/badge/Link-GitHub-blue.svg
+    :target: https://github.com/MacHu-GWU/mcp_ohmy_sql-project
+
+.. image:: https://img.shields.io/badge/Link-Submit_Issue-blue.svg
+    :target: https://github.com/MacHu-GWU/mcp_ohmy_sql-project/issues
+
+.. image:: https://img.shields.io/badge/Link-Request_Feature-blue.svg
+    :target: https://github.com/MacHu-GWU/mcp_ohmy_sql-project/issues
+
+.. image:: https://img.shields.io/badge/Link-Download-blue.svg
+    :target: https://pypi.org/pypi/mcp-ohmy-sql#files
+
+
+Welcome to ``mcp_ohmy_sql`` Documentation
+==============================================================================
+.. image:: https://mcp-ohmy-sql.readthedocs.io/en/latest/_static/mcp_ohmy_sql-logo.png
+    :target: https://mcp-ohmy-sql.readthedocs.io/en/latest/
+
+
+👀 Overview
+------------------------------------------------------------------------------
+``mcp_ohmy_sql`` is a powerful SQL `Model Context Protocol (MCP) <https://modelcontextprotocol.io/>`_ server that bridges AI assistants with your databases. Built on `SQLAlchemy <http://sqlalchemy.org/>`_'s robust foundation, it provides universal database connectivity with intelligent query optimization, configurable access controls, and built-in safeguards against excessive data loads to LLMs.
+
+Transform your database interactions with natural language queries, automatic schema discovery, and intelligent result formatting—all while maintaining enterprise-grade security and performance.
+
+See `📚 Full Documentation HERE <https://mcp-ohmy-sql.readthedocs.io/en/latest/>`_
+
+
+🚀 Feature Highlights
+------------------------------------------------------------------------------
+**Universal Database Support**
+
+Connect to virtually any SQL database through SQLAlchemy's proven architecture. From lightweight SQLite to enterprise PostgreSQL, MySQL, Oracle, and SQL Server—all supported out of the box.
+
+**Multi-Database Architecture**
+    Manage multiple databases and schemas simultaneously from a single MCP server. Perfect for complex environments with dev/staging/production databases or multi-tenant applications.
+
+**Intelligent Query Optimization**
+    Built-in query analysis engine prevents expensive operations, automatically limits result sets, and provides performance feedback to help you write efficient queries.
+
+**AI-Optimized Schema Encoding**
+    Schema information is compressed by ~70% using a specialized encoding format, dramatically reducing token usage while preserving all essential metadata for accurate query generation.
+
+**Enterprise-Ready Security**
+    Fine-grained table filtering, parameterized query support, and read-only operations by default. Access controls ensure your production data stays safe.
+
+
+💎 Why Choose ``mcp_ohmy_sql``?
+------------------------------------------------------------------------------
+While other SQL MCP servers exist, ``mcp_ohmy_sql`` stands out through:
+
+✨ **Comprehensive Database Ecosystem**
+    Beyond traditional SQL databases, we're expanding to support modern data platforms including AWS Aurora, Redshift, Glue Catalog, MongoDB Atlas SQL, ElasticSearch, OpenSearch, DuckDB, and S3 data files.
+
+🔧 **Production-Ready Architecture**
+    Designed for real-world usage with connection pooling, error handling, query timeouts, and result size limits that prevent your LLM conversations from breaking.
+
+📊 **Intelligent Result Formatting**
+    Query results are automatically formatted as Markdown tables—the optimal format for LLM comprehension, using 24% fewer tokens than JSON while maintaining perfect readability.
+
+🔒 **Security-First Approach**
+    Built-in safeguards include SQL injection prevention, read-only operations, table filtering, and upcoming fine-grained access controls for enterprise deployments.
+
+🎯 **Developer Experience**
+    Comprehensive documentation, clear error messages, and extensive configuration options make setup and maintenance straightforward.
+
+**Coming Soon**: Remote MCP server deployment, advanced access controls, and expanded database ecosystem support.
+
+See our `ROADMAP.md <https://github.com/MacHu-GWU/mcp_ohmy_sql-project/blob/main/ROADMAP.md>`_ for the complete vision and upcoming features.
+
+
+🚀️ Supported Features
+------------------------------------------------------------------------------
+See our `ROADMAP.md <https://github.com/MacHu-GWU/mcp_ohmy_sql-project/blob/main/ROADMAP.md>`_ for the complete vision and upcoming features.
+
+.. list-table:: Feature Support Status
+   :header-rows: 1
+   :widths: 25 15 40
+
+   * - **Feature**
+     - **Status**
+     - **Note**
+   * - Multi Database Support
+     - ✅ Supported
+     -
+   * - Local MCP Server via UV
+     - ✅ Supported
+     -
+   * - Local MCP Server via Docker
+     - ⏳ In Progress
+     -
+   * - Remote MCP Server
+     - ⏳ In Progress
+     -
+   * - One Click to Deploy Remote MCP Server
+     - ⏳ In Progress
+     -
+   * - Export Results to Local Files
+     - ⏳ In Progress
+     -
+   * - Local Data File Analysis
+     - ⏳ In Progress
+     -
+   * - User Management
+     - ⏳ In Progress
+     - Remote MCP server only feature
+   * - Access Control Management
+     - ⏳ In Progress
+     - Remote MCP server only feature
+
+
+🛢️ Supported Databases
+------------------------------------------------------------------------------
+See our `ROADMAP.md <https://github.com/MacHu-GWU/mcp_ohmy_sql-project/blob/main/ROADMAP.md>`_ for the complete vision and upcoming features.
+
+.. list-table:: Database Support Status
+   :header-rows: 1
+   :widths: 25 15 40
+
+   * - **Database**
+     - **Status**
+     - **Note**
+   * - Sqlite
+     - ✅ Supported
+     - via Sqlalchemy
+   * - Postgres
+     - ✅ Supported
+     - via Sqlalchemy
+   * - MySQL
+     - ✅ Supported
+     - via Sqlalchemy
+   * - Oracle
+     - ✅ Supported
+     - via Sqlalchemy
+   * - MSSQL
+     - ✅ Supported
+     - via Sqlalchemy
+   * - AWS Aurora
+     - ⏳ In Progress
+     - via boto3
+   * - AWS Redshift
+     - ✅ Supported
+     - via boto3
+   * - AWS Glue Catalog Databases
+     - ⏳ In Progress
+     - via boto3
+   * - MongoDB
+     - ⏳ In Progress
+     - via Atlas SQL
+   * - ElasticSearch
+     - ⏳ In Progress
+     - via ElasticSearch SQL
+   * - OpenSearch
+     - ⏳ In Progress
+     - via OpenSearch SQL
+   * - DuckDB
+     - ⏳ In Progress
+     - via duckdb
+   * - Data Files on AWS S3
+     - ⏳ In Progress
+     - via boto3
+
+
+🎯 Get Started
+------------------------------------------------------------------------------
+- `Quick Start Guide <https://mcp-ohmy-sql.readthedocs.io/en/latest/01-Quick-Start/index.html>`_: Set up and run the server in under 5 minutes
+
