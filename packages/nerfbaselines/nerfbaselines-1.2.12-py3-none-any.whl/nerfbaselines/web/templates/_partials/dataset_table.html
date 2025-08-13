@@ -1,0 +1,50 @@
+{% import "_macros.html" as macros %}
+<div class="table-container">
+  <table class="table">
+    <thead class="table__header">
+      <th class="w70"></th>
+      <th class="w120"><span class="table__sortbutton" title="Sort by method name (ascending)">Method <i class="ti" /></span></th>
+      {% for metric in metrics %}
+      <th><span class="table__sortbutton" title="Sort by {{ metric.name }} (ascending)">{{ metric.name }} <i class="ti" /></span></th>
+      {% endfor %}
+      <th><span class="table__sortbutton" title="Sort by time (ascending)">Time <i class="ti" /></span></th>
+      <th><span class="table__sortbutton" title="Sort by GPU mem. (ascending)">GPU mem. <i class="ti" /></span></th>
+    </thead>
+    <tbody class="expand-root">
+      {% for method in methods %}
+      <tr data-expand-id="{{ method.id }}">
+        <td class="w70">
+          <span class="table__expandtoggle table__action ti" data-expand-id="{{ method.id }}" title="Expand"></span>
+        </td>
+        <td class="w120" data-sort-value="{{ method.sort.name }}"><a href="{{ base_path }}/m-{{ method.slug }}">{{ method.name }}</a></td>
+        {% for metric in metrics %}
+        <td data-sort-value="{{ method.sort[metric.id] }}"><span class="table__allowcopy">{{ method.average[metric.id] }}</span>{{ macros.info_box(method.average, metric.id, metric.name) }}</td>
+        {% endfor %}
+        <td data-sort-value="{{ method.sort.total_train_time }}"><span class="table__allowcopy">{{ method.average.total_train_time }}</span>{{ macros.info_box(method.average, "total_train_time", "train. time") }}</td>
+        <td data-sort-value="{{ method.sort.gpu_memory }}"><span class="table__allowcopy">{{ method.average.gpu_memory }}</span>{{ macros.info_box(method.average, "gpu_memory", "GPU mem.") }}</td>
+      </tr>
+      {% for scene in method.scenes %}
+      <tr data-expand-by="{{ method.id }}" style="display: none">
+        <td class="w70">
+          {% if scene.data_link %}
+          <a href="{{ scene.data_link }}" title="Download checkpoint and predictions for scene {{ scene.name }}" class="ti table__action ti-download ti-blue"></a>
+          {% endif %}
+          {% if scene.mesh_demo_link %}
+          <a href="{{ scene.mesh_demo_link }}" title="Online demo for scene {{ scene.name }}" class="ti table__action ti-cube ti-green"></a>
+          {% endif %}
+          {% if scene.demo_link %}
+          <a href="{{ scene.demo_link }}" title="Online demo for scene {{ scene.name }}" class="ti table__action ti-view-360-number ti-green"></a>
+          {% endif %}
+        </td>
+        <td class="w120" data-sort-value="{{ scene.sort.name }}">{{ scene.name }}</td>
+        {% for metric in metrics %}
+        <td data-sort-value="{{ scene.sort[metric.id] }}"><span class="table__allowcopy">{{ scene[metric.id] }}</span>{{ macros.info_box(scene, metric.id, metric.name) }}</td>
+        {% endfor %}
+        <td data-sort-value="{{ scene.sort.total_train_time }}"><span class="table__allowcopy">{{ scene.total_train_time }}</span>{{ macros.info_box(scene, "total_train_time", "train. time") }}</td>
+        <td data-sort-value="{{ scene.sort.gpu_memory }}"><span class="table__allowcopy">{{ scene.gpu_memory }}</span>{{ macros.info_box(scene, "gpu_memory", "GPU mem.") }}</td>
+      </tr>
+      {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
