@@ -1,0 +1,27 @@
+[package]
+name = "lib-sudoku"
+version = "1.0.0"
+edition = "2024"
+readme = "README.md"
+
+[[bin]]
+name = "lib-sudoku"
+path = "src/main.rs"
+
+[lib]
+name = "lib_sudoku"
+crate-type = ["cdylib"]
+
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+pyo3 = { version = "0.25.1", features = ["extension-module"] }
+rand = "0.9.2"
+ureq = "3.0.12"
+
+[profile.release]
+#![allow(dead_code)]
+opt-level = 3
+lto = true
+codegen-units = 1
+
