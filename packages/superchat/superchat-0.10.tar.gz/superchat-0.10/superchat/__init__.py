@@ -1,0 +1,1 @@
+"""superchat - AI-driven discussions and multi-agent debates."""
