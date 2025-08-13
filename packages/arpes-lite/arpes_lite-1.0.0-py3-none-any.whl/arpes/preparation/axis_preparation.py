@@ -1,0 +1,197 @@
+"""Utilities related to treatment of coordinate axes."""
+
+import copy
+import functools
+from typing import Container
+
+import numpy as np
+from scipy.ndimage import geometric_transform
+
+import xarray as xr
+from arpes.provenance import provenance, update_provenance
+from arpes.typing import DataType
+from arpes.utilities import lift_dataarray_to_generic
+from arpes.utilities.normalize_datatype import normalize_to_spectrum
+
+__all__ = (
+    "flip_axis",
+    "normalize_dim",
+    "dim_normalizer",
+    "transform_dataarray_axis",
+    "normalize_total",
+    "sort_axis",
+)
+
+
+@update_provenance("Sort Axis")
+def sort_axis(data: xr.DataArray, axis_name):
+    """Sorts slices of `data` along `axis_name` so that they lie in order."""
+    assert isinstance(data, xr.DataArray)
+    copied = data.copy(deep=True)
+    coord = data.coords[axis_name].values
+    order = np.argsort(coord)
+
+    copied.values = np.take(copied.values, order, axis=list(data.dims).index(axis_name))
+    copied.coords[axis_name] = np.sort(copied.coords[axis_name])
+    return copied
+
+
+@update_provenance("Flip data along axis")
+def flip_axis(arr: xr.DataArray, axis_name, flip_data=True):
+    """Flips the coordinate values along an axis without changing the data as well."""
+    coords = copy.deepcopy(arr.coords)
+    coords[axis_name] = coords[axis_name][::-1]
+
+    return xr.DataArray(
+        np.flip(arr.values, arr.dims.index(axis_name)) if flip_data else arr.values,
+        coords,
+        arr.dims,
+        attrs=arr.attrs,
+    )
+
+
+def soft_normalize_dim(arr: xr.DataArray, dim_or_dims, keep_id=False, amp_limit=100):
+    dims = dim_or_dims
+    if isinstance(dim_or_dims, str):
+        dims = [dims]
+
+    summed_arr = arr.fillna(arr.mean()).sum([d for d in arr.dims if d not in dims])
+    normalized_arr = arr / (summed_arr / np.prod(summed_arr.shape))
+
+    to_return = xr.DataArray(
+        normalized_arr.values, arr.coords, arr.dims, attrs=arr.attrs
+    )
+
+    if not keep_id and "id" in to_return.attrs:
+        del to_return.attrs["id"]
+
+    provenance(
+        to_return,
+        arr,
+        {
+            "what": "Normalize axis or axes",
+            "by": "normalize_dim",
+            "dims": dims,
+        },
+    )
+
+    return to_return
+
+
+@lift_dataarray_to_generic
+def normalize_dim(arr: DataType, dims: Container[str] | str):
+    """Normalizes the intensity so that all values along axes specfied by "dims" are the same.
+
+    The function normalizes so that the average value of cells in the output is 1.
+
+    Args:
+        arr: Input data which should be normalized
+        dim_o=r_dims: The set of dimensions which should be normalized
+        keep_id: Whether to reset the data's id after normalization
+
+    Returns:
+        The normalized data.
+    """
+    dims = [dims] if isinstance(dims, str) else dims
+
+    summed_arr = arr.fillna(arr.mean()).sum([d for d in arr.dims if d not in dims])
+    normalized_arr = arr / (summed_arr / np.prod(summed_arr.shape))
+
+    to_return = xr.DataArray(normalized_arr.values, arr.coords, arr.dims)
+
+    return to_return
+
+
+@update_provenance("Normalize total spectrum intensity")
+def normalize_total(data: DataType):
+    """Normalizes data so that the total intensity is 1000000 (a bit arbitrary)."""
+    data = normalize_to_spectrum(data)
+
+    return data / (data.sum(data.dims) / 1000000)
+
+
+def dim_normalizer(dim_name):
+    """Safe partial application of dimension normalization."""
+
+    def normalize(arr: xr.DataArray):
+        if dim_name not in arr.dims:
+            return arr
+        return normalize_dim(arr, dim_name)
+
+    return normalize
+
+
+def transform_dataarray_axis(
+    f,
+    old_axis_name: str,
+    new_axis_name: str,
+    new_axis,
+    dataset: xr.DataArray,
+    prep_name,
+    transform_spectra=None,
+    remove_old=True,
+):
+    """Applies a function onto a DataArray axis."""
+    ds = dataset.copy()
+    if transform_spectra is None:
+        # transform *all* DataArrays in the dataset that have old_axis_name in their dimensions
+        transform_spectra = {
+            k: v for k, v in ds.data_vars.items() if old_axis_name in v.dims
+        }
+
+    ds.coords[new_axis_name] = new_axis
+
+    new_dataarrays = []
+    for name in transform_spectra.keys():
+        dr = ds[name]
+
+        old_axis = dr.dims.index(old_axis_name)
+        shape = list(dr.sizes.values())
+        shape[old_axis] = len(new_axis)
+        new_dims = list(dr.dims)
+        new_dims[old_axis] = new_axis_name
+
+        g = functools.partial(f, axis=old_axis)
+        output = geometric_transform(
+            dr.values, g, output_shape=shape, output="f", order=1
+        )
+
+        new_coords = dict(dr.coords)
+        new_coords.pop(old_axis_name)
+
+        new_dataarray = xr.DataArray(
+            output,
+            coords=new_coords,
+            dims=new_dims,
+            attrs=dr.attrs.copy(),
+            name=prep_name(dr.name),
+        )
+        new_dataarrays.append(new_dataarray)
+        if "id" in new_dataarray.attrs:
+            del new_dataarray.attrs["id"]
+
+        if remove_old:
+            del ds[name]
+        else:
+            assert prep_name(name) != name and "You must make sure names don't collide"
+
+    new_ds = xr.merge([ds, *new_dataarrays])
+
+    new_ds.attrs.update(ds.attrs.copy())
+
+    if "id" in new_ds:
+        del new_ds.attrs["id"]
+
+    provenance(
+        new_ds,
+        dataset,
+        {
+            "what": "Transformed a Dataset coordinate axis",
+            "by": "transform_dataarray_axis",
+            "old_axis": old_axis_name,
+            "new_axis": new_axis_name,
+            "transformed_vars": list(transform_spectra.keys()),
+        },
+    )
+
+    return new_ds
