@@ -1,0 +1,2059 @@
+<node name="openconfig-interfaces" prefix="oc-if" type="module"><namespace prefix="ietf-if" module="ietf-interfaces" import="true">urn:ietf:params:xml:ns:yang:ietf-interfaces</namespace><namespace prefix="oc-ip" module="openconfig-if-ip" import="false">http://openconfig.net/yang/interfaces/ip</namespace><namespace prefix="oc-ifip-devs" module="cisco-xe-openconfig-if-ip-deviation" import="false">http://openconfig.net/yang/cisco-xe-openconfig-if-ip-deviation</namespace><namespace prefix="oc-ext" module="openconfig-extensions" import="true">http://openconfig.net/yang/openconfig-ext</namespace><namespace prefix="oc-lag" module="openconfig-if-aggregate" import="false">http://openconfig.net/yang/interfaces/aggregate</namespace><namespace prefix="oc-vlan" module="openconfig-vlan" import="false">http://openconfig.net/yang/vlan</namespace><namespace prefix="yang" module="ietf-yang-types" import="true">urn:ietf:params:xml:ns:yang:ietf-yang-types</namespace><namespace prefix="oc-if-devs" module="cisco-xe-openconfig-interfaces-deviation" import="false">http://openconfig.net/yang/cisco-xe-openconfig-interfaces-deviation</namespace><namespace prefix="oc-lacp" module="openconfig-lacp" import="false">http://openconfig.net/yang/lacp</namespace><namespace prefix="oc-rpol" module="openconfig-routing-policy" import="false">http://openconfig.net/yang/routing-policy</namespace><namespace prefix="oc-platform" module="openconfig-platform" import="false">http://openconfig.net/yang/platform</namespace><namespace prefix="cisco-if-eth" module="cisco-xe-openconfig-if-ethernet-ext" import="false">http://cisco.com/ns/yang/cisco-xe-openconfig-if-ethernet-ext</namespace><namespace prefix="oc-eth" module="openconfig-if-ethernet" import="false">http://openconfig.net/yang/interfaces/ethernet</namespace><namespace prefix="oc-wave-router" module="openconfig-wavelength-router" import="false">http://openconfig.net/yang/wavelength-router</namespace><namespace prefix="oc-acl" module="openconfig-acl" import="false">http://openconfig.net/yang/acl</namespace><namespace prefix="oc-if-eth-devs" module="cisco-xe-openconfig-if-ethernet-deviation" import="false">http://openconfig.net/yang/cisco-xe-openconfig-if-ethernet-deviation</namespace><namespace prefix="oc-if-cisco" module="cisco-xe-openconfig-interfaces-ext" import="false">http://cisco.com/ns/yang/cisco-xe-openconfig-interfaces-ext</namespace><namespace prefix="oc-lldp" module="openconfig-lldp" import="false">http://openconfig.net/yang/lldp</namespace><namespace prefix="oc-loc-rt" module="openconfig-local-routing" import="false">http://openconfig.net/yang/local-routing</namespace><namespace prefix="oc-netinst" module="openconfig-network-instance" import="false">http://openconfig.net/yang/network-instance</namespace><namespace prefix="oc-ip-ext" module="openconfig-if-ip-ext" import="false">http://openconfig.net/yang/interfaces/ip-ext</namespace><namespace prefix="oc-map-acl" module="oc-mapping-acl" import="false">http://openconfig.net/yang/oc-mapping-acl</namespace><namespace prefix="oc-line-com" module="openconfig-transport-line-common" import="false">http://openconfig.net/yang/transport-line-common</namespace><namespace prefix="oc-if" module="openconfig-interfaces" import="false">http://openconfig.net/yang/interfaces</namespace><namespace prefix="inet" module="ietf-inet-types" import="false">urn:ietf:params:xml:ns:yang:ietf-inet-types</namespace><namespace prefix="oc-vlan-types" module="openconfig-vlan-types" import="false">http://openconfig.net/yang/vlan-types</namespace><namespace prefix="ianaift" module="iana-if-type" import="false">urn:ietf:params:xml:ns:yang:iana-if-type</namespace><namespace prefix="oc-pol-types" module="openconfig-policy-types" import="false">http://openconfig.net/yang/policy-types</namespace><namespace prefix="oc-platform-types" module="openconfig-platform-types" import="false">http://openconfig.net/yang/platform-types</namespace><namespace prefix="tailf" module="tailf-common" import="false">http://tail-f.com/yang/common</namespace><namespace prefix="oc-opt-types" module="openconfig-transport-types" import="false">http://openconfig.net/yang/transport-types</namespace><namespace prefix="oc-pkt-match" module="openconfig-packet-match" import="false">http://openconfig.net/yang/header-fields</namespace><namespace prefix="oc-inet" module="openconfig-inet-types" import="false">http://openconfig.net/yang/types/inet</namespace><namespace prefix="oc-yang" module="openconfig-yang-types" import="false">http://openconfig.net/yang/types/yang</namespace><namespace prefix="oc-pkt-match-types" module="openconfig-packet-match-types" import="false">http://openconfig.net/yang/packet-match-types</namespace><namespace prefix="oc-lldp-types" module="openconfig-lldp-types" import="false">http://openconfig.net/yang/lldp/types</namespace><namespace prefix="oc-ni-types" module="openconfig-network-instance-types" import="false">http://openconfig.net/yang/network-instance-types</namespace><namespace prefix="oc-ni-l3" module="openconfig-network-instance-l3" import="false">http://openconfig.net/yang/network-instance-l3</namespace><namespace prefix="oc-types" module="openconfig-types" import="false">http://openconfig.net/yang/openconfig-types</namespace><namespace prefix="oc-bgp" module="openconfig-bgp" import="false">http://openconfig.net/yang/bgp</namespace><namespace prefix="oc-bgp-types" module="openconfig-bgp-types" import="false">http://openconfig.net/yang/bgp-types</namespace><node name="interfaces" access="read-write" type="container"><description><![CDATA[Top level container for interfaces, including configuration
+and state data.Top level container for interfaces, including configuration
+and state data.]]>None</description><node name="interface" access="read-write" type="list" key="name"><description><![CDATA[The list of named interfaces on the device.The list of named interfaces on the device.]]>None</description><node name="name" access="read-write" type="leaf" datatype="-&gt; ../config/name" mandatory="true" is_key="true"><description><![CDATA[References the configured name of the interfaceReferences the configured name of the interface]]>None</description></node><node name="config" access="read-write" type="container"><description><![CDATA[Configurable items at the global, physical interface
+levelConfigurable items at the global, physical interface
+level]]>None</description><node name="type" access="read-write" type="leaf" datatype="identityref:ietf-if:interface-type" mandatory="true" values="ianaift:iana-interface-type"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The type of the interface.
+
+When an interface entry is created, a server MAY
+initialize the type leaf with a valid value, e.g., if it
+is possible to derive the type from the name of the
+interface.
+
+If a client tries to set the type of an interface to a
+value that can never be used by the system, e.g., if the
+type is not supported or if the type does not match the
+name of the interface, the server MUST reject the request.
+A NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.[adapted from IETF interfaces model (RFC 7223)]
+
+The type of the interface.
+
+When an interface entry is created, a server MAY
+initialize the type leaf with a valid value, e.g., if it
+is possible to derive the type from the name of the
+interface.
+
+If a client tries to set the type of an interface to a
+value that can never be used by the system, e.g., if the
+type is not supported or if the type does not match the
+name of the interface, the server MUST reject the request.
+A NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.]]>None</description></node><node name="mtu" access="read-write" type="leaf" datatype="uint16"><description><![CDATA[Set the max transmission unit size in octets
+for the physical interface.  If this is not set, the mtu is
+set to the operational default -- e.g., 1514 bytes on an
+Ethernet interface.Set the max transmission unit size in octets
+for the physical interface.  If this is not set, the mtu is
+set to the operational default -- e.g., 1514 bytes on an
+Ethernet interface.]]>None</description></node><node name="name" access="read-write" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.]]>None</description></node><node name="description" access="read-write" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.]]>None</description></node><node name="enabled" access="read-write" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.]]>None</description></node><node name="oc-if-cisco:bandwidth" access="read-write" type="container"><node name="oc-if-cisco:kilobits" access="read-write" type="leaf" datatype="uint32"><description><![CDATA[Add bandwidth configuration for XE routers.Add bandwidth configuration for XE routers.]]>None</description></node></node></node><node name="state" access="read-only" type="container"><description><![CDATA[Operational state data at the global interface levelOperational state data at the global interface level]]>None</description><node name="type" access="read-only" type="leaf" datatype="identityref:ietf-if:interface-type" mandatory="true" values="ianaift:iana-interface-type"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The type of the interface.
+
+When an interface entry is created, a server MAY
+initialize the type leaf with a valid value, e.g., if it
+is possible to derive the type from the name of the
+interface.
+
+If a client tries to set the type of an interface to a
+value that can never be used by the system, e.g., if the
+type is not supported or if the type does not match the
+name of the interface, the server MUST reject the request.
+A NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.[adapted from IETF interfaces model (RFC 7223)]
+
+The type of the interface.
+
+When an interface entry is created, a server MAY
+initialize the type leaf with a valid value, e.g., if it
+is possible to derive the type from the name of the
+interface.
+
+If a client tries to set the type of an interface to a
+value that can never be used by the system, e.g., if the
+type is not supported or if the type does not match the
+name of the interface, the server MUST reject the request.
+A NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.]]>None</description></node><node name="mtu" access="read-only" type="leaf" datatype="uint16"><description><![CDATA[Set the max transmission unit size in octets
+for the physical interface.  If this is not set, the mtu is
+set to the operational default -- e.g., 1514 bytes on an
+Ethernet interface.Set the max transmission unit size in octets
+for the physical interface.  If this is not set, the mtu is
+set to the operational default -- e.g., 1514 bytes on an
+Ethernet interface.]]>None</description></node><node name="name" access="read-only" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.]]>None</description></node><node name="description" access="read-only" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.]]>None</description></node><node name="enabled" access="read-only" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.]]>None</description></node><node name="ifindex" access="read-only" type="leaf" datatype="uint32"><description><![CDATA[System assigned number for each interface.  Corresponds to
+ifIndex object in SNMP Interface MIBSystem assigned number for each interface.  Corresponds to
+ifIndex object in SNMP Interface MIB]]>None</description></node><node name="admin-status" access="read-only" type="leaf" datatype="enumeration" mandatory="true" values="UP|DOWN|TESTING"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The desired state of the interface.  In RFC 7223 this leaf
+has the same read semantics as ifAdminStatus.  Here, it
+reflects the administrative state as set by enabling or
+disabling the interface.[adapted from IETF interfaces model (RFC 7223)]
+
+The desired state of the interface.  In RFC 7223 this leaf
+has the same read semantics as ifAdminStatus.  Here, it
+reflects the administrative state as set by enabling or
+disabling the interface.]]>None</description></node><node name="oper-status" access="read-only" type="leaf" datatype="enumeration" mandatory="true" values="UP|DOWN|TESTING|UNKNOWN|DORMANT|NOT_PRESENT|LOWER_LAYER_DOWN"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The current operational state of the interface.
+
+This leaf has the same semantics as ifOperStatus.[adapted from IETF interfaces model (RFC 7223)]
+
+The current operational state of the interface.
+
+This leaf has the same semantics as ifOperStatus.]]>None</description></node><node name="last-change" access="read-only" type="leaf" datatype="yang:date-and-time"><description><![CDATA[Date and time of the last state change of the interface
+(e.g., up-to-down transition).   This corresponds to the
+ifLastChange object in the standard interface MIB.Date and time of the last state change of the interface
+(e.g., up-to-down transition).   This corresponds to the
+ifLastChange object in the standard interface MIB.]]>None</description></node><node name="counters" access="read-only" type="container"><description><![CDATA[A collection of interface-related statistics objects.A collection of interface-related statistics objects.]]>None</description><node name="in-octets" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of octets received on the interface,
+including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of octets received on the interface,
+including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-unicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were not addressed to a
+multicast or broadcast address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were not addressed to a
+multicast or broadcast address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-broadcast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a broadcast
+address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a broadcast
+address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-multicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a multicast
+address at this sub-layer.  For a MAC-layer protocol,
+this includes both Group and Functional addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a multicast
+address at this sub-layer.  For a MAC-layer protocol,
+this includes both Group and Functional addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-discards" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of inbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being deliverable to a higher-layer
+protocol.  One possible reason for discarding such a
+packet could be to free up buffer space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of inbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being deliverable to a higher-layer
+protocol.  One possible reason for discarding such a
+packet could be to free up buffer space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-errors" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of inbound
+packets that contained errors preventing them from being
+deliverable to a higher-layer protocol.  For character-
+oriented or fixed-length interfaces, the number of
+inbound transmission units that contained errors
+preventing them from being deliverable to a higher-layer
+protocol.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of inbound
+packets that contained errors preventing them from being
+deliverable to a higher-layer protocol.  For character-
+oriented or fixed-length interfaces, the number of
+inbound transmission units that contained errors
+preventing them from being deliverable to a higher-layer
+protocol.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-unknown-protos" access="read-only" type="leaf" datatype="yang:counter32"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of packets
+received via the interface that were discarded because
+of an unknown or unsupported protocol.  For
+character-oriented or fixed-length interfaces that
+support protocol multiplexing, the number of
+transmission units received via the interface that were
+discarded because of an unknown or unsupported protocol.
+For any interface that does not support protocol
+multiplexing, this counter is not present.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of packets
+received via the interface that were discarded because
+of an unknown or unsupported protocol.  For
+character-oriented or fixed-length interfaces that
+support protocol multiplexing, the number of
+transmission units received via the interface that were
+discarded because of an unknown or unsupported protocol.
+For any interface that does not support protocol
+multiplexing, this counter is not present.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-octets" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of octets transmitted out of the
+interface, including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of octets transmitted out of the
+interface, including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-unicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were not addressed
+to a multicast or broadcast address at this sub-layer,
+including those that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were not addressed
+to a multicast or broadcast address at this sub-layer,
+including those that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-broadcast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+broadcast address at this sub-layer, including those
+that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+broadcast address at this sub-layer, including those
+that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-multicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+multicast address at this sub-layer, including those
+that were discarded or not sent.  For a MAC-layer
+protocol, this includes both Group and Functional
+addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+multicast address at this sub-layer, including those
+that were discarded or not sent.  For a MAC-layer
+protocol, this includes both Group and Functional
+addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-discards" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of outbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being transmitted.  One possible reason
+for discarding such a packet could be to free up buffer
+space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of outbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being transmitted.  One possible reason
+for discarding such a packet could be to free up buffer
+space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-errors" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of outbound
+packets that could not be transmitted because of errors.
+For character-oriented or fixed-length interfaces, the
+number of outbound transmission units that could not be
+transmitted because of errors.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of outbound
+packets that could not be transmitted because of errors.
+For character-oriented or fixed-length interfaces, the
+number of outbound transmission units that could not be
+transmitted because of errors.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="last-clear" access="read-only" type="leaf" datatype="yang:date-and-time"><description><![CDATA[Indicates the last time the interface counters were
+cleared.Indicates the last time the interface counters were
+cleared.]]>None</description></node></node><node name="oc-platform:hardware-port" access="read-only" type="leaf" datatype="-&gt; /components/component/name"><description><![CDATA[References the hardware port in the device inventoryReferences the hardware port in the device inventory]]>None</description></node></node><node name="hold-time" access="read-write" type="container"><description><![CDATA[Top-level container for hold-time settings to enable
+dampening advertisements of interface transitions.Top-level container for hold-time settings to enable
+dampening advertisements of interface transitions.]]>None</description><node name="config" access="read-write" type="container"><description><![CDATA[Configuration data for interface hold-time settings.Configuration data for interface hold-time settings.]]>None</description><node name="up" access="read-write" type="leaf" datatype="uint32"><description><![CDATA[Dampens advertisement when the interface
+transitions from down to up.  A zero value means dampening
+is turned off, i.e., immediate notification.Dampens advertisement when the interface
+transitions from down to up.  A zero value means dampening
+is turned off, i.e., immediate notification.]]>None</description></node><node name="down" access="read-write" type="leaf" datatype="uint32"><description><![CDATA[Dampens advertisement when the interface transitions from
+up to down.  A zero value means dampening is turned off,
+i.e., immediate notification.Dampens advertisement when the interface transitions from
+up to down.  A zero value means dampening is turned off,
+i.e., immediate notification.]]>None</description></node><node name="oc-if-cisco:dampening-time" access="read-write" type="leaf" datatype="uint32"><description><![CDATA[Half-life for penalty time required for IOS-XE dampening.Half-life for penalty time required for IOS-XE dampening.]]>None</description></node><node name="oc-if-cisco:maximum-suppressing-time" access="read-write" type="leaf" datatype="uint32"><description><![CDATA[Add start suppressing time required for IOS-XE dampening.Add start suppressing time required for IOS-XE dampening.]]>None</description></node></node><node name="state" access="read-only" type="container"><description><![CDATA[Operational state data for interface hold-time.Operational state data for interface hold-time.]]>None</description><node name="up" access="read-only" type="leaf" datatype="uint32" default="0"><description><![CDATA[Dampens advertisement when the interface
+transitions from down to up.  A zero value means dampening
+is turned off, i.e., immediate notification.Dampens advertisement when the interface
+transitions from down to up.  A zero value means dampening
+is turned off, i.e., immediate notification.]]>None</description></node><node name="down" access="read-only" type="leaf" datatype="uint32" default="0"><description><![CDATA[Dampens advertisement when the interface transitions from
+up to down.  A zero value means dampening is turned off,
+i.e., immediate notification.Dampens advertisement when the interface transitions from
+up to down.  A zero value means dampening is turned off,
+i.e., immediate notification.]]>None</description></node><node name="oc-if-cisco:dampening-time" access="read-only" type="leaf" datatype="uint32"><description><![CDATA[Half-life for penalty time required for IOS-XE dampening.Half-life for penalty time required for IOS-XE dampening.]]>None</description></node><node name="oc-if-cisco:maximum-suppressing-time" access="read-only" type="leaf" datatype="uint32"><description><![CDATA[Add start suppressing time required for IOS-XE dampening.Add start suppressing time required for IOS-XE dampening.]]>None</description></node></node></node><node name="subinterfaces" access="read-write" type="container"><description><![CDATA[Enclosing container for the list of subinterfaces associated
+with a physical interfaceEnclosing container for the list of subinterfaces associated
+with a physical interface]]>None</description><node name="subinterface" access="read-write" type="list" key="index"><description><![CDATA[The list of subinterfaces (logical interfaces) associated
+with a physical interfaceThe list of subinterfaces (logical interfaces) associated
+with a physical interface]]>None</description><node name="index" access="read-write" type="leaf" datatype="-&gt; ../config/index" mandatory="true" is_key="true"><description><![CDATA[The index number of the subinterface -- used to address
+the logical interfaceThe index number of the subinterface -- used to address
+the logical interface]]>None</description></node><node name="config" access="read-write" type="container"><description><![CDATA[Configurable items at the subinterface levelConfigurable items at the subinterface level]]>None</description><node name="index" access="read-write" type="leaf" datatype="uint32" default="0"><description><![CDATA[The index of the subinterface, or logical interface number.
+On systems with no support for subinterfaces, or not using
+subinterfaces, this value should default to 0, i.e., the
+default subinterface.The index of the subinterface, or logical interface number.
+On systems with no support for subinterfaces, or not using
+subinterfaces, this value should default to 0, i.e., the
+default subinterface.]]>None</description></node><node name="name" access="read-write" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.]]>None</description></node><node name="description" access="read-write" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.]]>None</description></node><node name="enabled" access="read-write" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.]]>None</description></node></node><node name="state" access="read-only" type="container"><description><![CDATA[Operational state data for logical interfacesOperational state data for logical interfaces]]>None</description><node name="index" access="read-only" type="leaf" datatype="uint32" default="0"><description><![CDATA[The index of the subinterface, or logical interface number.
+On systems with no support for subinterfaces, or not using
+subinterfaces, this value should default to 0, i.e., the
+default subinterface.The index of the subinterface, or logical interface number.
+On systems with no support for subinterfaces, or not using
+subinterfaces, this value should default to 0, i.e., the
+default subinterface.]]>None</description></node><node name="name" access="read-only" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.[adapted from IETF interfaces model (RFC 7223)]
+
+The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.  The 'config false'
+list interfaces/interface[name]/state contains the currently
+existing interfaces on the device.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+corresponding state list, the server MAY reject
+the request if the implementation does not support
+pre-provisioning of interfaces or if the name refers to
+an interface that can never exist in the system.  A
+NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.
+
+The IETF model in RFC 7223 provides YANG features for the
+following (i.e., pre-provisioning and arbitrary-names),
+however they are omitted here:
+
+ If the device supports pre-provisioning of interface
+ configuration, the 'pre-provisioning' feature is
+ advertised.
+
+ If the device allows arbitrarily named user-controlled
+ interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+/interfaces/interface[name]/state list.]]>None</description></node><node name="description" access="read-only" type="leaf" datatype="string"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.[adapted from IETF interfaces model (RFC 7223)]
+
+A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+datastore.
+
+Specifically, if the device supports ':startup', when
+ifAlias is read the device MUST return the value of
+'description' in the 'startup' datastore, and when it is
+written, it MUST be written to the 'running' and 'startup'
+datastores.  Note that it is up to the implementation to
+
+decide whether to modify this single leaf in 'startup' or
+perform an implicit copy-config from 'running' to
+'startup'.
+
+If the device does not support ':startup', ifAlias MUST
+be mapped to the 'description' leaf in the 'running'
+datastore.]]>None</description></node><node name="enabled" access="read-only" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.[adapted from IETF interfaces model (RFC 7223)]
+
+This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the 'running' datastore to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the 'running' datastore are
+reflected in ifAdminStatus, but if ifAdminStatus is
+changed over SNMP, this leaf is not affected.]]>None</description></node><node name="ifindex" access="read-only" type="leaf" datatype="uint32"><description><![CDATA[System assigned number for each interface.  Corresponds to
+ifIndex object in SNMP Interface MIBSystem assigned number for each interface.  Corresponds to
+ifIndex object in SNMP Interface MIB]]>None</description></node><node name="admin-status" access="read-only" type="leaf" datatype="enumeration" mandatory="true" values="UP|DOWN|TESTING"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The desired state of the interface.  In RFC 7223 this leaf
+has the same read semantics as ifAdminStatus.  Here, it
+reflects the administrative state as set by enabling or
+disabling the interface.[adapted from IETF interfaces model (RFC 7223)]
+
+The desired state of the interface.  In RFC 7223 this leaf
+has the same read semantics as ifAdminStatus.  Here, it
+reflects the administrative state as set by enabling or
+disabling the interface.]]>None</description></node><node name="oper-status" access="read-only" type="leaf" datatype="enumeration" mandatory="true" values="UP|DOWN|TESTING|UNKNOWN|DORMANT|NOT_PRESENT|LOWER_LAYER_DOWN"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The current operational state of the interface.
+
+This leaf has the same semantics as ifOperStatus.[adapted from IETF interfaces model (RFC 7223)]
+
+The current operational state of the interface.
+
+This leaf has the same semantics as ifOperStatus.]]>None</description></node><node name="last-change" access="read-only" type="leaf" datatype="yang:date-and-time"><description><![CDATA[Date and time of the last state change of the interface
+(e.g., up-to-down transition).   This corresponds to the
+ifLastChange object in the standard interface MIB.Date and time of the last state change of the interface
+(e.g., up-to-down transition).   This corresponds to the
+ifLastChange object in the standard interface MIB.]]>None</description></node><node name="counters" access="read-only" type="container"><description><![CDATA[A collection of interface-related statistics objects.A collection of interface-related statistics objects.]]>None</description><node name="in-octets" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of octets received on the interface,
+including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of octets received on the interface,
+including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-unicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were not addressed to a
+multicast or broadcast address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were not addressed to a
+multicast or broadcast address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-broadcast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a broadcast
+address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a broadcast
+address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-multicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a multicast
+address at this sub-layer.  For a MAC-layer protocol,
+this includes both Group and Functional addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+
+The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a multicast
+address at this sub-layer.  For a MAC-layer protocol,
+this includes both Group and Functional addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-discards" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of inbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being deliverable to a higher-layer
+protocol.  One possible reason for discarding such a
+packet could be to free up buffer space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of inbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being deliverable to a higher-layer
+protocol.  One possible reason for discarding such a
+packet could be to free up buffer space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-errors" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of inbound
+packets that contained errors preventing them from being
+deliverable to a higher-layer protocol.  For character-
+oriented or fixed-length interfaces, the number of
+inbound transmission units that contained errors
+preventing them from being deliverable to a higher-layer
+protocol.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of inbound
+packets that contained errors preventing them from being
+deliverable to a higher-layer protocol.  For character-
+oriented or fixed-length interfaces, the number of
+inbound transmission units that contained errors
+preventing them from being deliverable to a higher-layer
+protocol.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="in-unknown-protos" access="read-only" type="leaf" datatype="yang:counter32"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of packets
+received via the interface that were discarded because
+of an unknown or unsupported protocol.  For
+character-oriented or fixed-length interfaces that
+support protocol multiplexing, the number of
+transmission units received via the interface that were
+discarded because of an unknown or unsupported protocol.
+For any interface that does not support protocol
+multiplexing, this counter is not present.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of packets
+received via the interface that were discarded because
+of an unknown or unsupported protocol.  For
+character-oriented or fixed-length interfaces that
+support protocol multiplexing, the number of
+transmission units received via the interface that were
+discarded because of an unknown or unsupported protocol.
+For any interface that does not support protocol
+multiplexing, this counter is not present.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-octets" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of octets transmitted out of the
+interface, including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of octets transmitted out of the
+interface, including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-unicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were not addressed
+to a multicast or broadcast address at this sub-layer,
+including those that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were not addressed
+to a multicast or broadcast address at this sub-layer,
+including those that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-broadcast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+broadcast address at this sub-layer, including those
+that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+broadcast address at this sub-layer, including those
+that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-multicast-pkts" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+multicast address at this sub-layer, including those
+that were discarded or not sent.  For a MAC-layer
+protocol, this includes both Group and Functional
+addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The total number of packets that higher-level protocols
+requested be transmitted, and that were addressed to a
+multicast address at this sub-layer, including those
+that were discarded or not sent.  For a MAC-layer
+protocol, this includes both Group and Functional
+addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-discards" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of outbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being transmitted.  One possible reason
+for discarding such a packet could be to free up buffer
+space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+The number of outbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being transmitted.  One possible reason
+for discarding such a packet could be to free up buffer
+space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="out-errors" access="read-only" type="leaf" datatype="yang:counter64"><description><![CDATA[[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of outbound
+packets that could not be transmitted because of errors.
+For character-oriented or fixed-length interfaces, the
+number of outbound transmission units that could not be
+transmitted because of errors.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.[adapted from IETF interfaces model (RFC 7223)]
+Changed the counter type to counter64.
+
+For packet-oriented interfaces, the number of outbound
+packets that could not be transmitted because of errors.
+For character-oriented or fixed-length interfaces, the
+number of outbound transmission units that could not be
+transmitted because of errors.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system, and at
+other times as indicated by the value of
+'discontinuity-time'.]]>None</description></node><node name="last-clear" access="read-only" type="leaf" datatype="yang:date-and-time"><description><![CDATA[Indicates the last time the interface counters were
+cleared.Indicates the last time the interface counters were
+cleared.]]>None</description></node></node></node><node name="oc-vlan:vlan" access="read-write" type="container"><description><![CDATA[Enclosing container for VLAN interface-specific
+data on subinterfacesEnclosing container for VLAN interface-specific
+data on subinterfaces]]>None</description><node name="oc-vlan:config" access="read-write" type="container"><description><![CDATA[Configuration parameters for VLANsConfiguration parameters for VLANs]]>None</description><node name="oc-vlan:vlan-id" access="read-write" type="leaf" datatype="union"><description><![CDATA[VLAN id for the subinterface -- specified inline for the
+case of a local VLAN.  The id is scoped to the
+subinterface, and could be repeated on different
+subinterfaces.VLAN id for the subinterface -- specified inline for the
+case of a local VLAN.  The id is scoped to the
+subinterface, and could be repeated on different
+subinterfaces.]]>None</description></node></node><node name="oc-vlan:state" access="read-only" type="container"><description><![CDATA[State variables for VLANsState variables for VLANs]]>None</description><node name="oc-vlan:vlan-id" access="read-only" type="leaf" datatype="union"><description><![CDATA[VLAN id for the subinterface -- specified inline for the
+case of a local VLAN.  The id is scoped to the
+subinterface, and could be repeated on different
+subinterfaces.VLAN id for the subinterface -- specified inline for the
+case of a local VLAN.  The id is scoped to the
+subinterface, and could be repeated on different
+subinterfaces.]]>None</description></node></node></node><node name="oc-ip:ipv4" access="read-write" type="container"><description><![CDATA[Parameters for the IPv4 address family.Parameters for the IPv4 address family.]]>None</description><node name="oc-ip:addresses" access="read-write" type="container"><description><![CDATA[Enclosing container for address listEnclosing container for address list]]>None</description><node name="oc-ip:address" access="read-write" type="list" key="ip"><description><![CDATA[The list of configured IPv4 addresses on the interface.The list of configured IPv4 addresses on the interface.]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP addressReferences the configured IP address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each configured IPv4
+address on the interfaceConfiguration data for each configured IPv4
+address on the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-write" type="leaf" datatype="uint8"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for each IPv4 address
+configured on the interfaceOperational state data for each IPv4 address
+configured on the interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-only" type="leaf" datatype="uint8"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="ip-address-origin" values="OTHER|STATIC|DHCP|LINK_LAYER|RANDOM"><description><![CDATA[The origin of this address, e.g., statically configured,
+assigned by DHCP, etc..The origin of this address, e.g., statically configured,
+assigned by DHCP, etc..]]>None</description></node></node></node></node><node name="oc-ip:neighbors" access="read-write" type="container"><description><![CDATA[Enclosing container for neighbor listEnclosing container for neighbor list]]>None</description><node name="oc-ip:neighbor" access="read-write" type="list" key="ip"><description><![CDATA[A list of mappings from IPv4 addresses to
+link-layer addresses.
+
+Entries in this list are used as static entries in the
+ARP Cache.A list of mappings from IPv4 addresses to
+link-layer addresses.
+
+Entries in this list are used as static entries in the
+ARP Cache.]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP addressReferences the configured IP address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each configured IPv4
+address on the interfaceConfiguration data for each configured IPv4
+address on the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[The IPv4 address of the neighbor node.The IPv4 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-write" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[The link-layer address of the neighbor node.The link-layer address of the neighbor node.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for each IPv4 address
+configured on the interfaceOperational state data for each IPv4 address
+configured on the interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[The IPv4 address of the neighbor node.The IPv4 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-only" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[The link-layer address of the neighbor node.The link-layer address of the neighbor node.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="neighbor-origin" values="OTHER|STATIC|DYNAMIC"><description><![CDATA[The origin of this neighbor entry, static or dynamic.The origin of this neighbor entry, static or dynamic.]]>None</description></node></node></node></node><node name="oc-ip:unnumbered" access="read-write" type="container"><description><![CDATA[Top-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address informationTop-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address information]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for unnumbered interfaceConfiguration data for unnumbered interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for unnumbered interfacesOperational state data for unnumbered interfaces]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:interface-ref" access="read-write" type="container"><description><![CDATA[Reference to an interface or subinterfaceReference to an interface or subinterface]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configured reference to interface / subinterfaceConfigured reference to interface / subinterface]]>None</description><node name="oc-ip:interface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state for interface-refOperational state for interface-ref]]>None</description><node name="oc-ip:interface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node></node></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Top-level IPv4 configuration data for the interfaceTop-level IPv4 configuration data for the interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-write" type="leaf" datatype="uint16"><description><![CDATA[The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Top level IPv4 operational state dataTop level IPv4 operational state data]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-only" type="leaf" datatype="uint16"><description><![CDATA[The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node></node></node><node name="oc-ip:ipv6" access="read-write" type="container"><description><![CDATA[Parameters for the IPv6 address family.Parameters for the IPv6 address family.]]>None</description><node name="oc-ip:addresses" access="read-write" type="container"><description><![CDATA[Enclosing container for address listEnclosing container for address list]]>None</description><node name="oc-ip:address" access="read-write" type="list" key="ip"><description><![CDATA[The list of configured IPv6 addresses on the interface.The list of configured IPv6 addresses on the interface.]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP addressReferences the configured IP address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each IPv6 address on
+the interfaceConfiguration data for each IPv6 address on
+the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-write" type="leaf" datatype="uint8" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[State data for each IPv6 address on the
+interfaceState data for each IPv6 address on the
+interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-only" type="leaf" datatype="uint8" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="ip-address-origin" values="OTHER|STATIC|DHCP|LINK_LAYER|RANDOM"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The origin of this address, e.g., static, dhcp, etc.[adapted from IETF IP model RFC 7277]
+
+The origin of this address, e.g., static, dhcp, etc.]]>None</description></node><node name="oc-ip:status" access="read-only" type="leaf" datatype="enumeration" values="PREFERRED|DEPRECATED|INVALID|INACCESSIBLE|UNKNOWN|TENTATIVE|DUPLICATE|OPTIMISTIC"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The status of an address.  Most of the states correspond
+to states from the IPv6 Stateless Address
+Autoconfiguration protocol.[adapted from IETF IP model RFC 7277]
+
+The status of an address.  Most of the states correspond
+to states from the IPv6 Stateless Address
+Autoconfiguration protocol.]]>None</description></node></node></node></node><node name="oc-ip:neighbors" access="read-write" type="container"><description><![CDATA[Enclosing container for list of IPv6 neighborsEnclosing container for list of IPv6 neighbors]]>None</description><node name="oc-ip:neighbor" access="read-write" type="list" key="ip"><description><![CDATA[List of IPv6 neighborsList of IPv6 neighbors]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP neighbor addressReferences the configured IP neighbor address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each IPv6 address on
+the interfaceConfiguration data for each IPv6 address on
+the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-write" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[State data for each IPv6 address on the
+interfaceState data for each IPv6 address on the
+interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-only" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="neighbor-origin" values="OTHER|STATIC|DYNAMIC"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The origin of this neighbor entry.[adapted from IETF IP model RFC 7277]
+
+The origin of this neighbor entry.]]>None</description></node><node name="oc-ip:is-router" access="read-only" type="leaf" datatype="empty"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+Indicates that the neighbor node acts as a router.[adapted from IETF IP model RFC 7277]
+
+Indicates that the neighbor node acts as a router.]]>None</description></node><node name="oc-ip:neighbor-state" access="read-only" type="leaf" datatype="enumeration" values="INCOMPLETE|REACHABLE|STALE|DELAY|PROBE"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The Neighbor Unreachability Detection state of this
+entry.[adapted from IETF IP model RFC 7277]
+
+The Neighbor Unreachability Detection state of this
+entry.]]>None</description></node></node></node></node><node name="oc-ip:unnumbered" access="read-write" type="container"><description><![CDATA[Top-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address informationTop-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address information]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for unnumbered interfaceConfiguration data for unnumbered interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for unnumbered interfacesOperational state data for unnumbered interfaces]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:interface-ref" access="read-write" type="container"><description><![CDATA[Reference to an interface or subinterfaceReference to an interface or subinterface]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configured reference to interface / subinterfaceConfigured reference to interface / subinterface]]>None</description><node name="oc-ip:interface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state for interface-refOperational state for interface-ref]]>None</description><node name="oc-ip:interface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node></node></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Top-level config data for the IPv6 interfaceTop-level config data for the IPv6 interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-write" type="leaf" datatype="uint32"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node><node name="oc-ip:dup-addr-detect-transmits" access="read-write" type="leaf" datatype="uint32" default="1"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Top-level operational state data for the IPv6 interfaceTop-level operational state data for the IPv6 interface]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-only" type="leaf" datatype="uint32"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node><node name="oc-ip:dup-addr-detect-transmits" access="read-only" type="leaf" datatype="uint32" default="1"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.]]>None</description></node></node><node name="oc-ip-ext:autoconf" access="read-write" type="container"><description><![CDATA[Top-level container for IPv6 autoconfTop-level container for IPv6 autoconf]]>None</description><node name="oc-ip-ext:config" access="read-write" type="container"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+Parameters to control the autoconfiguration of IPv6
+addresses, as described in RFC 4862.[adapted from IETF IP model RFC 7277]
+
+Parameters to control the autoconfiguration of IPv6
+addresses, as described in RFC 4862.]]>None</description><node name="oc-ip-ext:create-global-addresses" access="read-write" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates global addresses as
+described in RFC 4862.[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates global addresses as
+described in RFC 4862.]]>None</description></node><node name="oc-ip-ext:create-temporary-addresses" access="read-write" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates temporary addresses as
+described in RFC 4941.[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates temporary addresses as
+described in RFC 4941.]]>None</description></node><node name="oc-ip-ext:temporary-valid-lifetime" access="read-write" type="leaf" datatype="uint32" default="604800"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address
+is valid.[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address
+is valid.]]>None</description></node><node name="oc-ip-ext:temporary-preferred-lifetime" access="read-write" type="leaf" datatype="uint32" default="86400"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address is
+preferred.[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address is
+preferred.]]>None</description></node></node><node name="oc-ip-ext:state" access="read-only" type="container"><description><![CDATA[Operational state data Operational state data ]]>None</description><node name="oc-ip-ext:create-global-addresses" access="read-only" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates global addresses as
+described in RFC 4862.[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates global addresses as
+described in RFC 4862.]]>None</description></node><node name="oc-ip-ext:create-temporary-addresses" access="read-only" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates temporary addresses as
+described in RFC 4941.[adapted from IETF IP model RFC 7277]
+
+If enabled, the host creates temporary addresses as
+described in RFC 4941.]]>None</description></node><node name="oc-ip-ext:temporary-valid-lifetime" access="read-only" type="leaf" datatype="uint32" default="604800"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address
+is valid.[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address
+is valid.]]>None</description></node><node name="oc-ip-ext:temporary-preferred-lifetime" access="read-only" type="leaf" datatype="uint32" default="86400"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address is
+preferred.[adapted from IETF IP model RFC 7277]
+
+The time period during which the temporary address is
+preferred.]]>None</description></node></node></node></node></node></node><node name="oc-eth:ethernet" access="read-write" type="container"><description><![CDATA[Top-level container for ethernet configuration
+and stateTop-level container for ethernet configuration
+and state]]>None</description><node name="oc-eth:config" access="read-write" type="container"><description><![CDATA[Configuration data for ethernet interfacesConfiguration data for ethernet interfaces]]>None</description><node name="oc-eth:mac-address" access="read-write" type="leaf" datatype="yang:mac-address"><description><![CDATA[Assigns a MAC address to the Ethernet interface.  If not
+specified, the corresponding operational state leaf is
+expected to show the system-assigned MAC address.Assigns a MAC address to the Ethernet interface.  If not
+specified, the corresponding operational state leaf is
+expected to show the system-assigned MAC address.]]>None</description></node><node name="oc-eth:auto-negotiate" access="read-write" type="leaf" datatype="boolean" values="true|false"><description><![CDATA[Set to TRUE to request the interface to auto-negotiate
+transmission parameters with its peer interface.  When
+set to FALSE, the transmission parameters are specified
+manually.Set to TRUE to request the interface to auto-negotiate
+transmission parameters with its peer interface.  When
+set to FALSE, the transmission parameters are specified
+manually.]]>None</description></node><node name="oc-eth:duplex-mode" access="read-write" type="leaf" datatype="enumeration" values="FULL|HALF"><description><![CDATA[When auto-negotiate is TRUE, this optionally sets the
+duplex mode that will be advertised to the peer.  If
+unspecified, the interface should negotiate the duplex mode
+directly (typically full-duplex).  When auto-negotiate is
+FALSE, this sets the duplex mode on the interface directly.When auto-negotiate is TRUE, this optionally sets the
+duplex mode that will be advertised to the peer.  If
+unspecified, the interface should negotiate the duplex mode
+directly (typically full-duplex).  When auto-negotiate is
+FALSE, this sets the duplex mode on the interface directly.]]>None</description></node><node name="oc-eth:port-speed" access="read-write" type="leaf" datatype="identityref:ETHERNET_SPEED"><description><![CDATA[When auto-negotiate is TRUE, this optionally sets the
+port-speed mode that will be advertised to the peer for
+negotiation.  If unspecified, it is expected that the
+interface will select the highest speed available based on
+negotiation.  When auto-negotiate is set to FALSE, sets the
+link speed to a fixed value -- supported values are defined
+by ETHERNET_SPEED identitiesWhen auto-negotiate is TRUE, this optionally sets the
+port-speed mode that will be advertised to the peer for
+negotiation.  If unspecified, it is expected that the
+interface will select the highest speed available based on
+negotiation.  When auto-negotiate is set to FALSE, sets the
+link speed to a fixed value -- supported values are defined
+by ETHERNET_SPEED identities]]>None</description></node><node name="oc-eth:enable-flow-control" access="read-write" type="leaf" datatype="boolean" values="true|false"><description><![CDATA[Enable or disable flow control for this interface.
+Ethernet flow control is a mechanism by which a receiver
+may send PAUSE frames to a sender to stop transmission for
+a specified time.
+
+This setting should override auto-negotiated flow control
+settings.  If left unspecified, and auto-negotiate is TRUE,
+flow control mode is negotiated with the peer interface.Enable or disable flow control for this interface.
+Ethernet flow control is a mechanism by which a receiver
+may send PAUSE frames to a sender to stop transmission for
+a specified time.
+
+This setting should override auto-negotiated flow control
+settings.  If left unspecified, and auto-negotiate is TRUE,
+flow control mode is negotiated with the peer interface.]]>None</description></node><node name="oc-lag:aggregate-id" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Specify the logical aggregate interface to which
+this interface belongsSpecify the logical aggregate interface to which
+this interface belongs]]>None</description></node><node name="cisco-if-eth:switchport" access="read-write" type="leaf" datatype="boolean" values="true|false"><description><![CDATA[If false the switch port is a routed port and can have an ip address.If false the switch port is a routed port and can have an ip address.]]>None</description></node></node><node name="oc-vlan:switched-vlan" access="read-write" type="container"><description><![CDATA[Enclosing container for VLAN interface-specific
+data on Ethernet interfaces.  These are for standard
+L2, switched-style VLANs.Enclosing container for VLAN interface-specific
+data on Ethernet interfaces.  These are for standard
+L2, switched-style VLANs.]]>None</description><node name="oc-vlan:config" access="read-write" type="container"><description><![CDATA[Configuration parameters for VLANsConfiguration parameters for VLANs]]>None</description><node name="oc-vlan:interface-mode" access="read-write" type="leaf" datatype="oc-vlan-types:vlan-mode-type" values="ACCESS|TRUNK"><description><![CDATA[Set the interface to access or trunk mode for
+VLANsSet the interface to access or trunk mode for
+VLANs]]>None</description></node><node name="oc-vlan:native-vlan" access="read-write" type="leaf" datatype="union"><description><![CDATA[Set the native VLAN id for untagged frames arriving on
+a trunk interface.  This configuration is only valid on
+a trunk interface.Set the native VLAN id for untagged frames arriving on
+a trunk interface.  This configuration is only valid on
+a trunk interface.]]>None</description></node><node name="oc-vlan:access-vlan" access="read-write" type="leaf" datatype="union"><description><![CDATA[Assign the access vlan to the access port.Assign the access vlan to the access port.]]>None</description></node><node name="oc-vlan:trunk-vlans" access="read-write" type="leaf-list" datatype="union"><description><![CDATA[Specify VLANs, or ranges thereof, that the interface may
+carry when in trunk mode.  If not specified, all VLANs are
+allowed on the interface. Ranges are specified in the form
+x..y, where x&lty - ranges are assumed to be inclusive (such
+that the VLAN range is x &lt= range &lt= y.Specify VLANs, or ranges thereof, that the interface may
+carry when in trunk mode.  If not specified, all VLANs are
+allowed on the interface. Ranges are specified in the form
+x..y, where x<y - ranges are assumed to be inclusive (such
+that the VLAN range is x <= range <= y.]]>None</description></node></node><node name="oc-vlan:state" access="read-only" type="container"><description><![CDATA[State variables for VLANsState variables for VLANs]]>None</description><node name="oc-vlan:interface-mode" access="read-only" type="leaf" datatype="oc-vlan-types:vlan-mode-type" values="ACCESS|TRUNK"><description><![CDATA[Set the interface to access or trunk mode for
+VLANsSet the interface to access or trunk mode for
+VLANs]]>None</description></node><node name="oc-vlan:native-vlan" access="read-only" type="leaf" datatype="union"><description><![CDATA[Set the native VLAN id for untagged frames arriving on
+a trunk interface.  This configuration is only valid on
+a trunk interface.Set the native VLAN id for untagged frames arriving on
+a trunk interface.  This configuration is only valid on
+a trunk interface.]]>None</description></node><node name="oc-vlan:access-vlan" access="read-only" type="leaf" datatype="union"><description><![CDATA[Assign the access vlan to the access port.Assign the access vlan to the access port.]]>None</description></node><node name="oc-vlan:trunk-vlans" access="read-only" type="leaf-list" datatype="union"><description><![CDATA[Specify VLANs, or ranges thereof, that the interface may
+carry when in trunk mode.  If not specified, all VLANs are
+allowed on the interface. Ranges are specified in the form
+x..y, where x&lty - ranges are assumed to be inclusive (such
+that the VLAN range is x &lt= range &lt= y.Specify VLANs, or ranges thereof, that the interface may
+carry when in trunk mode.  If not specified, all VLANs are
+allowed on the interface. Ranges are specified in the form
+x..y, where x<y - ranges are assumed to be inclusive (such
+that the VLAN range is x <= range <= y.]]>None</description></node></node></node></node><node name="oc-vlan:routed-vlan" access="read-write" type="container"><description><![CDATA[Top-level container for routed vlan interfaces.  These
+logical interfaces are also known as SVI (switched virtual
+interface), IRB (integrated routing and bridging), RVI
+(routed VLAN interface)Top-level container for routed vlan interfaces.  These
+logical interfaces are also known as SVI (switched virtual
+interface), IRB (integrated routing and bridging), RVI
+(routed VLAN interface)]]>None</description><node name="oc-vlan:config" access="read-write" type="container"><description><![CDATA[Configuration data for routed vlan interfacesConfiguration data for routed vlan interfaces]]>None</description><node name="oc-vlan:vlan" access="read-write" type="leaf" datatype="union"><description><![CDATA[References the VLAN for which this IP interface
+provides routing services -- similar to a switch virtual
+interface (SVI), or integrated routing and bridging interface
+(IRB) in some implementations.References the VLAN for which this IP interface
+provides routing services -- similar to a switch virtual
+interface (SVI), or integrated routing and bridging interface
+(IRB) in some implementations.]]>None</description></node></node><node name="oc-vlan:state" access="read-only" type="container"><description><![CDATA[Operational state data Operational state data ]]>None</description><node name="oc-vlan:vlan" access="read-only" type="leaf" datatype="union"><description><![CDATA[References the VLAN for which this IP interface
+provides routing services -- similar to a switch virtual
+interface (SVI), or integrated routing and bridging interface
+(IRB) in some implementations.References the VLAN for which this IP interface
+provides routing services -- similar to a switch virtual
+interface (SVI), or integrated routing and bridging interface
+(IRB) in some implementations.]]>None</description></node></node><node name="oc-ip:ipv4" access="read-write" type="container"><description><![CDATA[Parameters for the IPv4 address family.Parameters for the IPv4 address family.]]>None</description><node name="oc-ip:addresses" access="read-write" type="container"><description><![CDATA[Enclosing container for address listEnclosing container for address list]]>None</description><node name="oc-ip:address" access="read-write" type="list" key="ip"><description><![CDATA[The list of configured IPv4 addresses on the interface.The list of configured IPv4 addresses on the interface.]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP addressReferences the configured IP address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each configured IPv4
+address on the interfaceConfiguration data for each configured IPv4
+address on the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-write" type="leaf" datatype="uint8"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for each IPv4 address
+configured on the interfaceOperational state data for each IPv4 address
+configured on the interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv4 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-only" type="leaf" datatype="uint8"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="ip-address-origin" values="OTHER|STATIC|DHCP|LINK_LAYER|RANDOM"><description><![CDATA[The origin of this address, e.g., statically configured,
+assigned by DHCP, etc..The origin of this address, e.g., statically configured,
+assigned by DHCP, etc..]]>None</description></node></node></node></node><node name="oc-ip:neighbors" access="read-write" type="container"><description><![CDATA[Enclosing container for neighbor listEnclosing container for neighbor list]]>None</description><node name="oc-ip:neighbor" access="read-write" type="list" key="ip"><description><![CDATA[A list of mappings from IPv4 addresses to
+link-layer addresses.
+
+Entries in this list are used as static entries in the
+ARP Cache.A list of mappings from IPv4 addresses to
+link-layer addresses.
+
+Entries in this list are used as static entries in the
+ARP Cache.]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP addressReferences the configured IP address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each configured IPv4
+address on the interfaceConfiguration data for each configured IPv4
+address on the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[The IPv4 address of the neighbor node.The IPv4 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-write" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[The link-layer address of the neighbor node.The link-layer address of the neighbor node.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for each IPv4 address
+configured on the interfaceOperational state data for each IPv4 address
+configured on the interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv4-address-no-zone"><description><![CDATA[The IPv4 address of the neighbor node.The IPv4 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-only" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[The link-layer address of the neighbor node.The link-layer address of the neighbor node.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="neighbor-origin" values="OTHER|STATIC|DYNAMIC"><description><![CDATA[The origin of this neighbor entry, static or dynamic.The origin of this neighbor entry, static or dynamic.]]>None</description></node></node></node></node><node name="oc-ip:unnumbered" access="read-write" type="container"><description><![CDATA[Top-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address informationTop-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address information]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for unnumbered interfaceConfiguration data for unnumbered interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for unnumbered interfacesOperational state data for unnumbered interfaces]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:interface-ref" access="read-write" type="container"><description><![CDATA[Reference to an interface or subinterfaceReference to an interface or subinterface]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configured reference to interface / subinterfaceConfigured reference to interface / subinterface]]>None</description><node name="oc-ip:interface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state for interface-refOperational state for interface-ref]]>None</description><node name="oc-ip:interface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node></node></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Top-level IPv4 configuration data for the interfaceTop-level IPv4 configuration data for the interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-write" type="leaf" datatype="uint16"><description><![CDATA[The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Top level IPv4 operational state dataTop level IPv4 operational state data]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-only" type="leaf" datatype="uint16"><description><![CDATA[The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node></node></node><node name="oc-ip:ipv6" access="read-write" type="container"><description><![CDATA[Parameters for the IPv6 address family.Parameters for the IPv6 address family.]]>None</description><node name="oc-ip:addresses" access="read-write" type="container"><description><![CDATA[Enclosing container for address listEnclosing container for address list]]>None</description><node name="oc-ip:address" access="read-write" type="list" key="ip"><description><![CDATA[The list of configured IPv6 addresses on the interface.The list of configured IPv6 addresses on the interface.]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP addressReferences the configured IP address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each IPv6 address on
+the interfaceConfiguration data for each IPv6 address on
+the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-write" type="leaf" datatype="uint8" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[State data for each IPv6 address on the
+interfaceState data for each IPv6 address on the
+interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address on the interface.]]>None</description></node><node name="oc-ip:prefix-length" access="read-only" type="leaf" datatype="uint8" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.[adapted from IETF IP model RFC 7277]
+
+The length of the subnet prefix.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="ip-address-origin" values="OTHER|STATIC|DHCP|LINK_LAYER|RANDOM"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The origin of this address, e.g., static, dhcp, etc.[adapted from IETF IP model RFC 7277]
+
+The origin of this address, e.g., static, dhcp, etc.]]>None</description></node><node name="oc-ip:status" access="read-only" type="leaf" datatype="enumeration" values="PREFERRED|DEPRECATED|INVALID|INACCESSIBLE|UNKNOWN|TENTATIVE|DUPLICATE|OPTIMISTIC"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The status of an address.  Most of the states correspond
+to states from the IPv6 Stateless Address
+Autoconfiguration protocol.[adapted from IETF IP model RFC 7277]
+
+The status of an address.  Most of the states correspond
+to states from the IPv6 Stateless Address
+Autoconfiguration protocol.]]>None</description></node></node></node></node><node name="oc-ip:neighbors" access="read-write" type="container"><description><![CDATA[Enclosing container for list of IPv6 neighborsEnclosing container for list of IPv6 neighbors]]>None</description><node name="oc-ip:neighbor" access="read-write" type="list" key="ip"><description><![CDATA[List of IPv6 neighborsList of IPv6 neighbors]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="-&gt; ../config/ip" mandatory="true" is_key="true"><description><![CDATA[References the configured IP neighbor addressReferences the configured IP neighbor address]]>None</description></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for each IPv6 address on
+the interfaceConfiguration data for each IPv6 address on
+the interface]]>None</description><node name="oc-ip:ip" access="read-write" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-write" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[State data for each IPv6 address on the
+interfaceState data for each IPv6 address on the
+interface]]>None</description><node name="oc-ip:ip" access="read-only" type="leaf" datatype="inet:ipv6-address-no-zone"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The IPv6 address of the neighbor node.]]>None</description></node><node name="oc-ip:link-layer-address" access="read-only" type="leaf" datatype="yang:phys-address" mandatory="true"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.[adapted from IETF IP model RFC 7277]
+
+The link-layer address of the neighbor node.]]>None</description></node><node name="oc-ip:origin" access="read-only" type="leaf" datatype="neighbor-origin" values="OTHER|STATIC|DYNAMIC"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The origin of this neighbor entry.[adapted from IETF IP model RFC 7277]
+
+The origin of this neighbor entry.]]>None</description></node><node name="oc-ip:is-router" access="read-only" type="leaf" datatype="empty"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+Indicates that the neighbor node acts as a router.[adapted from IETF IP model RFC 7277]
+
+Indicates that the neighbor node acts as a router.]]>None</description></node><node name="oc-ip:neighbor-state" access="read-only" type="leaf" datatype="enumeration" values="INCOMPLETE|REACHABLE|STALE|DELAY|PROBE"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The Neighbor Unreachability Detection state of this
+entry.[adapted from IETF IP model RFC 7277]
+
+The Neighbor Unreachability Detection state of this
+entry.]]>None</description></node></node></node></node><node name="oc-ip:unnumbered" access="read-write" type="container"><description><![CDATA[Top-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address informationTop-level container for setting unnumbered interfaces.
+Includes reference the interface that provides the
+address information]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configuration data for unnumbered interfaceConfiguration data for unnumbered interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state data for unnumbered interfacesOperational state data for unnumbered interfaces]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="false" values="true|false"><description><![CDATA[Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.Indicates that the subinterface is unnumbered.  By default
+the subinterface is numbered, i.e., expected to have an
+IP address configuration.]]>None</description></node></node><node name="oc-ip:interface-ref" access="read-write" type="container"><description><![CDATA[Reference to an interface or subinterfaceReference to an interface or subinterface]]>None</description><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Configured reference to interface / subinterfaceConfigured reference to interface / subinterface]]>None</description><node name="oc-ip:interface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-write" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Operational state for interface-refOperational state for interface-ref]]>None</description><node name="oc-ip:interface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface/name"><description><![CDATA[Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.Reference to a base interface.  If a reference to a
+subinterface is required, this leaf must be specified
+to indicate the base interface.]]>None</description></node><node name="oc-ip:subinterface" access="read-only" type="leaf" datatype="-&gt; /oc-if:interfaces/interface[oc-if:name=current()/../interface]/subinterfaces/subinterface/index"><description><![CDATA[Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.Reference to a subinterface -- this requires the base
+interface to be specified using the interface leaf in
+this container.  If only a reference to a base interface
+is requuired, this leaf should not be set.]]>None</description></node></node></node></node><node name="oc-ip:config" access="read-write" type="container"><description><![CDATA[Top-level config data for the IPv6 interfaceTop-level config data for the IPv6 interface]]>None</description><node name="oc-ip:enabled" access="read-write" type="leaf" datatype="boolean" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-write" type="leaf" datatype="uint32"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node><node name="oc-ip:dup-addr-detect-transmits" access="read-write" type="leaf" datatype="uint32" default="1"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.]]>None</description></node></node><node name="oc-ip:state" access="read-only" type="container"><description><![CDATA[Top-level operational state data for the IPv6 interfaceTop-level operational state data for the IPv6 interface]]>None</description><node name="oc-ip:enabled" access="read-only" type="leaf" datatype="boolean" default="true" values="true|false"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.[adapted from IETF IP model RFC 7277]
+
+Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.]]>None</description></node><node name="oc-ip:mtu" access="read-only" type="leaf" datatype="uint32"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.[adapted from IETF IP model RFC 7277]
+
+The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.]]>None</description></node><node name="oc-ip:dup-addr-detect-transmits" access="read-only" type="leaf" datatype="uint32" default="1"><description><![CDATA[[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.[adapted from IETF IP model RFC 7277]
+
+The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.]]>None</description></node></node></node></node></node></node></node>
