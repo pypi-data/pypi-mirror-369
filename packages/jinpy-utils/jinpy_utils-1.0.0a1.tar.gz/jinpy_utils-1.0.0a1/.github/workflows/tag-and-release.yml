@@ -1,0 +1,30 @@
+name: Tag and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to tag (e.g., 0.1.0)'
+        required: true
+      prerelease:
+        description: 'Mark GitHub release as prerelease'
+        type: boolean
+        default: true
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create tag and release
+        run: |
+          VERSION="${{ inputs.version }}"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "v${VERSION}"
+          GH_FLAGS="--generate-notes"
+          if [ "${{ inputs.prerelease }}" = "true" ]; then GH_FLAGS="$GH_FLAGS --prerelease"; fi
+          gh release create "v${VERSION}" $GH_FLAGS || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

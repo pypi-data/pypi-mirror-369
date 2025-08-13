@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') }}
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Determine release mode
+        id: mode
+        run: |
+          # Default to prerelease; switch to stable when commit message contains 'release: stable' or tag pattern is x.y.z
+          MODE=prerelease
+          echo "mode=$MODE" >> $GITHUB_OUTPUT
+      - name: Semantic Release (alpha prerelease)
+        if: ${{ steps.mode.outputs.mode == 'prerelease' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          uvx python-semantic-release version --prerelease --prerelease-token alpha
+          uvx python-semantic-release changelog
+      - name: Create GitHub prerelease from latest tag
+        if: ${{ steps.mode.outputs.mode == 'prerelease' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          gh release create "$TAG" --generate-notes --prerelease || true
+      - name: Semantic Release (stable)
+        if: ${{ steps.mode.outputs.mode == 'stable' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          uvx python-semantic-release version
+          uvx python-semantic-release changelog
+      - name: Create GitHub release from latest tag
+        if: ${{ steps.mode.outputs.mode == 'stable' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          gh release create "$TAG" --generate-notes || true

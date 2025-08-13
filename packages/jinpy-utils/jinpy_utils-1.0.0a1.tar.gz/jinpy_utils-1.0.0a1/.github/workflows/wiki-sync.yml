@@ -1,0 +1,48 @@
+name: Wiki Sync
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if wiki is enabled
+        id: wiki
+        run: |
+          ENABLED=$(gh api repos/${{ github.repository }} --jq '.has_wiki')
+          echo "enabled=$ENABLED" >> $GITHUB_OUTPUT
+      - name: Skip if wiki disabled
+        if: ${{ steps.wiki.outputs.enabled != 'true' }}
+        run: |
+          echo "Wiki is disabled; skipping sync."
+          exit 0
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Clone wiki
+        run: |
+          git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" wiki
+      - name: Sync docs to wiki
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rsync -av --delete --filter='P .git/' --include='*/' --include='*.md' --exclude='*' docs/ wiki/
+          cd wiki
+          git add .
+          if git diff --staged --quiet; then
+            echo "No wiki changes"
+          else
+            git commit -m "docs(wiki): sync from docs/ on ${GITHUB_SHA}"
+            git push
+          fi
