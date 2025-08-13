@@ -1,0 +1,48 @@
+SYNTACTIC SUGAR IN THE SDK
+===========================
+
+The following features provide convenience beyond simple API wrappers:
+
+1. Code of Conduct - get_violations()
+   - Location: haizelabs/resources/_code_of_conduct.py
+   - Description: Aggregates violations from all policies in a CoC instead of requiring multiple API calls
+   - API requires: Multiple calls to /{coc_id}/{policy_id}/get_violations
+   - SDK provides: Single call that fetches all policies then all violations
+
+2. Red Team Tests - poll() method on test objects
+   - Location: haizelabs/resources/_red_team_tests.py (AsyncRedTeamTest and SyncRedTeamTest classes)
+   - Description: Convenience wrapper that polls test status until completion with configurable interval/timeout
+   - Not a direct API mapping, provides stateful test tracking
+
+3. Red Team Tests - run() method
+   - Location: haizelabs/resources/_red_team_tests.py
+   - Description: Combines create + start + poll into single method for running tests
+   - API requires: Separate create, start, and status polling
+   - SDK provides: Single method that handles full test lifecycle
+
+4. Red Team Tests - Test wrapper classes (AsyncRedTeamTest, SyncRedTeamTest)
+   - Location: haizelabs/resources/_red_team_tests.py
+   - Description: Stateful wrapper objects that maintain test state and provide convenience methods
+   - Provides: cancel(), results(), metrics(), generate_report() as instance methods
+   - Maintains internal state tracking for polling
+
+5. AI Systems - upsert_by_name()
+   - Location: haizelabs/resources/_ai_systems.py
+   - Description: Get or create an AI system by name
+   - While this maps to an API endpoint, it provides significant client-side logic for parameter validation
+
+6. AI Systems - create_self_hosted()
+   - Location: haizelabs/resources/_ai_systems.py
+   - Description: Specialized method for creating self-hosted AI systems with function support
+   - Provides Python function wrapping for self-hosted endpoints
+
+7. Unit Tests - Similar run() pattern
+   - Location: haizelabs/resources/_unit_tests.py
+   - Description: Like red team tests, combines create + start + optional polling
+
+8. Export Test Dataset logging
+   - Location: haizelabs/resources/_red_team_tests.py
+   - Description: Adds helpful logging with platform URL after export
+   - Pure convenience feature
+
+These features make the SDK more ergonomic than raw API calls while maintaining API compatibility.

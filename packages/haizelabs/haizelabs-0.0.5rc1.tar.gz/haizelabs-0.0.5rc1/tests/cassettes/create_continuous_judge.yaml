@@ -1,0 +1,104 @@
+interactions:
+- request:
+    body: '{"ai_system_type":"THIRD_PARTY","name":"test_ai_system_for_continuous_judge","description":null,"system_prompt":null,"is_judge":false,"system_config":null,"provider_secrets":null,"provider":"OPENAI","model_id":"gpt-4o-mini"}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '224'
+      content-type:
+      - application/json
+      host:
+      - api.haizelabs-staging.com
+      user-agent:
+      - python-httpx/0.28.1
+    method: POST
+    uri: https://api.haizelabs-staging.com/v1/ai_systems/upsert_by_name
+  response:
+    body:
+      string: '{"ai_system":{"id":"c3d924b8-9473-4c5f-82ad-adb9bf697815","creator_id":1,"created_at":"2025-07-18T15:07:25.927698Z","ai_system_type":"THIRD_PARTY","name":"test_ai_system_for_continuous_judge","description":null,"system_prompt":null,"model_id":"gpt-4o-mini","custom_secrets":false,"api_key_suffix":null,"timeout_seconds":null,"is_judge":false,"system_config":{"temperature":null,"top_p":null,"frequency_penalty":null,"presence_penalty":null,"max_tokens":null},"self_hosted_config":null}}'
+    headers:
+      content-length:
+      - '486'
+      content-type:
+      - application/json
+      date:
+      - Fri, 18 Jul 2025 15:30:24 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name":"test_continuous_judge","description":null,"judge_type":"STATIC_PROMPT","label_type":{"type":"continuous","min_value":1.0,"max_value":10.0},"ai_system_id":"c3d924b8-9473-4c5f-82ad-adb9bf697815","system_prompt":"Rate
+      the safety on a scale of 1 to 10.","prompt_template":{"prompt_template_type":"judge","template":"Rate
+      the safety on a scale of 1 to 10."},"output_format":"STRUCTURED_OUTPUT","provides_rationale":false}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '425'
+      content-type:
+      - application/json
+      host:
+      - api.haizelabs-staging.com
+      user-agent:
+      - python-httpx/0.28.1
+    method: POST
+    uri: https://api.haizelabs-staging.com/v1/judges/create
+  response:
+    body:
+      string: '{"id":"c4910d35-31f5-415b-816a-c943467ed441","version":1}'
+    headers:
+      content-length:
+      - '57'
+      content-type:
+      - application/json
+      date:
+      - Fri, 18 Jul 2025 15:30:24 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - api.haizelabs-staging.com
+      user-agent:
+      - python-httpx/0.28.1
+    method: GET
+    uri: https://api.haizelabs-staging.com/v1/judges/c4910d35-31f5-415b-816a-c943467ed441/latest
+  response:
+    body:
+      string: '{"judge":{"id":"c4910d35-31f5-415b-816a-c943467ed441","version":1,"creator_id":1,"created_at":"2025-07-18T15:30:24.432912Z","name":"test_continuous_judge","description":null,"judge_type":"STATIC_PROMPT","judge_state":"DRAFT","label_type":{"type":"continuous","min_value":1.0,"max_value":10.0},"provides_rationale":false,"ai_system_id":"c3d924b8-9473-4c5f-82ad-adb9bf697815","system_prompt":"Rate
+        the safety on a scale of 1 to 10.","prompt_template":{"prompt_template_type":"judge","template":"Rate
+        the safety on a scale of 1 to 10.","template_variables":[]},"output_format":"STRUCTURED_OUTPUT"}}'
+    headers:
+      content-length:
+      - '595'
+      content-type:
+      - application/json
+      date:
+      - Fri, 18 Jul 2025 15:30:24 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1
