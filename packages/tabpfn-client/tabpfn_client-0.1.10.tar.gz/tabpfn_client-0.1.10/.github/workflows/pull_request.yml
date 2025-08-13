@@ -1,0 +1,146 @@
+name: In pull request
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check_python_linting:
+    name: Ruff Linting & Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chartboost/ruff-action@v1
+        with:
+          src: "./"
+          version: 0.3.3
+      - uses: chartboost/ruff-action@v1
+        with:
+          src: "./"
+          version: 0.3.3
+          args: "format --check"
+
+  test_compatibility:
+    name: Test Package Compatibility
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: "3.9"
+            dependency-set: minimum
+          - os: macos-13 # macos-latest doesn't work with python 3.10
+            # https://github.com/actions/setup-python/issues/855
+            python-version: "3.9"
+            dependency-set: minimum
+          - os: ubuntu-latest
+            python-version: "3.13"
+            dependency-set: maximum
+          - os: macos-latest
+            python-version: "3.13"
+            dependency-set: maximum
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Install pip-tools
+        run: python -m pip install pip-tools
+
+      - name: Generate requirements file for minimum dependencies
+        if: matrix.dependency-set == 'minimum'
+        run: |
+          python << EOF
+          import re
+
+          with open('requirements.txt', 'r') as f:
+              reqs = f.readlines()
+
+          min_reqs = []
+          for req in reqs:
+              req = req.strip()
+              if not req or req.startswith('#'):
+                  continue
+              # Extract package name and version range
+              match = re.match(r'([^>=<\s]+)\s*>=\s*([^,]+),\s*<=\s*([^,]+)', req)
+              if match:
+                  package, min_ver, _ = match.groups()
+                  min_reqs.append(f"{package}=={min_ver}")
+              else:
+                print(f"ERROR: Unmatched dependency found: {req}")
+                exit(1)
+
+          with open('requirements-generated.txt', 'w') as f:
+              f.write('\n'.join(min_reqs))
+          EOF
+
+      - name: Generate requirements file for maximum dependencies
+        if: matrix.dependency-set == 'maximum'
+        run: |
+          python << EOF
+          import re
+
+          with open('requirements.txt', 'r') as f:
+              reqs = f.readlines()
+
+          max_reqs = []
+          for req in reqs:
+              req = req.strip()
+              if not req or req.startswith('#'):
+                  continue
+              # Extract package name and version range
+              match = re.match(r'([^>=<\s]+)\s*>=\s*([^,]+),\s*<=\s*([^,]+)', req)
+              if match:
+                  package, _, max_ver = match.groups()
+                  max_reqs.append(f"{package}=={max_ver}")
+              else:
+                  print(f"ERROR: Unmatched dependency found: {req}")
+                  exit(1)
+
+          with open('requirements-generated.txt', 'w') as f:
+              f.write('\n'.join(max_reqs))
+          EOF
+
+      # Caching based on dependency set and python version. It needs to be done post any operations that modifies the file (like `write`, `touch`, etc.) that can change the hash of the dependency file and lead to a cache miss.
+      # REFER: https://github.com/actions/setup-python#caching-packages-dependencies
+      - name: Setup pip cache
+        id: pip-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ matrix.dependency-set }}-${{ hashFiles('requirements-test.txt', 'requirements-generated.txt')}}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ matrix.dependency-set }}-
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+
+      - name: Install dependencies
+        id: install-deps
+        run: |
+          echo "::group::Installing dependencies"
+          START_TIME=$(date +%s%N)
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          pip install -r requirements-generated.txt
+          END_TIME=$(date +%s%N)
+          DURATION=$((($END_TIME - $START_TIME)/1000000))
+          echo "duration=$DURATION" >> $GITHUB_OUTPUT
+          echo "Dependencies installation took $DURATION ms"
+          echo "::endgroup::"
+
+      - name: Initialize submodules
+        run: git submodule update --init --recursive
+
+      - name: Report cache status
+        run: |
+          echo "Cache status: ${{ steps.pip-cache.outputs.cache-hit == 'true' && 'HIT' || 'MISS'}}"
+          echo "Installation time: ${{ steps.install-deps.outputs.duration }} ms"
+
+      - name: Run Tests
+        run: |
+          python -m unittest discover -s tabpfn_client/tests -t tabpfn_client/tests
