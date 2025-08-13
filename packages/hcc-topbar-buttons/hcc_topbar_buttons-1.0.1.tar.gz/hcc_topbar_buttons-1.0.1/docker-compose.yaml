@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  jupyterlab:
+    image: jupyterlab-logout
+    build:
+      context: "."
+      dockerfile: setup/Dockerfile
+    container_name: jupyterlab-logout
+    restart: always
+    ports:
+      - 8888:8888
+    environment:
+      WORKBENCH_APP_ENABLED: 'true'
+      # WORKBENCH_APP_ENABLED: 'false'
+    volumes:
+      - "${PWD}:/home/jovyan/jupyterlab-logout"
