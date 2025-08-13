@@ -1,0 +1,36 @@
+[project]
+name = "zvc"
+version = "0.1.6"
+description = "static blog generator"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "markdown>=3.8.2",
+    "typer>=0.16.0",
+    "ruff>=0.12.2",
+    "jinja2>=3.1.6",
+    "pyyaml>=6.0.2",
+    "rich>=13.7.1",
+    "pydantic>=2.11.7",
+    "beautifulsoup4>=4.13.4",
+    "lxml>=6.0.0",
+]
+
+[project.scripts]
+zvc = "zvc.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-sugar>=1.0.0",
+    "ruff>=0.12.2",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+]
