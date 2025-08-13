@@ -1,0 +1,321 @@
+<div align="center">
+
+# 🏥 Genesis MCP Core SDK
+
+**The foundational SDK for building Model Context Protocol (MCP) 2025-06-18 compliant servers**
+
+[![MCP Protocol](https://img.shields.io/badge/MCP-2025--06--18-blue.svg)](https://modelcontextprotocol.io)
+[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://python.org)
+[![Poetry](https://img.shields.io/badge/Poetry-Package%20Manager-blue.svg)](https://python-poetry.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+**🚀 Production-Ready • 🔄 Backward Compatible • 🏥 Healthcare Optimized • 🛠️ Developer Friendly**
+
+---
+
+</div>
+
+## 📋 **Table of Contents**
+
+- [🎯 Overview](#-overview)
+- [✨ Features](#-features)
+- [🚀 Quick Start](#-quick-start)
+- [🏗️ Architecture](#%EF%B8%8F-architecture)
+- [📚 API Reference](#-api-reference)
+- [🛠️ Development](#%EF%B8%8F-development)
+- [🤝 Contributing](#-contributing)
+
+## 🎯 **Overview**
+
+Genesis MCP Core SDK is a comprehensive, production-ready foundation for building Model Context Protocol servers. It provides everything you need to create robust, scalable, and compliant MCP servers with minimal boilerplate code.
+
+**Perfect for:**
+- 🏥 Healthcare AI applications requiring API integration
+- 🔧 Enterprise tools needing structured AI workflows
+- 🚀 Rapid prototyping of MCP-enabled services
+- 📦 Building reusable connector libraries
+
+## ✨ **Features**
+
+### **🌐 Full MCP 2025-06-18 Compliance**
+- **Modern Protocol**: Single `/mcp` endpoint with JSON-RPC 2.0
+- **Backward Compatible**: Legacy `/sse` + `/messages` endpoints
+- **Discovery APIs**: REST endpoints for tools and health monitoring
+- **Streaming Support**: Real-time responses with Server-Sent Events
+
+### **🔧 Advanced Capabilities**
+- **Elicitation Support**: Human-in-the-loop parameter collection
+- **Structured Output**: JSON Schema validation for consistent responses
+- **Security Hardening**: Anti-tool-poisoning, input sanitization
+- **Error Handling**: Comprehensive error codes and graceful degradation
+
+### **🏥 Healthcare Integration**
+- **Autonomize Connector SDK**: Seamless integration with healthcare APIs
+- **Dynamic Discovery**: JSON-based connector registration
+- **Medical Standards**: Built-in support for medical coding systems
+- **HIPAA Considerations**: Security-first architecture
+
+### **🛠️ Developer Experience**
+- **Built-in Templates**: CLI tool for generating client-specific servers
+- **Hot Reloading**: Dynamic connector discovery and registration
+- **Comprehensive Logging**: Structured logging with contextual information
+- **Type Safety**: Full TypeScript-style type hints with Pydantic
+
+## 🚀 **Quick Start**
+
+### **1. Installation**
+
+```bash
+# Install the SDK
+pip install genesis-mcp-core
+
+# Or with Poetry (recommended)
+poetry add genesis-mcp-core
+```
+
+### **2. Create Your First Server**
+
+```bash
+# Generate a new MCP server project
+genesis-mcp create my-mcp-server --template=basic
+
+# Navigate to your project
+cd my-mcp-server
+
+# Configure environment
+cp env.example .env
+# Edit .env with your API credentials
+
+# Install dependencies and run
+poetry install
+poetry run python main.py
+```
+
+### **3. Add Your Connectors**
+
+Place your connector JSON files in the `connectors/` directory:
+
+```json
+{
+  "name": "my_api",
+  "base_url": "https://api.example.com",
+  "auth": {
+    "type": "oauth2",
+    "client_id_env": "MY_API_CLIENT_ID",
+    "client_secret_env": "MY_API_CLIENT_SECRET"
+  },
+  "endpoints": {
+    "get_data": {
+      "path": "/data/{id}",
+      "method": "GET"
+    }
+  }
+}
+```
+
+### **4. Test Your Server**
+
+```bash
+# Check health
+curl http://localhost:8002/health
+
+# List available tools
+curl http://localhost:8002/tools
+
+# Modern MCP endpoint
+curl -X POST http://localhost:8002/mcp \
+  -H "Content-Type: application/json" \
+  -H "MCP-Protocol-Version: 2025-06-18" \
+  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1, "params": {}}'
+```
+
+## 🏗️ **Architecture**
+
+### **Core Components**
+
+```mermaid
+graph TD
+    A[MCP Client] --> B[Genesis MCP Core Server]
+    B --> C[Connector Registry]
+    C --> D[Autonomize Bridge]
+    D --> E[Healthcare APIs]
+    
+    B --> F[Modern /mcp Endpoint]
+    B --> G[Legacy /sse + /messages]
+    B --> H[REST /tools + /health]
+    
+    C --> I[JSON Connector Configs]
+    C --> J[Dynamic Tool Generation]
+    
+    style B fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style C fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style D fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+```
+
+### **Request Flow**
+
+1. **Client Connection**: MCP client connects via modern or legacy endpoints
+2. **Tool Discovery**: Server exposes dynamically generated tools from connectors
+3. **Tool Execution**: Client calls tools, server routes to appropriate connector
+4. **Response Handling**: Structured responses with error handling and validation
+
+### **Connector System**
+
+- **JSON-Based**: Define APIs using simple JSON configurations
+- **Dynamic Loading**: Connectors discovered automatically from config directory
+- **Type Safety**: Automatic schema generation and validation
+- **Extensible**: Easy to add new connector types and authentication methods
+
+## 📚 **API Reference**
+
+### **GenesisMCPServer**
+
+The main server class providing full MCP functionality:
+
+```python
+from genesis_mcp_core import GenesisMCPServer
+from pathlib import Path
+
+# Basic usage
+server = GenesisMCPServer(
+    connector_config_dir=Path("./connectors"),
+    host="0.0.0.0",
+    port=8002,
+    debug=False
+)
+
+# Run the server
+await server.run()
+```
+
+### **Built-in CLI**
+
+Generate new projects from templates:
+
+```bash
+# Available templates
+genesis-mcp create --help
+
+# Basic server (currently available)
+genesis-mcp create my-server --template=basic
+```
+
+### **Environment Configuration**
+
+```bash
+# Server settings
+SERVER_HOST=0.0.0.0
+SERVER_PORT=8002
+SERVER_DEBUG=false
+
+# Logging
+LOGGING_LEVEL=INFO
+LOGGING_FORMAT=structured
+
+# Connector enablement (auto-discovered from JSON files)
+ENABLE_MY_CONNECTOR=true
+ENABLE_HEALTHCARE_API=true
+
+# API credentials
+MY_API_CLIENT_ID=your_client_id
+MY_API_CLIENT_SECRET=your_secret
+```
+
+### **Supported Endpoints**
+
+| Endpoint | Method | Description | Compatibility |
+|----------|--------|-------------|---------------|
+| `/mcp` | POST | Modern MCP 2025-06-18 endpoint | ✅ Latest |
+| `/sse` | GET | Server-Sent Events stream | 🔄 Legacy |
+| `/messages` | POST | Classic message handling | 🔄 Legacy |
+| `/tools` | GET | REST API tool discovery | 📊 Discovery |
+| `/health` | GET | Health check and capabilities | 📊 Monitoring |
+
+## 🛠️ **Development**
+
+### **Local Development**
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd genesis-mcp-core
+
+# Install dependencies
+poetry install
+
+# Run tests
+poetry run pytest
+
+# Run example server
+poetry run python test_server.py
+```
+
+### **Testing**
+
+```bash
+# Run all tests
+poetry run pytest
+
+# Test with coverage
+poetry run pytest --cov=genesis_mcp_core
+
+# Test backward compatibility
+poetry run python test_backward_compatibility.py
+
+# Integration tests
+poetry run pytest tests/integration/
+```
+
+### **Building and Publishing**
+
+```bash
+# Build the package
+poetry build
+
+# Publish to PyPI
+poetry publish
+
+# Install locally for testing
+pip install dist/genesis_mcp_core-*.whl
+```
+
+## 🤝 **Contributing**
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### **Development Setup**
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+### **Code Standards**
+
+- Python 3.12+
+- Type hints required
+- 90%+ test coverage
+- Black code formatting
+- Comprehensive documentation
+
+## 📄 **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 **Acknowledgments**
+
+- [Model Context Protocol](https://modelcontextprotocol.io) specification
+- [Autonomize AI](https://autonomize.ai) for healthcare API integration
+- [FastAPI](https://fastapi.tiangolo.com) for the web framework
+- [Pydantic](https://pydantic.dev) for data validation
+
+---
+
+<div align="center">
+
+**Built with ❤️ for the MCP community**
+
+[Documentation](https://docs.genesis-mcp.io) • [Examples](./examples/) • [Community](https://discord.gg/genesis-mcp)
+
+</div>
