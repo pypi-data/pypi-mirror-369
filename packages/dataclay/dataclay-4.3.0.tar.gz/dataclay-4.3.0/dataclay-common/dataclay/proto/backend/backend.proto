@@ -1,0 +1,152 @@
+syntax = "proto3";
+
+package dataclay.proto.backend;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+option java_multiple_files = true;
+option java_package = "es.bsc.dataclay.proto.backend";
+
+service BackendService {
+
+  rpc MakePersistent(MakePersistentRequest) returns (google.protobuf.Empty) {}
+  rpc CallActiveMethod(CallActiveMethodRequest) returns (CallActiveMethodResponse) {}
+
+  rpc GetObjectAttribute(GetObjectAttributeRequest) returns (GetObjectAttributeResponse) {}
+  rpc SetObjectAttribute(SetObjectAttributeRequest) returns (SetObjectAttributeResponse) {}
+  rpc DelObjectAttribute(DelObjectAttributeRequest) returns (DelObjectAttributeResponse) {}
+
+  rpc GetObjectProperties(GetObjectPropertiesRequest) returns (google.protobuf.BytesValue) {}
+  rpc UpdateObjectProperties(UpdateObjectPropertiesRequest) returns (google.protobuf.Empty) {}
+
+  rpc SendObjects(SendObjectsRequest) returns (google.protobuf.Empty) {}
+  rpc RegisterObjects(RegisterObjectsRequest) returns (google.protobuf.Empty) {}
+
+  rpc NewObjectVersion(NewObjectVersionRequest) returns (NewObjectVersionResponse) {}
+  rpc ConsolidateObjectVersion(ConsolidateObjectVersionRequest) returns (google.protobuf.Empty) {}
+  rpc ProxifyObject(ProxifyObjectRequest) returns (google.protobuf.Empty) {}
+  rpc ChangeObjectId(ChangeObjectIdRequest) returns (google.protobuf.Empty) {}
+
+  rpc NewObjectReplica(NewObjectReplicaRequest) returns (google.protobuf.Empty) {}
+
+  rpc FlushAll(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc Stop(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc Drain(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+
+  rpc GetClassInfo(GetClassInfoRequest) returns (GetClassInfoResponse) {}
+}
+
+
+message MakePersistentRequest {
+  repeated bytes pickled_obj = 1;
+}
+
+message CallActiveMethodRequest {
+  string object_id = 1;
+  string method_name = 2;
+  bytes args = 3;
+  bytes kwargs = 4;
+  map<string, google.protobuf.Any> exec_constraints = 5;
+}
+
+message CallActiveMethodResponse {
+  bytes value = 1;
+  bool is_exception = 2;
+}
+
+message GetObjectAttributeRequest{
+  string object_id = 1;
+  string attribute = 2;
+}
+
+message GetObjectAttributeResponse {
+  bytes value = 1;
+  bool is_exception = 2;
+}
+
+message SetObjectAttributeRequest{
+  string object_id = 1;
+  string attribute = 2;
+  bytes serialized_attribute = 3;
+}
+
+message SetObjectAttributeResponse {
+  bytes value = 1;
+  bool is_exception = 2;
+}
+
+message DelObjectAttributeRequest{
+  string object_id = 1;
+  string attribute = 2;
+}
+
+message DelObjectAttributeResponse {
+  bytes value = 1;
+  bool is_exception = 2;
+}
+
+///////////////////
+// Store Methods //
+///////////////////
+
+message GetObjectPropertiesRequest {
+  string object_id = 1;
+}
+
+message UpdateObjectPropertiesRequest {
+  string object_id = 1;
+  bytes serialized_properties = 2;
+}
+
+message SendObjectsRequest {
+  repeated string object_ids = 1;
+  string backend_id = 2;
+  bool make_replica = 3;
+  bool recursive = 4;
+  bool remotes = 5;
+}
+
+message RegisterObjectsRequest {
+  repeated bytes dict_bytes = 1;
+  bool make_replica = 2;
+}
+
+message NewObjectVersionRequest {
+  string object_id = 1;
+}
+
+message NewObjectVersionResponse {
+  string object_info = 1;
+}
+
+message ConsolidateObjectVersionRequest {
+  string object_id = 1;
+}
+
+message ProxifyObjectRequest {
+  string object_id = 1;
+  string new_object_id = 2;
+}
+
+message ChangeObjectIdRequest {
+  string object_id = 1;
+  string new_object_id = 2;
+}
+
+message NewObjectReplicaRequest {
+  string object_id = 1;
+  string backend_id = 2;
+  bool recursive = 3;
+  bool remotes = 4;
+}
+
+message GetClassInfoRequest {
+  string class_name = 1;
+}
+
+message GetClassInfoResponse {
+  repeated string properties = 1;
+  repeated string activemethods = 2;
+}

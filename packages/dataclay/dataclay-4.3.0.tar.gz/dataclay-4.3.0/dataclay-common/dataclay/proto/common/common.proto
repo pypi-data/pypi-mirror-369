@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package dataclay.proto.common;
+
+option java_multiple_files = true;
+option java_package = "es.bsc.dataclay.proto.common";
+
+message Backend {
+  string id = 1;
+  string host = 2;
+  int32 port = 3;
+  string dataclay_id = 4;
+}
+
+message ObjectMetadata {
+  string id = 1;
+  string dataset_name = 2;
+  string class_name = 3;
+  string master_backend_id = 4;
+  repeated string replica_backend_ids = 5;
+  bool is_read_only = 6;
+  string original_object_id = 7;
+  repeated string versions_object_ids = 8;
+}
+
+message Dataclay {
+  string id = 1;
+  string host = 2;
+  int32 port = 3;
+  bool is_this = 4;
+}
+
+message Alias {
+  string name = 1;
+  string dataset_name = 2;
+  string object_id = 3;
+}

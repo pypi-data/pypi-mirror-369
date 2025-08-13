@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package dataclay.proto.metadata;
+
+import "google/protobuf/empty.proto";
+import "dataclay/proto/common/common.proto";
+
+option java_multiple_files = true;
+option java_package = "es.bsc.dataclay.proto.metadata";
+
+service MetadataService {
+  
+  // Account Manager
+  rpc NewAccount(NewAccountRequest) returns (google.protobuf.Empty) {}
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {}
+
+  // Dataset Manager
+  rpc NewDataset(NewDatasetRequest) returns (google.protobuf.Empty) {}
+  
+  // EE-SL information
+	rpc GetAllBackends(GetAllBackendsRequest) returns (GetAllBackendsResponse) {}
+    
+  // Federation
+  rpc GetDataclay(GetDataclayRequest) returns (dataclay.proto.common.Dataclay) {}
+  
+  // Object Metadata
+  rpc GetObjectMDById(GetObjectMDByIdRequest) returns (dataclay.proto.common.ObjectMetadata) {}
+  rpc GetObjectMDByAlias(GetObjectMDByAliasRequest) returns (dataclay.proto.common.ObjectMetadata) {}
+  rpc GetAllObjects(google.protobuf.Empty) returns (GetAllObjectsResponse) {}
+
+
+  // Alias
+	rpc DeleteAlias(DeleteAliasRequest) returns (google.protobuf.Empty) {}
+	rpc NewAlias(NewAliasRequest) returns (google.protobuf.Empty) {}
+	rpc GetAllAlias(GetAllAliasRequest) returns (GetAllAliasResponse) {}
+
+  rpc Stop(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+}
+
+// ***************
+// Account Manager
+// ***************
+
+message NewAccountRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message GetAccountRequest {
+  string username = 1;
+}
+
+message GetAccountResponse {
+}
+
+
+// ***************
+// Dataset Manager
+// ***************
+
+message NewDatasetRequest {
+  string username = 1;
+  string password = 2;
+  string dataset = 3;
+}
+
+// *****************
+// EE-SL information
+// *****************
+
+message GetAllBackendsRequest {
+	bool from_backend = 1;
+  bool force = 2;
+}
+
+message GetAllBackendsResponse {
+	map<string, dataclay.proto.common.Backend> backends = 1;
+}
+
+// **********
+// Federation
+// **********
+
+message GetDataclayRequest {
+  string dataclay_id = 1;
+}
+
+// ***************
+// Object Metadata
+// ***************
+
+message GetObjectMDByIdRequest {
+  string object_id = 1;
+}
+
+message GetObjectMDByAliasRequest {
+  string alias_name = 1;
+  string dataset_name = 2;
+}
+
+message GetAllObjectsResponse {
+	map<string, dataclay.proto.common.ObjectMetadata> objects = 1;
+}
+
+// *****
+// Alias 
+// *****
+
+message DeleteAliasRequest {
+	string alias_name = 1;
+  string dataset_name = 2;
+}
+
+message GetAllAliasRequest {
+	string dataset_name = 1;
+  string object_id = 2;
+}
+
+message GetAllAliasResponse {
+	map<string, dataclay.proto.common.Alias> aliases = 1;
+}
+
+message NewAliasRequest {
+	string alias_name = 1;
+  string dataset_name = 2;
+  string object_id = 3;
+}

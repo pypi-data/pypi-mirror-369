@@ -1,0 +1,120 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dataclay"
+description = "Python distributed data store that enables remotely access and method execution."
+readme = "README.md"
+license = "BSD-3-Clause"
+maintainers = [{name = "BSC-DOM", email = "support-dataclay@bsc.es"}]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Topic :: Database :: Database Engines/Servers",
+    "Topic :: System :: Distributed Computing",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+]
+requires-python = ">=3.9,<3.13"
+dependencies = [
+    "aiorwlock>=1.4.0",
+    "bcrypt>=4.1.1",
+    "grpcio>=1.62.0",
+    "grpcio-health-checking>=1.62.0",
+    "hiredis>=3.0.0",
+    "opentelemetry-api>=1.20.0",
+    "protobuf>=4.24.0",
+    "psutil>=6.1.0",
+    "pydantic-settings>=2.6.0",
+    "redis>=5.1.1",
+    "get-annotations;python_version<\"3.10\"",
+    "PyJWT>=2.9.0",
+    "threadpoolctl>=3.5.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://dataclay.bsc.es/"
+"Documentation" = "https://dataclay.readthedocs.io/"
+"Source" = "https://github.com/bsc-dom/dataclay"
+"Issues" = "https://github.com/bsc-dom/dataclay/issues"
+
+[project.optional-dependencies]
+dev = [
+    "nox",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-docker",
+    "grpcio-tools==1.62.3",
+    "black",
+    "isort",
+    "coverage[toml]",
+]
+bsc_mn = ["ansible", "ansible_runner", "python-dotenv"]
+docs = ["furo", "sphinx-copybutton"]
+metrics = ["prometheus-client"]
+telemetry = [
+    "opentelemetry-sdk",
+    "opentelemetry-exporter-otlp-proto-grpc",
+    "opentelemetry-instrumentation-grpc",
+    "opentelemetry-instrumentation-redis",
+    "prometheus-client",
+]
+
+[project.scripts]
+dataclayctl = "dataclay.control.ctl:run"
+
+[tool.isort]
+profile = "black"
+extend_skip = "src/dataclay/proto"
+
+[tool.black]
+line-length = 100
+extend-exclude = "src/dataclay/proto"
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.coverage.paths]
+source = [
+    "src/",
+    "/app/src/",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if TYPE_CHECKING:"
+]
+omit = [
+    "src/dataclay/proto/*",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore:.*custom tp_new.*:DeprecationWarning",
+]
+norecursedirs = ["examples"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dataclay", "src/storage"]
+ignore-vcs = true
+
+[tool.hatch.build.targets.sdist]
+include = ["src/dataclay", "src/storage", "dataclay-common", "compile_protos.py"]
+
+[tool.hatch.version]
+path = "src/dataclay/__init__.py"
+
+[tool.hatch.build.hooks.custom]
+path = "compile_protos.py"

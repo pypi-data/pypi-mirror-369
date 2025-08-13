@@ -1,0 +1,122 @@
+Metadata-Version: 2.4
+Name: dataclay
+Version: 4.3.0
+Summary: Python distributed data store that enables remotely access and method execution.
+Project-URL: Homepage, https://dataclay.bsc.es/
+Project-URL: Documentation, https://dataclay.readthedocs.io/
+Project-URL: Source, https://github.com/bsc-dom/dataclay
+Project-URL: Issues, https://github.com/bsc-dom/dataclay/issues
+Maintainer-email: BSC-DOM <support-dataclay@bsc.es>
+License-Expression: BSD-3-Clause
+License-File: LICENSE.txt
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Database :: Database Engines/Servers
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: System :: Distributed Computing
+Requires-Python: <3.13,>=3.9
+Requires-Dist: aiorwlock>=1.4.0
+Requires-Dist: bcrypt>=4.1.1
+Requires-Dist: get-annotations; python_version < '3.10'
+Requires-Dist: grpcio-health-checking>=1.62.0
+Requires-Dist: grpcio>=1.62.0
+Requires-Dist: hiredis>=3.0.0
+Requires-Dist: opentelemetry-api>=1.20.0
+Requires-Dist: protobuf>=4.24.0
+Requires-Dist: psutil>=6.1.0
+Requires-Dist: pydantic-settings>=2.6.0
+Requires-Dist: pyjwt>=2.9.0
+Requires-Dist: redis>=5.1.1
+Requires-Dist: threadpoolctl>=3.5.0
+Provides-Extra: bsc-mn
+Requires-Dist: ansible; extra == 'bsc-mn'
+Requires-Dist: ansible-runner; extra == 'bsc-mn'
+Requires-Dist: python-dotenv; extra == 'bsc-mn'
+Provides-Extra: dev
+Requires-Dist: black; extra == 'dev'
+Requires-Dist: coverage[toml]; extra == 'dev'
+Requires-Dist: grpcio-tools==1.62.3; extra == 'dev'
+Requires-Dist: isort; extra == 'dev'
+Requires-Dist: nox; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-asyncio; extra == 'dev'
+Requires-Dist: pytest-docker; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: furo; extra == 'docs'
+Requires-Dist: sphinx-copybutton; extra == 'docs'
+Provides-Extra: metrics
+Requires-Dist: prometheus-client; extra == 'metrics'
+Provides-Extra: telemetry
+Requires-Dist: opentelemetry-exporter-otlp-proto-grpc; extra == 'telemetry'
+Requires-Dist: opentelemetry-instrumentation-grpc; extra == 'telemetry'
+Requires-Dist: opentelemetry-instrumentation-redis; extra == 'telemetry'
+Requires-Dist: opentelemetry-sdk; extra == 'telemetry'
+Requires-Dist: prometheus-client; extra == 'telemetry'
+Description-Content-Type: text/markdown
+
+
+<h1 align="center">
+
+![dataClay](https://github.com/bsc-dom/dataclay/blob/main/docs/_static/dataclay-full.png)
+
+</h1>
+
+<p align="center">
+  <a href="https://github.com/bsc-dom/dataclay/actions/workflows/tests.yml"><img alt="Tests" src="https://github.com/bsc-dom/dataclay/actions/workflows/tests.yml/badge.svg" /></a>
+  <a href="https://dataclay.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/dataclay/badge/?version=latest" /></a>
+  <a href="https://pypi.org/project/dataclay/"><img alt="PyPI - Status" src="https://img.shields.io/pypi/status/dataclay" /></a>
+  <a href="https://pypi.org/project/dataclay/"><img alt="PyPI - Format" src="https://img.shields.io/pypi/format/dataclay" /></a>
+  <a href="https://github.com/bsc-dom/dataclay/blob/main/LICENSE.txt"><img alt="License" src="https://img.shields.io/github/license/bsc-dom/dataclay" /></a>
+  <a href="https://badge.fury.io/py/dataclay"><img src="https://badge.fury.io/py/dataclay.svg" alt="PyPI version" height="18"></a>
+  <a href="https://pepy.tech/project/dataclay"><img alt="Pypi Downloads" src="https://pepy.tech/badge/dataclay" /></a>
+</p>
+
+dataClay is a distributed data store that enables applications to store and access objects in the same format they have in memory, and executes object methods within the data store. These two main features accelerate both the development of applications and their execution.
+
+## Installation
+
+To install dataClay, you can use [pip](https://pip.pypa.io):
+
+```bash
+pip install dataclay
+```
+
+Alternatively, you can obtain the latest source code from [GitHub](https://github.com/bsc-dom/dataclay):
+
+```bash
+git clone https://github.com/bsc-dom/dataclay.git
+cd dataclay
+pip install .
+```
+
+## Documentation
+
+dataClay has usage and reference documentation at [dataclay.readthedocs.io](https://dataclay.readthedocs.io/en/latest/)
+
+## Contributing
+
+We welcome contributions to dataClay. Please see the [Contributing](https://dataclay.readthedocs.io/en/latest/contributing.html) for more details.
+
+## Maintainers
+
+- [@alexbarcelo](https://github.com/alexbarcelo) (Alex Barcelo)
+- [@aqueralt](https://github.com/aqueralt) (Anna Queralt)
+- [@marcmonfort](https://github.com/marcmonfort) (Marc Monfort)
+- [@Canicula98](https://github.com/Canicula98) (David Cano)
+
+## Other resources
+
+[BSC official website](https://www.bsc.es/dataclay)
+
+## Acknolwedgments
+
+See the [full list of acknowledgments](ACKNOWLEDGMENTS.md)
