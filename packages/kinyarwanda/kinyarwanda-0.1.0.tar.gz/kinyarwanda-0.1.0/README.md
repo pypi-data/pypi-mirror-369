@@ -1,0 +1,1 @@
+A sample project to leverage cookiecutter package and click package to create a CLI command tool.
