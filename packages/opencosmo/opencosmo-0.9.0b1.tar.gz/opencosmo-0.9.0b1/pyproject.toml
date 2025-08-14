@@ -1,0 +1,72 @@
+[project]
+name = "opencosmo"
+version = "0.9.0b1"
+description = "OpenCosmo Python Toolkit"
+authors = [
+  { name = "Patrick Wells", email = "pwells@anl.gov" },
+  { name = "Will Hicks", email = "whicks@anl.gov"}
+
+]
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+
+dependencies = [
+  "h5py>=3.12.1,<4.0.0",
+  "astropy>=7.0.1,<8.0.0",
+  "pydantic>=2.10.6,<3.0.0",
+  "hdf5plugin>=5.0.0,<6.0.0",
+  "healpy>=1.18.1,<2.0.0",
+  "deprecated>=1.2.18,<2.0.0",
+  "numpy>=1.26",
+  "networkx (>=3.5,<4.0)",
+  "click (>=8.2.1,<9.0.0)",
+]
+
+[dependency-groups]
+dev = [
+  "ruff>=0.9.4,<1.0.0",
+  "mypy>=1.15,<2.0.0",
+  "types-deprecated>=1.2.15.20250304",
+  "types-networkx (>=3.5.0.20250712,<4.0.0.0)",
+  "pre-commit>=4.2.0,<5.0.0",
+  "towncrier (>=24.8.0,<25.0.0)",
+  "pip>=25.1.1",
+  "pytest>=8.3.4,<9.0.0",
+  "numpy==1.26.4"
+
+]
+docs = [
+  "sphinx>=8.1.3,<9.0.0",
+  "sphinx-rtd-theme>=3.0.2,<4.0.0",
+  "autodoc-pydantic>=2.2.0,<3.0.0",
+]
+mpi = [
+  "mpi4py>=4.0.3,<5.0.0"
+]
+test-mpi = [
+  "mpi-pytest>=2025.4.0,<2026.0.0"
+]
+[project.scripts]
+opencosmo = "opencosmo.analysis.cli:cli"
+
+[build-system]
+requires = ["uv_build>=0.8.2,<0.9.0", "pip"]
+build-backend = "uv_build"
+
+[tool.mypy]
+mypy_path = "stubs"
+
+[[tool.mypy.overrides]]
+module = ["h5py"]
+follow_untyped_imports = true
+
+[tool.towncrier]
+directory = "changes"
+package = "opencosmo"
+filename = "docs/source/changelog.rst"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+
+[tool.ruff.pycodestyle]
+max-doc-length = 90
