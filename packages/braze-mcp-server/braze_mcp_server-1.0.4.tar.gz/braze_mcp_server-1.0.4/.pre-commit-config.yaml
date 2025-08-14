@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: validate-mcp-docstrings
+        name: Validate MCP Tool Docstrings
+        entry: uv run python scripts/validate_docstrings.py
+        language: system
+        files: ^src/braze_mcp/tools/[^/]*\.py$
+        exclude: __init__\.py$
+        pass_filenames: true
+      - id: make-precommit
+        name: Run Make Precommit Checks
+        entry: make precommit
+        language: system
+        pass_filenames: false
+        always_run: true

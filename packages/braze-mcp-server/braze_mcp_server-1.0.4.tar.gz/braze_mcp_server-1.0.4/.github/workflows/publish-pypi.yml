@@ -1,0 +1,51 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: production-pypi
+    permissions:
+      id-token: write  # Required for trusted publishing
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for proper versioning
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+    
+    - name: Install dependencies
+      run: uv sync --extra dev
+    
+    - name: Run smoke tests
+      run: uv run pytest tests/ -x --tb=short
+    
+    - name: Build package
+      run: uv build
+    
+    - name: Verify package contents
+      run: |
+        uv run python -m tarfile -l dist/*.tar.gz
+        uv run python -m zipfile -l dist/*.whl
+    
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        verbose: true

@@ -1,0 +1,165 @@
+Metadata-Version: 2.4
+Name: braze-mcp-server
+Version: 1.0.4
+Summary: Braze MCP Server - Model Context Protocol server for Braze REST API Read-Only access
+Author-email: McKay Harris <mckay.harris@braze.com>, Mohammad Atallah <M.Atallah@braze.com>
+License: MIT
+Keywords: ai,api,automation,braze,marketing,mcp,model-context-protocol
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.12
+Requires-Dist: fastapi[standard]>=0.116.1
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: mcp[cli]>=1.11.0
+Requires-Dist: python-dotenv>=1.1.1
+Provides-Extra: dev
+Requires-Dist: bandit>=1.8.6; extra == 'dev'
+Requires-Dist: mypy>=1.17.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=1.1.0; extra == 'dev'
+Requires-Dist: pytest-cov>=6.2.1; extra == 'dev'
+Requires-Dist: pytest>=8.4.1; extra == 'dev'
+Requires-Dist: ruff>=0.12.3; extra == 'dev'
+Requires-Dist: twine>=5.0.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Braze MCP Server
+
+Braze Model Context Protocol (MCP) server is a secure, read-only connection that lets AI tools like Claude and Cursor access non-PII Braze data to answer questions, analyze trends, and provide insights without altering data. For more general information, see [Braze MCP server](https://www.braze.com/docs/mcp/).
+
+## Additional resources
+
+- **[Setting up Braze MCP server](https://www.braze.com/docs/user_guide/brazeai/mcp_server/setup/):** A more-detailed alternative to the following **Quick start** section (includes troubleshooting).
+- **[Using Braze MCP server](https://www.braze.com/docs/user_guide/brazeai/mcp_server/usage/):** Best practices and usage examples for tools like Claude and Cursor.
+- **[Available API functions](https://www.braze.com/docs/user_guide/brazeai/mcp_server/available_api_functions/):** List of functions LLMs can use retrieve data from Braze.
+
+## Quick start
+
+### Step 1: Create an API key
+
+In Braze, go to **Settings** > **APIs and Identifiers** > **API Keys** and create a new key with some or all the following permissions.
+
+| Category | Endpoint | Required Permission |
+|----------|----------|---------------------|
+| Campaigns | [`/campaigns/data_series`](https://www.braze.com/docs/api/endpoints/export/campaigns/get_campaign_analytics) | `campaigns.data_series` |
+| Campaigns | [`/campaigns/details`](https://www.braze.com/docs/api/endpoints/export/campaigns/get_campaign_details) | `campaigns.details` |
+| Campaigns | [`/campaigns/list`](https://www.braze.com/docs/api/endpoints/export/campaigns/get_campaigns) | `campaigns.list` |
+| Campaigns | [`/sends/data_series`](https://www.braze.com/docs/api/endpoints/export/campaigns/get_send_analytics) | `sends.data_series` |
+| Canvas | [`/canvas/data_series`](https://www.braze.com/docs/api/endpoints/export/canvas/get_canvas_analytics) | `canvas.data_series` |
+| Canvas | [`/canvas/data_summary`](https://www.braze.com/docs/api/endpoints/export/canvas/get_canvas_analytics_summary) | `canvas.data_summary` |
+| Canvas | [`/canvas/details`](https://www.braze.com/docs/api/endpoints/export/canvas/get_canvas_details) | `canvas.details` |
+| Canvas | [`/canvas/list`](https://www.braze.com/docs/api/endpoints/export/canvas/get_canvases) | `canvas.list` |
+| Catalogs | [`/catalogs`](https://www.braze.com/docs/api/endpoints/catalogs/catalog_management/synchronous/get_list_catalogs) | `catalogs.get` |
+| Catalogs | [`/catalogs/{catalog_name}/items`](https://www.braze.com/docs/api/endpoints/catalogs/catalog_items/synchronous/get_catalog_items_details_bulk) | `catalogs.get_items` |
+| Catalogs | [`/catalogs/{catalog_name}/items/{item_id}`](https://www.braze.com/docs/api/endpoints/catalogs/catalog_items/synchronous/get_catalog_item_details) | `catalogs.get_item` |
+| Cloud Data Ingestion | [`/cdi/integrations`](https://www.braze.com/docs/api/endpoints/cdi/get_integration_list) | `cdi.integration_list` |
+| Cloud Data Ingestion | [`/cdi/integrations/{integration_id}/job_sync_status`](https://www.braze.com/docs/api/endpoints/cdi/get_job_sync_status) | `cdi.integration_job_status` |
+| Content Blocks | [`/content_blocks/list`](https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/get_list_email_content_blocks) | `content_blocks.list` |
+| Content Blocks | [`/content_blocks/info`](https://www.braze.com/docs/api/endpoints/templates/content_blocks_templates/get_see_email_content_blocks_information) | `content_blocks.info` |
+| Custom Attributes | [`/custom_attributes`](https://www.braze.com/docs/api/endpoints/export/custom_attributes/get_custom_attributes) | `custom_attributes.get` |
+| Events | [`/events/list`](https://www.braze.com/docs/api/endpoints/export/custom_events/get_custom_events) | `events.list` |
+| Events | [`/events/data_series`](https://www.braze.com/docs/api/endpoints/export/custom_events/get_custom_events_analytics) | `events.data_series` |
+| Events | [`/events`](https://www.braze.com/docs/api/endpoints/export/custom_events/get_custom_events_data) | `events.get` |
+| KPIs | [`/kpi/new_users/data_series`](https://www.braze.com/docs/api/endpoints/export/kpi/get_kpi_daily_new_users_date) | `kpi.new_users.data_series` |
+| KPIs | [`/kpi/dau/data_series`](https://www.braze.com/docs/api/endpoints/export/kpi/get_kpi_dau_date) | `kpi.dau.data_series` |
+| KPIs | [`/kpi/mau/data_series`](https://www.braze.com/docs/api/endpoints/export/kpi/get_kpi_mau_30_days) | `kpi.mau.data_series` |
+| KPIs | [`/kpi/uninstalls/data_series`](https://www.braze.com/docs/api/endpoints/export/kpi/get_kpi_uninstalls_date) | `kpi.uninstalls.data_series` |
+| Messages | [`/messages/scheduled_broadcasts`](https://www.braze.com/docs/api/endpoints/messaging/schedule_messages/get_messages_scheduled) | `messages.schedule_broadcasts` |
+| Preference Center | [`/preference_center/v1/list`](https://www.braze.com/docs/api/endpoints/preference_center/get_list_preference_center) | `preference_center.list` |
+| Preference Center | [`/preference_center/v1/{preferenceCenterExternalID}`](https://www.braze.com/docs/api/endpoints/preference_center/get_view_details_preference_center) | `preference_center.get` |
+| Purchases | [`/purchases/product_list`](https://www.braze.com/docs/api/endpoints/export/purchases/get_list_product_id) | `purchases.product_list` |
+| Purchases | [`/purchases/revenue_series`](https://www.braze.com/docs/api/endpoints/export/purchases/get_revenue_series) | `purchases.revenue_series` |
+| Purchases | [`/purchases/quantity_series`](https://www.braze.com/docs/api/endpoints/export/purchases/get_number_of_purchases) | `purchases.quantity_series` |
+| Segments | [`/segments/list`](https://www.braze.com/docs/api/endpoints/export/segments/get_segment) | `segments.list` |
+| Segments | [`/segments/data_series`](https://www.braze.com/docs/api/endpoints/export/segments/get_segment_analytics) | `segments.data_series` |
+| Segments | [`/segments/details`](https://www.braze.com/docs/api/endpoints/export/segments/get_segment_details) | `segments.details` |
+| Sends | [`/sends/data_series`](https://www.braze.com/docs/api/endpoints/export/campaigns/get_send_analytics) | `sends.data_series` |
+| Sessions | [`/sessions/data_series`](https://www.braze.com/docs/api/endpoints/export/sessions/get_sessions_analytics) | `sessions.data_series` |
+| SDK Authentication Keys | [`/app_group/sdk_authentication/keys`](https://www.braze.com/docs/api/endpoints/sdk_authentication/get_sdk_authentication_keys) | `sdk_authentication.keys` |
+| Subscription | [`/subscription/status/get`](https://www.braze.com/docs/api/endpoints/subscription_groups/get_list_user_subscription_group_status) | `subscription.status.get` |
+| Subscription | [`/subscription/user/status`](https://www.braze.com/docs/api/endpoints/subscription_groups/get_list_user_subscription_groups) | `subscription.groups.get` |
+| Templates | [`/templates/email/list`](https://www.braze.com/docs/api/endpoints/templates/email_templates/get_list_email_templates) | `templates.email.list` |
+| Templates | [`/templates/email/info`](https://www.braze.com/docs/api/endpoints/templates/email_templates/get_see_email_template_information) | `templates.email.info` |
+
+> [!WARNING]
+> Do not reuse an existing API key&#8212;create one specifically for your MCP client. Additionally, only assign read-only, non-PII permissions, as agents may try to write or delete data in Braze.
+
+### Step 2: Install `uv`
+
+Run the following command to install `uv`, a [command-line tool by Astral](https://docs.astral.sh/uv/getting-started/installation/) for dependency management and Python package handling:
+
+#### MacOS and Linux
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+#### Windows
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Step 3: Configure your MCP client
+
+Configure your MCP client using our pre-provided configuration file.
+
+#### Claude
+
+1. In [Claude Desktop](https://claude.ai/download), go to **Settings** > **Developer** > **Edit Config**, then add the following snippet:
+    ```json
+    {
+      "mcpServers": {
+        "braze": {
+          "command": "uvx",
+          "args": ["--native-tls", "braze-mcp-server@latest"],
+          "env": {
+            "BRAZE_API_KEY": "your-braze-api-key",
+            "BRAZE_BASE_URL": "your-braze-endpoint-url"
+          }
+        }
+      }
+    }
+    ```
+2. Save the configuration and restart Claude Desktop.
+3. To verify your connection, try asking a question like "List my Braze campaigns".
+
+#### Cursor
+
+1. In [Cursor](https://cursor.com/), go to **Settings** > **Tools and Integrations** > **MCP Tools** > **Add Custom MCP**, then add the following snippet:
+    ```json
+    {
+      "mcpServers": {
+        "braze": {
+          "command": "uvx",
+          "args": ["--native-tls", "braze-mcp-server@latest"],
+          "env": {
+            "BRAZE_API_KEY": "your-braze-api-key",
+            "BRAZE_BASE_URL": "your-braze-endpoint-url"
+          }
+        }
+      }
+    }
+    ```
+2. When you're finished, save the configuration and restart Cursor.
+3. To verify your connection, try using the provided MCP tools to interact with your Braze data.
+
+## Release flow
+
+- Bump `version` in `pyproject.toml`
+- Tag (e.g., `v1.0.4`) and push the tag
+- Create a GitHub Release to trigger publish to PyPI
+
+## Disclaimer
+<!-- Braze Legal must approve any changes to this content. -->
+
+The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/overview) is a newly introduced open-source protocol that may be susceptible to security issues or vulnerabilities at this time.
+
+Braze MCP Server setup code and instructions are provided by Braze “as is” and without any warranties, and customers use it at their own risk. Braze shall not be responsible for any consequences arising from improper setup, misuse of the MCP, or any potential security issues that may arise. Braze strongly encourages customers to review their configurations carefully and to follow the outlined guidelines to reduce risks associated with the integrity and security of their Braze environment.
+
+For assistance or clarification, please contact [support@braze.com](mailto:support@braze.com).
