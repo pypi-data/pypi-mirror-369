@@ -1,0 +1,30 @@
+[project]
+name = "means-testing"
+version = "0.0.5"
+description = "A simple library to compare the means of two or more independent samples and check for statistical differences."
+readme = "README.md"
+authors = [
+    { name = "RenZhen95", email = "j-liaw@hotmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.17.3",
+    "pandas>=2.3.1",
+    "scipy>=1.16.1",
+    "seaborn>=0.13.2",
+]
+
+[project.scripts]
+means-testing = "means_testing:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "means-testing",
+]
+
+[tool.uv.sources]
+means-testing = { workspace = true }
