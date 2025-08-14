@@ -1,0 +1,176 @@
+{
+  "name": "advanced-analysis-suite",
+  "version": "1.0.0",
+  "display_name": "Advanced Analysis Suite",
+  "description": "Comprehensive module demonstrating all HLA-Compass platform capabilities",
+  "author": "HLA-Compass Platform",
+  "template_type": "with-ui",
+  "compute_type": "lambda",
+  "category": "analysis",
+  "tags": ["advanced", "comprehensive", "peptide", "protein", "sample", "hla", "template"],
+  "inputs": {
+    "analysis_type": {
+      "type": "string",
+      "required": true,
+      "enum": ["peptide_search", "protein_analysis", "sample_comparison", "hla_prediction", "comprehensive"],
+      "default": "comprehensive",
+      "description": "Type of analysis to perform",
+      "ui": {
+        "component": "select",
+        "label": "Analysis Type",
+        "help": "Select the type of analysis to perform"
+      }
+    },
+    "peptide_params": {
+      "type": "object",
+      "required": false,
+      "description": "Parameters for peptide analysis",
+      "properties": {
+        "sequences": {
+          "type": "array",
+          "description": "Peptide sequences to analyze"
+        },
+        "min_length": {
+          "type": "integer",
+          "minimum": 7,
+          "maximum": 15
+        },
+        "max_length": {
+          "type": "integer",
+          "minimum": 7,
+          "maximum": 15
+        },
+        "mass_tolerance": {
+          "type": "number",
+          "description": "Mass tolerance in Daltons"
+        }
+      }
+    },
+    "protein_params": {
+      "type": "object",
+      "required": false,
+      "description": "Parameters for protein analysis",
+      "properties": {
+        "accession": {
+          "type": "string",
+          "description": "UniProt accession number"
+        },
+        "gene_name": {
+          "type": "string",
+          "description": "Gene name"
+        },
+        "organism": {
+          "type": "string",
+          "description": "Organism name or taxonomy ID"
+        }
+      }
+    },
+    "sample_params": {
+      "type": "object",
+      "required": false,
+      "description": "Parameters for sample analysis",
+      "properties": {
+        "sample_ids": {
+          "type": "array",
+          "description": "Sample IDs to compare"
+        },
+        "tissue": {
+          "type": "string",
+          "description": "Tissue type filter"
+        },
+        "disease": {
+          "type": "string",
+          "description": "Disease filter"
+        }
+      }
+    },
+    "hla_params": {
+      "type": "object",
+      "required": false,
+      "description": "Parameters for HLA binding prediction",
+      "properties": {
+        "peptides": {
+          "type": "array",
+          "description": "Peptides for binding prediction"
+        },
+        "alleles": {
+          "type": "array",
+          "description": "HLA alleles to test",
+          "example": ["HLA-A*02:01", "HLA-B*07:02"]
+        },
+        "method": {
+          "type": "string",
+          "enum": ["netmhcpan", "mhcflurry", "consensus"],
+          "default": "netmhcpan"
+        }
+      }
+    },
+    "output_format": {
+      "type": "string",
+      "enum": ["json", "csv", "excel"],
+      "default": "json",
+      "description": "Output format for results",
+      "ui": {
+        "component": "radio",
+        "label": "Output Format"
+      }
+    },
+    "save_to_storage": {
+      "type": "boolean",
+      "default": true,
+      "description": "Save results to cloud storage",
+      "ui": {
+        "component": "switch",
+        "label": "Save to Storage"
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": ["success", "error", "partial"]
+      },
+      "results": {
+        "type": "object",
+        "description": "Analysis results organized by type"
+      },
+      "summary": {
+        "type": "object",
+        "description": "Summary statistics and metrics"
+      },
+      "storage_url": {
+        "type": "string",
+        "description": "URL to stored results (if saved)"
+      },
+      "visualizations": {
+        "type": "array",
+        "description": "Generated visualization data"
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Execution metadata and performance metrics"
+      }
+    }
+  },
+  "ui": {
+    "entry": "frontend/index.tsx",
+    "dependencies": {
+      "react": "^19.0.0",
+      "antd": "^5.0.0",
+      "@ant-design/icons": "^5.0.0",
+      "recharts": "^2.5.0",
+      "lodash": "^4.17.21"
+    }
+  },
+  "requirements": {
+    "memory": 512,
+    "timeout": 60,
+    "permissions": {
+      "database": ["read"],
+      "storage": ["read", "write"],
+      "network": ["api.hla-compass.com"]
+    }
+  }
+}
