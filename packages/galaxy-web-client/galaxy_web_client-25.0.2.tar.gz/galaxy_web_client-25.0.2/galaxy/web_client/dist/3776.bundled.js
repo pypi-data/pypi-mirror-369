@@ -1,0 +1,1 @@
+(self.webpackChunk_galaxyproject_galaxy_client=self.webpackChunk_galaxyproject_galaxy_client||[]).push([[3776],{13776:(e,a,c)=>{e=c.nmd(e),ace.require(["ace/mode/text"],(function(a){e&&(e.exports=a)}))}}]);

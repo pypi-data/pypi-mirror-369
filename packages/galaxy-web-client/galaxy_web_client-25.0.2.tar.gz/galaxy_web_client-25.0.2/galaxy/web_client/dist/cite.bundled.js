@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_galaxyproject_galaxy_client=self.webpackChunk_galaxyproject_galaxy_client||[]).push([[298],{4012:(e,a,c)=>{c.d(a,{Cite:()=>t.I8});c(4728),c(26768);var t=c(38511);t.Nx.config.get("@bibtex"),t.Nx.config.get("@csl")}}]);
