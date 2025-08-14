@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyaes-whl"
+description = "Pure-Python Implementation of the AES block-cipher and common modes of operation"
+readme = "README.md"
+authors = [
+    {name = "Richard Moore", email = "pyaes@ricmoo.com"},
+]
+license = {text = "MIT License"}
+classifiers = [
+    "Topic :: Security :: Cryptography",
+    "License :: OSI Approved :: MIT License",
+]
+keywords = ["aes", "encryption", "cryptography"] # optional, but good practice
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/ricmoo/pyaes"
+
+[tool.setuptools.dynamic]
+version = {attr = "pyaes.__version__"}
