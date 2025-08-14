@@ -1,0 +1,70 @@
+Metadata-Version: 2.4
+Name: pdf_suite
+Version: 0.1.0
+Summary: PDF CLI tool that allows to merge, extractimages and more from PDF documents.
+Home-page: https://github.com/faissaloux/pdf-suite
+Author: Faissal Wahabali
+Author-email: fwahabali@gmail.com
+License: MIT
+Project-URL: Source, https://github.com/faissaloux/pdf-suite
+Project-URL: Author, https://www.faissaloux.com
+Keywords: pdf,merge pdf,pdf to image
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: <4,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PyPDF2===3.0.1
+Requires-Dist: termspark===2.2.1
+Requires-Dist: typer===0.16.0
+Requires-Dist: PyMuPDF===1.26.3
+Dynamic: license-file
+
+## Install
+```bash
+pip install pdf-suite
+```
+
+## Features
+- Merge pdf files in one.
+- PDF to Images.
+
+## Usage
+
+### Merge
+Merges multiple PDF files into one.
+
+#### In order
+To merge your files in a specific order, specify your files in the order you want in `ORDER` array in `merger.py` file.
+
+```python
+ORDER = [
+    'file1.pdf',
+    'file2.pdf',
+    'file3.pdf',
+]
+```
+
+#### Run
+```bash
+pdf_suite merge -i input -o output
+```
+
+#### Output
+An `ouput.pdf` file will be generated in `/output` directory.
+
+### PDF to Images
+Extract images from your PDF file.
+
+#### Run
+```bash
+pdf_suite pdf2img --input file.pdf --output images_directory
+```
+
+#### Output
+An `images_directory` directory will be generated with all images from `file.pdf`.
