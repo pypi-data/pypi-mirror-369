@@ -1,0 +1,464 @@
+# Bot Vision Suite
+
+![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Status](https://img.shields.io/badge/status-beta-orange.svg)
+
+**Bot Vision Suite** é uma biblioteca Python avançada para automação de interface gráfica que combina reconhecimento óptico de caracteres (OCR) otimizado com detecção de imagens para executar tarefas automatizadas em aplicações desktop.
+
+## 🚀 Características Principais
+
+- **OCR Avançado**: Múltiplas técnicas de pré-processamento para máxima precisão
+- **Detecção de Imagens**: Localização robusta com diferentes escalas e níveis de confiança
+- **🆕 Imagens Relativas**: Busca target próximo a imagem âncora (anti-duplicação)
+- **🆕 Clique em Coordenadas**: Clique direto em posições específicas
+- **🆕 Comandos de Teclado**: 100+ comandos pré-definidos (F1-F12, Ctrl+S, etc.)
+- **🆕 Digitação Avançada**: Suporte a comandos especiais em texto
+- **Automação de Tasks**: Sistema flexível para automação de sequências complexas
+- **Backtrack Inteligente**: Retry automático com navegação para tarefas anteriores
+- **Overlay Visual**: Feedback visual para debug e monitoramento
+- **Configuração Automática**: Detecta automaticamente Tesseract e dependências
+- **Multiplataforma**: Windows, Linux e macOS
+
+## 📦 Instalação
+
+```bash
+pip install bot-vision-suite
+```
+
+### Pré-requisitos
+
+A biblioteca detecta automaticamente o Tesseract OCR. Se não estiver instalado:
+
+**Windows:**
+```bash
+# Baixe de: https://github.com/UB-Mannheim/tesseract/wiki
+```
+
+**Linux:**
+```bash
+sudo apt-get install tesseract-ocr
+```
+
+**macOS:**
+```bash
+brew install tesseract
+```
+
+## 🎯 Uso Rápido
+
+### Exemplo Básico
+
+```python
+from bot_vision import execute_tasks
+
+# Defina suas tasks de automação
+tasks = [
+    {
+        'text': 'Login',
+        'region': (100, 100, 500, 300),
+        'char_type': 'letters',
+        'delay': 1
+    },
+    {
+        'image': 'botao_confirmar.png',
+        'confidence': 0.9,
+        'delay': 2
+    }
+]
+
+# Execute a automação
+execute_tasks(tasks)
+```
+
+### Uso com Classe
+
+```python
+from bot_vision import BotVision
+
+# Inicialize o bot
+bot = BotVision()
+
+# Execute tasks
+bot.execute_tasks(tasks)
+
+# Ou use métodos individuais
+location = bot.find_text("Confirmar", region=(0, 0, 800, 600))
+if location:
+    bot.click_at(location)
+```
+
+### Funções de Conveniência
+
+```python
+from bot_vision import (find_text, click_text, click_image, click_at,
+                        find_relative_image, click_relative_image,     # 🆕 NOVO!
+                        click_coordinates, type_text_standalone,        # 🆕 NOVO!
+                        keyboard_command_standalone)                    # 🆕 NOVO!
+
+# Funcionalidades tradicionais
+location = find_text("Login", region=(100, 100, 500, 300))
+success = click_text("Confirmar", region=(200, 200, 600, 400))
+success = click_image("botao.png", confidence=0.9)
+success = click_at(300, 250, show_overlay=False)
+
+# 🆕 NOVAS FUNCIONALIDADES
+# Imagem relativa - busca target próximo a âncora
+location = find_relative_image("anchor.png", "target.png", max_distance=150)
+success = click_relative_image("warning.png", "ok_button.png", backtrack=True)
+
+# Clique em coordenadas específicas
+success = click_coordinates(100, 200, delay=1, mouse_button="right", backtrack=True)
+
+# 🆕 NOVO! Apenas mover o mouse (hover) sem clicar
+success = click_text("Menu", mouse_button="move_to")  # Apenas move mouse para o texto
+success = click_image("botao.png", mouse_button="move_to")  # Apenas move mouse para a imagem
+success = click_coordinates(100, 200, mouse_button="move_to")  # Move mouse para coordenada
+
+# Digitação avançada com comandos especiais
+success = type_text_standalone("{ctrl}a{del}Novo texto{enter}", backtrack=True)
+
+# Comandos de teclado (100+ pré-definidos)
+success = keyboard_command_standalone("Ctrl+S", delay=1, backtrack=True)
+success = keyboard_command_standalone("F7", backtrack=True)  # Oracle Forms
+
+# Ver lista completa de comandos
+commands = get_available_keyboard_commands()
+print(f"Total de comandos: {len(commands)}")
+```
+
+### Controle de Overlay Visual
+
+Por padrão, a Bot Vision Suite exibe uma marcação vermelha antes de executar cliques para facilitar o debug. Este comportamento pode ser controlado:
+
+```python
+from bot_vision import BotVision
+
+bot = BotVision()
+
+# Com overlay habilitado (comportamento padrão)
+bot.click_text("Login", show_overlay=True)
+
+# Sem overlay (execução silenciosa)
+bot.click_text("Login", show_overlay=False)
+
+# Aplica-se a todos os métodos de clique
+bot.click_image("botao.png", show_overlay=False)
+bot.click_at(100, 200, show_overlay=False)
+```
+
+## 🔧 Configuração de Tasks
+
+### Formato de Task Tradicional
+
+```python
+task = {
+    'text': 'Texto a buscar',           # OU 'image': 'caminho/imagem.png'
+    'region': (x, y, width, height),    # Região onde buscar
+    'char_type': 'letters',             # 'numbers', 'letters', 'both'
+    'delay': 2,                         # Delay após ação (segundos)
+    'confidence': 0.9,                  # Para imagens (0.0-1.0)
+    'mouse_button': 'left',             # 'left', 'right', 'double', 'move_to'
+    'backtrack': True,                  # Voltar em caso de falha
+    'sendtext': 'Texto a digitar',      # Texto após clique
+    'occurrence': 1,                    # Qual ocorrência clicar
+    'early_confidence': 75.0,           # Limiar para ação imediata
+    'show_overlay': True                # Exibir marcação visual (padrão: True)
+}
+```
+
+### 🆕 Novos Tipos de Tarefa
+
+```python
+# 1. Imagem Relativa - Busca target próximo a âncora
+{
+    'type': 'relative_image',
+    'anchor_image': 'warning_icon.png',     # Imagem âncora única
+    'target_image': 'ok_button.png',        # Imagem target próxima
+    'max_distance': 200,                    # Distância máxima em pixels
+    'confidence': 0.9,
+    'target_region': (0, 0, 800, 600),     # Região para buscar target (opcional)
+    'specific': True,
+    'backtrack': True,
+    'delay': 1
+}
+
+# 2. Clique em Coordenadas Específicas
+{
+    'type': 'click',
+    'x': 500,                              # Coordenada X
+    'y': 300,                              # Coordenada Y
+    'mouse_button': 'right',               # 'left', 'right', 'double', 'move_to'
+    'delay': 0.5,
+    'backtrack': False
+}
+
+# 3. Digitação Direta de Texto
+{
+    'type': 'type_text',
+    'text': 'Hello World!',               # Texto a digitar
+    'interval': 0.05,                     # Intervalo entre caracteres
+    'delay': 1
+}
+
+# 4. Comando de Teclado
+{
+    'type': 'keyboard_command',
+    'command': 'Ctrl+S',                  # Comando a executar
+    'delay': 1
+}
+```
+
+### Lista Completa de Comandos de Teclado Suportados
+
+```python
+# Comandos do Sistema (Oracle Forms, etc.)
+'F5', 'F6', 'F7', 'F8', 'F12'
+'Ctrl+S', 'Ctrl+E', 'Ctrl+F11'
+'Shift+F5', 'Shift+F6', 'Ctrl+Up', 'Ctrl+Down'
+
+# Comandos Gerais
+'Ctrl+C', 'Ctrl+V', 'Ctrl+X', 'Ctrl+A', 'Ctrl+Z', 'Ctrl+Y'
+'Tab', 'Enter', 'Escape', 'Delete', 'Backspace'
+'Arrow Up', 'Arrow Down', 'Arrow Left', 'Arrow Right'
+'Home', 'End', 'Page Up', 'Page Down'
+
+# Comandos de Navegador
+'Ctrl+T', 'Ctrl+W', 'Ctrl+R', 'Ctrl+Shift+T'
+
+# Comandos de Sistema
+'Alt+Tab', 'Alt+F4', 'Windows+D', 'Windows+L'
+
+# E muito mais... Use get_available_keyboard_commands() para ver todos
+```
+    'occurrence': 1,                    # Qual ocorrência clicar
+    'early_confidence': 75.0            # Limiar para ação imediata
+}
+```
+
+### Comandos Especiais em SendText
+
+```python
+{
+    'text': 'Campo',
+    'sendtext': '{ctrl}a{del}Novo texto{enter}'
+}
+```
+
+Comandos disponíveis: `{ctrl}a`, `{del}`, `{tab}`, `{enter}`
+
+## 🎨 Exemplos Avançados
+
+### Automação Completa
+
+```python
+from bot_vision import BotVision
+import calendar
+from datetime import datetime
+
+# Configuração customizada
+config = {
+    "confidence_threshold": 80.0,
+    "retry_attempts": 5,
+    "overlay_color": "blue"
+}
+
+bot = BotVision(config=config)
+
+# Variáveis dinâmicas
+primeiro_dia = str(1)
+ultimo_dia = str(calendar.monthrange(datetime.now().year, datetime.now().month)[1])
+
+# Tasks complexas
+tasks = [
+    {
+        'text': 'Data Inicial',
+        'region': (100, 100, 300, 200),
+        'char_type': 'letters',
+        'sendtext': f'{primeiro_dia}/01/{datetime.now().year}',
+        'delay': 1
+    },
+    {
+        'text': 'Data Final', 
+        'region': (100, 250, 300, 200),
+        'char_type': 'letters',
+        'sendtext': f'{ultimo_dia}/12/{datetime.now().year}',
+        'delay': 1
+    },
+    {
+        'image': 'processar.png',
+        'confidence': 0.8,
+        'delay': 3,
+        'backtrack': True
+    }
+]
+
+# Execute
+bot.execute_tasks(tasks)
+```
+
+### OCR Específico
+
+```python
+# Apenas mover o mouse para elementos (hover)
+from bot_vision import click_text, click_image, click_coordinates
+
+# Hover em texto (mover mouse sem clicar)
+success = click_text("Menu", mouse_button="move_to", delay=0.5)
+
+# Hover em imagem
+success = click_image("button.png", mouse_button="move_to", delay=1.0)
+
+# Hover em coordenadas específicas
+success = click_coordinates(100, 200, mouse_button="move_to", delay=0.5)
+
+# Usar com tasks
+hover_tasks = [
+    {
+        'text': 'Tooltip trigger',
+        'mouse_button': 'move_to',  # Apenas posiciona o mouse
+        'delay': 2.0                # Espera para tooltip aparecer
+    },
+    {
+        'text': 'Click here',       # Agora clica em outro elemento
+        'mouse_button': 'left',
+        'delay': 1.0
+    }
+]
+```
+
+```python
+from bot_vision import OCREngine
+from PIL import Image
+
+# Carregue uma imagem
+img = Image.open('screenshot.png')
+
+# Initialize OCR engine
+ocr = OCREngine()
+
+# Extraia todo o texto
+results = ocr.extract_all_text(img, filter_type='numbers')
+
+for result in results:
+    print(f"Texto: {result.text}, Confiança: {result.confidence}")
+```
+
+### Processamento de Imagem
+
+```python
+from bot_vision import ImageProcessor
+from PIL import Image
+
+# Carregue imagem
+img = Image.open('documento.png')
+
+# Processe para OCR
+processor = ImageProcessor(methods=['hsv_enhancement', 'dark_background'])
+processed_images = processor.preprocess_for_ocr(img)
+
+print(f"Geradas {len(processed_images)} variações para OCR")
+```
+
+## 🔍 Debugging e Visualização
+
+```python
+from bot_vision import show_overlay, show_multiple_overlays
+
+# Mostrar região única
+show_overlay((100, 100, 200, 50), duration=2000, color="red")
+
+# Mostrar múltiplas regiões
+regions = [(100, 100, 200, 50), (300, 200, 150, 30)]
+show_multiple_overlays(regions, duration=3000, color="green")
+```
+
+## 📚 Migração do Código Existente
+
+Se você já tem um arquivo `tasks_config.py`, a migração é simples:
+
+### Antes (código antigo):
+```python
+# bot_vision.py executado diretamente
+from tasks_config import tasks
+# ... código complexo ...
+```
+
+### Depois (usando a biblioteca):
+```python
+# seu_bot.py
+from bot_vision import execute_tasks
+from tasks_config import tasks  # mesmo arquivo!
+
+execute_tasks(tasks)  # uma linha!
+```
+
+## 🛠️ Configuração Avançada
+
+```python
+from bot_vision import BotVisionConfig, BotVision
+
+# Configuração personalizada
+config = BotVisionConfig({
+    "tesseract_path": "/custom/path/tesseract",
+    "confidence_threshold": 85.0,
+    "retry_attempts": 3,
+    "overlay_duration": 1500,
+    "overlay_color": "blue",
+    "ocr_languages": ["eng", "por"],
+    "log_level": "DEBUG"
+})
+
+bot = BotVision(config=config)
+```
+
+## 🔧 Desenvolvimento
+
+### Estrutura do Projeto
+
+```
+bot-vision-suite/
+├── bot_vision/
+│   ├── core/           # Módulos principais
+│   ├── utils/          # Utilitários
+│   └── exceptions.py   # Exceções customizadas
+├── tests/              # Testes automatizados
+├── docs/               # Documentação
+└── examples/           # Exemplos de uso
+```
+
+### Executar Testes
+
+```bash
+pip install bot-vision-suite[dev]
+pytest tests/
+```
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -am 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## 🆘 Suporte
+
+- **Documentação**: [Documentação Completa](docs/)
+- **Issues**: [GitHub Issues](https://github.com/automation-suite/bot-vision-suite/issues)
+- **Exemplos**: [Pasta de Exemplos](examples/)
+
+## 🙏 Agradecimentos
+
+- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) pela engine de OCR
+- [PyAutoGUI](https://github.com/asweigart/pyautogui) pela automação de interface
+- [OpenCV](https://opencv.org/) pelo processamento de imagem
+- [Pillow](https://python-pillow.org/) pela manipulação de imagens
+
+---
+
+**Bot Vision Suite** - Automatize sua interface gráfica com precisão! 🤖✨
