@@ -1,0 +1,29 @@
+# EasyRLEnv
+
+Easily create custom RL environments with minimal boilerplate.
+
+## Installation
+```bash
+pip install easy-rl-env
+```
+
+## Example
+```python
+from easy_rl_env import EasyEnv
+
+class MyCustomEnv(EasyEnv):
+    def __init__(self):
+        super().__init__(observation_shape=(4,), action_shape=(2,), discrete=True)
+
+    def reset(self):
+        self.state = [0, 0, 0, 0]
+        return self.state, {}
+
+    def step(self, action):
+        reward = 1 if action == 0 else -1
+        done = False
+        return self.state, reward, done, {}
+```
+
+## License
+MIT
