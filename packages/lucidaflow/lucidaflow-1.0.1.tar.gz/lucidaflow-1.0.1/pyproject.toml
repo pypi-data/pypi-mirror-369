@@ -1,0 +1,41 @@
+# pyproject.toml (Versão Corrigida e Final)
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lucidaflow"
+version = "1.0.1" # Aumentei a versão para a nova publicação
+authors = [
+  { name="Marco Lago", email="marconeed2@gmail.com" },
+]
+description = "Uma linguagem de script moderna, extensível e com tipagem gradual, implementada em Python."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Interpreters",
+    "Topic :: Software Development :: Compilers",
+]
+dependencies = [
+    "numpy",
+    "pysine",
+    "requests",
+]
+
+[project.urls]
+Homepage = "https://github.com/marconeed/Lucida-Flow"
+Issues = "https://github.com/marconeed/Lucida-Flow/issues"
+
+[project.scripts]
+lucidaflow = "lucidaflow.cli:main"
+
+# --- ADICIONE ESTA SECÇÃO NO FINAL DO FICHEIRO ---
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+lucidaflow = ["lib/*.py"]
