@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        {% if object_list %}
+            {% regroup object_list by timestamp|date as object_by_date %}
+            {% for logentry_date in object_by_date %}
+                <h1 class="text-center logentry-date">{{ logentry_date.grouper }}</h1>
+                <ul>
+                    {% for object in logentry_date.list %}
+                        <li>
+                            {{ object.timestamp|time }} <a href="{% url "apis_core:generic:detail" object.content_type object.object_id %}">{{ object }}</a> by {{ object.actor }}
+                            {% if object.action != 2 %}
+                                <details>
+                                    <ul>
+                                        {% for change, values in object.changes_dict.items %}
+                                            <li>
+                                                {{ change }}:
+                                                {% if values.operation and values.objects %}
+                                                    {{ values.operation }} {{ values.objects|join:", " }}
+                                                {% else %}
+                                                    "{{ values.0|truncatechars:100 }}" -> "{{ values.1|truncatechars:100 }}"
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </details>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+            <div class="pagination justify-content-center">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">« first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    {% endif %}
+                    <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last »</a>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
