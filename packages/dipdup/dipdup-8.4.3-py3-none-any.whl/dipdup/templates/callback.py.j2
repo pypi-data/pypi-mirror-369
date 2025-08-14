@@ -1,0 +1,11 @@
+{% for imp in imports %}{{ imp }}
+{% endfor %}
+
+async def {{ callback }}(
+{%- for arg in arguments %}
+    {{ arg }}{{',' if '#' not in arg else ''}}
+{%- endfor %}
+) -> None:
+{%- for line in code %}
+    {{ line }}
+{%- endfor %}

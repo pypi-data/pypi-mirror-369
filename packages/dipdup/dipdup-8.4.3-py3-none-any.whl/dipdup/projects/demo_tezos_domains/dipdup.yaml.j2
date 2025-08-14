@@ -1,0 +1,44 @@
+spec_version: 3.0
+package: {{ project.package }}
+
+contracts:
+  name_registry_mainnet:
+    kind: tezos
+    address: KT1GBZmSxmnKJXGMdMLbugPfLyUPmuLSMwKS
+    typename: name_registry
+
+datasources:
+  tzkt_mainnet:
+    kind: tezos.tzkt
+    url: ${TZKT_URL:-https://api.tzkt.io}
+
+templates:
+  tezos_domains:
+    kind: tezos.big_maps
+    skip_history: once
+    datasources:
+      - <datasource>
+    handlers:
+      - callback: on_update_records
+        contract: <name_registry>
+        path: store.records
+      - callback: on_update_expiry_map
+        contract: <name_registry>
+        path: store.expiry_map
+
+indexes:
+  tezos_domains_mainnet:
+    template: tezos_domains
+    values:
+      datasource: tzkt_mainnet
+      name_registry: name_registry_mainnet
+
+hooks:
+  check_expiration:
+    callback: check_expiration
+    atomic: False
+
+jobs:
+  check_expiration_hourly:
+    hook: check_expiration
+    crontab: "0 * * * *"

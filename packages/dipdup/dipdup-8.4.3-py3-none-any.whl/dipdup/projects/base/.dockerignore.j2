@@ -1,0 +1,32 @@
+{{ header }}
+
+# Ignore all
+*
+
+# Add project manifest and lockfiles
+!pyproject.toml
+!*.lock
+
+# Add helper symlink, README, and package markers
+!{{ project.package }}
+!README.md
+!**/.keep
+!py.typed
+
+# Add Python code, but exclude caches
+!**/*.py
+**/.*_cache
+**/__pycache__
+
+# Add configs, queries and SQL
+!**/*.graphql
+!**/*.json
+!**/*.sql
+!**/*.yaml
+!**/*.yml
+
+# Add ignore files and build recipes
+!.gitignore
+!.dockerignore
+!**/Dockerfile
+!**/Makefile

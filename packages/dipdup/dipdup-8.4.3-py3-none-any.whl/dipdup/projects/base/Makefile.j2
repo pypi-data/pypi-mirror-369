@@ -1,0 +1,62 @@
+{{ header }}
+.PHONY: $(MAKECMDGOALS)
+MAKEFLAGS += --no-print-directory
+##
+##  🚧 DipDup developer tools
+##
+PACKAGE={{ project.package }}
+TAG=latest
+COMPOSE=deploy/compose.yaml
+
+help:           ## Show this help (default)
+	@grep -Fh "##" $(MAKEFILE_LIST) | grep -Fv grep -F | sed -e 's/\\$$//' | sed -e 's/##//'
+
+all:            ## Run an entire CI pipeline
+	make install format lint
+
+##
+
+install:        ## Install dependencies
+{%- if project.package_manager == 'uv' %}
+	uv sync --all-extras --all-groups --link-mode symlink --locked
+{%- elif project.package_manager == 'poetry' %}
+	poetry install
+{%- elif project.package_manager == 'pdm' %}
+	pdm install
+{%- elif project.package_manager == 'none' %}
+	true
+{% endif %}
+
+update:         ## Update dependencies
+	dipdup self update -q
+{%- if project.package_manager == 'uv' %}
+	uv sync --all-extras --all-groups --link-mode symlink -U
+{%- elif project.package_manager == 'poetry' %}
+	poetry update
+{%- elif project.package_manager == 'pdm' %}
+	pdm update
+{%- elif project.package_manager == 'none' %}
+	true
+{% endif %}
+
+format:         ## Format code with ruff
+	ruff format .
+
+lint:           ## Lint code with ruff and mypy
+	ruff check --fix .
+	mypy .
+
+##
+
+image:          ## Build Docker image
+	docker buildx build . -f deploy/Dockerfile -t ${PACKAGE}:${TAG} --load
+	docker images | grep ${PACKAGE}
+
+up:             ## Start Compose stack
+	docker-compose -f ${COMPOSE} up -d --build
+	docker-compose -f ${COMPOSE} logs -f
+
+down:           ## Stop Compose stack
+	docker-compose -f ${COMPOSE} down
+
+##
