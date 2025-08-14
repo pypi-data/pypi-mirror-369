@@ -1,0 +1,28 @@
+@Library(["utils"])_
+
+node('docker') {
+    stage('Clone Repository') {
+        checkout([$class: 'GitSCM',
+                      branches: [[name: "${BUILD_BRANCH}"]],
+                      userRemoteConfigs: [[
+                          credentialsId: 'nhn github app - toast jenkins',
+                          poll: false,
+                          refspec: "+refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/remotes/origin/tags/*",
+                          url: 'https://github.nhnent.com/TOASTCloud/EasyMaker.SDK.git']]
+                  ])
+    }
+
+    stage('Parameter Setting') {
+        sh 'echo "${PYPI_TOKEN}"'
+
+        sh 'cat Dockerfile'
+    }
+
+    stage('Docker Build') {
+        sh 'USE_SELINUX=false ./build.sh'
+    }
+
+    stage('Package Publish') {
+        sh 'docker run --rm easymaker-sdk:latest uv publish -u __token__ -p ${PYPI_TOKEN}'
+    }
+}
