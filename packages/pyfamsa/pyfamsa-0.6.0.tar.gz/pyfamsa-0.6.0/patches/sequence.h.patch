@@ -1,0 +1,28 @@
+@@ -31,7 +31,7 @@ public:
+ 	bit_vec_t *p_bit_masks;
+ 	uint32_t p_bv_len;
+ 
+-	const int original_no;
++	int original_no;
+ 	int sequence_no;
+ 	string id;
+ 
+@@ -41,15 +41,15 @@ public:
+ 	vector<std::pair<int, char>> extra_symbols;
+ 	
+ public:
+-	CSequence() = delete;
++	CSequence();
+ 	CSequence(const string& _id, const string& seq, int sequence_no = -1, memory_monotonic_safe *mma = nullptr);
+ 	
+ 	// sequences are not copyable
+-	CSequence(const CSequence& x) noexcept = delete;
++	CSequence(const CSequence& x);
+ 	CSequence& operator=(const CSequence& x) noexcept = delete;
+ 
+ 	CSequence(CSequence&& x) noexcept;
+-	CSequence& operator=(CSequence&& x) noexcept = delete; 
++	CSequence& operator=(CSequence&& x) noexcept; 
+ 	
+ 	~CSequence();
+ 	

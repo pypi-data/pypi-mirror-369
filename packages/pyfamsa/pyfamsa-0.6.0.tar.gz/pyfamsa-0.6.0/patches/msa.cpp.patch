@@ -1,0 +1,43 @@
+@@ -14,9 +14,12 @@
+ #include "./tree/UPGMA.h"
+ #include "./tree/NeighborJoining.h"
+ #include "./tree/DistanceCalculator.h"
+-#include "./core/io_service.h"
+ #include "./utils/log.h"
+ 
++#ifdef DEVELOPER_MODE
++#include "./core/io_service.h"
++#endif
++
+ #undef min
+ #undef max
+ 
+@@ -668,7 +671,7 @@
+ }
+ 
+ // *******************************************************************
+-bool CFAMSA::alignProfiles(vector<CGappedSequence>& p1, vector<CGappedSequence>& p2) {
++bool CFAMSA::alignProfiles(const vector<std::shared_ptr<CGappedSequence>>& p1, const vector<std::shared_ptr<CGappedSequence>>& p2) {
+ 
+ 	CProfile prof_1 = CProfile(&params);
+ 	CProfile prof_2 = CProfile(&params);
+@@ -677,10 +680,10 @@ bool CFAMSA::alignProfiles(vector<CGappedSequence>& p1, vector<CGappedSequence>&
+ 	LOG_VERBOSE << "Computing alignment...";
+ 
+ 	for (const auto& gs: p1) {
+-		prof_1.AppendRawSequence(gs);
++		prof_1.AppendRawSequence(*gs);
+ 	}
+ 	for (const auto& gs : p2) {
+-		prof_2.AppendRawSequence(gs);
++		prof_2.AppendRawSequence(*gs);
+ 	}
+ 
+ 	prof_1.CalculateCountersScores();
+@@ -710,5 +713,5 @@ bool CFAMSA::alignProfiles(vector<CGappedSequence>& p1, vector<CGappedSequence>&
+ 		statistics.put("time.refinement", timers[TIMER_REFINMENT].GetElapsedTime());
+ 	}
+ 
+-	return 0;
++	return true;
+ }
