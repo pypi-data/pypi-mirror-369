@@ -1,0 +1,196 @@
+# AliasAnx
+
+Biblioteca para gerar arquivos ANX (Alias) em Python.
+
+## Instalação
+
+pip install AliasAnx
+
+## Uso rápido
+
+```python
+from aliasanx import Pyanx
+
+px = Pyanx()
+
+px.add_node(entity_type='Person', label='Alice', ring_color=255, description='Pessoa exemplo')
+px.add_node(entity_type='Person', label='Bob')
+px.add_edge('Alice', 'Bob', label='knows', color=0, style='Solid')
+
+px.create('exemplo.anx')
+```
+
+## Atributos de Node
+
+Os atributos de node na biblioteca AliasAnx são propriedades que definem as características de cada entidade (nó) no grafo. Cada node é representado por um dicionário com os seguintes atributos:
+
+### **Atributos Principais:**
+
+1. **`entity_type`** (str)
+   - Define o tipo da entidade (ex: 'Person', 'Organization', 'Location')
+   - Usado para categorizar e agrupar entidades similares
+   - Valor padrão: 'Anon'
+
+2. **`label`** (str)
+   - Nome ou identificador único da entidade
+   - Serve como ID do node no grafo
+   - Exemplo: 'Alice', 'Bob', 'Empresa XYZ'
+
+3. **`ring_color`** (int, opcional)
+   - Cor do anel/borda ao redor do ícone da entidade
+   - Representado como um valor inteiro (código de cor)
+   - Se não especificado, o node não terá anel colorido
+
+4. **`description`** (str)
+   - Descrição textual da entidade
+   - Fornece informações adicionais sobre o node
+   - Valor padrão: string vazia
+
+### **Exemplo de Uso:**
+
+```python
+from aliasanx import Pyanx
+
+px = Pyanx()
+
+# Node com todos os atributos
+px.add_node(
+    entity_type='Person',
+    label='João Silva',
+    ring_color=255,  # Cor vermelha
+    description='Desenvolvedor Python'
+)
+
+# Node simples
+px.add_node(
+    entity_type='Company',
+    label='TechCorp'
+)
+```
+
+### **Como os Atributos são Usados:**
+
+- **Visualização**: O `entity_type` define o ícone, `ring_color` define a borda
+- **Identificação**: O `label` serve como identificador único
+- **Contexto**: `description` e atributos de data fornecem informações contextuais
+
+Esses atributos permitem criar grafos ricos em informações, onde cada entidade pode ter características visuais e descritivas que facilitam a análise e compreensão das relações entre os elementos.
+
+## Atributos de Edge
+
+Os atributos de edge na biblioteca AliasAnx são propriedades que definem as características de cada conexão (aresta) entre entidades no grafo. Cada edge é representado por uma tupla contendo o nó de origem, o nó de destino e um dicionário com os seguintes atributos:
+
+### **Atributos Principais:**
+
+1. **`label`** (str)
+   - Rótulo ou nome da conexão entre as entidades
+   - Descreve o tipo de relação entre os nós
+   - Exemplo: 'knows', 'works_for', 'located_in'
+
+2. **`color`** (int)
+   - Cor da linha que representa a conexão
+   - Representado como um valor inteiro (código de cor)
+   - Valor padrão: 0 (preto)
+
+3. **`style`** (str)
+   - Estilo visual da linha de conexão
+   - Opções: 'Solid', 'Dashed', 'Dotted'
+   - Valor padrão: 'Solid'
+
+4. **`description`** (str)
+   - Descrição textual da conexão
+   - Fornece informações adicionais sobre a relação
+   - Valor padrão: string vazia
+
+### **Exemplo de Uso:**
+
+```python
+from aliasanx import Pyanx
+
+px = Pyanx()
+
+# Adicionar nós primeiro
+px.add_node(entity_type='Person', label='Maria')
+px.add_node(entity_type='Company', label='TechCorp')
+
+# Edge com todos os atributos
+px.add_edge(
+    source='Maria',
+    sink='TechCorp',
+    label='works_for',
+    color=255,  # Cor vermelha
+    style='Solid',
+    description='Desenvolvedora sênior'
+)
+
+# Edge simples
+px.add_edge('Alice', 'Bob', label='knows')
+```
+
+### **Como os Atributos são Usados:**
+
+- **Visualização**: O `color` e `style` definem a aparência da linha de conexão
+- **Identificação**: O `label` descreve o tipo de relação entre as entidades
+- **Contexto**: `description` e atributos de data fornecem informações contextuais sobre a relação
+
+Esses atributos permitem criar grafos com relações ricas em informações, onde cada conexão pode ter características visuais e descritivas que facilitam a análise e compreensão das relações entre as entidades.
+
+## Publicação
+
+Para publicar uma nova versão da biblioteca no PyPI:
+
+### Pré-requisitos
+1. Ter uma conta no [PyPI](https://pypi.org) e [TestPyPI](https://test.pypi.org)
+2. Gerar API tokens em ambas as plataformas
+3. Configurar o arquivo `.pypirc` com suas credenciais
+
+### Processo de Publicação
+
+1. **Atualizar a versão** no `pyproject.toml`
+2. **Executar o script de publicação**:
+   ```bash
+   python publish.py
+   ```
+
+3. **Ou usar comandos manuais**:
+   ```bash
+   # Limpar builds anteriores
+   rm -rf build/ dist/ src/AliasAnx.egg-info/
+   
+   # Construir o pacote
+   python -m build
+   
+   # Verificar o pacote
+   python -m twine check dist/*
+   
+   # Upload para TestPyPI (recomendado primeiro)
+   python -m twine upload --repository testpypi dist/*
+   
+   # Upload para PyPI oficial
+   python -m twine upload dist/*
+   ```
+
+### Configuração do .pypirc
+
+Edite o arquivo `.pypirc` e substitua os tokens pelos seus:
+
+```ini
+[distutils]
+index-servers =
+    pypi
+    testpypi
+
+[pypi]
+repository = https://upload.pypi.org/legacy/
+username = __token__
+password = pypi-YOUR_API_TOKEN_HERE
+
+[testpypi]
+repository = https://test.pypi.org/legacy/
+username = __token__
+password = pypi-YOUR_TEST_API_TOKEN_HERE
+```
+
+## Licença
+
+Apache-2.0
