@@ -1,0 +1,112 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "loop-rate-limiters"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Stéphane Caron", email = "stephane.caron@normalesup.org"},
+]
+maintainers = [
+    {name = "Stéphane Caron", email = "stephane.caron@normalesup.org"},
+]
+dynamic = ['version', 'description']
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = []
+keywords = ["rate", "loop", "frequency", "regulator", "limiter"]
+
+[project.urls]
+Homepage = "https://github.com/stephane-caron/loop-rate-limiters"
+Source = "https://github.com/stephane-caron/loop-rate-limiters"
+Tracker = "https://github.com/stephane-caron/loop-rate-limiters/issues"
+Changelog = "https://github.com/stephane-caron/loop-rate-limiters/blob/master/CHANGELOG.md"
+
+[tool.black]
+line-length = 79
+
+[tool.flit.module]
+name = "loop_rate_limiters"
+
+[tool.flit.sdist]
+exclude = [
+    ".github",
+    ".gitignore",
+]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = [
+    # pyflakes
+    "F",
+    # pycodestyle
+    "E",
+    "W",
+    # isort
+    "I001",
+    # pydocstyle
+    "D"
+]
+ignore = [
+    "D401",  # good for methods but not for class docstrings
+    "D405",  # British-style section names are also "proper"!
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[tool.pixi.dependencies]
+python = ">=3.8"
+
+[tool.pixi.feature.dev.dependencies]
+coverage = ">=5.5"
+mypy = ">=0.812"
+pylint = ">=2.8.2"
+pytest = ">=6.0"
+pytest-asyncio = "*"
+pytest-cov = "*"
+ruff = ">=0.4.3"
+
+[tool.pixi.feature.docs.dependencies]
+furo = ">=2023.8.17"
+pip = ">=21.3.1"
+sphinx = ">=7.2.2"
+sphinx-autodoc-typehints = "*"
+sphinx-favicon = "*"
+sphinx-mdinclude = "*"
+sphinx_rtd_theme = "*"
+
+[tool.pixi.feature.dev.tasks]
+coverage = "pytest --cov=loop_rate_limiters --cov-report=term-missing"
+lint = { depends-on = ["lint-mypy", "lint-pylint", "lint-ruff", "lint-format"] }
+lint-format = "ruff format --check loop_rate_limiters"
+lint-mypy = "mypy loop_rate_limiters --ignore-missing-imports"
+lint-pylint = "pylint loop_rate_limiters --exit-zero"
+lint-ruff = "ruff check loop_rate_limiters"
+test = "pytest"
+
+[tool.pixi.feature.docs.tasks]
+docs = "sphinx-build docs _build -W"
+
+[tool.pixi.environments]
+dev = ["dev"]
+docs = ["docs"]
