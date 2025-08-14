@@ -1,0 +1,68 @@
+# epsilonq
+
+`epsilonq` is a lightweight Python package providing basic Reinforcement Learning utilities.  
+It includes an **Epsilon-Greedy action selection** function and a **Q-learning update** function, making it easy to implement simple RL agents.
+
+---
+
+## Features
+- **Epsilon-Greedy Action Selection** for balancing exploration and exploitation.
+- **Q-learning Update** for updating Q-values based on experience.
+- Beginner-friendly and lightweight — no heavy dependencies.
+
+---
+
+## Installation
+Install from PyPI:
+```bash
+pip install epsilonq
+
+# USAGE
+from epsilonq import epsilon_greedy, q_learning_update
+
+# Initialize Q-table (dictionary)
+Q = {}
+
+# Define current state and Q-values for actions
+state = "A"
+q_values = [0.5, 0.2, 0.9]
+
+# Select an action using epsilon-greedy policy
+action = epsilon_greedy(q_values, epsilon=0.1)
+
+# Simulate reward and next state
+reward = 1.0
+next_state = "B"
+
+# Perform Q-learning update
+q_learning_update(Q, state, action, reward, next_state, alpha=0.5, gamma=0.9)
+
+print("Updated Q-table:", Q)
+
+
+---
+
+## **Step 4 — Create `setup.py`**
+This file tells PyPI how to build your package:
+
+```python
+from setuptools import setup, find_packages
+
+setup(
+    name="epsilonq",
+    version="0.1.0",
+    author="Your Name",
+    author_email="your.email@example.com",
+    description="Lightweight RL utilities: epsilon-greedy and Q-learning update",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    url="https://pypi.org/project/epsilonq/",
+    packages=find_packages(),
+    install_requires=[],
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.6",
+)
