@@ -1,0 +1,59 @@
+name: Test suite
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "pypy-3.10"]
+        include:
+        - os: macos-latest
+          python-version: "3.9"
+        - os: macos-latest
+          python-version: "3.13"
+        - os: windows-latest
+          python-version: "3.9"
+        - os: windows-latest
+          python-version: "3.13"
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
+        cache: pip
+        cache-dependency-path: pyproject.toml
+    - name: Install the project and its dependencies
+      run: pip install --group test -e .
+      env:
+        CFLAGS: "-UNDEBUG"
+        CBOR2_BUILD_C_EXTENSION: "${{ matrix.python-version == 'pypy-3.10' && '0' || '1' }}"
+    - name: Test with pytest
+      run: coverage run -m pytest -v
+      env:
+        TZ: America/New_York
+    - name: Generate coverage report
+      run: coverage xml
+    - name: Upload Coverage
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel: true
+        file: coverage.xml
+
+  coveralls:
+    name: Finish Coveralls
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
