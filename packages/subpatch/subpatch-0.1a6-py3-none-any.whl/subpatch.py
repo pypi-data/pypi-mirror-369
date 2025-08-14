@@ -1,0 +1,2356 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-2.0-only
+# SPDX-FileCopyrightText: Copyright (C) 2024 Stefan Lengfeld
+
+import argparse
+import contextlib
+import os
+import shutil
+import stat
+import subprocess
+import sys
+import time
+from dataclasses import dataclass
+from enum import Enum
+from os.path import abspath, join
+from subprocess import DEVNULL, PIPE, Popen
+from typing import Any, Dict, Generator, List, Optional, TypeAlias, Union
+
+# See https://peps.python.org/pep-0440/ for details about the version format.
+# e.g. dashes "-" are not allowed and 'a' stands for 'alpha' release.
+__version__ = "0.1a6"
+
+# It's the SPDX identifier. See https://spdx.org/licenses/GPL-2.0-only.html
+__LICENSE__ = "GPL-2.0-only"
+
+
+# TODO refactor. copyied from helpers
+@contextlib.contextmanager
+def cwd(path, create=False):
+    if create:
+        os.makedirs(path)
+    old_path = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(old_path)
+
+
+# "Section names are case-insensitive. Only alphanumeric characters, - and .
+# are allowed in section names"
+def is_section_name(b):
+    raise NotImplementedError()
+
+
+# Split with terminator semantics
+def split_with_ts(s):
+    len_s = len(s)
+    pos = 0
+    while pos < len_s:
+        new_pos = s.find("\n", pos)
+        if new_pos == -1:
+            # newline character not found anymore
+            new_pos = len_s - 1
+        yield s[pos:new_pos + 1]
+        pos = new_pos + 1
+
+
+def split_with_ts_bytes(s: bytes) -> Generator[bytes, None, None]:
+    len_s = len(s)
+    pos = 0
+    while pos < len_s:
+        new_pos = s.find(b"\n", pos)
+        if new_pos == -1:
+            # newline character not found anymore
+            new_pos = len_s - 1
+        yield s[pos:new_pos + 1]
+        pos = new_pos + 1
+
+
+class LineType(Enum):
+    EMPTY = 1
+    COMMENT = 2
+    HEADER = 3  # TODO rename to SECTION_HEADER
+    # "man git-config" uses the nomenclature inconsistently. It uses 'name' and
+    # 'key' for the same thing.  We stick to "key" here. It's "key (name)".
+    KEY_VALUE = 4
+
+
+@dataclass(frozen=True)
+class LineDataKeyValue:
+    key: bytes
+    value: bytes
+
+
+@dataclass(frozen=True)
+class LineDataHeader:
+    section_name: bytes
+    subsection_name: Optional[bytes]
+
+
+@dataclass(frozen=True)
+class LineDataEmpty:
+    pass
+
+
+@dataclass(frozen=True)
+class ConfigLine:
+    line_orig: bytes
+    # NOTE: Here I would really like to have rust enums. Actually the tagged
+    # union approach is just a work around.
+    # TODO hmm, maybe I should use "instanceof" instead?
+    line_type: LineType
+    line_data: Union[LineDataKeyValue, LineDataHeader, LineDataEmpty]
+
+
+GeneratorConfigLine: TypeAlias = Generator[ConfigLine, None, None]
+
+
+# config format of git is descriped here
+#   https://git-scm.com/docs/git-config#_configuration_file
+#
+# Parse git-style config file.
+# See https://git-scm.com/docs/git-config
+# The syntax is described here:
+#    https://git-scm.com/docs/git-config/2.12.5#_syntax
+# Goal: The parsed result can be converted back to the lines object with a 1to1 mapping
+# NOTES:
+# - not supporting "[section.subsection]" syntax
+# - not supporting continouation lines yet
+# - not supporting comments at end of line yet.
+# - every line in lines, ends with a "\n" character
+#   Only the last line may not have a trailing "\n" character.
+# TODO add errors on invalid syntax
+def config_parse2(lines: Generator[bytes, None, None]) -> GeneratorConfigLine:
+    def get_first(b: bytes) -> Optional[int]:
+        if len(b) == 0:
+            return None
+        return b[0]
+
+    for line in lines:
+        first_char = get_first(line.lstrip())
+        if first_char is None:
+            # It's an empty line
+            yield ConfigLine(line, LineType.EMPTY, LineDataEmpty())
+        else:
+            if first_char in (ord(b'#'), ord(b';')):
+                yield ConfigLine(line, LineType.COMMENT, LineDataEmpty())
+            elif first_char == ord(b'['):
+                # section start, like: "[section]\n"
+                # Parse section name
+                # TODO Check for valid section characters
+                inner_part = line.split(b'[', 1)[1].split(b']')[0]
+                if ord(b'"') in inner_part:
+                    # There is a subsection:
+                    #     [section  "subsection"]
+                    section_name = inner_part.split(b'"')[0].strip()
+                    subsection_name = inner_part.split(b'"', 2)[1]
+                else:
+                    section_name = inner_part
+                    subsection_name = None
+
+                yield ConfigLine(line, LineType.HEADER, LineDataHeader(section_name, subsection_name))
+            else:
+                # This is mostly a variable line
+                #     key = value
+                parts = line.split(b"=", 1)
+                key = parts[0].strip()
+                value = parts[1].strip()
+                yield ConfigLine(line, LineType.KEY_VALUE, LineDataKeyValue(key, value))
+
+
+# Small hepler to get type rights for pyright
+def empty_config_lines() -> GeneratorConfigLine:
+    if False:
+        yield None
+
+
+def config_unparse2(config_lines: GeneratorConfigLine) -> bytes:
+    s = b""
+    for config_line in config_lines:
+        # TODO: This is really strange here. The data structure ConfigLine contains
+        # redundant information
+        s += config_line.line_orig
+    return s
+
+
+# TODO add support for subsection
+# Requirement: section already exists
+# Optional arguments
+#  - "append": Whether to replace a existing key with the value or
+def config_set_key_value2(config_lines: GeneratorConfigLine, section_name: bytes, key: bytes, value: bytes, append: bool = False) -> GeneratorConfigLine:
+    # TODO sanitize 'key' and 'value'
+    # HACK: Use list to have a mutable value
+    was_emit = [False]
+
+    def emit():
+        if was_emit[0]:
+            return
+        # TODO adding \t is wired here. Maybe the config files does not use the
+        # indentation as convention.
+        yield ConfigLine(b"\t%s = %s\n" % (key, value), LineType.KEY_VALUE, LineDataKeyValue(key, value))
+        was_emit[0] = True
+
+    config_in_section = False
+    for config_line in config_lines:
+        if not config_in_section:
+            if config_line.line_type == LineType.HEADER:
+                line_data = config_line.line_data
+                assert isinstance(line_data, LineDataHeader)
+                # TODO support subsection!
+                if line_data.section_name == section_name and line_data.subsection_name is None:
+                    config_in_section = True
+            yield config_line
+        else:
+            if config_line.line_type == LineType.HEADER:
+                # New section starts
+                yield from emit()
+                # TODO check if the section has the same name!
+                config_in_section = False
+                yield config_line
+            elif config_line.line_type == LineType.KEY_VALUE:
+                line_data = config_line.line_data
+                assert isinstance(line_data, LineDataKeyValue)
+                if line_data.key == key:
+                    if append:
+                        # We have to append the value
+                        if line_data.value > value:
+                            yield from emit()
+                            yield config_line
+                        else:
+                            yield config_line
+                            yield from emit()
+                    else:
+                        # We have to replace the value
+                        yield from emit()
+                elif line_data.key > key:
+                    # The current key is bigger. Emit the key-value before it
+                    yield from emit()
+                    yield config_line
+                else:
+                    yield config_line
+            else:
+                yield config_line
+
+    if config_in_section:
+        yield from emit()
+    else:
+        if not was_emit[0]:
+            raise Exception("Error: No section with name '%s' found!" % (section_name.decode("utf8"),))
+
+
+def config_drop_key2(config_lines: GeneratorConfigLine, section_name: bytes, key: bytes) -> GeneratorConfigLine:
+    config_in_section = False
+    for config_line in config_lines:
+        if not config_in_section:
+            if config_line.line_type == LineType.HEADER:
+                line_data = config_line.line_data
+                assert isinstance(line_data, LineDataHeader)
+                # TODO support subsection!
+                if line_data.section_name == section_name and line_data.subsection_name is None:
+                    config_in_section = True
+            yield config_line
+        else:
+            if config_line.line_type == LineType.HEADER:
+                # New section starts
+                config_in_section = False
+                yield config_line
+            elif config_line.line_type == LineType.KEY_VALUE:
+                line_data = config_line.line_data
+                assert isinstance(line_data, LineDataKeyValue)
+                if line_data.key == key:
+                    # Key found. Do drop by not yielding it
+                    pass
+                else:
+                    yield config_line
+            else:
+                yield config_line
+
+
+def config_drop_section_if_empty(config_lines: GeneratorConfigLine, section_name: bytes) -> GeneratorConfigLine:
+    config_in_section = False
+    config_line_saved = None
+    for config_line in config_lines:
+        if not config_in_section:
+            if config_line.line_type == LineType.HEADER:
+                line_data = config_line.line_data
+                assert isinstance(line_data, LineDataHeader)
+                # TODO support subsection!
+                if line_data.section_name == section_name and line_data.subsection_name is None:
+                    # We have found the section!
+                    # So we don't yield it here, we have to wait for the first key in this section
+                    # Otherwise we can drop it
+                    config_in_section = True
+                    config_line_saved = config_line
+                else:
+                    yield config_line
+            else:
+                yield config_line
+        else:
+            if config_line.line_type == LineType.HEADER:
+                # New section starts
+                config_in_section = False
+                yield config_line
+            elif config_line.line_type == LineType.KEY_VALUE:
+                line_data = config_line.line_data
+                assert isinstance(line_data, LineDataKeyValue)
+                # Ok. We are in the section and we have found a key. So the section is not empty.
+                # So also yield the header line of this section, if not already done
+                if config_line_saved is not None:
+                    yield config_line_saved
+                    config_line_saved = None
+                yield config_line
+            else:
+                yield config_line
+
+
+def config_add_section2(config_lines: GeneratorConfigLine, section_name: bytes) -> GeneratorConfigLine:
+    # TODO find better name for 'was_emit'
+    was_emit = [False]
+
+    def emit():
+        if was_emit[0]:
+            return
+        yield ConfigLine(b"[%s]\n" % (section_name,), LineType.HEADER, LineDataHeader(section_name, None))
+        was_emit[0] = True
+
+    for config_line in config_lines:
+        if config_line.line_type == LineType.HEADER:
+            line_data = config_line.line_data
+            assert isinstance(line_data, LineDataHeader)
+            if line_data.section_name > section_name and line_data.subsection_name is None:
+                # The next section name is bigger. Emit here!
+                yield from emit()
+                yield config_line
+            elif line_data.section_name == section_name and line_data.subsection_name is None:
+                # This section matches exactly. The section already exists. So do nothing!
+                was_emit[0] = True
+                yield config_line
+            else:
+                yield config_line
+        else:
+            yield config_line
+
+    yield from emit()
+
+
+@dataclass
+class Subproject:
+    path: str
+    url: Optional[str] = None
+    revision: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class Config:
+    subprojects: List[bytes]
+
+
+def parse_config(config_lines) -> Config:
+    subprojects = []
+
+    in_subprojects = False
+    for config_line in config_lines:
+        line_data = config_line.line_data
+        if config_line.line_type == LineType.HEADER:
+            assert isinstance(line_data, LineDataHeader)
+            if line_data.section_name == b"subprojects" and line_data.subsection_name is None:
+                in_subprojects = True
+            else:
+                in_subprojects = True
+        elif config_line.line_type == LineType.KEY_VALUE:
+            assert isinstance(line_data, LineDataKeyValue)
+            if in_subprojects:
+                if line_data.key == b"path":
+                    subprojects.append(line_data.value)
+        else:
+            pass
+
+    return Config(subprojects)
+
+
+# Path can be absolute or relative
+def read_config(path: bytes) -> Config:
+    with open(path, "br") as f:
+        config_lines = config_parse2(split_with_ts_bytes(f.read()))
+
+    return parse_config(config_lines)
+
+
+# TODO is it "<object>_<verb>" or "<verb>_<object>"?
+#  "subprojects_parse" vs "parse_subprojects"
+#  ... -> then should should be "parse_config_parts_to_subprojects
+
+
+# TODO Write blogpost about common error categories, e.g. in HTTP and errno
+# E.g. there is also
+#  * invalid argument/Bad request
+#  * (generic) runtime error (maybe the same as IO error)
+#  * permission denied
+#  * NotImplemented/Does not exists
+class ErrorCode(Enum):
+    UNKNOWN = 1
+    # TODO distinguish between "not implemented" and "not implemented __yet__"!
+    # Not implemented should mostly be a invalid argument then
+    NOT_IMPLEMENTED_YET = 2
+    SUPERPROJECT_NOT_FOUND = 3  # if no scm system found and no config found
+    SUPERPROJECT_NOT_CONFIGURED = 4
+    # The user has given an invalid argument on the command line
+    INVALID_ARGUMENT = 5
+    # TODO remove this type. Every ErrorCode should support a message.
+    CUSTOM = 6
+
+
+class AppException(Exception):
+    def __init__(self, code, msg=None):
+        self._code = code
+        if msg is not None:
+            super().__init__(msg)
+        else:
+            super().__init__()
+
+    def get_code(self):
+        return self._code
+
+
+class URLTypes(Enum):
+    LOCAL_RELATIVE = 1
+    LOCAL_ABSOLUTE = 2
+    REMOTE = 3
+
+
+def get_url_type(url):
+    if len(url) == 0:
+        raise ValueError("The URL is empty!")
+
+    # TODO mabye using url parsing library?
+    # TODO Implemente "file://" prefix
+    if url.startswith("http"):
+        return URLTypes.REMOTE
+    elif url.startswith("git"):
+        return URLTypes.REMOTE
+    elif url.startswith("ssh"):
+        return URLTypes.REMOTE
+    if "://" in url:
+        raise NotImplementedError("The URL '%s' is not implemented yet" % (url,))
+
+    # Is mostly just a local path
+    if url[0] == "/":
+        return URLTypes.LOCAL_ABSOLUTE
+
+    return URLTypes.LOCAL_RELATIVE
+
+
+def nocommand(args, parser):
+    parser.print_help(file=sys.stderr)
+    return 2  # TODO why 2?
+
+
+def cmd_help(args, parser):
+    parser.print_help()
+    return 0
+
+
+class SCMType(Enum):
+    GIT = b"git"
+
+
+# NOTE: In both cases it's the path to the toplevel directory!
+# TODO Use Optional[T]
+@dataclass
+class FindSuperprojectData:
+    super_path: bytes | None = None
+    scm_type: SCMType | None = None
+    scm_path: bytes | None = None
+
+
+# Based on the current work directory search for a subpatch project
+# and SCM system.
+# Returns: FindSuperprojectData
+#
+# TODO support svn, mercurial and others in the future
+# TODO thinking about symlinks!
+def find_superproject() -> FindSuperprojectData:
+    abs_cwd = abspath(os.getcwdb())
+
+    # TODO refactory this self-made and hacky approach of a directory walk
+    # The first element is empty, because of the absolute path.  But using a
+    # empty element in "join" does not work. It's the reverse operation!
+    assert abs_cwd[0] == ord("/")
+    abs_cwd_parts = os.path.normpath(abs_cwd).split(b"/")
+    assert abs_cwd_parts[0] == b""
+    abs_cwd_parts.pop(0)
+
+    statinfo = os.stat(abs_cwd)
+    assert stat.S_ISDIR(statinfo.st_mode)
+
+    cwd_st_dev = statinfo.st_dev
+
+    data = FindSuperprojectData()
+
+    while True:
+        abs_cur_path = join(b"/", *abs_cwd_parts)
+
+        statinfo = os.stat(abs_cur_path)
+        if statinfo.st_dev != cwd_st_dev:
+            # The directory walk leaves the current filesystem. This is a stop
+            # condition for now.
+            # TODO Maybe implement 'GIT_DISCOVERY_ACROSS_FILESYSTEM'
+            # See https://git-scm.com/docs/git.html#Documentation/git.txt-codeGITDISCOVERYACROSSFILESYSTEMcode
+            break
+
+        if data.super_path is None:
+            if os.path.exists(join(abs_cur_path, b".subpatch")):
+                # Configuration file found
+                data.super_path = abs_cur_path
+
+        if data.scm_type is None:
+            # NOTE Simple implementation. Check whether there is a ".git"
+            # folder next to it.
+            # Does not work for worktrees! ... really? TODO check it!
+            if os.path.exists(join(abs_cur_path, b".git")):
+                data.scm_type = SCMType.GIT
+                data.scm_path = abs_cur_path
+
+        if data.super_path is not None and data.scm_type is not None:
+            # If both is already found, stop the directory walk
+            break
+
+        if len(abs_cwd_parts) == 0:
+            break
+
+        abs_cwd_parts.pop()
+
+    return data
+
+
+# TODO There is still reduance in the structure!
+@dataclass(frozen=True)
+class CheckedSuperprojectData:
+    super_path: bytes
+    configured: bool
+    scm_type: Optional[SCMType]
+
+
+# There can be four cases
+#  - no ".subpatch" config and no SCM
+#     -> function returns None
+#  - ".subpatch" config and no SCM
+#  - no ".subpach" config and SCM
+#  - ".subpach" config and SCM
+# For the last cases there are two sub-cases:
+#  - super_path matches scm_path
+#  - both paths do not match
+def check_superproject_data(data: FindSuperprojectData) -> Optional[CheckedSuperprojectData]:
+    if data.scm_type is not None:
+        # There is a SCM tool
+        if data.super_path is None:
+            # And there is no subpatch config file
+            assert data.scm_path is not None
+            return CheckedSuperprojectData(data.scm_path, False, data.scm_type)
+        else:
+            # And there is a subpatch config file!
+
+            # Check if the paths match up:
+            if data.super_path != data.scm_path:
+                # TODO add text here!
+                # TODO rename "root" to "toplevel" to be consistent.
+                raise AppException(ErrorCode.NOT_IMPLEMENTED_YET, "subpatch config file is not at the root of the SCM repository!")
+
+            return CheckedSuperprojectData(data.super_path, True, data.scm_type)
+    else:
+        # Current working directory is not in a SCM system
+        if data.super_path is None:
+            # And there is no subpatch config file
+            return None
+        else:
+            # And there is a subpatch config file
+            return CheckedSuperprojectData(data.super_path, True, data.scm_type)
+
+
+class SuperprojectType(Enum):
+    PLAIN = b"plain"
+    GIT = b"git"
+
+
+class SuperHelperPlain:
+    def add(self, paths):
+        # Nothing to do here. There is no SCM system. So the code can also not add
+        # files to the SCM
+        pass
+
+    def print_instructions_to_commit_and_inspect(self):
+        raise NotImplementedError("TODO think about this case!")
+
+    def configure(self, scm_path: bytes) -> None:
+        raise NotImplementedError("TODO think about this case!")
+
+
+class SuperHelperGit:
+    # Add the file in 'path' to the index
+    # TODO not all version control systems have the notion of a index!
+    def add(self, paths):
+        git_add(paths)
+
+    def print_instructions_to_commit_and_inspect(self):
+        print("The following changes are recorded in the git index:")
+        shortstat = git_diff_staged_shortstat()
+        print("%s" % (shortstat.decode("ascii"),))
+        print("- To inspect the changes, use `git status` and `git diff --staged`.")
+        print("- If you want to keep the changes, commit them with `git commit`.")
+        print("- If you want to revert the changes, execute `git reset --merge`.")
+
+    # TODO think about the data structure every super_helper method gets!
+    def configure(self, scm_path: bytes) -> None:
+        config_abspath = join(scm_path, b".subpatch")
+        assert not os.path.exists(config_abspath)
+        with open(config_abspath, "bw"):
+            pass
+
+        # TODO: Using cwd to the toplevel directory is just a hack because
+        # the helper is cwd-aware.
+        with cwd(scm_path):
+            git_add([b".subpatch"])
+
+    def print_configure_success(self):
+        print("The file .subpatch was created in the toplevel directory.")
+        print("Now use 'git commit' to finalized your change.")
+        # TODO maybe use the same help text as "add" and "update".
+
+
+# TODO compare to CheckedSuperprojectData. It's very similiar, maybe refactor
+@dataclass(frozen=True)
+class Superproject:
+    path: bytes
+    helper: Union[SuperHelperGit, SuperHelperPlain]
+    configured: bool
+    typex: SuperprojectType   # TODO same information is in 'helper'. Refactor!
+
+
+def check_and_get_superproject_from_checked_data(checked_data: Optional[CheckedSuperprojectData]) -> Superproject:
+    # TODO maybe move outside of this function
+    if checked_data is None:
+        # And there is no subpatch config file and no SCM
+        raise AppException(ErrorCode.SUPERPROJECT_NOT_FOUND)
+
+    if checked_data.scm_type is not None:
+        # There is a SCM tool
+        # And there is either a subpatch config file or not: See value of 'configured'
+        if checked_data.scm_type == SCMType.GIT:
+            super_type = SuperprojectType.GIT
+            helper = SuperHelperGit()
+        else:
+            raise AppException(ErrorCode.NOT_IMPLEMENTED_YET, "SCM tool '%s' not implemented yet" % (checked_data.scm_type,))
+    else:
+        # Current working directory is not in a SCM system.  But there is a
+        # config file. Ensured by the caller!
+        assert checked_data.configured
+        helper = SuperHelperPlain()
+        super_type = SuperprojectType.PLAIN
+
+    super_path = checked_data.super_path
+    configured = checked_data.configured
+
+    return Superproject(super_path, helper, configured, super_type)
+
+
+# :: void -> None or byte object (or raises an exception)
+# TODO currently unused. Maybe remove this function
+def git_get_toplevel():
+    p = Popen(["git", "rev-parse", "--show-toplevel"], stdout=PIPE, stderr=DEVNULL)
+    stdout, _ = p.communicate()
+    if p.returncode == 0:
+        return stdout.rstrip(b"\n")
+    elif p.returncode == 128:
+        # fatal: not a git repository (or any of the parent directories): .git
+        return None
+    else:
+        # TODO Create a generic git error exception
+        raise Exception("git failure")
+
+
+# NOTE This is cwd aware
+def git_clone(url, directory):
+    p = Popen(["git", "clone", "-q", url, directory])
+    p.communicate()
+    if p.returncode != 0:
+        raise Exception("git failure")
+
+
+def git_reset_hard(sha1):
+    p = Popen(["git", "reset", "-q", "--hard", sha1])
+    p.communicate()
+    if p.returncode != 0:
+        raise Exception("git failure")
+
+
+def is_sha1(sha1: bytes) -> bool:
+    assert isinstance(sha1, bytes)
+    if len(sha1) != 40:
+        return False
+    return all(0x30 <= c <= 0x39 or 0x61 <= c <= 0x66 for c in sha1)
+
+
+# TODO Split this command. It seems like a ugly combination
+def git_init_and_fetch(url: str, ref: bytes) -> bytes:
+    p = Popen(["git", "init", "-q"])
+    p.communicate()
+    if p.returncode != 0:
+        raise Exception("git failure")
+
+    cmd = ["git", "fetch", "-q", url, ref]
+
+    # NOTE: Http transport which is currently used in the tests! And for dump
+    # the "--depth" argument does not work. So we need this hack for the tests.
+    # The git error message is
+    #     fatal: dumb http transport does not support shallow capabilities
+    # TODO implement this hack nicly!
+    # TODO No need for an env variable or argument. This code should
+    # automatically detect whether shallow cloes are working or not!
+    if os.environ.get("HACK_DISABLE_DEPTH_OPTIMIZATION", "0").strip() != "1":
+        cmd += ["--depth", "1"]
+    p = Popen(cmd, stderr=DEVNULL)
+    # NOTE If stderr==DEVNULL(no-tty) no progress is showing on the commandline
+    # Not getting the error is bad!
+    p.communicate()
+    if p.returncode != 0:
+        # TODO think about error handling!!
+        # Maybe every subcommand should be able and allows to write to stderr
+        # directly!
+        raise Exception("git failure: %d" % (p.returncode,))
+
+    # get SHA1 of fetched object
+    with open(".git/FETCH_HEAD", "br") as f:
+        sha1 = f.read().split(b"\t", 1)[0]
+
+    assert is_sha1(sha1)
+    return sha1
+
+
+def git_add(args):
+    assert len(args) >= 1
+    # NOTE: use "-f" here otherwise git honors ignored files and does not add
+    # all files!
+    p = Popen(["git", "add", "-f"] + args)
+    p.communicate()
+    if p.returncode != 0:
+        raise Exception("git failure")
+
+
+def git_diff_staged_shortstat():
+    p = Popen(["git", "diff", "--staged", "--shortstat"], stdout=PIPE)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        raise Exception("git failure")
+
+    stdout = stdout.rstrip(b"\n")
+    assert isinstance(stdout, bytes)
+    return stdout
+
+
+# TODO clarify naming: path, filename, url
+# TODO clairfy name for remote git name and path/url
+
+# Naming:
+# Git naming
+#  - object: something in the object store that has a SHA1
+#  - object type: type of the object. Can be blob, tree, commit or tag.
+#  - object id: the hash of the object (taken from the git source code)
+#  - ref: short for "reference", like branches and tags.
+#         Everything in the 'refs' folder/namespace
+#  - rev: short for "revision"
+#     "A revision parameter <rev> typically, but not necessarily, names a
+#     commit object." See 'man gitrevisions'
+#     E.g. a <sha1>, "HEAD", "x..y" or "main:file"
+#
+# Variable names:
+#  - url: The URL for a git/svn/.. repository or tarball.
+#      Can be a http, git or file URL. Or just a local path.
+#    Variant:
+#       url: The subproject's URL, e.g. to clone/download
+#
+# subpatch naming
+#  - "config" or "subpatch config". Is the name of the config in the
+#    ".subpatch" file at the toplevel of the superproject.
+#    TODO add to glossary
+#  - "subproject": Idea: Is only the local directory and config
+#                  Not the remote repository
+
+
+# As of git v2.9.0 these are all valid git objects
+OBJECT_TYPES = (b"blob", b"tree", b"commit", b"tag")
+
+
+class ObjectType(Enum):
+    BLOB = b"blob"
+    TREE = b"tree"
+    COMMIT = b"commit"
+    TAG = b"tag"
+
+
+# Returns the type of the git object
+# TODO not used yet. Implement sanity check
+# TODO naming 'rev' is incorrect. 'rev' is only for commit objects.
+def git_get_object_type(rev: str) -> ObjectType:
+    p = Popen(["git", "cat-file", "-t", rev], stdout=PIPE, stderr=DEVNULL)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        # TODO Create a generic git error exception
+        raise Exception("failed here")
+
+    stdout = stdout.rstrip(b"\n")
+    assert stdout in OBJECT_TYPES
+    if stdout == b"blob":
+        return ObjectType.BLOB
+    elif stdout == b"tree":
+        return ObjectType.TREE
+    elif stdout == b"commit":
+        return ObjectType.COMMIT
+    return ObjectType.TAG
+
+
+# Convert URLs. Examples:
+#     …bla/foo/.git/ -> "foo"
+#     …bla/foo.git/  -> "foo"
+#     …bla/foo       -> "foo"
+def get_name_from_repository_url(url: str):
+    if len(url) == 0:
+        raise ValueError("The URL is empty!")
+    url = url.rstrip("/")
+    if url.endswith(".git"):
+        url = url[:-4]
+    url = url.rstrip("/")
+    url = url.split("/")[-1]
+    return url
+
+
+# Check whether the 'rev' can be resolved to a valid object in the repository
+# NOTE:
+# - If this command is not exectued in a git repo, it raises an exception.
+def git_verify(rev: str) -> bool:
+    p = Popen(["git", "rev-parse", "--quiet", "--verify", rev + "^{object}"],
+              stdout=DEVNULL, stderr=DEVNULL)
+    p.communicate()
+    if p.returncode == 1:
+        return False
+    if p.returncode != 0:
+        # Example stderr output:
+        #   fatal: not a git repository (or any of the parent directories): .git
+        # TODO replace with git specific exception
+        raise Exception("todo")
+
+    return True
+
+
+def is_valid_revision(revision: str) -> bool:
+    # TODO add more invalid and strange chars to this list
+    # TODO eval svn, git, ... for allow characters. What about umlauts?
+    strange_chars = ("\t", "\n", "\b")
+    for char in strange_chars:
+        if char in revision:
+            return False
+    return True
+
+
+# TODO add example of input
+# TODO add more tests, e.g. with syntax errors or duplicated refs.
+def parse_sha1_names(lines: bytes, sep=b' ') -> Dict[bytes, bytes]:
+    # remove the last new line character
+    # Should only be one character
+    lines = lines.rstrip(b'\n')
+
+    # Ignore empty lines
+    lines1 = [line.split(sep) for line in lines.split(b'\n') if len(line) != 0]
+
+    for line in lines1:
+        if len(line) != 2:
+            raise Exception("Parsing error in line: sep = %s parts = %s" % (sep, line))
+    lines2 = [(name, sha1) for sha1, name in lines1]
+
+    # checks
+    for _, sha1 in lines2:
+        if not is_sha1(sha1):
+            raise ValueError("String is not a SHA1 sum: %r" % (sha1,))
+
+    return dict(lines2)
+
+
+def git_get_sha1(rev):
+    # NOTE: Special case for valid SHA1 sums. Even if the object for the
+    # SHA1 does not exist in the repo, it's return as a valid SHA1 If the
+    # rev is a too short SHA1, it's extend to a full SHA1 if a object with
+    # the short SHA1 exists in the repo.
+    p = Popen(["git", "rev-parse", "-q", "--verify", rev], stdout=PIPE)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        raise Exception("error here TODO")
+
+    return stdout.rstrip(b"\n")
+
+
+# git_ls_remote ::  string(url) -> dict<ref_name, sha1>
+# Output contains branches, tags, tag-commitisch "^{}" and the HEAD.
+def git_ls_remote(url: str) -> Dict[bytes, bytes]:
+    # NOTE Subpress stderr output of 'ls-remote'. In case of a fetch failure
+    # stuff is written to stderr.
+
+    p = Popen(["git", "ls-remote", url], stdout=PIPE)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        raise Exception("git ls-remote failed")
+
+    # Parse output
+    # The output of ls-remote uses the tab character as the separator. The
+    # show-ref command uses spaces.
+    return parse_sha1_names(stdout, sep=b'\t')
+
+
+# Query the remote git repo and try to resolve the 'ref'.
+# E.g.
+#  - "main" -> "refs/heads/main"
+#  - "v1" -> "refs/tags/v1"
+# Notes:
+#  - function accepts ref as string, but returns a byte Object!
+# Returns
+#  - None if ref could not be resolved
+# TODO also return the matched object
+def git_ls_remote_guess_ref(url: str, ref_str: str) -> Optional[bytes]:
+    # TODO "git ls-remote" also allows to query a single ref or a pattern of
+    # refs!
+    refs_sha1 = git_ls_remote(url)
+
+    ref = ref_str.encode("utf8")
+
+    if ref in refs_sha1:
+        return ref  # Direct match
+
+    ref_as_tag = b"refs/tags/" + ref
+    if ref_as_tag in refs_sha1:
+        return ref_as_tag
+
+    ref_as_branch = b"refs/heads/" + ref
+    if ref_as_branch in refs_sha1:
+        return ref_as_branch
+
+    return None
+
+
+@dataclass(frozen=True)
+class DownloadConfig:
+    url: Any
+    revision: Optional[Any] = None
+
+
+@dataclass(frozen=True)
+class CloneConfig:
+    full_clone: bool
+    object_id: Optional[str] = None
+    ref: Optional[bytes] = None
+
+
+def git_resolve_to_clone_config(url: str, revision: Optional[str]) -> CloneConfig:
+    # Some heuristics to sort out branch, commit/tag id or tag
+    if revision is not None:
+
+        # TODO Clean type missmatch
+        assert isinstance(revision, str)
+        revision_bytes = revision.encode("utf8")
+
+        if is_sha1(revision_bytes):
+            # NOTE Commit ids are bad! You cannot download just a single
+            # commit id. You can only clone everything and hope that the commit id
+            # is in there!
+            # TODO Handle tag ids special. They can be looked up by "git
+            # ls-remote".
+            return CloneConfig(full_clone=True, object_id=revision)
+        else:
+            # It looks like a ref to a branch or tag. Try to resolve it
+            ref_resolved = git_ls_remote_guess_ref(url, revision)
+            if ref_resolved is None:
+                raise AppException(ErrorCode.INVALID_ARGUMENT,
+                                   "The reference '%s' cannot be resolved to a branch or tag!" % (revision,))
+            return CloneConfig(full_clone=False, ref=ref_resolved)
+    else:
+        # Use HEAD of remote repository
+        # TODO optimize this by looking at the output of "git ls-remote".
+        return CloneConfig(full_clone=True)
+
+
+# TODO finalize of naming convention for helper code for subprojects and
+# superprojects.
+class CacheHelperGit:
+    def get_revision_as_str(self, revision: Optional[str]) -> str:
+        # The revision is of type Optional<str>. It's either None or a str.
+        # Convert to a printable string for stdout
+        if revision is None:
+            return "HEAD"
+        return revision
+
+    # Download remote repository, checkout the request revision, remove
+    # repository metadata and leave the plan files in the dir 'cache_relpath'.
+    # NOTE: return value is either a object_id of a tag or of a commit!
+    def download(self, download_config: DownloadConfig, folder) -> bytes:
+        # NOTE "git submodule init" creates a bare repository in ".git/modules"
+        # TODO maybe also use that folder as a scrat pad.
+        # TODO clone only a single branch and maybe use --depth 1
+        #  - that is already partially implemented
+        # TODO handle potential submodules in the subproject correctly
+
+        url = download_config.url
+        revision = download_config.revision  # Can be None
+
+        clone_config = git_resolve_to_clone_config(url, revision)
+
+        # TODO optimization. If it's a local git repo, use --reference to share
+        # object store.
+
+        # There are three cases:
+        #   - full clone + with object id
+        #   - full clone + without object id
+        #   - fetch + with ref
+        if clone_config.full_clone:
+            git_clone(url, folder)
+            if clone_config.object_id is not None:
+                with cwd(folder):
+                    if not git_verify(clone_config.object_id):
+                        # TODO use context wrapper for cleanup!
+                        shutil.rmtree(b"../" + folder)
+                        raise AppException(ErrorCode.INVALID_ARGUMENT,
+                                           "Object id '%s' does not point to a valid object!" % (clone_config.object_id,))
+
+                    object_type = git_get_object_type(clone_config.object_id)
+                    if object_type not in (ObjectType.COMMIT, ObjectType.TAG):
+                        # TODO use context wrapper for cleanup!
+                        shutil.rmtree(b"../" + folder)
+                        raise AppException(ErrorCode.INVALID_ARGUMENT,
+                                           "Object id '%s' does not point to a commit or tag object!" % (clone_config.object_id,))
+
+                    git_reset_hard(clone_config.object_id)
+                object_id = clone_config.object_id.encode("ascii")
+            else:
+                with cwd(folder):
+                    object_id = git_get_sha1("HEAD")
+        else:
+            # TODO This is really ugly!
+            assert not os.path.isabs(folder)
+            assert b"//" not in folder  # sanitze path
+            folder_count = folder.rstrip(b"/").count(b"/") + 1
+
+            with cwd(folder, create=True):
+                # TODO Not work with relative paths, because a subdir is used!
+                if get_url_type(url) == URLTypes.LOCAL_RELATIVE:
+                    # This is ugly!
+                    # TODO fix str bs byte missmatch. encode should not be needed here!
+                    url_tmp = b"../" * folder_count + url.encode("utf8")
+                else:
+                    url_tmp = url
+                # TODO Rework DownloadConfig to avoid extra asser here
+                assert clone_config.ref is not None
+                object_id = git_init_and_fetch(url_tmp, clone_config.ref)
+                git_reset_hard(object_id)
+
+        # Remove ".git" folder in this repo
+        # TODO this must be moved outside of the download function. It should
+        # be persistent.
+        local_repo_git_dir = join(folder, b".git")
+        assert os.path.isdir(local_repo_git_dir)
+        shutil.rmtree(local_repo_git_dir)
+
+        return object_id
+
+
+def ensure_superproject_is_configured(superx):
+    # Design decision:
+    # Having a empty ".subpatch" config file is something different than having
+    # no config file. It means that subptach is not yet configured for the project.
+    # TODO document this design decision somewhere else!
+    if not superx.configured:
+        raise AppException(ErrorCode.SUPERPROJECT_NOT_CONFIGURED)
+
+
+def ensure_superproject_is_git(superx):
+    if superx.typex != SuperprojectType.GIT:
+        raise AppException(ErrorCode.NOT_IMPLEMENTED_YET, "This feature currently works only in a git superproject!")
+
+
+# TODO consolidate with unpack from cmd_add
+# TODO consolide function arguments
+def do_unpack_for_update(superx, super_paths, sub_paths, cache_abspath: bytes, url: str, revision: Optional[str], object_id: bytes) -> None:
+    # TODO This function is very very hacky. Works for now!
+
+    # Quick and dirty performance improvement. Batch multiple paths together
+    class GitCommandBachter:
+        BATCH_COUNT = 5000
+
+        def __init__(self, cmd):
+            self._args = []
+            self._cmd = cmd
+
+        def add_and_maybe_exec(self, arg):
+            self._args.append(arg)
+            if len(self._args) >= self.BATCH_COUNT:
+                self.exec_force()
+
+        def exec_force(self):
+            if len(self._args) == 0:
+                return
+            cmd = self._cmd + self._args
+            subprocess.run(cmd, check=True, cwd=super_paths.super_abspath)
+            self._args.clear()
+
+    # Just quick and try remove and copy!
+    # TODO convert this code to "superhelper" implementation
+    with cwd(super_paths.super_abspath):
+        git_rm = GitCommandBachter(["git", "rm", "-q"])
+        for path in git_ls_tree_in_dir(sub_paths.super_to_sub_relpath):
+            git_rm.add_and_maybe_exec(path)
+        git_rm.exec_force()
+
+    # and copy
+    # TODO convert this code to "superhelper" implementation
+    os.makedirs(sub_paths.cwd_to_sub_relpath, exist_ok=True)
+    with cwd(cache_abspath):
+        git_add = GitCommandBachter(["git", "add", "-f"])
+
+        for root, dirnames, files in os.walk(b"."):
+            for dirname in dirnames:
+                super_to_dest_relpath = join(sub_paths.super_to_sub_relpath, root, dirname)
+                dest_path = join(super_paths.super_abspath, super_to_dest_relpath)
+                os.makedirs(dest_path, exist_ok=True)
+
+            for filename in files:
+                src_path = join(root, filename)
+                super_to_dest_relpath = join(sub_paths.super_to_sub_relpath, root, filename)
+                dest_path = join(super_paths.super_abspath, super_to_dest_relpath)
+                os.rename(src_path, dest_path)
+                super_to_dest_relpath = join(sub_paths.super_to_sub_relpath, root, filename)
+
+                git_add.add_and_maybe_exec(super_to_dest_relpath)
+
+        git_add.exec_force()
+
+    # Remove empty directories in download/cache dir
+    for root, dirnames, files in os.walk(cache_abspath, topdown=False):
+        assert len(files) == 0
+        for dirname in dirnames:
+            os.rmdir(join(root, dirname))
+
+    assert len(os.listdir(cache_abspath)) == 0
+    os.rmdir(cache_abspath)
+
+    # TODO update tree checksum in the config
+    do_unpack_update_metadata(sub_paths, url, revision, object_id)
+
+    with cwd(super_paths.super_abspath):
+        # TODO Absolute path to git-add is used. This is strange, but works!
+        superx.helper.add([sub_paths.metadata_abspath])
+
+
+def cmd_update(args, parser):
+    if args.path is None:
+        # TODO should also work when cwd is inside the subproject
+        raise AppException(ErrorCode.NOT_IMPLEMENTED_YET, "Must give path to subproject")
+
+    data = find_superproject()
+    checked_data = check_superproject_data(data)
+    superx = check_and_get_superproject_from_checked_data(checked_data)
+    ensure_superproject_is_configured(superx)
+    ensure_superproject_is_git(superx)
+    cwd_to_sub_relpath = os.fsencode(args.path)
+
+    super_paths = gen_super_paths(superx.path)
+    sub_paths = gen_sub_paths_from_cwd_and_relpath(super_paths, cwd_to_sub_relpath)
+
+    # TODO Hardcoded assumption: subproject is also git
+    cache_helper = CacheHelperGit()
+
+    config = read_config(super_paths.config_abspath)
+
+    # NOTE two different error cases:
+    # * no subproject path in config
+    # * no subproject file in directory (TODO add code for that)
+    if sub_paths.super_to_sub_relpath not in config.subprojects:
+        x = sub_paths.super_to_sub_relpath.decode("utf8")
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "Path '%s' does not point to a subproject" % (x,))
+
+    metadata = read_metadata(sub_paths.metadata_abspath)
+
+    # TODO if some of the patches are deapply, it's ok to have changes in the
+    # index! How to handle that here? In that case
+    if git_diff_in_dir(superx.path, sub_paths.super_to_sub_relpath):
+        # TODO add more explanations and commands to fix!
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "There are unstaged changes in the subproject.")
+
+    if git_diff_in_dir(superx.path, sub_paths.super_to_sub_relpath, staged=True):
+        # TODO add more explanations and commands to fix!
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "There are staged changes in the subproject.")
+
+    # TODO deapply all patches
+
+    # TODO check that the subproject is in a clean state
+
+    if args.url is not None:
+        # TODO verify URL
+        url = args.url
+    else:
+        if metadata.url is None:
+            # TODO this is an error case. There should always be an URL
+            url = None
+        else:
+            url = metadata.url.decode("utf8")
+
+    if args.revision is not None:
+        # TODO verify revision
+        revision = args.revision
+    else:
+        if metadata.revision is None:
+            revision = None
+        else:
+            revision = metadata.revision.decode("utf8")
+
+    assert isinstance(url, str)
+    assert revision is None or isinstance(revision, str)
+
+    # subpatch download
+    # TODO combine with cmd_add(). It also does the same!
+    print("Updating subproject '%s' from URL '%s' to revision '%s'..." %
+          (sub_paths.cwd_to_sub_relpath.decode("utf8"), url, cache_helper.get_revision_as_str(revision)),
+          end="")
+    sys.stdout.flush()
+
+    # TODO if git, and revision is a commit or tag id, check that the new sha1/id
+    # is the same as the already integrated (not yet saved to config). If they are
+    # the same, no need to reintegrated!
+    # - Note: if there are subtree or exclude changes, update must still be done!
+
+    # TODO implement git dir optimization
+    # - use a bare repository! And ad-hoc checkouts
+    # - And at best do not checkout, just import the git objects into the
+    # current git and let git of the superproject check it out.
+    cache_relpath = sub_paths.cwd_to_sub_relpath + b"-tmp"
+
+    # TODO optimize with ls-remote, If the commit/tag hash are equal, don't
+    # download!
+
+    download_config = DownloadConfig(url=url, revision=revision)
+    # Fetch remote repository/tarball into local folder and checkout the
+    # requested revision.
+    # NOTE: The ".git" folder is already removed! Just the plain tree
+    object_id = cache_helper.download(download_config, cache_relpath)
+
+    cache_abspath = os.path.abspath(join(os.getcwdb(), cache_relpath))
+
+    # subpatch unpack
+    do_unpack_for_update(superx, super_paths, sub_paths, cache_abspath, url, revision, object_id)
+
+    # TODO reapply patches: subpatch push --all
+
+    print(" Done.")
+
+    # TODO think about this case. Maybe add an argument to make this an error.
+    if not git_diff_in_dir(superx.path, sub_paths.super_to_sub_relpath, staged=True):
+        # There are no changes in the subproject directory and in the metadata.
+        # Nothing has changed! And so there is nothing to commit!
+        # NOTE: So also don't show the commands to commit and inspect the
+        # changes.
+        print("Note: There are no changes in the subproject. Nothing to commit!")
+        return 0
+
+    # TODO Idea "subpatch status" should print the info/help text. The status
+    # command should be command to get help if a user is lost.
+    superx.helper.print_instructions_to_commit_and_inspect()
+
+    return 0
+
+
+# Argument config can be relpath or an abspath
+# TODO use other prefix "config_" for parser! prefix "config" is for the
+# subpatch config file.
+def config_add_subproject(config_path: bytes, super_to_sub_relpath: bytes) -> None:
+    try:
+        # TODO read as bytes instead of str type
+        with open(config_path, "br") as f:
+            config_lines = config_parse2(split_with_ts_bytes(f.read()))
+    except FileNotFoundError:
+        config_lines = empty_config_lines()
+
+    config_lines = config_add_section2(config_lines, b"subprojects")
+    config_lines = config_set_key_value2(config_lines, b"subprojects", b"path", super_to_sub_relpath, append=True)
+
+    with open(config_path, "bw") as f:
+        # TODO parse and unparse are _not_ symmetric. Fix this
+        f.write(config_unparse2(config_lines))
+
+
+def do_unpack_for_add(superx, super_paths, sub_paths, cache_relpath: bytes, url: str, revision: Optional[str], object_id: bytes) -> None:
+    # HACK for now
+    # Check assumptions: We have just created the files ourselves
+    assert os.path.exists(sub_paths.cwd_to_sub_relpath)
+    assert os.path.exists(sub_paths.metadata_abspath)
+    # TODO always check that for subprojects
+    assert not os.path.exists(join(cache_relpath, b".subproject"))
+    os.remove(sub_paths.metadata_abspath)
+    os.rmdir(sub_paths.cwd_to_sub_relpath)
+    os.rename(cache_relpath, sub_paths.cwd_to_sub_relpath)
+
+    superx.helper.add([sub_paths.cwd_to_sub_relpath])
+
+    # TODO in case of failure, remove download git dir!
+
+    do_unpack_update_metadata(sub_paths, url, revision, object_id)
+
+    with cwd(super_paths.super_abspath):
+        superx.helper.add([sub_paths.metadata_abspath])
+
+
+def cmd_add(args, parser):
+    if args.url is None:
+        # TODO make error message nicer
+        raise Exception("Not the correct amount of args")
+
+    if args.path is not None:
+        # The optional path argument was given. Make some checks
+        if len(args.path) == 0:
+            raise AppException(ErrorCode.INVALID_ARGUMENT, "path is empty")
+        # TODO But something like "/./././" is also invalid"
+        # TODO disallow absolute paths
+        # TODO think about relative paths, whether the must be relative to the
+        # remote origin url! Repo and git-submodule do that
+
+    revision: Optional[str] = args.revision
+    url = args.url
+
+    if revision is not None:
+        if not is_valid_revision(revision):
+            # TODO add reason why it's invalid
+            raise AppException(ErrorCode.INVALID_ARGUMENT, "revision '%s' is invalid" % (revision,))
+
+    # TODO check with ls-remote that remote is accessible
+
+    if args.path is None:
+        cwd_to_sub_relpath = get_name_from_repository_url(url)
+    else:
+        cwd_to_sub_relpath = args.path
+        # TODO split into path and name component
+        # sanitize path. Remove double slashes trailing slash
+        # and paths that are outside of the repository
+        # - For now just remove trailing slashes
+        cwd_to_sub_relpath = cwd_to_sub_relpath.rstrip("/")
+
+    url_type = get_url_type(url)
+
+    data = find_superproject()
+    checked_data = check_superproject_data(data)
+    superx = check_and_get_superproject_from_checked_data(checked_data)
+    ensure_superproject_is_git(superx)
+
+    super_paths = gen_super_paths(superx.path)
+
+    # TODO remove additional encode() here. Argument should be bytes object!
+    sub_paths = gen_sub_paths_from_cwd_and_relpath(super_paths, cwd_to_sub_relpath.encode("utf8"))
+
+    if url_type == URLTypes.LOCAL_RELATIVE:
+        # Check the current work directory of the call is the top level
+        # directory of the repository. If not, a relative path on the
+        # command line is not relative to the top level directory and must be
+        # converted. This conversion is a bit complex and error prone.  So
+        # just enforce (like also git does) that the current work directory
+        # is the top level repository in that case.
+        # TODO This is a invalid argument execption
+        if not is_cwd_toplevel_directory(super_paths):
+            raise AppException(ErrorCode.CUSTOM,
+                               "When using relative repository URLs, you current work directory must be the toplevel folder of the superproject!")
+    elif url_type == URLTypes.LOCAL_ABSOLUTE:
+        # TODO add reason why it's not supported
+        raise AppException(ErrorCode.CUSTOM, "Absolute local paths to a remote repository are not supported!")
+
+    # TODO check that git repo has nothing in the index!
+    # But some changes are ok:
+    # TODO add tests that adds a subproject after a "git rm -r" to the same folder.
+    # So the changes are in the filesystem and in the index, but not committed yet.
+    # This should work
+
+    # subpatch configure
+    # TODO reuse more of cmd_configure
+    if not superx.configured:
+        superx.helper.configure(superx.path)
+
+    # NOTE: At this point subpatch is using the git staging area as a
+    # rollback/revert mechansim. If something fails in the next code lines,
+    # the user (and the tests) can revert with "git revert".
+    # TODO maybe make this built-in!
+    # TODO add notes how to revert if anything of the following fails!
+
+    # subpatch init <path>
+    if os.path.exists(sub_paths.cwd_to_sub_relpath):
+        # There is already a directory
+        # TODO add message how to solve the problem
+        raise AppException(ErrorCode.CUSTOM,
+                           "Directory '%s' alreay exists. Cannot add subproject!" % (sub_paths.cwd_to_sub_relpath.decode("utf8"),))
+
+    if os.path.exists(sub_paths.metadata_abspath):
+        # There is already a subproject at this place
+        # TODO also check git index if there is a file
+        # TODO explain what can be done: Either remove the dir or use another name!
+        # TODO fix decode utf8. Should the the system default encoding!
+        # TODO add tests for this!
+        # TODO Add ErrorCode for invalid state of superproject.
+        raise AppException(ErrorCode.CUSTOM,
+                           "File '%s' alreay exists. Cannot add subproject!" % (sub_paths.metadata_abspath.decode("utf8"),))
+
+    os.makedirs(sub_paths.subproject_abspath)
+    with open(sub_paths.metadata_abspath, "bw") as f:
+        f.write(b"")
+    with cwd(sub_paths.subproject_abspath):
+        # TODO use helper!
+        git_add([b".subproject"])
+
+    config_add_subproject(super_paths.config_abspath, sub_paths.super_to_sub_relpath)
+    with cwd(super_paths.super_abspath):
+        # TODO use helper!
+        git_add([b".subpatch"])
+
+    # subpatch cache init --git
+    cache_helper = CacheHelperGit()
+    # TODO split into directory and cache_name
+    cache_relpath = sub_paths.cwd_to_sub_relpath + b"-tmp"
+
+    # NOTE: Design decision: The output is relative to the current working dir.
+    # The content of '%s' is the remote git name or the path relative to the
+    # current working dir. It's not relative to the top level dir of the git repo.
+    # TODO move this design decision to the website
+    if not args.quiet:
+        print("Adding subproject '%s' from URL '%s' at revision '%s'..." %
+              (sub_paths.cwd_to_sub_relpath.decode("utf8"), url, cache_helper.get_revision_as_str(revision)),
+              end="")
+        sys.stdout.flush()
+
+    try:
+        # subpatch cache fetch url -r version
+        download_config = DownloadConfig(url=url, revision=revision)
+
+        # Fetch remote repository/tarball into local folder and checkout the
+        # requested revision.
+        object_id = cache_helper.download(download_config, cache_relpath)
+
+        # subpatch unpack # from cache into woktree
+        do_unpack_for_add(superx, super_paths, sub_paths, cache_relpath, url, revision, object_id)
+    except Exception as e:
+        # If there is any exception, still print the final new line character.
+        # Otherwise the error message that is printed is not beginning at the
+        # start of the line.
+        if not args.quiet:
+            print(" Failed.")
+            sys.stdout.flush()
+        raise e
+    else:
+        if not args.quiet:
+            print(" Done.")
+            # TODO is flush() also needed here?
+
+    # TODO Idea "subpatch status" should print the info/help text. The status
+    # command should be command to get help if a user is lost.
+    if not args.quiet:
+        superx.helper.print_instructions_to_commit_and_inspect()
+
+    # TODO Maybe prepare a commit/patch/change message
+
+    return 0
+
+
+def show_version(args):
+    print("subpatch version %s" % (__version__,))
+    return 0
+
+
+def show_info(args):
+    print("homepage:  https://subpatch.net")
+    print("git repo:  https://github.com/lengfeld/subpatch")
+    print("license:   %s" % (__LICENSE__,))
+    # TODO add GPL license text/note
+    return 0
+
+
+# TODO implement option to unconfigure a superproject
+# TODO unconfiguring should only be possible if all subprojects are removed!
+def cmd_configure(args, parser):
+    data = find_superproject()
+    checked_data = check_superproject_data(data)
+
+    if checked_data is None:
+        # There is no config file and no SCM
+        # TODO implement with "subpatch configure --here"
+        raise AppException(ErrorCode.NOT_IMPLEMENTED_YET,
+                           "No SCM found. Cannot configure. '--here' not implemented yet!")
+    elif checked_data.configured:
+        # Nothing to do, the superproject is already configured.
+        if not args.quiet:
+            print("The file .subpatch already exists. Nothing to do!")
+    else:
+        # There is no ".subpatch" file (=the superproject is not configured)
+
+        # TODO check_and_get_superproject_from_checked_data
+        if checked_data.scm_type == SCMType.GIT:
+            # TODO for other commands, subpatch checks whether there are
+            # already staged files and errors out/warns!
+            # TODO see above. Use other function to switch between super implementations.
+            super_helper = SuperHelperGit()
+
+            super_helper.configure(checked_data.super_path)
+
+            if not args.quiet:
+                super_helper.print_configure_success()
+        else:
+            # Unsupported SCMType
+            raise AppException(ErrorCode.NOT_IMPLEMENTED_YET,
+                               "SCM not supported. Currently subpatch only supports git")
+
+    return 0
+
+
+# TODO Document own internal path library
+#  - e.g. b"" is the same as b"." and the later is not used!
+# TODO add tests
+def is_relpath(path):
+    if len(path) == 0:
+        return True
+    if path[0] == ord("/"):
+        return False
+    return True
+
+
+# NOTE: It's the inverse of is_relpath()
+# TODO add tests
+def is_abspath(path):
+    if len(path) == 0:
+        return False
+    if path[0] != ord("/"):
+        return False
+    return True
+
+
+# Paths documentation and naming
+#
+#     Example              ../folder/superproject/dirA/dirB/subproject/
+#                                                 ^^^^cwd
+#
+#     super_abspath:       ../folder/superproject
+#       other name: "top level directory" TODO unify
+#     config_abspath:      ../folder/superproject/.subpatch
+#     super_to_sub_relpath:                       dirA/dirB/subproject
+#     super_to_cwd_relpath:                       dirA
+#     cwd_to_sub_relpath:                              dirB/subproject
+#     sub_name:                                             subproject
+#
+#     TODO finalized this naming
+#     Note on path/filesystem nameing
+#      - path: "dir/test", "/dir/test"
+#      - file: a file in a filesystem!
+#      - filename: can be a dir name or a regular file name
+#     reduandent words:
+#      - maybe pathname
+#      - maybe dirname
+#
+# TODO test and fix all the edge cases
+#  e.g. cwd_to_sub_relpath="../symbolic-link/../../dir"
+#  - symbolic links
+#  - ".." pointing outside of repo
+@dataclass(frozen=True)
+class SuperPaths:
+    super_abspath: bytes
+    config_abspath: bytes  # TODO Maybe just have a single abspath in super_abspath
+    super_to_cwd_relpath: bytes
+
+
+def gen_super_paths(super_abspath: bytes) -> SuperPaths:
+    assert is_abspath(super_abspath)
+
+    cwd_abspath = os.path.abspath(os.getcwdb())
+    assert cwd_abspath.startswith(super_abspath)
+    super_to_cwd_relpath = cwd_abspath[len(super_abspath) + 1:]
+
+    config_abspath = join(super_abspath, b".subpatch")
+
+    return SuperPaths(super_abspath, config_abspath, super_to_cwd_relpath)
+
+
+def is_inside_subproject_and_return_path(config: Config, super_paths: SuperPaths) -> Optional[bytes]:
+    for relpath in config.subprojects:
+        if super_paths.super_to_cwd_relpath.startswith(relpath):
+            return relpath
+    return None
+
+
+@dataclass(frozen=True)
+class SubPaths:
+    super_to_sub_relpath: bytes
+    cwd_to_sub_relpath: bytes  # Can be ".." or "../.." if cwd is inside a subproject
+    sub_name: bytes  # Can be b"" when subproject is at the toplevel directory (but this is not supported for now)
+    subproject_abspath: bytes
+    metadata_abspath: bytes  # Path to ".subproject" file
+    patches_abspath: bytes  # Path to "patches" directory
+
+
+def gen_sub_paths_from_relpath(super_paths: SuperPaths, super_to_sub_relpath: bytes) -> SubPaths:
+    # Returns a relative paht from the current work directory
+    cwd_to_sub_relpath = os.path.relpath(join(super_paths.super_abspath, super_to_sub_relpath))
+    if cwd_to_sub_relpath == b".":
+        cwd_to_sub_relpath = b""
+
+    return gen_sub_paths_internal(super_paths, super_to_sub_relpath, cwd_to_sub_relpath)
+
+
+def gen_sub_paths_from_cwd_and_relpath(super_paths: SuperPaths, cwd_to_sub_relpath: bytes) -> SubPaths:
+    # Sanitize input path
+    if cwd_to_sub_relpath != b"":
+        cwd_to_sub_relpath = os.path.relpath(cwd_to_sub_relpath)
+        if cwd_to_sub_relpath == b".":
+            cwd_to_sub_relpath = b""
+
+    super_to_sub_relpath = join(super_paths.super_to_cwd_relpath, cwd_to_sub_relpath)
+
+    return gen_sub_paths_internal(super_paths, super_to_sub_relpath, cwd_to_sub_relpath)
+
+
+def gen_sub_paths_internal(super_paths: SuperPaths, super_to_sub_relpath: bytes, cwd_to_sub_relpath: bytes) -> SubPaths:
+    # Remove trailing slash if there is any
+    # TODO is this correct? Does this makes sense?
+    if super_paths.super_to_cwd_relpath != b"":
+        super_to_sub_relpath = os.path.relpath(super_to_sub_relpath)
+
+    def my_join(a, b):
+        if a == b"":
+            return b
+        if b == b"":
+            return a
+        # If b contains ".." or "../..", strip path components, instead of
+        # adding ".."
+        return os.path.relpath(join(a, b))
+
+    assert super_to_sub_relpath == my_join(super_paths.super_to_cwd_relpath, cwd_to_sub_relpath)
+
+    sub_name = os.path.basename(super_to_sub_relpath)
+
+    subproject_abspath = join(super_paths.super_abspath, super_to_sub_relpath)
+
+    metadata_abspath = join(subproject_abspath, b".subproject")
+
+    patches_abspath = join(subproject_abspath, b"patches")
+
+    return SubPaths(super_to_sub_relpath, cwd_to_sub_relpath, sub_name, subproject_abspath, metadata_abspath, patches_abspath)
+
+
+# TODO currently this always uses "\t" for indention. Try to use the style
+# that is already used in the subpatch file. E.g. four-spaces, two-spaces
+# or no-spaces.
+# NOTE: DDX/Design decision: The URL is taken as a verbatim copy
+# of the argument. If there is a trailing slash in the argument, then the
+# trailing slash is also in the config file. It's not sanitized. It's the
+# same behavior as 'git submodule' does.
+def do_unpack_update_metadata(sub_paths: SubPaths, url: str, revision: Optional[str], object_id: bytes) -> None:
+    try:
+        with open(sub_paths.metadata_abspath, "br") as f:
+            metadata_lines = config_parse2(split_with_ts_bytes(f.read()))
+    except FileNotFoundError:
+        metadata_lines = empty_config_lines()
+
+    metadata_lines = config_add_section2(metadata_lines, b"upstream")
+    metadata_lines = config_set_key_value2(metadata_lines, b"upstream", b"url", url.encode("utf8"))
+    if revision is not None:
+        metadata_lines = config_set_key_value2(metadata_lines, b"upstream", b"revision", revision.encode("utf8"))
+    metadata_lines = config_set_key_value2(metadata_lines, b"upstream", b"objectId", object_id)
+
+    metadata_config = config_unparse2(metadata_lines)
+    with open(sub_paths.metadata_abspath, "bw") as f:
+        f.write(metadata_config)
+
+
+# TODO maybe use metadata_abspath instead of SubPaths
+def do_pop_push_update_metadata(sub_paths: SubPaths, applied_index: int) -> None:
+    try:
+        with open(sub_paths.metadata_abspath, "br") as f:
+            metadata_lines = config_parse2(split_with_ts_bytes(f.read()))
+    except FileNotFoundError:
+        metadata_lines = empty_config_lines()
+
+    metadata_lines = config_add_section2(metadata_lines, b"patches")
+    metadata_lines = config_set_key_value2(metadata_lines, b"patches", b"appliedIndex", b"%d" % (applied_index,))
+
+    metadata_config = config_unparse2(metadata_lines)
+    with open(sub_paths.metadata_abspath, "bw") as f:
+        f.write(metadata_config)
+
+
+# TODO maybe use metadata_abspath instead of SubPaths
+def do_pop_update_metadata_drop(sub_paths: SubPaths) -> None:
+    try:
+        with open(sub_paths.metadata_abspath, "br") as f:
+            metadata_lines = config_parse2(split_with_ts_bytes(f.read()))
+    except FileNotFoundError:
+        metadata_lines = empty_config_lines()
+
+    metadata_lines = config_drop_key2(metadata_lines, b"patches", b"appliedIndex")
+    metadata_lines = config_drop_section_if_empty(metadata_lines, b"patches")
+
+    metadata_config = config_unparse2(metadata_lines)
+    with open(sub_paths.metadata_abspath, "bw") as f:
+        f.write(metadata_config)
+
+
+def is_cwd_toplevel_directory(super_paths: SuperPaths) -> bool:
+    return super_paths.super_to_cwd_relpath == b""
+
+
+# TODO add "-z" option to be safe againts any chars in the path
+# TODO add escpaing for "evil" chars in non "-z" output
+# TODO add not about plumbing command
+def cmd_list(args, parser):
+    data = find_superproject()
+    checked_data = check_superproject_data(data)
+    superx = check_and_get_superproject_from_checked_data(checked_data)
+    ensure_superproject_is_configured(superx)
+    super_paths = gen_super_paths(superx.path)
+
+    config = read_config(super_paths.config_abspath)
+
+    for path in config.subprojects:
+        # TODO Maybe avoid the decoded and encode dance
+        print("%s" % (path.decode("utf8"),))
+
+    return 0
+
+
+def checks_for_cmds_apply_pop_push(args) -> tuple[Any, SuperPaths, SubPaths]:
+    data = find_superproject()
+    checked_data = check_superproject_data(data)
+    superx = check_and_get_superproject_from_checked_data(checked_data)
+    ensure_superproject_is_configured(superx)
+    ensure_superproject_is_git(superx)
+
+    # Check whether the current cwd is inside a subproject
+    super_paths = gen_super_paths(superx.path)
+    config = read_config(super_paths.config_abspath)
+
+    # NOTE: This function can be used to select the subproject based on cwd!
+    # TODO Refactor!
+    super_to_sub_relpath = is_inside_subproject_and_return_path(config, super_paths)
+    if super_to_sub_relpath is None:
+        # TODO decided whether a wrong work directory is a invalid argument or a runtime error!
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "Current work directory must be inside a subproject!")
+
+    if len(super_to_sub_relpath) == len(super_paths.super_to_cwd_relpath):
+        assert super_to_sub_relpath == super_paths.super_to_cwd_relpath
+        pass  # It's the same directory
+    else:
+        assert len(super_to_sub_relpath) < len(super_paths.super_to_cwd_relpath)
+        assert super_paths.super_to_cwd_relpath.startswith(super_to_sub_relpath)
+        #  l = len(super_to_sub_relpath)
+        #  p = super_paths.super_to_cwd_relpath
+        #  assert p[l] == ord("/")
+        #  sub_to_cwd_relpath = p[l + 1:]
+        #  # NOTE: above code is just for later refactoring!
+
+        raise AppException(ErrorCode.INVALID_ARGUMENT,
+                           "Current work directory must be the toplevel directory of the subproject for now!")
+
+    sub_paths = gen_sub_paths_from_cwd_and_relpath(super_paths, b"")
+
+    return superx, super_paths, sub_paths
+
+
+# NOTE: Must be executed in the subprojects work tree
+# TODO look at quilt. Mabye "apply" is the wrong term. But it would match "git apply"
+def cmd_apply(args, parser):
+    if args.path is None:
+        raise AppException(ErrorCode.NOT_IMPLEMENTED_YET, "Must give a path to a patch file")
+
+    if not os.path.isfile(args.path):
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "Path '%s' must point to a file!" % (args.path,))
+
+    superx, super_paths, sub_paths = checks_for_cmds_apply_pop_push(args)
+    metadata = read_metadata(sub_paths.metadata_abspath)
+    patches_dim = read_patches_dim(sub_paths, metadata)
+
+    if len(patches_dim.patches) != patches_dim.applied_index + 1:
+        # TODO add message how to resolve it
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "Cannot apply new patch. Not all existing patches are applied!")
+
+    patch_filename = os.path.basename(args.path.encode("utf8"))
+
+    if patch_filename in patches_dim.patches:
+        raise AppException(ErrorCode.INVALID_ARGUMENT,
+                           "The filename '%s' must be unique. There is already a patch with the same name!" % (patch_filename.decode("utf8"),))
+
+    # TODO Add DDx that patch file names must be in order for now!
+    # TODO make DD: wether to keep name/number of patch or to rename/renumber it
+
+    # TODO ugly code to check that the new patch file is sorted latest
+    patches_new_sorted = sorted(patches_dim.patches + [patch_filename])
+    if patches_new_sorted[-1] != patch_filename:
+        # TODO add more info out to resolve the issue!
+        raise AppException(ErrorCode.INVALID_ARGUMENT,
+                           "The patch filenames must be in order. The new patch filename '%s' does not sort latest!" % (patch_filename.decode("utf8"),))
+
+    # TODO use "--check" to validate patch content before applying and committing
+    git_args = ["git", "apply", "--index", "--directory=%s" % (sub_paths.super_to_sub_relpath.decode("utf8"),), args.path]
+    p = Popen(git_args)
+    p.communicate()
+    if p.returncode != 0:
+        # TODO explain how to recover!
+        raise Exception("git failure")
+
+    # TODO write this code nicer!
+    if not os.path.exists(sub_paths.patches_abspath):
+        os.makedirs(sub_paths.patches_abspath)
+
+    import shutil
+    shutil.copy(args.path.encode("utf8"), sub_paths.patches_abspath)
+    super_to_patch_relpath = join(sub_paths.super_to_sub_relpath, b"patches", patch_filename)
+
+    # TODO Thing about releative paths for SuperHelper
+    with cwd(super_paths.super_abspath):
+        superx.helper.add([super_to_patch_relpath])
+
+    if not args.quiet:
+        # TODO The output convetion is wrong here. It should be relative and
+        # the path to the subproject is not relative to the cwd here!
+        # TODO Having the subproject name is kind of reduntant, because the cwd
+        # is already inside the subproject
+        print("Applied patch '%s' to subproject '%s' successfully!" %
+              (args.path, sub_paths.super_to_sub_relpath.decode("utf8")))
+        superx.helper.print_instructions_to_commit_and_inspect()
+
+    return 0
+
+
+def cmd_pop(args, parser):
+    superx, super_paths, sub_paths = checks_for_cmds_apply_pop_push(args)
+    metadata = read_metadata(sub_paths.metadata_abspath)
+    patches_dim = read_patches_dim(sub_paths, metadata)
+
+    if patches_dim.applied_index == -1:
+        # TODO make better error messages
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "There is no patch to pop!")
+
+    patch_filename = patches_dim.patches[patches_dim.applied_index]
+    patch_abspath = join(sub_paths.patches_abspath, patch_filename)
+
+    p = Popen(["git", "apply", "--reverse", "--index", "--directory=%s" % (sub_paths.super_to_sub_relpath.decode("utf8"),), patch_abspath])
+    p.communicate()
+    if p.returncode != 0:
+        # TODO explain how to recover!
+        raise Exception("git failure")
+
+    applied_index_new = patches_dim.applied_index - 1
+
+    # TODO make naming schema for update metadata functions
+    do_pop_push_update_metadata(sub_paths, applied_index_new)
+    with cwd(super_paths.super_abspath):
+        # TODO here is not relative path used for git. This seems also to work!
+        superx.helper.add([sub_paths.metadata_abspath])
+
+    if not args.quiet:
+        print("Poped patch '%s' from subproject '%s' successfully!" %
+              (patch_filename.decode("utf8"), sub_paths.super_to_sub_relpath.decode("utf8")))
+        superx.helper.print_instructions_to_commit_and_inspect()
+
+    return 0
+
+
+def cmd_push(args, parser):
+    superx, super_paths, sub_paths = checks_for_cmds_apply_pop_push(args)
+    metadata = read_metadata(sub_paths.metadata_abspath)
+    patches_dim = read_patches_dim(sub_paths, metadata)
+
+    if patches_dim.applied_index + 1 == len(patches_dim.patches):
+        # TODO when there are not patches, make a better error messages
+        # TODO add better message: either all patches are already applied/pushed or there are no patches
+        raise AppException(ErrorCode.INVALID_ARGUMENT, "There is no patch to push!")
+
+    applied_index_new = patches_dim.applied_index + 1
+
+    patch_filename = patches_dim.patches[applied_index_new]
+    patch_abspath = join(sub_paths.patches_abspath, patch_filename)
+
+    p = Popen(["git", "apply", "--index", "--directory=%s" % (sub_paths.super_to_sub_relpath.decode("utf8"),), patch_abspath])
+    p.communicate()
+    if p.returncode != 0:
+        # TODO explain how to recover!
+        raise Exception("git failure")
+
+    if applied_index_new + 1 == len(patches_dim.patches):
+        # Now all patches are applied. Drop the information from the metadata.
+        # The default value is that all patches are applied!
+        do_pop_update_metadata_drop(sub_paths)
+    else:
+        do_pop_push_update_metadata(sub_paths, applied_index_new)
+
+    with cwd(super_paths.super_abspath):
+        superx.helper.add([sub_paths.metadata_abspath])
+
+    if not args.quiet:
+        print("Pushed patch '%s' to subproject '%s' successfully!" % (patch_filename.decode("utf8"),
+                                                                      sub_paths.super_to_sub_relpath.decode("utf8")))
+        superx.helper.print_instructions_to_commit_and_inspect()
+
+    return 0
+
+
+# Parse the "-z" output of git commands
+# TODO rework as a generator
+def parse_z(b: bytes) -> list[bytes]:
+    if b == b"":
+        # Special case. b"".split(b"\0") is [b""], but
+        # we want a list without elements here.
+        return []
+
+    return b.rstrip(b"\0").split(b"\0")
+
+
+def git_diff_in_dir(top_dir, subdir, staged=False):
+    # TODO verify that top_dir is the toplevel dir in the repo
+    # -> Refactor to git object or class that checks the top_dir
+    # TODO check that subdir is a relative and a sane path!
+    cmd = ["git", "diff", "--name-only", "-z"]
+    if staged:
+        cmd += ["--staged"]
+    cmd += ["--", subdir]
+
+    p = Popen(cmd, stdout=PIPE, cwd=top_dir)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        raise Exception("error here")
+
+    return len(stdout) != 0
+
+
+# NOTE: argument and output is not cwd aware. It's always relative to the
+# toplevel of the git repository.
+def git_ls_tree_in_dir(subdir):
+    assert isinstance(subdir, bytes)
+
+    if subdir == b"":
+        subdir = b"."
+
+    p = Popen(["git", "ls-tree", "--full-tree", "-r", "--name-only", "-z", "HEAD", subdir],
+              stdout=PIPE)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        raise Exception("TODO error here")
+
+    return parse_z(stdout)
+
+
+def git_diff_name_only(staged=False):
+    # NOTE: "git diff" does not depend on the cwd inside the repo
+    cmd = ["git", "diff", "--name-only", "-z"]
+    if staged:
+        cmd += ["--staged"]
+
+    p = Popen(cmd, stdout=PIPE)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        raise Exception("error here")
+
+    return parse_z(stdout)
+
+
+# NOTE: This depends on the cwd for now. git ls-files has no option to force
+# listing files from the top level directory.
+# TODO fix that
+def git_ls_files_untracked():
+    # TODO refactor common code
+    # NOTE:
+    # - Use "--full-name" to make the paths relative to the toplevel
+    #   directory, not the current work directory.
+    # - Use "--no-empty-directory" to avoid printing dirs that contain only
+    #   ignored files.
+    p = Popen(["git", "ls-files", "--exclude-standard", "-o", "--directory", "-z", "--full-name", "--no-empty-directory"],
+              stdout=PIPE)
+    stdout, _ = p.communicate()
+
+    if p.returncode != 0:
+        raise Exception("error here")
+
+    return parse_z(stdout)
+
+
+@dataclass(frozen=True)
+class Metadata:
+    # TODO introduce seperation between sections (worktree, upstream, patches)
+    url: Optional[bytes]
+    revision: Optional[bytes]
+    object_id: Optional[bytes]
+    patches_applied_index: Optional[bytes]
+
+
+def read_metadata(path: bytes) -> Metadata:
+    with open(path, "br") as f:
+        lines = split_with_ts_bytes(f.read())
+
+    url = None
+    revision = None
+    object_id = None
+    patches_applied_index = None
+
+    metadata_lines = config_parse2(lines)
+    for metadata_line in metadata_lines:
+        # TODO only use url and revision in upstream section!
+        if metadata_line.line_type == LineType.KEY_VALUE:
+            line_data = metadata_line.line_data
+            assert isinstance(line_data, LineDataKeyValue)
+            if line_data.key == b"url":
+                url = line_data.value
+            elif line_data.key == b"revision":
+                revision = line_data.value
+            elif line_data.key == b"objectId":
+                object_id = line_data.value
+            elif line_data.key == b"appliedIndex":
+                patches_applied_index = line_data.value
+
+    return Metadata(url, revision, object_id, patches_applied_index)
+
+
+# Data class that contains most of the information that is in the patches
+# dimension of a subproject.
+@dataclass(frozen=True)
+class PatchesDim:
+    patches: List[bytes]
+    # Range: -1 <= applied_index < len(patches)
+    # - -1 := no applied patch
+    # -  0 := first patch applied, ...
+    # -  1 := second patch applied, ...
+    applied_index: int
+
+
+def read_patches_dim(sub_paths: SubPaths, metadata: Metadata) -> PatchesDim:
+    try:
+        patches = os.listdir(sub_paths.patches_abspath)
+        patches = [p for p in patches if p.endswith(b".patch")]
+        patches.sort()
+    except FileNotFoundError:
+        patches = []
+
+    if metadata.patches_applied_index is not None:
+        # TODO add error when value is not an int!
+        applied_index = int(metadata.patches_applied_index)
+        if not (-1 <= applied_index < len(patches)):
+            # TODO This is a internal inconsitency error. Maybe use another error code than INVALID_ARGUMENT!
+            raise AppException(ErrorCode.INVALID_ARGUMENT, "Metadata is inconsistent!")
+    else:
+        applied_index = len(patches) - 1
+
+    return PatchesDim(patches, applied_index)
+
+
+# TODO add note that the output of "status" is not an API/plumbing. Should not be used in scripts
+def cmd_status(args, parser):
+    data = find_superproject()
+    checked_data = check_superproject_data(data)
+    superx = check_and_get_superproject_from_checked_data(checked_data)
+    ensure_superproject_is_configured(superx)
+    ensure_superproject_is_git(superx)
+
+    # TODO add argument for a path to a single subproject and then only list
+    # the status of this subproject
+    # TODO allow the cwd to select the subproject
+
+    super_paths = gen_super_paths(superx.path)
+
+    if not is_cwd_toplevel_directory(super_paths):
+        print_warning = True
+    else:
+        print_warning = False
+
+    # TODO add plumbing commands for scripts!
+    # TODO add colorscheme for output, e.g. like git status does
+    # TODO handle stdout fd is pipe/file and not tty.
+
+    config = read_config(super_paths.config_abspath)
+
+    # These are relative paths: super_to_sub_relpath
+    subprojects = config.subprojects
+    subproject_paths = subprojects
+
+    if len(subprojects) == 0:
+        # Early return. Nothing to print!
+        return 0
+
+    # TODO does the concept of staged and unstaged files als exists in other
+    # cvs systems
+    diff_files_not_staged = git_diff_name_only()
+    diff_files_staged = git_diff_name_only(staged=True)
+
+    # NOTE git_ls_files_untracked() depends on the cwd for now! Cwd must be the
+    # root of the directory for now.
+    with cwd(super_paths.super_abspath):
+        ls_files_untrack = git_ls_files_untracked()
+
+    # TODO refactor this struct and the following code to a function! And make
+    # to interface for other cvs
+    @dataclass
+    class Changes:
+        untracked: int = 0
+        unstaged: int = 0
+        uncommitted: int = 0
+
+    subproject_changes = {}
+    for path in subproject_paths:
+        subproject_changes[path] = Changes()
+
+    for subproject in subproject_paths:
+        # TODO str vs bytes mismatch
+        changes = subproject_changes[subproject]
+
+        for path in ls_files_untrack:
+            if path.startswith(subproject):
+                changes.untracked += 1
+
+        for path in diff_files_staged:
+            if path.startswith(subproject):
+                changes.uncommitted += 1
+
+        for path in diff_files_not_staged:
+            if path.startswith(subproject):
+                changes.unstaged += 1
+
+    print("NOTE: The format of the output is human-readable and unstable. Do not use in scripts!")
+    print("NOTE: The format is markdown currently. Will mostly change in the future.")
+    if print_warning:
+        print("WARNING: The current working directory is not the toplevel directory of the superproject.")
+        print("WARNING: The paths in this console output are wrong (for now)!")
+    print("")
+
+    for i, subproject in enumerate(subprojects):
+        # TODO Idea: make it valid markdown output
+        # TODO Idea: For every cvs superproject (superhelper) make the output
+        # like the cvs styled of console output. Subpach should look like git
+        # for git superprojects. And look like svn for svn superprojects.
+        # NOTE: these two ideas are conflicting!
+
+        sub_paths = gen_sub_paths_from_relpath(super_paths, subproject)
+
+        metadata = read_metadata(sub_paths.metadata_abspath)
+
+        # TODO again some bytes to string decoding. Annoying!
+        subproject_str = subproject.decode("utf8")
+
+        # TODO Think about other cvs systems
+        print("# subproject at '%s'" % (subproject_str,))
+        print("")
+        if metadata.url is not None:
+            print("* was integrated from URL: %s" % (metadata.url.decode("utf8"),))
+        if metadata.revision is not None:
+            print("* has integrated revision: %s" % (metadata.revision.decode("utf8"),))
+            # TODO Maybe included whether it "tracks a branch" or it was a git tag
+        if metadata.object_id is not None:
+            print("* has integrated object id: %s" % (metadata.object_id.decode("utf8"),))
+
+        changes = subproject_changes[subproject]
+
+        # Get count of patches for subproject and other information
+        patches_dim = read_patches_dim(sub_paths, metadata)
+
+        p = subproject_str
+
+        # NOTE Listing the modified files seems to much like "git status".
+        # There is already "git status". The output just referneces the git
+        # commands To inspect the changes.
+
+        if changes.untracked > 0:
+            print("""\
+* There are n=%d untracked files and/or directories:
+    - To see them execute:
+        `git status %s`
+        `git ls-files --exclude-standard -o %s`
+    - Use `git add %s` to add all of them
+    - Use `git add %s/<filename>` to just add some of them
+    - Use `rm <filename>` to remove them"""
+                  % (changes.untracked, p, p, p, p))
+
+        if changes.unstaged > 0:
+            print("""\
+* There are n=%d modified files not staged for commit:
+    - To see them execute:
+        `git status %s` or
+        `git diff %s`
+    - Use `git add %s` to update what will be committed
+    - Use `git restore %s` to discard changes in working directory"""
+                  % (changes.unstaged, p, p, p, p))
+
+        if changes.uncommitted > 0:
+            # TODO check git restore
+            print("""\
+* There are n=%d modified files that are staged, but not committed:
+    - To see them execute:
+        `git status %s` or
+        `git diff --staged %s`
+    - Use `git commit %s` to commit the changes
+    - Use `git restore --staged %s` to unstage"""
+                  % (changes.uncommitted, p, p, p, p))
+            # TODO check restore staged
+            # TODO add command "git restore --staged --worktree -- xxxpath/"
+            # to remove changes staged in the index from the index and the
+            # working tree But leave changes in the working tree/unstaged
+            # untouched This helps because it does ot leave new files in the
+            # working tree as "git restore --staged" will done.
+
+        patches_count = len(patches_dim.patches)
+        if patches_count != 0:
+            print("* There are n=%d patches." % (patches_count,))
+            if patches_dim.applied_index + 1 != patches_count:
+                print("* There are only n=%d patches applied." % (patches_dim.applied_index + 1,))
+
+            # TODO Maybe add commands to push/pop patches, if not everything is applied
+            # TODO implement subpatch patch list
+            # print("    - Use `subpatch patches list` to list them")
+
+        if i + 1 < len(subprojects):
+            # Add a empty line between the subprojects
+            print("")
+
+    return 0
+
+
+def main_wrapped() -> int:
+    # TODO maybe add 'epilog' again
+    parser = argparse.ArgumentParser(description='Adding subprojects into a git repo, the superproject.')
+    parser.add_argument("--version", "-v", dest="version",
+                        action="store_true", default=False,
+                        help="Show version of program")
+    parser.add_argument("--info", dest="info",
+                        action="store_true", default=False,
+                        help="Show more information, like homepage, repo and license")
+
+    subparsers = parser.add_subparsers()
+
+    parser_configure = subparsers.add_parser("configure",
+                                             help="Configure the superproject to use subpatch")
+    parser_configure.set_defaults(func=cmd_configure)
+    parser_configure.add_argument("-q", "--quiet", action=argparse.BooleanOptionalAction,
+                                  help="Suppress output to stdout")
+
+    parser_apply = subparsers.add_parser("apply",
+                                         help="Apply a patch to the worktree and add to patch list")
+    parser_apply.set_defaults(func=cmd_apply)
+    parser_apply.add_argument(dest="path", type=str,
+                              help="Path to patch file")
+    parser_apply.add_argument("-q", "--quiet", action=argparse.BooleanOptionalAction,
+                              help="Suppress output to stdout")
+
+    # TODO add argument "-a" and think about exit code!
+    parser_pop = subparsers.add_parser("pop",
+                                       help="Remove topmost patch from the worktree")
+    parser_pop.add_argument("-q", "--quiet", action=argparse.BooleanOptionalAction,
+                            help="Suppress output to stdout")
+    parser_pop.set_defaults(func=cmd_pop)
+
+    # TODO add argument "-a"
+    parser_push = subparsers.add_parser("push",
+                                        help="Add the next patch to the worktree")
+    parser_push.add_argument("-q", "--quiet", action=argparse.BooleanOptionalAction,
+                             help="Suppress output to stdout")
+    parser_push.set_defaults(func=cmd_push)
+
+    parser_add = subparsers.add_parser("add",
+                                       help="Fetch and add a subproject")
+    parser_add.set_defaults(func=cmd_add)
+    parser_add.add_argument(dest="url", type=str,
+                            help="URL or path to git repo")
+    parser_add.add_argument(dest="path", type=str, default=None, nargs='?',
+                            help="folder or path in the local repo")
+    parser_add.add_argument("-r", "--revision", dest="revision", type=str,
+                            help="Specify the revision to integrate. Can be a branch name, tag name or commit id.")
+    parser_add.add_argument("-q", "--quiet", action=argparse.BooleanOptionalAction,
+                            help="Suppress output to stdout")
+
+    parser_update = subparsers.add_parser("update",
+                                          help="Fetch and update a subproject")
+    parser_update.set_defaults(func=cmd_update)
+    parser_update.add_argument(dest="path", type=str, default=None, nargs='?',
+                               help="path to subproject")
+    parser_update.add_argument("--url", dest="url", type=str,
+                               help="URL or path to the remote git repo")
+    parser_update.add_argument("-r", "--revision", dest="revision", type=str,
+                               help="Specify the revision to integrate. Can be a branch name, tag name or commit id.")
+
+    # TODO add argument <path> to print the status of only a single subproject
+    parser_status = subparsers.add_parser("status",
+                                          help="Prints a summary of all subprojects")
+    parser_status.set_defaults(func=cmd_status)
+
+    parser_list = subparsers.add_parser("list",
+                                        help="List all subprojects")
+    parser_list.set_defaults(func=cmd_list)
+
+    parser_help = subparsers.add_parser("help",
+                                        help="Also shows the help message")
+    parser_help.set_defaults(func=cmd_help)
+
+    args = parser.parse_args()
+
+    # Just for testing. A bit ugly to have this in the production code.
+    signal_file_path = os.environ.get("HANG_FOR_TEST", "")
+    if len(signal_file_path) > 0:
+        with open(signal_file_path, "bw") as f:
+            f.write(b"")
+        time.sleep(100)
+
+    if args.version:
+        ret = show_version(args)
+    elif args.info:
+        ret = show_info(args)
+    else:
+        # Workaround for help
+        if hasattr(args, "func"):
+            ret = args.func(args, parser)
+        else:
+            ret = nocommand(args, parser)
+
+    return ret
+
+
+def main() -> int:
+    try:
+        ret = main_wrapped()
+
+        # For some functions I have forgotten to add a return statement. Catch
+        # this bug here!
+        assert ret is not None
+
+        return ret
+    except AppException as e:
+        # TODO allow to append a generic error message for all messages, not only for invalid argument.
+        if e._code == ErrorCode.NOT_IMPLEMENTED_YET:
+            # TODO the message should show the github issue url!
+            print("Error: Feature not implemented yet: %s" % (e,), file=sys.stderr)
+        elif e._code == ErrorCode.SUPERPROJECT_NOT_FOUND:
+            # TODO add steps to resolve the issue. e.g. touching the file
+            print("Error: No superproject found!", file=sys.stderr)
+        elif e._code == ErrorCode.SUPERPROJECT_NOT_CONFIGURED:
+            # TODO add steps to resolve the issue. e.g. touching the file
+            print("Error: subpatch not yet configured for superproject!", file=sys.stderr)
+        elif e._code == ErrorCode.INVALID_ARGUMENT:
+            # TODO change structure of errors. It contains two colons now.
+            # Looks ugly.
+            print("Error: Invalid argument: %s" % (e,), file=sys.stderr)
+        elif e._code == ErrorCode.CUSTOM:
+            print("Error: %s" % (e,), file=sys.stderr)
+        else:
+            assert e._code == ErrorCode.UNKNOWN
+            # TODO find a better name for UNKNOWN
+            # Don't print a message here. The caller has already written the
+            # message.
+            # TODO maybe it still better that the error is printed here and not
+            # printed by the caller!
+            pass
+        return 4
+    except KeyboardInterrupt:
+        print("Interrupted!", file=sys.stderr)
+        # TODO What is the correct/best error code?
+        return 3
+
+
+if __name__ == '__main__':
+    sys.exit(main())
