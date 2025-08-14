@@ -1,0 +1,481 @@
+Metadata-Version: 2.1
+Name: omnicon-genericddsengine-py
+Version: 4.7.0.post3
+Summary: Omnicon Generic DDS Engine Python API
+Home-page: https://www.OmniconSystems.com
+Author: Omnicon Distributed Systems LTD
+Author-email: Gal@OmniconSystems.com
+Classifier: License :: Other/Proprietary License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Requires-Python: >3.9, <3.13
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# OmniCon GenericDDSEngine PythonAPI
+
+## Introduction
+OmniCon's Generic DDS Engine is a pluggable software library that provides simple, fully generic monitoring and message injection capabilities for Data Distribution Service (DDS).
+
+### Motivation
+This project encapsulates DDS-complex API and configuration. It provides a simple, user friendly API to easily incorporate DDS traffic to generic monitoring and visualization tools.
+
+### Engine Capabilites
+#### Engine's monitor inputs:
+1.	Active dynamic/static monitoring based on a generic DDS Participant.
+2.	Passive (non-intrusive) dynamic monitoring using network sniffing techniques.
+3.	Offline network recording dissection.
+
+#### Engine's monitor outputs & plugins:
+1.  A generic C++, C# and Python APIs for receiving monitored messages in JSON and Map formats via push/poll methods.
+2.	Customized integration to operational monitoring tools (proprietary and open-source).
+3.	Textual reports generation.
+4.	Integration to databases (relational and non-relational).
+
+#### Engine's message injection:
+1.	A C++, C# and Python APIs for injecting messages via JSON or Map formats.
+2.	Message injection based on a user-provided textual format (e.g. CSV).
+
+#### DDS XML/IDL Type Files Introspection:
+1.	A simplified C++, C# and Python APIs for extracting detailed information on a selected DDS type's structure.
+2.	Documentation / ICD generator. 
+
+### DDS Overview 
+The OMG Data Distribution Service (DDS&trade;) is a middleware protocol and API standard for data-centric connectivity from the Object Management Group&reg; (OMG&reg;). It integrates the components of a system together, providing low-latency data connectivity, extreme reliability, and a scalable architecture that business and mission-critical Internet of Things (IoT) applications need.
+<br>For more information refer to https://www.dds-foundation.org/.
+
+## Installation
+* pip install Omnicon-GenericDDSEngine-Py
+* Requires: Visual Studio redistributable (https://aka.ms/vs/17/release/vc_redist.x64.exe)
+* An Omnnicon license is required to utilize the API. Please Contact Info@OmniconSystems.com.
+
+## Examples 
+For full API documentation and examples refer to https://www.OmniconSystems.com
+
+### Active Dynamic Monitoring
+Demonstrate how to dinamically monitor every topic in a desired DDS domain.
+The same API applies for Passive monitoring.
+
+```python
+import omnicon_genericddsengine_py as omnicon
+from time import sleep
+
+
+class ActiveDynamicMonitorExampleListener(omnicon.EngineListener):
+    def OnUserDataJson(self, sampleJson):
+        print("OnUserDataJson")
+        print(sampleJson)
+
+    def OnDiscoveryDataJson(self, sampleJson):
+        print("OnDiscoveryDataJson")
+        print(sampleJson)
+
+
+class ActiveDynamicMonitorExample:
+    def __init__(self):
+        self.run()
+
+    @staticmethod
+    def run():
+        print("Active Dynamic Monitoring Example\n")
+
+        # Factory configuration (optional) (can also be performed via an XML configuration)
+        factory_configuration = omnicon.FactoryConfiguration()
+        factory_configuration.loggerConfiguration.verbosity = (
+            omnicon.LogSeverityLevel.warning
+        )
+        omnicon.GenericDDSEngine.SetFactoryConfiguration(factory_configuration)
+
+        # Engine configuration (can also be performed via API)
+        engine = omnicon.GenericDDSEngine()
+        engine_configuration = omnicon.EngineConfiguration()
+        engine_configuration.engineOperationMode = (
+            omnicon.EngineOperationMode.ACTIVE_DYNAMIC_MONITORING
+        )
+        engine_configuration.ddsConfigurationFilesPath.append(
+            "./EngineConfigurationExamples/ActiveDynamicMonitoring/Engine_Active_Mode_Participant_Definition.xml"
+        )
+        engine_configuration.enableJsonOutput = True
+        engine.Init(engine_configuration)
+
+        # Register to engine's callbacks/events
+        listener = ActiveDynamicMonitorExampleListener()
+        engine.BindListener(
+            listener, omnicon.ON_USER_DATA_JSON | omnicon.ON_DISCOVERY_DATA_JSON
+        )
+        engine.Run()
+
+        print("Running Example...")
+        input("Press Enter to Exit \n")
+        sleep(1)
+        engine.UnbindListener()
+        print("Shutting Down...")
+
+```
+
+Required Standard DDS configuration files include a basic participant with the DDS types files and DDS domain. For example:
+
+```xml
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <types>
+    <enum name="ShapeFillKind">
+        <enumerator name="SOLID_FILL"/>
+        <enumerator name="TRANSPARENT_FILL"/>
+        <enumerator name="HORIZONTAL_HATCH_FILL"/>
+        <enumerator name="VERTICAL_HATCH_FILL"/>
+    </enum> 
+    <struct name= "ShapeType">
+        <member name="color" stringMaxLength="128" type="string" key="true"/>
+        <member name="x" type="int32"/>
+        <member name="y" type="int32"/>
+        <member name="shapesize" type="int32"/>
+    </struct>
+    <struct name= "ShapeTypeExtended" baseType="ShapeType">
+        <member name="fillKind" type="nonBasic"  nonBasicTypeName= "ShapeFillKind"/>
+        <member name="angle" type="float32"/>
+    </struct>
+  </types>
+
+  <domain_library name="Domain_Lib">
+    <domain name="Domain" domain_id="7"/>
+  </domain_library>
+
+  <domain_participant_library name="Participants_Lib">
+    <domain_participant name="OmniCon_Engine_Participant" domain_ref="Domain_Lib::Domain">
+      <subscriber name="Subscriber"/>
+    </domain_participant>
+  </domain_participant_library>
+
+</dds>
+```
+
+### Message Injection
+Demonstrate how to generically inject every DDS Topic using dictionary/json format.
+
+```python
+import omnicon_genericddsengine_py as omnicon
+from time import sleep
+
+
+class MessageInjectionExample:
+    def __init__(self):
+        print(self.run())
+
+    @staticmethod
+    def run():
+        print("Message Injection Example")
+
+        engine = omnicon.GenericDDSEngine()
+        # Engine configuration (can also be performed via xml config file)
+        engine_configuration = omnicon.EngineConfiguration()
+        engine_configuration.engineOperationMode = omnicon.EngineOperationMode.MESSAGE_INJECTION
+        engine_configuration.ddsConfigurationFilesPath.append("./EngineConfigurationExamples/MessageInjection")
+
+        if not engine.Init(engine_configuration):
+            return False
+        if not engine.Run():
+            return False
+
+        # Prevent data races:
+        sleep(2)
+        print("List of available writers: ")
+        for writerInfo in engine.GetWritersInfo():
+            print(writerInfo.entityName, "to Topic", writerInfo.topicName)
+        print("")
+
+        # Primitive Topic message:
+        primitive_topic_input = {
+            "SampleData.myLongLong": "-1",
+            "SampleData.myUnsignedShort": "0",
+            "SampleData.myFloat": "-6789889.3392",
+            "SampleData.myDouble": "-6789898989.33999442",
+            "SampleData.myBoolean": "0",  # can also use "False"
+            "SampleData.myChar": "",
+            "SampleData.myWchar": "0",  # wchar is treated as number
+            "SampleData.myOctet": "0",
+            "SampleData.myShort": "-32768",
+            "SampleData.myLong": "-2147483648",
+            "SampleData.myUnsignedLong": "0"
+        }
+        print("Injecting Primitive Topic Message")
+        engine.InjectMessage("Publisher::PrimitiveTypeTopic_DW", primitive_topic_input)
+
+        # String Topic Message
+        string_topic_input = {
+            "SampleData.myBoundedString": "Hello",
+            "SampleData.myUnboundedString": "OmniCon",
+            "SampleData.myBoundedWString": "!"
+        }
+        print("Injecting String Topic Message")
+        engine.InjectMessage("Publisher::StringsTypeTopic_DW", string_topic_input)
+
+        # Enum Topic Message
+        enum_topic_input = {
+            "SampleData.mySimpleEnum": "2",
+            "SampleData.myDigitsEnum": "-1",
+            "SampleData.LetterPrimitiveEnum": "1"
+        }
+        print("Injecting Enum Topic Message")
+        engine.InjectMessage("Publisher::EnumTypeTopic_DW", enum_topic_input)
+
+        # PrimitiveNested Topic Message
+        primitive_nested_topic_input = {
+            "SampleData.myAliasLongType": "1",
+            "SampleData.myFirstType.myChar": "1",
+            "SampleData.myFirstType.myWchar": "1",
+            "SampleData.myFirstType.myOctet": "1",
+
+            "SampleData.PrimitiveSecondNested.myFloat": "2.5",
+            "SampleData.PrimitiveSecondNested.myNestedType.myChar": "z",
+            "SampleData.PrimitiveSecondNested.myDouble": "3.14159265359"
+        }
+        print("Injecting PrimitiveNested Topic Message")
+        engine.InjectMessage("Publisher::PrimitiveNestedTypeTopic_DW", primitive_nested_topic_input)
+
+        # Array Topic Message
+        array_type_topic_input = {
+            "SampleData.myKey": "1",
+            "SampleData.AliasCharArray[0]": "1",
+            "SampleData.PrimitiveOneDimensionalLiteralSizeArray.boolean_array[0]": "1",
+            "SampleData.PrimitiveOneDimensionalLiteralSizeArray.boolean_array[1]": "0",
+            "SampleData.PrimitiveOneDimensionalLiteralSizeArray.boolean_array[2]": "1",
+            "SampleData.PrimitiveOneDimensionalLiteralSizeArray.short_array[0]": "223",
+        }
+        print("Injecting ArrayTypeTopic Topic Message")
+        engine.InjectMessage("Publisher::ArrayTypeTopic_DW", array_type_topic_input)
+
+        # Sequence Topic Message
+        sequence_topic_message = 	{
+					  "SampleData": {
+						"myKey": "0",
+						"myBooleanSeq": [
+							"TRUE"
+						],
+						"myAliasLongUSeq": [],
+						"myAliasSeqEnumMember": [
+							"(1) - GREEN",
+							"(2) - BLUE"
+						],
+						"myAliasSeqStringMember": [
+							"ABC"
+						],
+						"myPrimitiveSeq": [
+							{
+								"myChar": "\u0000",
+								"myWchar": "0",
+								"myOctet": "0",
+								"myShort": "2",
+								"myUnsignedShort": "0",
+								"myLong": "0",
+								"myUnsignedLong": "0",
+								"myLongLong": "0",
+								"myUnsignedLongLong": "0",
+								"myFloat": "0",
+								"myDouble": "0",
+								"myBoolean": "TRUE"
+							}
+						],
+			        }
+                }
+        print("Injecting SequenceTypeTopic Topic Message")
+        engine.InjectMessage("Publisher::SequenceTypeTopic_DW", sequence_topic_message)
+
+        # Union Topic Message
+        union_type_topic_input = {
+            "SampleData.myKey": "1",
+            "SampleData.mySimpleUnion.AliasLong_2_3": "111",
+            # "SampleData.PositionError.Error3DMember.sigmaXX": "23",
+            "SampleData.PositionError.Error2DMember.sigmaXX": "245"
+        }
+        print("Injecting UnionTypeTopic Topic Message")
+        engine.InjectMessage("Publisher::UnionTypeTopic_DW", union_type_topic_input)
+
+        input("Press Enter to Exit...")
+        return True
+
+```
+
+Required Standard DDS configuration files include a basic participant with the DDS types files and DDS domain. For example:
+
+```xml
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <types>
+    <!--User Types-->
+    <include file="TypeFiles/ShapeType.xml" />
+    <include file="TypeFiles/myIncludedTypesTester.xml" />
+    <include file="TypeFiles/myGenericTypesTester.xml" />
+  </types>
+
+<!-- Optional -->
+  <qos_library name="QOSLibrary">
+    <qos_profile name="DefaultProfile" is_default_participant_factory_profile="true" is_default_qos="true" >
+      <participant_qos/>
+      <datawriter_qos>
+        <property>
+          <value>
+            <!--Required for unbounded types support-->
+            <element>
+              <name>dds.data_writer.history.memory_manager.fast_pool.pool_buffer_max_size</name>
+              <value>4096</value>
+            </element>
+          </value>
+        </property>
+      </datawriter_qos>
+      <datareader_qos>
+        <property>
+          <value>
+            <!--Required for unbounded types support-->
+            <element>
+              <name>dds.data_reader.history.memory_manager.fast_pool.pool_buffer_max_size</name>
+              <value>4096</value>
+            </element>
+          </value>
+        </property>
+      </datareader_qos>
+    </qos_profile>
+  </qos_library>
+
+
+
+  <domain_library name="Domain_Lib">
+    <domain name="Domain" domain_id="7">
+      <!--Types Definition-->
+      <register_type name="ShapeType" type_ref="ShapeType" />
+      <register_type name="PrimitiveType" type_ref="PrimitiveType" />
+      <register_type name="MyNamespace::StringsType" type_ref="MyNamespace::StringsType" />
+      <register_type name="EnumType" type_ref="EnumType" />
+      <register_type name="PrimitiveNestedType" type_ref="PrimitiveNestedType" />
+      <register_type name="SequenceType" type_ref="SequenceType" />
+      <register_type name="UnionType" type_ref="UnionType" />
+      <register_type name="ArrayType" type_ref="ArrayType" />
+
+      <!--Topics Definition-->
+      <topic name="Square" register_type_ref="ShapeType"/>
+      <topic name="PrimitiveTypeTopic" register_type_ref="PrimitiveType" />
+      <topic name="StringsTypeTopic" register_type_ref="MyNamespace::StringsType" />
+      <topic name="EnumTypeTopic" register_type_ref="EnumType" />
+      <topic name="PrimitiveNestedTypeTopic" register_type_ref="PrimitiveNestedType" />
+      <topic name="SequenceTypeTopic" register_type_ref="SequenceType" />
+      <topic name="UnionTypeTopic" register_type_ref="UnionType" />
+      <topic name="ArrayTypeTopic" register_type_ref="ArrayType" />
+
+    </domain>
+  </domain_library>
+  <domain_participant_library name="Participants_Lib">
+    <domain_participant name="OmniCon_Engine_Participant" domain_ref="Domain_Lib::Domain">
+      <publisher name="Publisher">
+        <data_writer name="PrimitiveTypeTopic_DW" topic_ref="PrimitiveTypeTopic">
+          <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+        </data_writer>
+        <data_writer name="StringsTypeTopic_DW" topic_ref="StringsTypeTopic">
+          <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+        </data_writer>
+        <data_writer name="EnumTypeTopic_DW" topic_ref="EnumTypeTopic">
+          <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+        </data_writer>
+        <data_writer name="PrimitiveNestedTypeTopic_DW" topic_ref="PrimitiveNestedTypeTopic">
+          <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+        </data_writer>
+        <data_writer name="ArrayTypeTopic_DW" topic_ref="ArrayTypeTopic">
+          <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+        </data_writer>
+        <data_writer name="SequenceTypeTopic_DW" topic_ref="SequenceTypeTopic">
+          <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+        </data_writer>
+        <data_writer name="UnionTypeTopic_DW" topic_ref="UnionTypeTopic">
+          <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+        </data_writer>
+      </publisher>
+    </domain_participant>
+  </domain_participant_library>
+</dds>
+```
+
+### Type Introspection Example
+Demonstrate how to extract DDS type infromation for analysis purposes.
+
+```python
+import omnicon_genericddsengine_py as omnicon
+
+class TypeIntrospectionExample:
+    def __init__(self):
+        print(self.run())
+
+    @staticmethod
+    def run():
+        print("Type Introspection Example")
+        factory_configuration = omnicon.FactoryConfiguration()
+        factory_configuration.loggerConfiguration.verbosity = omnicon.LogSeverityLevel.trace
+        omnicon.GenericDDSEngine.SetFactoryConfiguration(factory_configuration)
+
+        engine = omnicon.GenericDDSEngine()
+        # Engine configuration (can also be performed via xml config file)
+        engine_configuration = omnicon.EngineConfiguration()
+        engine_configuration.engineOperationMode = omnicon.EngineOperationMode.TYPE_INTROSPECTION
+        engine_configuration.ddsConfigurationFilesPath.append("./EngineConfigurationExamples/TypeIntrospection/TopicNamesToTypesDefMap.xml")
+
+        if not engine.Init(engine_configuration):
+            return False
+        if not engine.Run():
+            return False
+
+        DDSTopicToTypeXMLMapping = omnicon.GenericDDSEngine.GetTopicNameToTypeNameMap(
+            "./EngineConfigurationExamples/TypeIntrospection/TopicNamesToTypesDefMap.xml")
+        for topic, type in DDSTopicToTypeXMLMapping.items():
+            print(topic + " - " + type)
+
+            dds_type = engine.IntrospectType(type)
+            if dds_type is None:
+                print(type + " is None")
+            for element in dds_type.structure:
+                print(element.name)
+
+                if element.typeKindName == "STRUCTURE":
+                    print("\tdataTypeName - " + (element).dataTypeName)
+                if element.typeKindName == "STRING":
+                    print("\tlen - " + str((element).length))
+                if element.typeKindName == "ENUMERATION":
+                    print("\tENUMERATION")
+                if element.typeKindName == "SEQUENCE":
+                    print("\tlen - " + str((element).length))
+```
+
+Required Standard DDS configuration files include a basic DDS types/topic XML definition. For example:
+```xml
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/6.1.0/rti_dds_profiles.xsd"
+     version="6.1.0">
+  <types>
+    <include file="TypeFiles//myIncludedTypesTester.xml"/>
+    <include file="TypeFiles//myGenericTypesTester.xml"/>
+    <include file="TypeFiles//ShapeType.xml"/>
+  </types>
+
+  <domain_library name="Domain_Lib">
+    <domain name="Domain">
+      <!--Types Definition-->
+      <register_type name="ShapeType" type_ref="ShapeTypeExtended" />
+      <register_type name="PrimitiveType" type_ref="PrimitiveType" />
+      <register_type name="MyNamespace::StringsType" type_ref="MyNamespace::StringsType" />
+      <register_type name="EnumType" type_ref="EnumType" />
+      <register_type name="PrimitiveNestedType" type_ref="PrimitiveNestedType" />
+      <register_type name="SequenceType" type_ref="SequenceType" />
+      <register_type name="UnionType" type_ref="UnionType" />
+      <register_type name="ArrayType" type_ref="ArrayType" />
+
+      <!--Topics Definition-->
+      <topic name="Square" register_type_ref="ShapeType"/>
+      <topic name="PrimitiveTypeTopic" register_type_ref="PrimitiveType" />
+      <topic name="StringsTypeTopic" register_type_ref="MyNamespace::StringsType" />
+      <topic name="EnumTypeTopic" register_type_ref="EnumType" />
+      <topic name="PrimitiveNestedTypeTopic" register_type_ref="PrimitiveNestedType" />
+      <topic name="SequenceTypeTopic" register_type_ref="SequenceType" />
+      <topic name="UnionTypeTopic" register_type_ref="UnionType" />
+      <topic name="ArrayTypeTopic" register_type_ref="ArrayType" />
+    </domain>
+  </domain_library>
+
+</dds>
+```
+
+**OmniCon Distributed System LTD All Rights Reserved &copy;2019-2025**
