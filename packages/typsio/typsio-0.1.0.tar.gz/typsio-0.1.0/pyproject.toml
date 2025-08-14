@@ -1,0 +1,37 @@
+[project]
+name = "typsio"
+version = "0.1.0"
+authors = [
+    { name = "XcantloadX", email = "318899697@qq.com" },
+]
+description = "A type-safe RPC and event library for python-socketio."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Framework :: AsyncIO",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dependencies = [
+    "python-socketio>=5.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/xcantloadx/typsio"
+"Bug Tracker" = "https://github.com/xcantloadx/typsio/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+typsio-gen = "typsio.gen:main"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "README.md",
+    "src/typsio/**/*.py",
+]
