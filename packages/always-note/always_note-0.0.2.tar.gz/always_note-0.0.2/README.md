@@ -1,0 +1,82 @@
+# Always note
+
+A note that is always on the screen.
+
+I use it in workshops and presentations when I want to always display some information on the screen.
+
+![Always note](https://raw.githubusercontent.com/martinohanlon/always_note/refs/heads/main/docs/note.png)
+
+The text will automatically scale to the size of the note window.
+
+You can modify the colors and font by right / two-finger clicking on the text.
+
+## Install
+
+```bash
+pip install always_note
+```
+
+## Usage
+
+Run:
+
+```bash
+always_note
+```
+
+Specify the text:
+
+```bash
+always_note -t "Your note here"
+```
+
+Get help:
+
+```bash
+always_note --help
+```
+
+## Development
+
+To run the code for development, clone the repository, and install the package in editable mode:
+
+```bash
+git clone https://github.com/martinohanlon/always_note
+cd always_note
+pip install -e .
+```
+
+Then run always_note:
+
+```bash
+python run.py --text "Your note here"
+```
+
+## Build
+
+Install the build tools:
+
+```bash
+pip install setuptools[core] build twine
+```
+
+To build the package, run:
+
+```bash
+python -m build
+```
+
+To deploy the package to PyPI, run:
+
+```bash
+twine upload dist/*
+```
+
+## Status
+
+Beta - Working. A bit "cobbled together". I use it tho!
+
+## Change log
+
+- 0.0.1 - 2025-08-12 - Initial release
+- 0.0.2 - 2025-08-13 - Updates for MacOS, improve settings window
