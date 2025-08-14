@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0", "pybind11", "numpy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pymathutils"
+version = "0.1.22"
+description = "Fast mathematical utilities"
+authors = [{ name = "wlough", email = "wilson.lough@colorado.edu" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = ["numpy", "numba", "sympy", "scipy"]
+keywords = ["mathematics", "scientific-computing", "numerical-methods"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[project.urls]
+Homepage = "https://github.com/wlough/MathUtils"
+Repository = "https://github.com/wlough/MathUtils"
+Issues = "https://github.com/wlough/MathUtils/issues"
+
+[project.optional-dependencies]
+dev = ["pytest", "build", "twine"]
+
+[tool.setuptools]
+packages = ["mathutils"]
+
+[tool.setuptools.package-dir]
+mathutils = "pymathutils"
