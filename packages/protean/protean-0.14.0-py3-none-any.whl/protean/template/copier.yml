@@ -1,0 +1,46 @@
+_templates_suffix: .jinja
+_subdirectory: 'domain_template'
+
+project_name:
+  type: str
+
+short_description:
+  type: str
+  default: "{{ project_name }} - A Protean Application"
+
+author_name:
+  type: str
+
+author_email:
+  type: str
+
+package_name:
+  type: str
+  default: "{{ project_name|lower|replace(' ','_')|replace('-','_') }}"
+
+domain_name:
+  type: str
+  default: "{{ package_name }}"
+
+database:
+  type: str
+  choices:
+    Memory: memory
+    PostgreSQL: postgresql
+    SQLite: sqlite
+    ElasticSearch: elasticsearch
+  default: memory
+
+broker:
+  type: str
+  choices:
+    Memory: memory
+    Redis: redis
+  default: memory
+
+cache:
+  type: str
+  choices:
+    Memory: memory
+    Redis: redis
+  default: memory
