@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recent-state-summarizer"
+authors = [
+    {name = "nikkie", email = "takuyafjp+develop@gmail.com"},
+]
+description = "Summarize a list of entry titles using LLM"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "beautifulsoup4",
+    "openai<1",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+testing = ["pytest", "pytest_httpserver"]
+lint = ["flake8", "black", "isort"]
+dev = ["wheel", "build", "twine"]
+
+[project.scripts]
+omae-douyo = "recent_state_summarizer.__main__:main"
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+[tool.setuptools.dynamic]
+version = {attr = "recent_state_summarizer.__version__"}

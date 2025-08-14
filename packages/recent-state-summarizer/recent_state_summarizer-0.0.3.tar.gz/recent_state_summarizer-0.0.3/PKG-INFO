@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: recent-state-summarizer
+Version: 0.0.3
+Summary: Summarize a list of entry titles using LLM
+Author-email: nikkie <takuyafjp+develop@gmail.com>
+License: MIT
+Classifier: Development Status :: 1 - Planning
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: beautifulsoup4
+Requires-Dist: openai<1
+Provides-Extra: testing
+Requires-Dist: pytest; extra == "testing"
+Requires-Dist: pytest_httpserver; extra == "testing"
+Provides-Extra: lint
+Requires-Dist: flake8; extra == "lint"
+Requires-Dist: black; extra == "lint"
+Requires-Dist: isort; extra == "lint"
+Provides-Extra: dev
+Requires-Dist: wheel; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Dynamic: license-file
+
+# recent-state-summarizer
+
+Summarize blog article titles with the OpenAI API
+
+a.k.a. _RSS_ 😃
+
+## Setup
+
+```
+$ pip install recent-state-summarizer
+```
+
+⚠️ Set `OPENAI_API_KEY` environment variable.  
+ref: https://platform.openai.com/account/api-keys
+
+## Usage
+
+```
+$ omae-douyo https://nikkie-ftnext.hatenablog.com/archive/2023/4
+
+この人物は最近、プログラミングに関することを中心にして活動しています。
+
+（略）
+
+最近は、株式会社はてなに入社したようです。
+```
+
+Currently support:
+
+- はてなブログ（Hatena blog）
+
+To see help, type `omae-douyo -h`.
+
+## Development
+
+### Sub commands
+
+Fetch only:
+
+```
+python -m recent_state_summarizer.fetch -h
+```
+
+Summarize only:  
+It's convenient to omit fetching in tuning the prompt.
+
+```
+python -m recent_state_summarizer.summarize -h
+```
+
+### Environment
+
+```
+$ git clone https://github.com/ftnext/recent-state-summarizer.git
+$ cd recent-state-summarizer
+
+$ python -m venv venv
+$ source venv/bin/activate
+(venv) $ pip install -r requirements.lock
+(venv) $ pip install -e '.'
+```
