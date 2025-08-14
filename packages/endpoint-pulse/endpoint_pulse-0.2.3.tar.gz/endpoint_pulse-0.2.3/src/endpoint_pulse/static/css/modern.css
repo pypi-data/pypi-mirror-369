@@ -1,0 +1,117 @@
+/* Modern UI styles for Endpoint Pulse */
+
+:root {
+  --ep-sidebar-width: 280px;
+  --ep-sidebar-collapsed-width: 60px;
+
+  /* Color Palette */
+  --ep-primary-color: #4a90e2;
+  --ep-secondary-color: #f5a623;
+  --ep-success-color: #7ed321;
+  --ep-error-color: #d0021b;
+  --ep-light-gray: #f8f9fa;
+  --ep-dark-gray: #343a40;
+  --ep-text-color: #333;
+  --ep-text-color-dark: #fff;
+}
+
+[data-bs-theme="dark"] {
+  --ep-light-gray: #212529;
+  --ep-dark-gray: #f8f9fa;
+  --ep-text-color: #fff;
+  --ep-text-color-dark: #333;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+#sidebar {
+  width: var(--ep-sidebar-width);
+  transition: width 0.3s ease;
+  background-color: var(--ep-light-gray);
+  border-right: 1px solid var(--bs-border-color);
+}
+
+#sidebar.collapsed {
+  width: var(--ep-sidebar-collapsed-width);
+}
+
+#sidebar.collapsed .card-header span,
+#sidebar.collapsed .card-body {
+  display: none;
+}
+
+#sidebar-toggle {
+  transition: transform 0.3s ease;
+}
+
+#sidebar.collapsed #sidebar-toggle {
+  transform: rotate(90deg);
+}
+
+#main-content {
+  transition: margin-left 0.3s ease;
+  width: calc(100% - var(--ep-sidebar-width));
+}
+
+#sidebar.collapsed + #main-content {
+  width: calc(100% - var(--ep-sidebar-collapsed-width));
+}
+
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+  background-color: var(--ep-primary-color);
+  border-color: var(--ep-primary-color);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn-success {
+    background-color: var(--ep-success-color);
+    border-color: var(--ep-success-color);
+}
+
+.btn-danger {
+    background-color: var(--ep-error-color);
+    border-color: var(--ep-error-color);
+}
+
+/* Test Results Table */
+#test-results-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+#test-results-table th {
+  border: none;
+}
+
+#test-results-table td {
+  border-top: 1px solid var(--bs-border-color);
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+#test-results-table tr {
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+#test-results-table tr:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem;
+    border: 2px dashed var(--bs-border-color);
+    border-radius: 8px;
+}
