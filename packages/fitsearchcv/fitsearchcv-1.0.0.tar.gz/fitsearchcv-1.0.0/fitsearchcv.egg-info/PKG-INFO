@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: fitsearchcv
+Version: 1.0.0
+Summary: An extension to sklearn.GridSearchCV and RandomizedSearchCV to reduce over and underfitting
+Home-page: https://github.com/yourusername/fitsearchcv
+Author: Swastik Verma
+Author-email: swastik.yash29052005@gmail.com
+License: MIT
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: scikit-learn
+Requires-Dist: joblib
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# fitsearchcv— A smarter `refit` selector for scikit-learn searches
+
+`selector-mean` is a tiny utility that helps reduce **overfitting** and **underfitting** when tuning hyperparameters with scikit-learn’s `GridSearchCV` or `RandomizedSearchCV`.
+
+It provides a single function:
+
+- **`selector_mean(cv_results_, metric=None, use_abs_gap=True, clip01=True)`**  
+  A callable you pass to `refit=...` that picks the parameter set balancing **high test performance** and **small train–test gap**.
+
+---
+
+## Why?
+
+Vanilla `GridSearchCV` usually selects the highest mean test score, which can sometimes favor models with high variance.  
+`selector_mean` instead minimizes: `0.5 * (|train - test|) + 0.5 * (1 - test)`
+
+
