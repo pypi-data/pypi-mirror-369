@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cnblogger"
+version = "0.2.0"
+description = "Configurable logger that writes to CLI, file, HTTP API, and optional databases via simple JSON config."
+readme = "README.md"
+authors = [
+    { name = "Mr. Clark", email = "geoff@cnb.llc" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.9"
+keywords = ["logging", "logger", "cli", "file", "api", "database", "sqlite", "mysql", "postgres", "mongodb"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: System :: Logging",
+]
+
+[project.optional-dependencies]
+colors = ["colorama>=0.4.6"]
+api = ["requests>=2.31.0"]
+sqlite = []
+mysql = ["pymysql>=1.1.0"]
+postgres = ["psycopg2-binary>=2.9.9"]
+mongo = ["pymongo[srv]>=4.6.0"]
+all = [
+  "colorama>=0.4.6",
+  "requests>=2.31.0",
+  "pymysql>=1.1.0",
+  "psycopg2-binary>=2.9.9",
+  "pymongo[srv]>=4.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/AznIronMan/cnblogger"
+Repository = "https://github.com/AznIronMan/cnblogger.git"
+
+[tool.setuptools.package-data]
+cnblogger = ["py.typed"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cnblogger*"]
+exclude = []
