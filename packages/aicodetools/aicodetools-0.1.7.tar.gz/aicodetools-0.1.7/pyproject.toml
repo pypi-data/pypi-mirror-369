@@ -1,0 +1,61 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "aicodetools"
+version = "0.1.7"
+description = "A powerful framework for providing tools to AI agents with Docker/local deployment support"
+license = "MIT"
+authors = ["balajidinesh"]
+homepage = "https://github.com/balajidinesh/aicodetools"
+documentation = "https://github.com/balajidinesh/aicodetools"
+readme = "README.md"
+repository = "https://github.com/balajidinesh/aicodetools"
+keywords = ["artificial intelligence", "ai agents", "code tools", "docker", "swarms"]
+packages = [{include = "aicodetools"}]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9"
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+swe-rex = "^1.4.0"
+python-dotenv = "*"
+
+[tool.poetry.extras]
+examples = ["swarms"]
+
+[tool.poetry.group.dev.dependencies]
+# Add development dependencies here
+
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.1.6"
+types-toml = "^0.10.8.1"
+types-redis = "^4.3.21.6"
+types-pytz = "^2023.3.0.0"
+black = "^23.1.0"
+types-chardet = "^5.0.4.6"
+mypy-protobuf = "^3.0.0"
+
+
+[tool.autopep8]
+max_line_length = 80
+ignore = "E501,W6"  # or ["E501", "W6"]
+in-place = true
+recursive = true
+aggressive = 3
+
+
+[tool.ruff]
+line-length = 70
+
+[tool.black]
+line-length = 70
+target-version = ['py38']
+preview = true
