@@ -1,0 +1,36 @@
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+     # - id: check-added-large-files
+     #   args: ["--maxkb=5000"]
+      - id: check-toml
+      - id: check-json
+      - id: check-symlinks
+      - id: debug-statements
+      - id: detect-private-key
+      - id: check-yaml
+        args:
+          - --unsafe
+      - id: trailing-whitespace
+        exclude: \.(fits|pha|arf|rmf)$  # Exclude .fits, .pha, .arf, .rmf files
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.4.6
+    hooks:
+      - id: ruff
+        args: ["--fix", "--output-format=full"]
+        exclude: ^docs/|\.(fits|pha|arf|rmf)$  # Exclude docs and .fits, .pha, .arf, .rmf files
+      - id: ruff-format
+        exclude: \.(fits|pha|arf|rmf)$  # Exclude .fits, .pha, .arf, .rmf files
+
+#  - repo: local
+#    hooks:
+#      - id: tests
+#        name: tests
+#        language: system
+#        types: [python]
+#        pass_filenames: false
+#        entry: poetry run pytest

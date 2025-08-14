@@ -1,0 +1,125 @@
+[project]
+name = "jaxspec"
+version = "0.3.0"
+description = "jaxspec is a bayesian spectral fitting library for X-ray astronomy."
+authors = [{ name = "sdupourque", email = "sdupourque@irap.omp.eu" }]
+requires-python = ">=3.10,<3.13"
+readme = "README.md"
+license = "MIT"
+dependencies = [
+    "jax>=0.5.0,<0.6",
+    "numpy<3.0.0",
+    "pandas>=2.2.0,<3",
+    "astropy>=6.0.0,<8",
+    "numpyro>=0.17.0,<0.19",
+    "networkx~=3.1",
+    "matplotlib>=3.8.0,<4",
+    "arviz>=0.17.1,<0.23.0",
+    "chainconsumer>=1.1.2,<2",
+    "simpleeval>=0.9.13,<1.1.0",
+    "cmasher>=1.6.3,<2",
+    "jaxopt>=0.8.3,<0.9",
+    "tinygp>=0.3.0,<0.4",
+    "seaborn>=0.13.1,<0.14",
+    "sparse>0.15",
+    "optimistix>=0.0.10,<0.0.11",
+    "scipy<1.15",
+    "mendeleev>=0.15,<1.2",
+    "jaxns>=2.6.7,<3",
+    "pooch>=1.8.2,<2",
+    "interpax>=0.3.5,<0.4",
+    "watermark>=2.4.3,<3",
+    "catppuccin>=2.3.4,<3",
+    "flax>0.10.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/renecotyfanboy/jaxspec"
+Documentation = "https://jaxspec.readthedocs.io/en/latest/"
+
+[project.scripts]
+jaxspec-debug-info = "jaxspec.scripts.debug:debug_info"
+
+[dependency-groups]
+docs = [
+    "mkdocs>=1.6.1,<2",
+    "mkdocs-material>=9.4.6,<10",
+    "mkdocstrings[python]>=0.24,<0.28",
+    "mkdocs-jupyter>=0.25.0,<0.26",
+]
+test = [
+    "chex>=0.1.83,<0.2",
+    "mktestdocs>=0.2.1,<0.3",
+    "coverage>=7.3.2,<8",
+    "pytest-cov>=4.1,<7.0",
+    "flake8>=7.0.0,<8",
+    "pytest>=8.0.0,<9",
+    "testbook>=0.4.2,<0.5",
+]
+dev = [
+    "pre-commit>=3.5,<5.0",
+    "ruff>=0.2.1,<0.10.0",
+    "jupyterlab>=4.0.7,<5",
+    "notebook>=7.0.6,<8",
+    "ipywidgets>=8.1.1,<9",
+]
+
+[tool.uv]
+default-groups = [
+    "docs",
+    "test",
+    "dev",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["versioneer.py", "_version.py"]
+
+[tool.ruff.lint]
+select = ["D", "E", "F", "I", "UP", "W", "RUF"]
+ignore = [
+  "E501",
+  "F841", # Local variable name is assigned to but never used
+  "RUF001", # String contains ambiguous character (such as Greek letters)
+  "RUF002", # Docstring contains ambiguous character (such as Greek letters)
+  "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D107",
+  "D200",
+  "D202",
+  "D203",
+  "D204",
+  "D205",
+  "D209",
+  "D212",
+  "D213",
+  "D301",
+  "D400",
+  "D401",
+  "D403",
+  "D413",
+  "D415",
+  "D417",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+lines-between-types = 1
+
+[tool.ruff.lint.extend-per-file-ignores]
+"__init__.py" = [
+  "F401", # Module imported but unused
+  "F403", # 'from module import *' used; unable to detect undefined names
+]

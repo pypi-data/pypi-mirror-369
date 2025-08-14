@@ -1,0 +1,49 @@
+name: Unit tests
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          src:
+            - 'src/**'
+          pyproject:
+            - 'pyproject.toml'
+
+    - name: Build docker images
+      if: steps.filter.outputs.src == 'true' || steps.filter.outputs.pyproject == 'true'
+      run: docker build . -t xspec-tests
+
+    - name: Test with pytest
+      if: steps.filter.outputs.src == 'true' || steps.filter.outputs.pyproject == 'true'
+      run: docker run -t -v ./:/shared xspec-tests uv run pytest --cov jaxspec --cov-report xml:/shared/coverage.xml
+
+    - name: "Upload coverage to Codecov"
+      if: steps.filter.outputs.src == 'true'
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        verbose: true

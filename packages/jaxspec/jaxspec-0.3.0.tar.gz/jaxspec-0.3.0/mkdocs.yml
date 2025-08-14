@@ -1,0 +1,182 @@
+site_name: jaxspec
+
+nav:
+  - Home:
+    - Welcome : index.md
+    - Installation: frontpage/installation.md
+  #- Theory:
+  #  - theory/index.md
+  #  - Bayesian inference: theory/bayesian_inference.md
+  #  - Instruments modelling: theory/instrument.md
+  #  - Background modelling: theory/background.md
+  - Examples:
+    - Index: examples/index.md
+    - Spectral fitting speedrun: examples/fitting_example.md
+    - Load your own data: examples/load_data.ipynb
+    - Model building made easy: examples/build_model.md
+    - Generate mock data : examples/fakeits.md
+    - Add a background : examples/background.md
+    - Good practices for MCMC: examples/work_with_arviz.ipynb
+    - Interface with other frameworks : examples/external_samplers.ipynb
+  #- Models:
+  #    - models/index.md
+  #    - APEC: models/apec.md
+  - API Reference:
+    - Spectral model base: references/model.md
+    - Additive models: references/additive.md
+    - Multiplicative models: references/multiplicative.md
+    - Background models: references/background.md
+    - Data containers: references/data.md
+    - Fitting: references/fitting.md
+    - Result containers: references/results.md
+    - Abundance: references/abundance.md
+    - Integration: references/integrate.md
+  - FAQ:
+      - Index : faq/index.md
+      - Cookbook: faq/cookbook.md
+  - Contribute:
+    - Index : contribute/index.md
+    - Internal: contribute/internal.md
+    - XSPEC: contribute/xspec.md
+
+
+theme:
+  name: material
+  features:
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+#    - content.code.select
+#    - navigation.instant
+    - navigation.tabs
+#    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.top
+    - toc.integrate
+    - header.autohide
+    - navigation.expand
+
+  favicon: logo/logo_small.svg
+  logo: logo/logo_small.svg
+  icon:
+    repo: fontawesome/brands/github
+
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue
+      accent: blue
+
+      #primary: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      #primary: cyan
+      primary: blue
+      accent: blue
+
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+plugins:
+  - search
+  - autorefs
+#  - typeset
+  - mkdocs-jupyter:
+      include_source: True
+      ignore_h1_titles: True
+      execute: false
+      include_requirejs: true
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          import:
+            - https://docs.python.org/3/objects.inv
+            - https://docs.astropy.org/en/stable/objects.inv
+            - https://samreay.github.io/ChainConsumer/objects.inv
+            - https://num.pyro.ai/en/stable/objects.inv
+            - https://dm-haiku.readthedocs.io/en/latest/objects.inv
+            - https://tinygp.readthedocs.io/en/latest/objects.inv
+            - https://python.arviz.org/en/stable/objects.inv
+            - https://jax.readthedocs.io/en/latest/objects.inv
+            - https://docs.xarray.dev/en/stable/objects.inv
+            - https://flax.readthedocs.io/en/latest/objects.inv
+            - https://jaxns.readthedocs.io/en/latest/objects.inv
+          options:
+            members_order: alphabetical
+            docstring_section_style: table
+            docstring_style: google
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            modernize_annotations: true
+#  - group:
+#      enabled: !ENV INSIDERS
+#      plugins:
+#        - optimize
+#        - privacy
+#        - projects
+#        - social
+#        - typeset
+
+
+markdown_extensions:
+
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      toc_depth: 3
+  # Python Markdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+repo_url: https://github.com/renecotyfanboy/jaxspec
+repo_name: jaxspec
+
+extra_css:
+  - css/material.css
+  - css/mkdocstrings.css
+  - css/xarray.css
+  - css/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+watch: [mkdocs.yml, src/jaxspec]

@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: jaxspec
+Version: 0.3.0
+Summary: jaxspec is a bayesian spectral fitting library for X-ray astronomy.
+Project-URL: Homepage, https://github.com/renecotyfanboy/jaxspec
+Project-URL: Documentation, https://jaxspec.readthedocs.io/en/latest/
+Author-email: sdupourque <sdupourque@irap.omp.eu>
+License-Expression: MIT
+License-File: LICENSE.md
+Requires-Python: <3.13,>=3.10
+Requires-Dist: arviz<0.23.0,>=0.17.1
+Requires-Dist: astropy<8,>=6.0.0
+Requires-Dist: catppuccin<3,>=2.3.4
+Requires-Dist: chainconsumer<2,>=1.1.2
+Requires-Dist: cmasher<2,>=1.6.3
+Requires-Dist: flax>0.10.5
+Requires-Dist: interpax<0.4,>=0.3.5
+Requires-Dist: jax<0.6,>=0.5.0
+Requires-Dist: jaxns<3,>=2.6.7
+Requires-Dist: jaxopt<0.9,>=0.8.3
+Requires-Dist: matplotlib<4,>=3.8.0
+Requires-Dist: mendeleev<1.2,>=0.15
+Requires-Dist: networkx~=3.1
+Requires-Dist: numpy<3.0.0
+Requires-Dist: numpyro<0.19,>=0.17.0
+Requires-Dist: optimistix<0.0.11,>=0.0.10
+Requires-Dist: pandas<3,>=2.2.0
+Requires-Dist: pooch<2,>=1.8.2
+Requires-Dist: scipy<1.15
+Requires-Dist: seaborn<0.14,>=0.13.1
+Requires-Dist: simpleeval<1.1.0,>=0.9.13
+Requires-Dist: sparse>0.15
+Requires-Dist: tinygp<0.4,>=0.3.0
+Requires-Dist: watermark<3,>=2.4.3
+Description-Content-Type: text/markdown
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/renecotyfanboy/jaxspec/main/docs/logo/logo_small.svg" alt="Logo" width="100" height="100">
+</p>
+
+<h1 align="center">
+  jaxspec
+</h1>
+
+
+[![PyPI - Version](https://img.shields.io/pypi/v/jaxspec?style=for-the-badge&logo=pypi&color=rgb(37%2C%20150%2C%20190))](https://pypi.org/project/jaxspec/)
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Frenecotyfanboy%2Fjaxspec%2Frefs%2Fheads%2Fmain%2Fpyproject.toml&style=for-the-badge)
+[![Read the Docs](https://img.shields.io/readthedocs/jaxspec?style=for-the-badge)](https://jaxspec.readthedocs.io/en/latest/)
+[![Codecov](https://img.shields.io/codecov/c/github/renecotyfanboy/jaxspec?style=for-the-badge)](https://app.codecov.io/gh/renecotyfanboy/jaxspec)
+[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/jaxspec/shared_invite/zt-2cuxkdl2f-t0EEAKP~HBEHKvIUZJL2sg)
+
+> :warning: **jaxspec is still in early release**: expect bugs, breaking API changes, undocumented features and lack of functionalities
+
+`jaxspec` is an X-ray spectral fitting library built in pure Python. It can currently load an X-ray spectrum (in the OGIP standard), define a spectral model from the implemented components, and calculate the best parameters using state-of-the-art Bayesian approaches. It is built on top of JAX to provide just-in-time compilation and automatic differentiation of the spectral models, enabling the use of sampling algorithm such as NUTS.
+
+`jaxspec` is written in pure Python, and has no dependancy to [HEASoft](https://heasarc.gsfc.nasa.gov/docs/software/heasoft/), and can be installed directly using the `pip` command.
+
+Documentation : https://jaxspec.readthedocs.io/en/latest/
+
+## Installation
+
+We recommend the users to start from a fresh Python 3.10 [conda environment](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
+
+```
+conda create -n jaxspec python=3.10
+conda activate jaxspec
+```
+
+Once the environment is set up, you can install jaxspec directly from pypi
+
+```
+pip install jaxspec --upgrade
+```
+
+## Citation 
+
+If you use `jaxspec` in your research, please consider citing the following article 
+
+```
+@ARTICLE{2024A&A...690A.317D,
+       author = {{Dupourqu{\'e}}, S. and {Barret}, D. and {Diez}, C.~M. and {Guillot}, S. and {Quintin}, E.},
+        title = "{jaxspec: A fast and robust Python library for X-ray spectral fitting}",
+      journal = {\aap},
+     keywords = {methods: data analysis, methods: statistical, X-rays: general},
+         year = 2024,
+        month = oct,
+       volume = {690},
+          eid = {A317},
+        pages = {A317},
+          doi = {10.1051/0004-6361/202451736},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2024A&A...690A.317D},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+```
