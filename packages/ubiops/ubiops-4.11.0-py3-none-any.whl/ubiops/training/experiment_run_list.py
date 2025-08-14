@@ -1,0 +1,89 @@
+# coding: utf-8
+
+"""
+    UbiOps
+
+    Client Library to interact with the UbiOps API.
+"""
+
+
+from ubiops.training.constants import DEFAULT_TRAINING_DEPLOYMENT_NAME
+from ubiops.models.deployment_request_list import DeploymentRequestList
+
+
+class ExperimentRunList(DeploymentRequestList):
+    openapi_types = {
+        "id": "str",
+        "experiment": "str",
+        "status": "str",
+        "success": "bool",
+        "time_created": "datetime",
+        "time_started": "datetime",
+        "time_completed": "datetime",
+    }
+
+    attribute_map = {
+        "id": "id",
+        "experiment": "experiment",
+        "status": "status",
+        "success": "success",
+        "time_created": "time_created",
+        "time_started": "time_started",
+        "time_completed": "time_completed",
+    }
+
+    def __init__(
+        self,
+        id=None,
+        experiment=None,
+        status=None,
+        success=None,
+        time_created=None,
+        time_started=None,
+        time_completed=None,
+        **kwargs,
+    ):
+        """
+        ExperimentRunList
+        """
+
+        kwargs.pop("version", None)  # To make sure we don't pass the version twice
+
+        super().__init__(
+            id=id,
+            deployment=kwargs.pop("deployment", DEFAULT_TRAINING_DEPLOYMENT_NAME),
+            version=experiment,  # Convert experiment to version
+            status=status,
+            success=success,
+            time_created=time_created,
+            time_started=time_started,
+            time_completed=time_completed,
+            **kwargs,
+        )
+
+        self._experiment = None
+
+        self.experiment = experiment
+
+    @property
+    def experiment(self):
+        """
+        Gets the experiment of this ExperimentRunList
+
+        :return: The experiment of this ExperimentRunList
+        :rtype: str
+        """
+        return self._experiment
+
+    @experiment.setter
+    def experiment(self, experiment):
+        """
+        Sets the experiment of this ExperimentRunList
+
+        :param experiment: The experiment of this ExperimentRunList
+        :type: str
+        """
+        if self.client_side_validation and (experiment is not None and not isinstance(experiment, str)):
+            raise ValueError("Parameter `experiment` must be a string")
+
+        self._experiment = experiment
