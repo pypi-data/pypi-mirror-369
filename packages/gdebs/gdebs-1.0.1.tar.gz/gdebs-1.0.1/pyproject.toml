@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gdebs"
+version = "1.0.1"
+author = [
+    { name = "Rocky Sam Narang", email="rnarang@uoguelph.ca"},
+]
+description = "An event based simulation package for observing the spread of a gene drive in an animal population"
+readme = "README.md"
+requires-python = ">=3.13"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/rsnarang/gdebs"
+
+[tool.hatch.build.targets.sdist]
+packages = ["src"]
+include = [
+    "gdebs/*.py"
+]
+exclude = [
+    "*.json",
+    "gdebs/legacy"
+]
+
