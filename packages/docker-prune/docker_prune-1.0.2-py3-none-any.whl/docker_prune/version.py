@@ -1,0 +1,4 @@
+""" package version """
+# pylint: disable=C0103
+__version__ = '1.0.2'
+version = __version__
