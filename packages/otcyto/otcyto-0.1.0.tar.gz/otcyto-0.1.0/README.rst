@@ -1,0 +1,104 @@
+======
+otcyto
+======
+
+
+    Compute optimal transport based distances and mappings between point clouds, especially for cytometry data.
+
+
+**otcyto** is a Python package for computing and visualizing
+*optimal transport*-based distances and mappings between
+point clouds, with a focus on cytometry-like data.
+It combines **PyTorch**, **GeomLoss**, and optional **PyKeOps** acceleration
+to deliver GPU-accelerated performance, clear APIs, and plotting tools
+for inspecting results.
+
+Overview
+--------
+The package is designed for researchers and engineers who need to:
+
+* Quantify distributional differences between samples
+* Map one sample onto another via an optimal transport plan or Brenier map.
+* Visualize the mapping process and alignment quality.
+* Integrate optimal transport distances into larger cytometry analysis pipelines.
+
+Core functionality is centered on the ``OTDPairwise`` class for
+pairwise optimal transport distances, supported by utilities for
+generating synthetic data and producing high-quality figures.
+
+
+Features
+--------
+* **Pairwise Optimal Transport Distance (OTD)** computation between lists of point clouds.
+* **Multiple output formats** — PyTorch tensor, NumPy array, and pandas DataFrame.
+* **GPU acceleration** via CUDA, with automatic device placement.
+* **Optional PyKeOps backend** for large-scale speedups.
+* **Brenier map computation** for geometric interpretation of transport.
+* **Plotting utilities** for OTD matrices, Brenier maps, and point cloud overlays.
+* **Synthetic data generators** for testing and demonstration.
+
+Installation
+------------
+Install from PyPI::
+
+    pip install otcyto
+
+Or with **uv** for fast, reproducible installs::
+
+    uv pip install otcyto
+
+Optional acceleration:
+
+* **PyKeOps** for GeomLoss speedups::
+
+    pip install pykeops
+
+Verify installation::
+
+    from otcyto.check_pykeops import check_pykeops
+    assert check_pykeops()
+
+Minimal Working Example
+-----------------------
+Compute a 1x2 OTD matrix between one source and two shifted targets,
+plot the OTD heatmap, and visualize point clouds.
+
+.. code-block:: python
+
+    from otcyto.geomloss.create_sphere import create_sphere
+    from otcyto.otd_pairwise import OTDPairwise
+    from otcyto.plot.figure_clouds import figure_clouds
+
+    # Create synthetic point clouds
+    n = 1_000
+    source = create_sphere(n)[0]
+    target_1 = create_sphere(n)[0] + 1
+    target_2 = create_sphere(n)[0] + 2
+
+    # Compute pairwise OTD
+    otd = OTDPairwise([source], [target_1, target_2])
+    otd.compute()
+
+    # Inspect results
+    print(otd.otd_df)
+
+    # Plot and save OTD matrix
+    otd.plot().savefig("otd_matrix.png")
+
+    # Optional: plot Brenier map for first target
+    otd.plot_brenier(0, 0).savefig("brenier_map.png")
+
+
+.. image:: examples/otd_matrix.png
+   :alt: Optimal Transport Distance matrix
+   :width: 42%
+.. image:: examples/brenier_map.png
+   :alt: Brenier map visualization
+   :width: 42%
+
+
+Usage Notes
+-----------
+* The ``loss`` parameter of ``OTDPairwise`` accepts a custom
+  ``geomloss.SamplesLoss`` instance for full control over Sinkhorn
+  parameters.

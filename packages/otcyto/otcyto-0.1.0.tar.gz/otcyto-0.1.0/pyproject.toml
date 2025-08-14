@@ -1,0 +1,56 @@
+[project]
+name = "otcyto"
+dynamic = ["version"]
+description = "Optimal transport for cytometry data"
+readme = "README.rst"
+requires-python = ">=3.10"
+authors = [{ name = "gunthergl_r2", email = "gunthergl@gmx.net" }]
+license = { text = "MIT" }
+# Runtime deps (moved from setup.cfg)
+dependencies = [
+    "matplotlib",
+    "pykeops",
+    "torch",
+    "geomloss",
+    "pandas",
+    "pyarrow",
+]
+
+[build-system]
+requires = ["setuptools>=70", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
+
+# Tell setuptools about the src/ layout (moved from setup.cfg)
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Pytest config (moved from setup.cfg)
+[tool.pytest.ini_options]
+addopts = "-q --cov=otcyto --cov-report=term-missing --verbose"
+testpaths = ["tests"]
+norecursedirs = ["dist", "build", ".tox"]
+
+# Ruff (optional)
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+lint.select = ["E", "F", "I", "B", "UP"]
+
+# https://docs.astral.sh/uv/concepts/projects/sync/#syncing-development-dependencies
+# Within dependency-groups, "dev" is installed by default.
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "ruff>=0.12.8",
+    "pre-commit>=4.3.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.16",
+    "mkdocstrings[python]>=0.30.0",
+    "mkdocs-section-index>=0.3.10",
+    "mkdocs-literate-nav>=0.6.2",
+    "mkdocs-gen-files>=0.5.0",
+]

@@ -1,0 +1,37 @@
+site_name: otcyto
+repo_url: https://github.com/ggrlab/otcyto
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - content.code.copy
+    - search.highlight
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_root_heading: true
+            separate_signature: true
+            filters: ["!^_"]
+  - gen-files:
+      scripts:
+        - docscripts/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - section-index
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.highlight
+  - pymdownx.superfences
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - API Reference: reference/
