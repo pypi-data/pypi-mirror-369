@@ -1,0 +1,28 @@
+# Include all Python source files
+recursive-include src/visagene_source *.py
+recursive-include src/visagene_source *.pyi
+include src/visagene_source/py.typed
+include src/visagene_source/emap.bin
+
+# Include package metadata
+include README.md
+include LICENSE
+include pyproject.toml
+include setup.py
+
+# Include data files
+recursive-include data *.bin *.npy
+
+# Include third party files if exists
+recursive-include third_party *.cube
+
+# Exclude compiled files and temporary files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude __pycache__
+global-exclude *.cpp
+global-exclude *.so
+global-exclude *.pyd
+global-exclude *.egg-info
+global-exclude .git
+global-exclude .gitignore
