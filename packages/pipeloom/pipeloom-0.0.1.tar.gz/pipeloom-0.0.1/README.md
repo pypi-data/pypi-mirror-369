@@ -1,0 +1,365 @@
+# pipeloom
+
+Threaded ETL scaffolding with a **single-writer SQLite (WAL)** backend, **Rich** progress, and a **Typer** CLI.
+
+## Why
+
+- **SQLite WAL**: readers don’t block while the writer appends; perfect for local ETL and small services.
+- **Single writer**: one connection, one thread → no cross-thread SQLite bugs.
+- **Structured messaging**: workers never touch the DB; they put typed messages on a queue.
+- **Clean UX**: sticky overall bar, transient per-task bars, shared Console to prevent flicker.
+
+## Quickstart
+
+```bash
+uv run pipeloom --db ./wal_demo.db --num-tasks 10 -vv
+```
+
+## Use in your ETL
+
+1. Define tasks (`TaskDef(...)`).
+2. Provide a `worker_fn(task, msg_q)` that emits:
+   - `MsgTaskStarted`
+   - `MsgTaskProgress` (at your own cadence)
+   - `MsgTaskFinished`
+3. Call `run_pipeline(db_path, tasks, workers=..., wal=True, store_task_status=True)`
+
+> If you don’t want the task_runs table, pass `store_task_status=False`.
+
+## Design Notes
+
+- All SQLite access happens in SQLiteWriter (one thread, one connection).
+- Two progress managers:
+  - overall: remains after completion
+  - per-task: disappears when done
+- We pre-register per-task bars to avoid races.
+- Rich TaskID can be 0 (falsy!) — always check tid is not None.
+
+## Components
+
+```mermaid
+flowchart LR
+  subgraph App["Your App / CLI (Typer)"]
+    CLI["CLI (Typer)"]
+    Engine["Engine (orchestrator)"]
+  end
+
+  subgraph Work["Worker Threads (N)"]
+    W1["Worker #1"]
+    Wn["Worker #N"]
+  end
+
+  subgraph Writer["SQLite Writer Thread (single owner)"]
+    Q["Queue[object]"]
+    SW["SQLiteWriter (owns one sqlite3.Connection)"]
+  end
+
+  subgraph DB["SQLite Database"]
+    WAL["db-wal / db-shm"]
+    Main["main.db file"]
+  end
+
+  CLI --> Engine
+  Engine -->|ThreadPoolExecutor| Work
+  Work -->|MsgTaskStarted/Progress/Finished| Q
+  Engine -->|start| SW
+  SW -->|consume| Q
+  SW -->|INSERT/UPDATE| DB
+  DB <--> WAL
+```
+
+### Why this shape works
+
+- Only the writer thread touches SQLite — no cross-thread connections.
+- WAL makes reads cheap during writes (readers don’t block while the writer appends).
+- Workers talk to the writer via a simple Queue using typed messages.
+
+## Lifecycle
+
+```mermaid
+sequenceDiagram
+  participant CLI as CLI (Typer)
+  participant ENG as Engine
+  participant TPool as ThreadPoolExecutor
+  participant W as Workers (N)
+  participant Q as Queue
+  participant WR as SQLiteWriter
+  participant DB as SQLite (WAL)
+
+  CLI->>ENG: parse args, build tasks
+  ENG->>WR: start (creates connection + schema)
+  ENG->>TPool: submit N workers
+  loop each task
+    W->>Q: MsgTaskStarted
+    W->>Q: MsgTaskProgress (many)
+    W->>Q: MsgTaskFinished
+  end
+  WR->>DB: write status/progress (optional)
+  ENG->>WR: put SENTINEL (shutdown request)
+  WR->>DB: WAL checkpoint(TRUNCATE), close
+  WR-->>ENG: join()
+  ENG-->>CLI: exit (overall bar stays at 100%)
+```
+
+## Writer state machine
+
+```mermaid
+stateDiagram-v2
+  [*] --> Boot
+  Boot --> Running: open conn + init schema
+  Running --> Running: handle message
+  Running --> ShutdownRequested: receive SENTINEL
+  ShutdownRequested --> Teardown: ANALYZE + checkpoint + close
+  Teardown --> [*]
+```
+
+## How to extend
+
+You’ve got two knobs:
+
+1. What work gets done (your worker function).
+2. What gets stored (domain tables and, optionally, task_runs).
+
+Below are pragmatic patterns.
+
+1. Use your own worker function
+
+    Workers never touch SQLite. They publish messages to the queue. Replace the default with your own.
+
+    ```py
+    # my_pipeline.py
+    from pipeloom.messages import TaskDef, MsgTaskStarted, MsgTaskProgress, MsgTaskFinished
+    from datetime import UTC, datetime
+    import time
+
+    def my_worker(task: TaskDef, q) -> None:
+        started = datetime.now(UTC).isoformat()
+        q.put(MsgTaskStarted(task_id=task.task_id, name=task.name, started_at=started))
+
+        try:
+            # Do real work here: extract → transform → load
+            total = 3
+            # Extract
+            data = extract(task)            # your code
+            q.put(MsgTaskProgress(task.task_id, 1, total, "extracted"))
+
+            # Transform
+            records = transform(data)       # your code
+            q.put(MsgTaskProgress(task.task_id, 2, total, "transformed"))
+
+            # Load (NOT via SQLite here — emit a domain message instead; see below)
+            q.put(MsgTaskProgress(task.task_id, 3, total, "loaded"))
+
+            finished = datetime.now(UTC).isoformat()
+            q.put(MsgTaskFinished(task.task_id, "done", finished, result=f"ok:{task.name}"))
+
+        except Exception as e:
+            finished = datetime.now(UTC).isoformat()
+            q.put(MsgTaskFinished(task.task_id, "error", finished, message=str(e)))
+    ```
+
+    Then run:
+
+    ```py
+    from pathlib import Path
+    from pipeloom.engine import run_pipeline
+    from pipeloom.messages import TaskDef
+
+    tasks = [TaskDef(i, f"etl-{i}") for i in range(1, 11)]
+    run_pipeline(
+        db_path=Path("etl.db"),
+        tasks=tasks,
+        workers=4,
+        wal=True,
+        store_task_status=True,  # keep it on for observability
+        worker_fn=my_worker,     # <- your worker
+    )
+    ```
+
+2. Store your own data (domain tables)
+
+    Right now, the writer only persists task_runs (toggle with store_task_status). To persist domain data, add new message types and handle them in the writer. Keep DB writes centralized.
+
+    Define a domain message:
+
+    ```py
+    # my_messages.py
+    from dataclasses import dataclass
+
+    @dataclass(frozen=True)
+    class MsgUpsertRecord:
+        table: str
+        key: str
+        payload: dict  # or a typed dataclass you marshal to a tuple
+    ```
+
+    Emit from your worker:
+
+    ```py
+    q.put(MsgUpsertRecord(table="users", key="abc123", payload={"name": "Caleb", "active": 1}))
+    ```
+
+    Handle in the writer:
+
+    ```py
+    # in your SQLiteWriter.run loop
+    from my_messages import MsgUpsertRecord
+
+    elif isinstance(item, MsgUpsertRecord):
+        self._on_upsert(item)
+
+    # and implement:
+    def _on_upsert(self, m: MsgUpsertRecord) -> None:
+        assert self._conn is not None
+        # Example UPSERT using a prepared SQL per table; avoid dynamic SQL when possible.
+        self._conn.execute(
+            "INSERT INTO users(key, name, active) VALUES (?, ?, ?) "
+            "ON CONFLICT(key) DO UPDATE SET name=excluded.name, active=excluded.active",
+            (m.key, m.payload["name"], m.payload["active"]),
+        )
+        self._conn.commit()
+    ```
+
+    Create your domain schema in a small helper or migration step:
+
+    ```sql
+    CREATE TABLE IF NOT EXISTS users (
+       key TEXT PRIMARY KEY,
+       name TEXT NOT NULL,
+       active INTEGER NOT NULL
+    );
+    ```
+
+    > [!NOTE]
+    > Keep schema creation in a dedicated module (like db_schema.py) and call it from the writer just after init_schema(...).
+
+3. Idempotency & retries (don’t overthink it)
+
+   - Use natural keys + ON CONFLICT DO UPDATE to make “retries” cheap.
+   - For large loads, prefer batch messages (e.g., MsgUpsertBatch) to reduce commit overhead.
+   - If a worker fails, you’ll still get a MsgTaskFinished(..., status="error"). You can query task_runs later and re-enqueue specific tasks.
+
+4. Backpressure & throughput
+
+   - The queue is bounded: maxsize=max(64, workers * 8). If you push heavy domain data, consider:
+   - Using batching (MsgUpsertBatch), say 1,000–10,000 rows per message.
+   - Increasing maxsize if writer keeps up, or reducing if you want memory pressure to be explicit.
+   - Keep wal_autocheckpoint=1000. For huge ingest, raise it; for tiny writes, it’s fine.
+
+5. Tuning SQLite (safe defaults vs. speed)
+
+   Current pragmas are conservative for ETL:
+
+   - journal_mode=WAL
+   - synchronous=NORMAL (fewer fsyncs; still safe enough)
+   - temp_store=MEMORY
+   - cache_size=-100000 (~100 MB)
+   - wal_autocheckpoint=1000
+
+   Tradeoffs:
+
+   - For maximum durability, bump to synchronous=FULL.
+   - For speed on scratch DBs, you can use PRAGMA synchronous=OFF (⚠️ crash can corrupt last transaction).
+
+6. Customize the progress UI
+
+   - Per-task bars are pre-registered to avoid races.
+   - You can change columns or add text with task_progress.update(tid, description="…").
+   - To group tasks, give names like "extract:users", "transform:users", etc.
+
+7. Multiprocessing or asyncio (when to switch)
+
+   - Multiprocessing: if your work is CPU-bound and the GIL bites. You’ll need:
+   - multiprocessing.Queue for messages.
+   - A small shim to update Rich progress from the main process only.
+   - Asyncio: if your work is network-bound and you want extreme concurrency.
+   - Keep the same “single-writer” idea — but the writer becomes an asyncio.Task with aiosqlite.
+
+   For most local ETL, threaded workers + single writer are enough.
+
+8. Observability (recommended: keep task_runs)
+
+    You’ll thank yourself later. Handy queries:
+
+    ```sql
+    -- Stuck or failed tasks in the last 24h
+    SELECT id, name, status, progress, message, started_at, finished_at
+    FROM task_runs
+    WHERE (status <> 'done' OR progress < 1.0)
+    AND (datetime(started_at) > datetime('now','-1 day'));
+
+    -- Histogram of statuses
+    SELECT status, COUNT(*) FROM task_runs GROUP BY status;
+    ```
+
+    If a project really doesn’t need it, set --store-task-status false (or store_task_status=False in code).
+
+9. Example: replace the demo with a real ETL
+
+    Worker: extract from API → transform rows → send a batch to writer.
+
+    ```py
+    from dataclasses import dataclass
+    from pipeloom.messages import MsgTaskStarted, MsgTaskProgress, MsgTaskFinished
+    from datetime import UTC, datetime
+    import time
+
+    @dataclass(frozen=True)
+    class MsgUpsertUsersBatch:
+        rows: list[tuple[str, str, int]]  # key, name, active
+
+    def user_worker(task, q):
+        q.put(MsgTaskStarted(task.task_id, task.name, datetime.now(UTC).isoformat()))
+        try:
+            users = fetch_users_page(task.task_id)   # your I/O
+            rows = [(u["id"], u["name"], int(u["active"])) for u in users]
+            q.put(MsgTaskProgress(task.task_id, 1, 2, "downloaded"))
+            q.put(MsgUpsertUsersBatch(rows))
+            q.put(MsgTaskProgress(task.task_id, 2, 2, "stored"))
+            q.put(MsgTaskFinished(task.task_id, "done", datetime.now(UTC).isoformat()))
+        except Exception as e:
+            q.put(MsgTaskFinished(task.task_id, "error", datetime.now(UTC).isoformat(), message=str(e)))
+    ```
+
+    Writer handler:
+
+    ```py
+    def _on_upsert_users_batch(self, m: MsgUpsertUsersBatch) -> None:
+        assert self._conn is not None
+        self._conn.executemany(
+            "INSERT INTO users(key, name, active) VALUES (?, ?, ?) "
+            "ON CONFLICT(key) DO UPDATE SET name=excluded.name, active=excluded.active",
+            m.rows,
+        )
+        self._conn.commit()
+
+    Wire it in the writer’s dispatch:
+
+    elif isinstance(item, MsgUpsertUsersBatch):
+        self._on_upsert_users_batch(item)
+    ```
+
+10. Safety checklist
+
+    - ✅ Never share a SQLite connection across threads.
+    - ✅ Always pre-register per-task bars; check tid is not None (TaskID 0 is valid).
+    - ✅ Keep one Console for Logging + Progress.
+    - ✅ Use UPSERT for idempotency; batch inserts when possible.
+    - ✅ Shut down writer before transient progress exits (to remove bars).
+    - ✅ Keep task_runs on unless you have a strong reason not to.
+
+## How to Extend
+
+The core design is message-driven. To add new features:
+
+1. Add a new message type
+    - Create a @dataclass in messages.py representing the event.
+    - Example: MsgTaskError to log errors per task.
+2. Handle it in SQLiteWriter.run()
+    - Add a new elif isinstance(m, MsgTaskError): self._on_error(m).
+3. Update the database schema
+    - Modify the SQLite initialization in SQLiteWriter._init_db() to add new columns/tables.
+    - Consider migrations if you want backward compatibility.
+4. Update your workers to emit the new message type when appropriate.
+
+Because the SQLiteWriter owns all database writes, you keep DB operations safe and consistent no matter how many worker threads/processes you spawn.
