@@ -1,0 +1,122 @@
+# ===================================================================
+#  Build System Configuration
+# ===================================================================
+[build-system]
+# PEP 517 & 518: Specifies the build system and its requirements.
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+# ===================================================================
+#  Project Metadata (PEP 621)
+#  (https://packaging.python.org/en/latest/specifications/declaring-project-metadata/)
+# ===================================================================
+[project]
+# --- Core Metadata ---
+# PyPI에 등록될 고유한 이름입니다. 원하는 이름으로 변경하세요.
+name = "qboot"
+version = "0.1.1"
+description = "A simple yet powerful tool to bootstrap a modern Python project."
+readme = "README.md"
+requires-python = ">=3.9"
+
+# --- People ---
+authors = [
+  # 본인의 이름과 이메일로 수정하세요.
+  {name = "Youngmin Kim", email = "ggred0123@gmail.com"},
+]
+
+# --- Licensing ---
+# MIT 라이선스를 사용한다고 명시합니다. 프로젝트 최상위에 LICENSE 파일을 만드세요.
+license = {file = "LICENSE"}
+
+# --- Classifiers & Keywords for PyPI ---
+# PyPI에서 패키지를 검색하고 필터링하는 데 사용됩니다.
+keywords = ["boot", "init", "scaffolding", "template", "automation", "dev-tools"]
+classifiers = [
+    # https://pypi.org/classifiers/
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+# --- Dependencies ---
+# 이 패키지 실행에 필요한 런타임 의존성이 있다면 여기에 추가합니다.
+# 예: dependencies = ["requests", "click>=8.0"]
+dependencies = []
+
+
+# ===================================================================
+#  Entry Points (CLI, GUI)
+# ===================================================================
+[project.scripts]
+# "실행할 명령어 = 패키지.모듈:함수"
+# 'qboot'는 사용자가 터미널에서 입력할 명령어입니다.
+# 'qboot.cli:main'은 실행될 파이썬 함수 경로입니다.
+# 'name'과 패키지 디렉터리 이름이 일치해야 합니다 (하이픈 -> 언더스코어).
+qboot = "qboot.cli:main"
+
+
+# ===================================================================
+#  Project URLs
+# ===================================================================
+[project.urls]
+# GitHub 리포지토리 주소 등으로 수정하세요.
+"Homepage" = "https://github.com/ggred0123/qboot"
+"Bug Tracker" = "https://github.com/ggred0123/qboot/issues"
+
+
+# ===================================================================
+#  Tool Configurations
+# ===================================================================
+
+# --- Setuptools: 패키지 자동 탐지 설정 ---
+[tool.setuptools.packages.find]
+# 'src' 디렉터리 안에서 패키지를 찾도록 설정합니다.
+where = ["src"]
+
+# --- Black: Code Formatter ---
+[tool.black]
+line-length = 100
+target-version = ["py311", "py310", "py39"]
+
+# --- iSort: Import Sorter ---
+[tool.isort]
+profile = "black"
+line_length = 100
+float_to_top = true
+src_paths = ["src", "tests"]
+
+# --- Ruff: Linter & Formatter ---
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+extend-exclude = ["build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+]
+ignore = ["E501"] # line-length는 ruff format이 처리하므로 무시
+
+[tool.ruff.format]
+quote-style = "double"
+
+# --- Pytest: Testing Framework ---
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-q --color=yes"
+testpaths = ["tests"]
