@@ -1,0 +1,74 @@
+Metadata-Version: 2.2
+Name: QuickATETools
+Version: 1.0.0
+Summary: A collection of useful command-line tools
+Home-page: https://github.com/yourusername/QuickATETools
+Author: Your Name
+Author-email: your.email@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: pyperclip
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# QuickATETools
+
+一个实用的命令行工具集合，目前包含生成对角矩阵并复制到剪贴板的功能。
+
+## 安装
+
+```bash
+pip install .
+```
+
+## 使用方法
+
+### 生成对角矩阵并复制到剪贴板
+
+```bash
+qate clipboardMatrix -p <矩阵大小> [-c <对角线字符>]
+```
+
+#### 参数说明
+- `-p`, `--size`: 矩阵的大小（行数和列数），必填
+- `-c`, `--char`: 对角线使用的字符，默认为'M'
+
+#### 示例
+
+生成3x3的对角矩阵（默认使用'M'）：
+```bash
+qate clipboardMatrix -p 3
+```
+
+生成的矩阵：
+```
+M00
+0M0
+00M
+```
+
+生成4x4的对角矩阵，使用'X'作为对角线字符：
+```bash
+qate clipboardMatrix -p 4 -c X
+```
+
+生成的矩阵：
+```
+X000
+0X00
+00X0
+000X
+```
+
+## 待开发功能
+- 更多实用的命令行工具
