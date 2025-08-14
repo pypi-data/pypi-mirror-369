@@ -1,0 +1,32 @@
+"""Constant variables"""
+
+import os
+import re
+from enum import StrEnum
+from pathlib import Path
+
+CURRENT_WORKING_DIR = Path(os.getcwd())
+
+
+DEFAULT_REQUEST_HEADERS = {
+    "Accept": "*/",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:137.0) Gecko/20100101 Firefox/137.0",
+}
+
+DEFAULT_REQUEST_COOKIES = {}
+
+DOWNLOAD_PART_EXTENSION = ".part"
+
+THREADS_LIMIT = 1000
+
+ILLEGAL_CHARACTERS_PATTERN = re.compile(r"[^\w\-_\.\s()&|]")
+
+
+class DownloadMode(StrEnum):
+    START = "start"
+    RESUME = "resume"
+    AUTO = "auto"
+
+    @classmethod
+    def map(cls) -> dict:
+        return {"start": cls.START, "resume": cls.RESUME, "auto": cls.AUTO}
