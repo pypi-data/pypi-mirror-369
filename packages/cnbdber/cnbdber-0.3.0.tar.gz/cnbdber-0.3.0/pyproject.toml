@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cnbdber"
+version = "0.3.0"
+description = "CNBDBer: Universal DB runner for SQL-like commands across SQLite/MySQL/PostgreSQL/MongoDB"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Mr. Clark", email = "geoff@cnb.llc" }]
+keywords = ["database", "cli", "sql", "sqlite", "mysql", "postgresql", "mongodb"]
+dependencies = [
+  "cnblogger>=0.1.0",
+  "typing-extensions>=4.6.0; python_version < '3.11'",
+]
+
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Topic :: Database",
+  "Topic :: Utilities",
+]
+
+[project.optional-dependencies]
+mysql = ["PyMySQL>=1.1.1"]
+postgres = ["psycopg2-binary>=2.9.9"]
+mongo = ["pymongo>=4.6.0"]
+ssh = ["sshtunnel>=0.4.0"]
+
+[project.urls]
+Homepage = "https://github.com/AznIronMan/cnbdber"
+Repository = "https://github.com/AznIronMan/cnbdber.git"
+
+[project.scripts]
+cnbdber = "cnbdber.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cnbdber*"]
+
+
