@@ -1,0 +1,66 @@
+[project]
+name = "django-location-api"
+version = "0.1.1"
+description = "Django package for location services"
+authors = [{ name = "Carl Robben", email = "carl@successmonkey.co.nz" }]
+requires-python = ">=3.10,<4"
+readme = "README.rst"
+license = "BSD-3-Clause"
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.1",
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dependencies = [
+    "django~=4.2",
+    "djangorestframework>=3.14.0,<4",
+    "djangorestframework-gis~=1.0",
+    "django-filter~=24.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/carlosfunk/django-location-api"
+
+[tool.uv]
+package = true
+dev-dependencies = [
+    "bumpversion",
+    "coverage",
+    "flake8",
+    "invoke",
+    "isort",
+    "pylint",
+    "sphinx>=5.3.0",
+    "black",
+    "faker>=18.4.0,<19",
+    "factory-boy>=3.2.1,<4",
+    "django-environ>=0.8.1,<0.9",
+    "psycopg2-binary>=2.9.6,<3",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "location_api",
+    "tests",
+]
+
+[tool.hatch.build.targets.wheel]
+include = ["location_api"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.isort]
+profile = "black"
