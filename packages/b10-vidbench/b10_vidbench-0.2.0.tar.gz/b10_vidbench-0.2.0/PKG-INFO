@@ -1,0 +1,70 @@
+Metadata-Version: 2.3
+Name: b10-vidbench
+Version: 0.2.0
+Summary: Simple video quality analysis using VBench
+License: MIT
+Keywords: video,quality,vbench,ai
+Author: Shounak Ray
+Author-email: shounak.ray@baseten.co
+Requires-Python: >=3.8
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: vbench
+Requires-Dist: numpy
+Requires-Dist: opencv-python
+Requires-Dist: pillow
+Requires-Dist: vbench ; extra == "vbench"
+Description-Content-Type: text/markdown
+
+# B10 Video Benchmark
+
+Simple video quality analysis using VBench.
+
+## Installation
+
+```bash
+pip install b10-vidbench[vbench]
+```
+
+## Usage
+
+```python
+from b10_vidbench import VideoAnalyzer
+
+analyzer = VideoAnalyzer(device="cuda")  # or "cpu"
+analyzer.set_backends("vbench")
+
+results = analyzer.analyze(
+    videos_path="./videos",
+    output_path="./results.json"
+)
+```
+
+## API
+
+### VideoAnalyzer(device="cuda")
+- `set_backends(backends)` - Set backend ("vbench")
+- `analyze(videos_path, output_path, dimensions=None)` - Analyze videos
+
+### Available Dimensions
+- aesthetic_quality, motion_smoothness, subject_consistency
+- temporal_flickering, dynamic_degree, imaging_quality
+- object_class, multiple_objects, human_action, color
+- spatial_relationship, scene, temporal_style, appearance_style
+- background_consistency, overall_consistency
+
+## Output Format
+
+```json
+{
+  "video1": {"aesthetic_quality": 0.85, "motion_smoothness": 0.72},
+  "video2": {"aesthetic_quality": 0.78, "motion_smoothness": 0.68}
+}
+```
+

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "b10-vidbench"
+version = "0.2.0"
+description = "Simple video quality analysis using VBench"
+readme = "README.md"
+authors = ["Shounak Ray <shounak.ray@baseten.co>"]
+license = "MIT"
+keywords = ["video", "quality", "vbench", "ai"]
+packages = [{include = "b10_vidbench", from = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+numpy = "*"
+opencv-python = "*"
+pillow = "*"
+vbench = {version = "*", optional = true}
+
+[tool.poetry.extras]
+vbench = ["vbench"]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+ruff = "*"
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
