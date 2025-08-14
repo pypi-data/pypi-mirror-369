@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: rapidllm
+Version: 0.5.0
+Summary: A small framework for building predictable multi-tool LLM agents.
+Author-email: Patrick Tuyizere <you@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/Patk-Tuy/rapidllm
+Project-URL: Repository, https://github.com/Patk-Tuy/rapidllm
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: litellm>=0.1.0
+Dynamic: license-file
+
+# RapidLLM
+
+RapidLLM is a Python framework for building predictable, reliable multi-tool LLM agents. It emphasizes **multi-tool orchestration** over single-call monolithic prompts, making your agents more modular, testable, and efficient.
+
+## Features
+- Simple multi-tool agent architecture.
+- Clear separation of concerns between tools.
+- Predictable step-by-step execution.
+- Easy to extend with your own tools.
+
+## Installation
+```bash
+pip install rapidllm
+
+## Quick Example
+
+Below is a very minimal example of using RapidLLM to create an agent that lists files:
+
+from rapidllm.agent import run_agent
+from rapidllm.tools import list_files_tool
+
+# Define available tools
+TOOLS = [list_files_tool]
+
+if __name__ == "__main__":
+    run_agent(
+        system_prompt="List all files in the src directory.",
+        tools=TOOLS,
+        model="gpt-4"
+    )
