@@ -1,0 +1,27 @@
+{% set ellipsis = kwargs["ellipsis"] %}
+{% set attributes_to_ignore = kwargs["attributes_to_ignore"] %}
+
+{% if extractor.has_attrs(obj) %}
+
+<table class="grouped_data metadata">
+    <caption>Attribute definition</caption>
+    <tr>
+        <th class="name" scope="col">Name</th>
+        <th class="description" scope="col">Description</th>
+        <th class="details" scope="col">Note<br><span class="sample">(show value if constant)</span></th>
+    </tr>
+
+{% for group in extractor.ellipse_groups(obj, ellipsis=ellipsis) %}
+    {% if extractor.has_attrs(group, ignore_list=attributes_to_ignore, recursive=False) %}
+    <tr class="group"><td colspan="3" class="name">{{ extractor.path(group.path, ellipsis=ellipsis) }}</td></tr>
+
+    {% for key, value in extractor.ellipse_attrs(group.attrs, group.path, ellipsis=ellipsis) %}
+        {% with key=key, value=value, extractor=extractor, kwargs=kwargs %}
+        {% include "tpl_PDFS_tr_attribute.html" %}
+        {% endwith %}
+    {% endfor %} <!-- for key/val -->
+
+    {% endif %}  <!-- group.attrs -->
+    {% endfor %} <!-- for group -->
+</table>
+{% endif %} <!-- has attrs -->

@@ -1,0 +1,89 @@
+{
+  "context": {
+    "_measurements": {
+      "rows": 1023,
+      "columns": 1217,
+      "data_vars": {
+        "oa_radiance": [
+          "01",
+          "02"
+        ]
+      }
+    }
+  },
+  "data": {
+    "/": {
+      "attrs": {
+        "stac_discovery": {
+          "assets": {
+            "required": true,
+            "value": [],
+            "dtype": "list[]"
+          },
+          "properties": {
+            "created": {
+              "required": true,
+              "value": "2023-07-11T06:58:04Z",
+              "dtype": "<U20"
+            },
+            "eopf:type": {
+              "required": true,
+              "value": "S3OLCERR",
+              "dtype": "<U8"
+            },
+            "instrument": {
+              "required": true,
+              "value": "OLCI",
+              "dtype": "<U4"
+            },
+            "mission": {
+              "required": true,
+              "value": "Sentinel-3",
+              "dtype": "<U10"
+            },
+            "platform": {
+              "required": true,
+              "dtype": "<U11"
+            }
+          }
+        },
+        "other_metadata": {
+          "data_information": {
+            "earth_sun_distance": {
+              "required": true,
+              "value": 150881496555,
+              "dtype": "<i8"
+            }
+          }
+        }
+      }
+    },
+    "/measurements": {
+      "data_vars": {
+        "oa{{ index }}_radiance": {
+          "attrs": {
+            "add_offset": 0.0,
+            "ancillary_variables": "Oa{{ index }}_radiance_unc",
+            "long_name": "TOA radiance for OLCI acquisition band Oa{{ index }}",
+            "scale_factor": 0.013634907081723213,
+            "short_name": "oa{{ index }}_radiance",
+            "standard_name": "toa_upwelling_spectral_radiance",
+            "units": "mW.m-2.sr-1.nm-1",
+            "valid_max": 65534,
+            "valid_min": 0,
+            "_FillValue": 65535,
+            "dtype": "uint16"
+          },
+          "dims": {
+            "rows": "{{ context._measurements.rows }}",
+            "columns": "{{ context._measurements.columns }}"
+          }
+        }
+      }
+    }
+  },
+  "recognition": {
+    "filename_pattern": "S00SAMPLE.*",
+    "product_type": "S00SAMPLE"
+  }
+}

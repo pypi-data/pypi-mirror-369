@@ -1,0 +1,44 @@
+<!-- keep in mind https://github.com/mwouts/itables/tree/main -->
+<h4 class="name {{ obj.name }}">{{ obj.attrs.get("eopf:type", obj.obj_type) }}</h4>
+
+
+{% with obj=obj, extractor=extractor, kwargs=kwargs, method=method %}
+{% include "tpl_PDFS_table_dict_metadata.html" %}
+{% endwith %}
+
+{% set ellipsis = kwargs["ellipsis"] %}
+{% if ellipsis %}
+    <!-- Reset ellipsis data -->
+    {% set _ = ellipsis.init() %}
+    {% set all_paths = extractor.all_paths(obj) %}
+    {% set _ = ellipsis.prune(all_paths) %}
+{% endif %}
+
+<h5>Variables</h5>
+<!-- Variable summary (name, short_name, long_name, ...) for **all** groups -->
+<div class="variables">
+    <table class="grouped_data eogroup">
+        <caption>Product variable definition</caption>
+        <tr>
+            <th class="name" scope="col">Short Name <br><span class="unit">unit</span> </th>
+            <th class="long_name" scope="col">Long Name</th>
+            <th class="dimensions" scope="col">Dimensions</th>
+            <th class="range" scope="col">Range<br><span class="storage">storage fill_value</span></th>
+            <th class="type" scope="col">Type<br><span class="storage">storage</span></th>
+        </tr>
+
+
+    {% if extractor.contains_variables(obj, exclude_flags=False) %}
+
+    {% set variables = extractor.iter_variables(obj, ellipsis=ellipsis, exclude_flags=True) %}
+
+    {% for var_path, variable in variables %}
+        {% with product=obj, variable=variable, path=var_path, extractor=extractor, kwargs=kwargs %}
+        {% include "tpl_PDFS_tr_variable.html" %}
+        {% endwith %}
+    {% endfor %}
+
+    {% endif %}
+
+</table>
+</div>

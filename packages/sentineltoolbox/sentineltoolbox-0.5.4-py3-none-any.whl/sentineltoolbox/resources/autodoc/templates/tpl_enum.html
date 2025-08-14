@@ -1,0 +1,23 @@
+<div class="enum">
+    {% if kwargs["mode"] == kwargs["DisplayMode"].dev %}
+        &lt;Enum&gt;{{ kwargs["obj_path"] }}
+        <span class="long_name">({{ obj.__doc__ }})</span>
+    {% else %}
+        <span class="name {{ obj.__name__ }}">{{ obj.__doc__ }}</span>
+    {% endif %}
+    <ul>
+        {% for child in obj %}
+            <li>
+
+
+                {% if kwargs["mode"] == kwargs["DisplayMode"].dev %}
+                <span class='name'>{{ child.name }}</span>=
+                <span class='long_name'>{{ child.__doc__}}</span>
+                {% else %}
+                <span class='name'>{{ child.value }}</span>:
+                <span class='long_name'>{{ child.long_name}}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

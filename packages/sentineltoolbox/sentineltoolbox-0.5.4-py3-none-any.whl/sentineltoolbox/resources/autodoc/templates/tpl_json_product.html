@@ -1,0 +1,29 @@
+
+{% for group in product.walk() %}
+
+{% if group.has_parameters() %}
+<h5 class="name">{{group.path}}</h5>
+
+<table class="tasktable">
+    <caption>Product definition</caption>
+    <tr>
+        <th class="name" scope="col">Name</th>
+        <th class="long_name" scope="col">Description</th>
+        <th class="value" scope="col">Value</th>
+    </tr>
+
+    {% for param in group.parameters %}
+    <tr>
+        <td>{{ param.name }}</td>
+        <td>{{ param.description }}</td>
+        <td>{{ param.get('value', '') }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% endfor %}
+
+{% if kwargs["mode"] == kwargs["DisplayMode"].dev %}
+<div class="note">Code generated with {{ self }} applied on {{ product }}</div>
+{% endif %}

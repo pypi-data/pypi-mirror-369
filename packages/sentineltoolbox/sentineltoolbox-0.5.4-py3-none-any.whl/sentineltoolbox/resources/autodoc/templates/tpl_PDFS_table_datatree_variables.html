@@ -1,0 +1,61 @@
+{% set ellipsis = kwargs["ellipsis"] %}
+
+<!-- Variable summary (name, short_name, long_name, ...) for **all** groups -->
+<div class="variables">
+    <table class="grouped_data eogroup">
+        <caption>Variable definition</caption>
+        <tr>
+            <th class="name" scope="col">Short Name <br><span class="unit">unit</span> </th>
+            <th class="long_name" scope="col">Long Name</th>
+            <th class="dimensions" scope="col">Dimensions</th>
+            <th class="range" scope="col">Data Range<br><span class="storage">Storage Range<br>fill_value</span></th>
+            <th class="type" scope="col">Data Type<br><span class="storage">Storage Type</span></th>
+        </tr>
+
+{% for group in extractor.ellipse_groups(obj, ellipsis=ellipsis) %}
+    {% if extractor.contains_variables(group, exclude_flags=False) %}
+    <tr class="group">
+        <td class="name" colspan="5">{{ extractor.path(group.path, ellipsis=ellipsis) }}</td>
+    </tr>
+    {% set doc=extractor.documentation(obj, group.path, ellipsis=ellipsis) %}
+
+    {% if doc %}
+    <tr class="group_doc">
+        <td class="name" colspan="5">{{ doc }}</td>
+    </tr>
+    {% endif %}
+
+    {% set variables = extractor.iter_variables(obj, group.path, ellipsis=ellipsis, exclude_flags=False) %}
+
+    {% for var_path, variable in variables %}
+        {% with product=obj, variable=variable, path=var_path, extractor=extractor, kwargs=kwargs %}
+        {% include "tpl_PDFS_tr_variable.html" %}
+        {% endwith %}
+    {% endfor %}
+
+
+    {% for var_path, variable in variables %}
+        {% with product=obj, variable=variable, path=var_path, extractor=extractor, kwargs=kwargs %}
+        {% include "tpl_PDFS_tr_variable.html" %}
+        {% endwith %}
+    {% endfor %}
+
+    {% if kwargs.get("show_coordinates", False) and group.coords %}
+    <tr class="group coordinate">
+        <td class="name" colspan="5">Coordinates</td>
+    </tr>
+
+    {% for coord_name, coord in group.coords.items() %}
+        {% with product=group, variable=coord, path=coord_name, extractor=extractor, kwargs=kwargs %}
+        {% include "tpl_PDFS_tr_variable.html" %}
+        {% endwith %}
+    {% endfor %}
+    {% endif %}
+
+    {% endif %}
+{% endfor %}
+</table>
+
+<span class="coordinate name">*variable</span>: this variable is a coordinate.
+<span class="flag name">*variable</span>: this variable is a flag.
+</div>

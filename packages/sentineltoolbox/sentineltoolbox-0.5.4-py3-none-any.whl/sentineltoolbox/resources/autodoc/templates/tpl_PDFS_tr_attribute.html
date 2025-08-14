@@ -1,0 +1,18 @@
+{% set desc = extractor.product_property_documentation(key, value)|safe %}
+{% set attributes_to_show = kwargs["attributes_to_show"] %}
+{% set ignore = kwargs["attributes_to_ignore"] %}
+
+{% if key not in ignore %}
+<tr>
+    <td>{{ extractor.html_links(key)|safe}}</td>
+    <td>{{ extractor.product_property(key, value)|safe }}</td>
+    <td>
+    {% if desc %}
+        <div class="details">{{ desc }}</div>
+    {% endif %}
+    {% if key in attributes_to_show %}
+        <span class="sample">{{ extractor.html(value, name=key)|safe }}</span>
+    {% endif %}
+    </td>
+</tr>
+{% endif %}

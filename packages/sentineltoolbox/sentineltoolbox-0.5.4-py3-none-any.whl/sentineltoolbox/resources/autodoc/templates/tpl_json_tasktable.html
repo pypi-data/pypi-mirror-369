@@ -1,0 +1,65 @@
+
+<h5 class="name">TaskTable</h5>
+<!--
+Code generated automatically from JSON task table like this:
+            {
+            "Mode": "ALWAYS",
+            "Mandatory": "Yes",
+            "Alternatives": [
+                {
+                    "Order": "1",
+                    "Origin": "DB",
+                    "Retrieval_Mode": "ValIntersect",
+                    "T0": "0",
+                    "T1": "0",
+                    "File_Type": "S3OLCCR0",
+                    "File_Name_Type": "Physical"
+                }
+            ]
+        }
+
+-->
+<table class="tasktable">
+    <caption>Tasktable definition</caption>
+    <tr>
+        <th class="name" scope="col">Product</th>
+        <th class="description" scope="col">Description</th>
+        <th class="mandatory" scope="col">Mandatory</th>
+        <th class="retrieval" scope="col">Retrieval mode</th>
+        <th class="margin" scope="col">Margin</th>
+    </tr>
+
+    {% for input in obj.inputs %}
+    <tr>
+        <td class="name">
+            <ul>
+            {% for alt in input["Alternatives"] %}
+                <li>{{ alt["File_Type"] }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+        <td class="description">
+            <ul>
+            {% for alt in input["Alternatives"] %}
+                <li>{{ extractor.title(alt["File_Type"]) }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+        <td class="mandatory">{{ input["Mandatory"] }}</td>
+        <td class="retrieval">
+            <ul>
+            {% for alt in input["Alternatives"] %}
+                <li>{{ alt["Retrieval_Mode"] }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+        <td class="margin">
+            <ul>
+            {% for alt in input["Alternatives"] %}
+                <li>T0={{ alt["T0"] }} / T1={{ alt["T1"] }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

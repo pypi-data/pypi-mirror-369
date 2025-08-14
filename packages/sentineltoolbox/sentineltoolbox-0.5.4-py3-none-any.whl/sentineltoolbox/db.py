@@ -1,0 +1,31 @@
+__all__ = [
+    "AUXILIARY_TREE",
+    "FIELDS_DESCRIPTION",
+    "DATAFILE_METADATA",
+    "PRODUCT_PATTERNS",
+    "PRODUCT_TREE",
+    "PROPERTIES_METADATA",
+    "TERMS_METADATA",
+    "product_summaries",
+    "term_summaries",
+    "XML_NAMESPACES",
+    "XML_NAMESPACES_WITH_DUPLICATES",
+    "fields_headers",
+    "NAMESPACES",
+]
+
+from sentineltoolbox.resources.data import (
+    AUXILIARY_TREE,
+    DATAFILE_METADATA,
+    FIELDS_DESCRIPTION,
+    NAMESPACES,
+    PRODUCT_PATTERNS,
+    PRODUCT_TREE,
+    PROPERTIES_METADATA,
+    TERMS_METADATA,
+    XML_NAMESPACES,
+    XML_NAMESPACES_WITH_DUPLICATES,
+    fields_headers,
+    product_summaries,
+    term_summaries,
+)

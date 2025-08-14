@@ -1,0 +1,56 @@
+<!-- keep in mind https://github.com/mwouts/itables/tree/main -->
+
+<h4 class="name {{ obj.name }}">{{ obj.attrs.get("eopf:type", obj.obj_type) }}</h4>
+
+
+{% with obj=obj, extractor=extractor, kwargs=kwargs, method=method %}
+{% include "tpl_PDFS_table_dict_metadata.html" %}
+{% endwith %}
+
+{% set ellipsis = kwargs["ellipsis"] %}
+{% if ellipsis %}
+    <!-- Reset ellipsis data -->
+    {% set _ = ellipsis.init() %}
+    {% set all_paths = extractor.all_paths(obj) %}
+    {% set _ = ellipsis.prune(all_paths) %}
+{% endif %}
+
+{% if extractor.contains_variables(obj) %}
+<h5>Variables</h5>
+{% with obj=obj, extractor=extractor, kwargs=kwargs %}
+{% include "tpl_PDFS_table_datatree_variables.html" %}
+{% endwith %}
+{% endif %}
+
+<!-- Product representation -->
+{% if kwargs["method"] == "compact-eopf" %}
+    <!-- EOPF HTML tree -->
+    Sample product: {{ extractor.to_eoproduct(obj)._repr_html_()|safe }}
+{% endif %}
+
+{% if kwargs["method"] == "compact-datatree" %}
+    <!-- datatree HTML  tree -->
+    Sample product: {{ obj._repr_html_()|safe }}
+{% endif %}
+
+<!-- Ellipsis summary -->
+{% with obj=obj, extractor=extractor, kwargs=kwargs %}
+{% include "tpl_PDFS_datatree_ellipsis_summary.html" %}
+{% endwith %}
+
+{% if extractor.has_attrs(obj) %}
+<!-- Attribute table for **all** groups -->
+<h5>Attributes</h5>
+{% with obj=obj, extractor=extractor, kwargs=kwargs %}
+{% include "tpl_PDFS_table_datatree_attributes.html" %}
+{% endwith %}
+
+{% endif %}
+
+{% if extractor.has_flags(obj) %}
+<!-- Flag table for **all** groups -->
+<h5>Flags</h5>
+{% with obj=obj, extractor=extractor, kwargs=kwargs %}
+{% include "tpl_PDFS_table_datatree_flags.html" %}
+{% endwith %}
+{% endif %}

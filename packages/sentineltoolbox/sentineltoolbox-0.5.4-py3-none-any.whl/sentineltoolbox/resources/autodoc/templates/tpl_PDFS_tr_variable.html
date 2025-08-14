@@ -1,0 +1,32 @@
+{% set _ = extractor.to_str %}
+
+{% set ellipsis = kwargs["ellipsis"] %}
+{% if ellipsis %}
+{% set donotdisplay = ellipsis.debug(path) %}
+{% endif %}
+
+{% set name = extractor.name(product, path, ellipsis=ellipsis)%}
+{% set fv = extractor.variable_storage_fillvalue(variable) %}
+
+<tr>
+    {% if extractor.is_coordinate(product, path) %}
+    <td class="name coordinate">{{ name }} <span class="note">*</span><br><span class="unit">{{ variable.attrs["units"] }}</span></td>
+    {% elif extractor.is_flag(product, path) %}
+    <td class="name flag">{{ name }} <span class="note">[flag]</span><br><span class="unit">{{ variable.attrs["units"] }}</span></td>
+    {% else %}
+    <td class="name">{{ name }}<br><span class="unit">{{ variable.attrs["units"] }}</span></td>
+    {% endif %}
+    <td>{{ extractor.html(extractor.description(product, path, ellipsis=ellipsis)) }}</td>
+    <td class="dimensions">{{ extractor.variable_dims(variable.dims, ellipsis=ellipsis)|join('<br>'|safe) }}</td>
+    <td>{{ _(extractor.variable_range(variable)) }}<br>
+        <span class="storage">
+            {{ _(extractor.variable_storage_range(variable)) }}
+            {% if fv != None %}
+            <br> {{ _(fv) }}
+            {% endif %}
+        </span>
+    </td>
+    <td>{{ variable.dtype }} <br>
+        <span class="storage">{{ _(extractor.variable_storage_type(variable)) }}</span>
+    </td>
+</tr>

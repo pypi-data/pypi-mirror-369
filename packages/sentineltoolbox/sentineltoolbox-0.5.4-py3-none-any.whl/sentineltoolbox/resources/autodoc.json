@@ -1,0 +1,52 @@
+{
+  "paths": {
+    "PRODUCT": [
+      "s3://s2-input/Products",
+      "s3://s3-input/Products"
+    ],
+    "AUXILIARY": [
+      "s3://s2-input/Auxiliary/MSI",
+      "s3://s3-input/Auxiliary"
+    ],
+    "TASKTABLE": [
+      "s3://s3-input/Tasktables/json"
+    ]
+  },
+  "secrets_aliases": {
+    "s3://s2-input/Products": "s2input",
+    "s3://s3-input/Products": "s3input",
+    "s3://s2-input/Auxiliary/MSI": "s2input",
+    "s3://s3-input/Auxiliary": "s3input",
+    "s3://s3-input/Tasktables": "s3input"
+  },
+  "group_order": {
+    "/measurements": 10,
+    "default": 50,
+    "/conditions": 100
+  },
+  "eoproduct_method": "compact",
+  "display_mode": "rich",
+  "attributes_to_show": [
+    "eopf:baseline",
+    "eopf:image_size",
+    "eopf:instrument_mode",
+    "eo:bands",
+    "instrument",
+    "mission",
+    "title",
+    "data_information",
+    "processing:level",
+    "product:type",
+    "sat:platform_international_designator",
+    "sat:orbit_state",
+    "description",
+    "stac_version",
+    "type",
+    "datetime"
+  ],
+  "attributes_to_ignore": [
+    "_coordinates",
+    "documentation",
+    "stac_extensions"
+  ]
+}

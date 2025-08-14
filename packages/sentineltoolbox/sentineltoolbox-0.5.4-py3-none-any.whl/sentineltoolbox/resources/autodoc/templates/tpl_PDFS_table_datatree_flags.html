@@ -1,0 +1,31 @@
+{% if extractor.has_flags(obj) %}
+
+{% set ellipsis = kwargs["ellipsis"] %}
+
+<!-- Flag table for **all** groups -->
+<table class="grouped_data metadata">
+    <caption>flags definition</caption>
+    <tr>
+        <th scope="col">Value</th>
+        <th scope="col">Name<br>(Meaning)</th>
+        <th scope="col">Description</th>
+    </tr>
+
+{% for group in extractor.ellipse_groups(obj, ellipsis=ellipsis) %}
+    {% set flags = extractor.flags(obj, group.path, ellipsis=ellipsis) %}
+    {% if flags %}
+    {% for varpath, variable in flags %}
+    <tr class="group"><td colspan="3" class="name">{{ extractor.path(varpath, ellipsis=ellipsis) }}</td></tr>
+    {% for attrs in extractor.to_flag_dict(variable, varpath).values() %}
+    <tr>
+        <td>{{ attrs["value"] }}</td>
+        <td>{{ attrs["name"] }}</td>
+        <td>{{ attrs["description"] }}</td>
+    </tr>
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
+{% endfor %}
+
+</table>
+{% endif %}

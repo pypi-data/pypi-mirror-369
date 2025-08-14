@@ -1,0 +1,59 @@
+{% set special_attrs = [
+    "links",
+    ]
+%}
+
+{% set exclude_attrs = kwargs.get("exclude_attrs", []) + special_attrs %}
+
+{% set properties = extractor.attributes_properties(obj, exclude_attrs=exclude_attrs) %}
+{% set metadata = extractor.attributes_other_metadata(obj, exclude_attrs=exclude_attrs) %}
+{% set stac_discovery = extractor.attributes_stac_discovery(obj, exclude_attrs=exclude_attrs) %}
+{% set stac_extensions = extractor.attributes_stac_extensions(obj, exclude_attrs=exclude_attrs) %}
+
+{% if stac_discovery %}
+    {% if stac_discovery["properties"] %}
+        {% set objs = {"": stac_discovery, "properties/": stac_discovery["properties"]} %}
+    {% else %}
+            {% set objs = {"": stac_discovery} %}
+    {% endif %}
+
+    <h5 class="properties metadata">Properties ("stac_discovery")</h5>
+    <div class="note">
+    See
+    <a href="https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#discovery-metadata-attributes">
+        Discovery Metadata Attributes</a> section of page &quot;Metadata Representation in EOPF Product&quot;
+        on EOPF/CPM documentation.
+    </div>
+
+    {% with objs=objs, path="/", extractor=extractor, kwargs=kwargs, method=method %}
+    {% include "tpl_PDFS_table_dict_properties.html" %}
+    {% endwith %}
+{% endif %}
+
+{% if metadata %}
+    <h5 class="properties metadata">Metadata ("other_metadata")</h5>
+
+    <div class="note">
+    See
+    <a href="https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#product-type-specific-and-non-discovery-metadata">
+        Product type-specific and non-discovery metadatas</a> section of page &quot;Metadata Representation in EOPF Product&quot;
+        on EOPF/CPM documentation.
+    </div>
+
+    {% with objs={"": metadata}, path="/", extractor=extractor, kwargs=kwargs, method=method %}
+    {% include "tpl_PDFS_table_dict_properties.html" %}
+    {% endwith %}
+{% endif %}
+
+{% set history = obj.attrs.get("history", {}) %}
+{% if history and kwargs["method"] == "show-values" %}
+    {% with obj=history, extractor=extractor, kwargs=kwargs, method=method %}
+    {% include "tpl_PDFS_table_dict_history.html" %}
+    {% endwith %}
+{% endif %}
+
+{% if stac_extensions %}
+    {% with obj=stac_extensions, extractor=extractor, kwargs=kwargs, method=method %}
+    {% include "tpl_PDFS_table_dict_stac_extensions.html" %}
+    {% endwith %}
+{% endif %}

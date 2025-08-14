@@ -1,0 +1,9 @@
+{% set headers = kwargs.get("headers") %}
+{% if headers %}
+{{ key(headers) }}: {{ value(headers) }}
+{% endif %}
+<ul>
+    {% for item in obj%}
+    <li>{{ key(item, loop.index)|safe }} {{ sep(item)|safe }} {{ value(item)|safe }}</li>
+    {% endfor%}
+</ul>

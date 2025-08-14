@@ -1,0 +1,176 @@
+{
+  "assets": {
+    "description": "List of downloadable components",
+    "documentation": "Can be empty"
+  },
+  "autodoc_link_sample": {
+    "links": "{{ROOT}}/general/product_properties.myst.html"
+  },
+  "bands": {
+    "description": "Bands",
+    "documentation": "An array of available bands where each object is a Band Object. If given, it requires at least one band"
+  },
+  "bbox": {
+    "documentation": "Bounding Box of the asset represented by this Item, formatted according to RFC 7946, section 5.",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "constellation": {
+    "documentation": "Name of the constellation to which the platform belongs."
+  },
+  "created": {
+    "description": "ISO 8601 Creation date",
+    "documentation": "Creation date and time of the corresponding data (see below), in UTC ISO 8601",
+        "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "datetime": {
+    "description": "The searchable date and time of the assets",
+    "documentation": "`null` is used in EOPF context and so requires `start_datetime` and `end_datetime`",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "end_datetime": {
+    "documentation": "The last or end date and time for the Item, in UTC. It is formatted as date-time according to the ISO8601 specifications.",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "eo:cloud_cover": {
+    "description": "Cloud Cover"
+  },
+  "eo:cloud_cover number": {
+    "documentation": "Estimate of cloud cover as a percentage (0-100) of the entire scene"
+  },
+  "eo:snow_cover": {
+    "description": "Snow and Ice Cover"
+  },
+  "eo:snow_cover number": {
+    "documentation": "Estimate of snow and ice cover as a percentage (0-100) of the entire scene"
+  },
+  "eopf:baseline": {
+    "description": "Processing baseline",
+    "documentation": "Processing baseline identifier"
+  },
+  "eopf:image_size": {
+    "documentation": "Image size in pixels for the highest resolution data. Dictionary of image sizes, raster name used as key",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "eopf:pixel_classification": {
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "eopf:resolutions": {
+    "documentation": "Dictionary of ground resolutions in m"
+  },
+  "eopf:timeline": {
+    "documentation": "Processing timeliness description (e.g. STC, NTC, NRT)",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "geometry": {
+    "description": "GeoJSON Polygon",
+    "documentation": "Defines the full footprint of the asset represented by this item, formatted according to RFC 7946, section 3.1. The footprint should be the default GeoJSON geometry, though additional geometries can be included. Coordinates are specified in Longitude/Latitude or Longitude/Latitude/Elevation based on WGS 84. Can be set to null if bounding box is sufficient to describe product location",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "gsd": {
+    "description": "Ground Sample Distance",
+    "documentation": "Ground Sample Distance at the sensor, in meters (m), must be greater than 0."
+  },
+  "history": {
+    "description": "Complete Processing History",
+    "documentation": "complete history of the main steps that have been applied to the data after acquisition",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#processing-history"
+  },
+  "id": {
+    "description": "EOPF product name"
+  },
+  "instrument": {
+    "documentation": "Name of instrument or sensor used (lowercase, e.g. msi, sar, slstr, olci, synergy)."
+  },
+  "mission": {
+    "documentation": "Name of the mission for which data is collected (lowercase, e.g. sentinel-1, sentinel-2, sentinel-3) "
+  },
+  "platform": {
+    "documentation": "Unique name of the specific platform to which the instrument is attached. (lowercase, e.g. sentinel-3a)"
+  },
+  "processing:expression": {
+    "description": "Processing Expression",
+    "documentation": "An expression or processing chain that describes how the data has been processed",
+    "links": "https://github.com/stac-extensions/processing/blob/main/README.md#item-properties-and-collection-provider-fields"
+  },
+  "processing:facility": {
+    "description": "Processing Facility",
+    "documentation": "The name of the facility that produced the data. For example, `Copernicus S1 Core Ground Segment - DPA` for product of Sentinel-1 satellites",
+    "links": "https://github.com/stac-extensions/processing/blob/main/README.md#item-properties-and-collection-provider-fields"
+  },
+  "processing:level": {
+    "description": "Processing Level",
+    "documentation": "The name commonly used to refer to the processing level to make it easier to search for product level across collections or items. The short name must be used (only `L`, not `Level`)",
+    "links": "https://github.com/stac-extensions/processing/blob/main/README.md#suggested-processing-levels"
+  },
+  "processing:lineage": {
+    "description": "Processing Lineage Information",
+    "documentation": "Lineage Information provided as free text information about the how observations were processed or models that were used to create the resource being described",
+    "links": "https://github.com/stac-extensions/processing/blob/main/README.md#item-properties-and-collection-provider-fields"
+  },
+  "processing:software": {
+    "description": "Processing Software Name / version",
+    "documentation": "A dictionary with name/version for key/value describing one or more softwares that produced the data",
+    "links": "https://github.com/stac-extensions/processing/blob/main/README.md#item-properties-and-collection-provider-fields"
+  },
+  "product:type": {
+    "description": "Product type description",
+    "documentation": "9 upper case character string that identify type of product (e.g. S03OLCEFR) or 13 upper case character for auxiliaries (e.g. S02_ADF_DATAT)"
+  },
+  "sat:absolute_orbit": {
+    "documentation": "The absolute orbit number at the start of acquisition"
+  },
+  "sat:orbit_state": {
+    "description": "Orbit State",
+    "documentation": "Ground track direction of acquisition start"
+  },
+  "sat:relative_orbit": {
+    "documentation": "The relative orbit number at the start of acquisition"
+  },
+  "sci:citation": {
+    "description": "Proposed Data Citation"
+  },
+  "sci:doi": {
+    "description": "Data DOI"
+  },
+  "sci:publications": {
+    "description": "Publications"
+  },
+  "stac_extensions": {
+    "description": "STAC Extension"
+  },
+  "stac_version": {
+    "description": "STAC Version"
+  },
+  "start_datetime": {
+    "documentation": "The first or start date and time for the Item, in UTC. It is formatted as date-time according to the ISO8601 specifications.",
+    "links": "https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/7-metadata.html#stac-item"
+  },
+  "updated": {
+    "documentation": "Date and time the corresponding data (see below) was updated last, in UTC ISO 8601"
+  },
+  "view:azimuth": {
+    "description": "Azimuth angle",
+    "documentation": "Viewing azimuth angle. The angle measured from the sub-satellite point (point on the ground below the platform) between the scene center and true north. Measured clockwise from north in degrees (0-360)",
+    "links": "https://github.com/stac-extensions/view"
+  },
+  "view:incidence_angle": {
+    "description": "Center incidence angle",
+    "documentation": "The incidence angle is the angle between the vertical (normal) to the intercepting surface and the line of sight back to the satellite at the scene center. Measured in degrees (0-90)",
+    "links": "https://github.com/stac-extensions/view"
+  },
+  "view:off_nadir": {
+    "description": "Off Nadir",
+    "documentation": "The angle from the sensor between nadir (straight down) and the scene center. Measured in degrees (0-90)",
+    "links": "https://github.com/stac-extensions/view"
+  },
+  "view:sun_azimuth": {
+    "description": "Sun Azimuth",
+    "documentation": "Sun azimuth angle. From the scene center point on the ground, this is the angle between truth north and the sun. Measured clockwise in degrees (0-360)",
+    "links": "https://github.com/stac-extensions/view"
+  },
+  "view:sun_elevation": {
+    "description": "Sun Elevation",
+    "documentation": "Sun elevation angle. The angle from the tangent of the scene center point to the sun. Measured from the horizon in degrees (`-90`-`90`)",
+    "links": "https://github.com/stac-extensions/view"
+  }
+}

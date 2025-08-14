@@ -1,0 +1,47 @@
+
+<!--
+{
+    'absolute_pass_number': 40204,
+    'cycle_number': 53,
+    'ephemeris': {
+        'start': {
+            'TAI': '2019-12-27T11:44:40.100954',
+            'UT1': '2019-12-27T11:44:03.100954',
+            'UTC': '2019-12-27T11:44:03.100954Z',
+            'position': {'x': -6455348.639, 'y': 3151871.69, 'z': 0.0},
+            'velocity': {'x': 727.565288, 'y': 1470.668267, 'z': 7366.402739}
+        },
+        'stop': {
+            'TAI': '2019-12-27T13:25:39.321733',
+            'UT1': '2019-12-27T13:25:02.321733',
+            'UTC': '2019-12-27T13:25:02.321733Z',
+            'position': {'x': -4494400.931, 'y': 5604121.829, 'z': -0.0},
+            'velocity': {'x': 1285.333487, 'y': 1019.86971, 'z': 7366.402739}}},
+            'phase_identifier': 1,
+            'relative_pass_number': 218
+        }
+
+-->
+
+{% set start = obj.get('ephemeris', {}).get('start', {}) %}
+{% set stop = obj.get('ephemeris', {}).get('stop', {}) %}
+
+<div class="orbit_reference metadata">
+    <div class="title">Orbit Reference</div>
+    <div class="details">
+    Absolute path number: {{ obj['absolute_pass_number'] }}<br>
+    Cycle number: {{ obj['cycle_number'] }}<br>
+    Start: {{ start['UTC'] }}
+    (
+    x={{ start.get('position', {})['x'] }}, y={{ start.get('position', {})['y'] }},
+    Vx={{ start.get('velocity', {})['x'] }}, Vy={{ start.get('velocity', {})['y'] }}
+    )
+    <br>
+    Stop: {{ stop['UTC'] }}
+    (
+        x={{ stop.get('position', {})['x'] }}, y={{ stop.get('position', {})['y'] }},
+        Vx={{ stop.get('velocity', {})['x'] }}, Vy={{ stop.get('velocity', {})['y'] }}
+        )
+    <br>
+    </div>
+</div>

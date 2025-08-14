@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "filters": {
+    "skip_eopf_logger": {
+      "()": "sentineltoolbox.autodoc.sphinxenv.EopfFilter"
+    }
+  },
+  "formatters": {
+    "default": {
+      "format": "%(asctime)s[%(levelname)-8s]%(name)s %(module)s.%(funcName)s:%(lineno)d: %(message)s",
+      "datefmt": "%Y-%m-%d %H:%M:%S"
+    }
+  },
+  "handlers": {
+    "console": {
+      "class": "logging.StreamHandler",
+      "formatter": "default",
+      "level": "DEBUG",
+      "stream": "ext://sys.stderr",
+      "filters": [
+        "skip_eopf_logger"
+      ]
+    }
+  },
+  "root": {
+    "handlers": [
+      "console"
+    ],
+    "level": "DEBUG"
+  },
+  "loggers": {
+    "eopf.store.safe": {
+      "level": "INFO"
+    },
+    "eopf.accessor.xml_accessor": {
+      "level": "INFO"
+    }
+  }
+}

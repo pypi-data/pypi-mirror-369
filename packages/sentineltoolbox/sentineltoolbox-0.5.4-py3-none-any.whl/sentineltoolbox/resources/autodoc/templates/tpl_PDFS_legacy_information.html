@@ -1,0 +1,39 @@
+<!-- Extract source_path from mapping to
+create equivalence table legacy <-> DPR
+-->
+
+{% set ellipsis = kwargs["ellipsis"] %}
+
+<div class="variables">
+    <span class="name">Variables</span> <br>
+    <table class="eogroup">
+        <caption>Legacy product definition</caption>
+        <tr>
+            <th class="name" scope="col">Short Name</th>
+            <th class="legacy" scope="col">Legacy Path</th>
+            <th class="long_name" scope="col">Long Name</th>
+        </tr>
+
+{% for group in extractor.ellipse_groups(obj, ellipsis=ellipsis) %}
+
+    {% if extractor.contains_variables(group, exclude_flags=False) %}
+<tr class="group">
+    <td class="name" colspan="3">{{ extractor.path(group, ellipsis=ellipsis) }} <br> {{ extractor.documentation(group, ellipsis=ellipsis) }}</td>
+</tr>
+
+    {% set variables = extractor.iter_variables(group, ellipsis=ellipsis, recursive=False)%}
+
+    {% for variable in variables %}
+
+        {% set name = extractor.name(variable, ellipsis=ellipsis)%}
+        {% set legacy = extractor.legacy_field(obj, variable, ellipsis=ellipsis) %}
+<tr>
+    <td>{{ name }}</td>
+    <td>{{ legacy }}</td>
+    <td>{{ extractor.html(extractor.description(variable, ellipsis=ellipsis))|safe }}</td>
+</tr>
+    {% endfor %}
+    {% endif %}
+{% endfor %}
+</table>
+</div>

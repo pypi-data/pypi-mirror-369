@@ -1,0 +1,21 @@
+{% set ellipsis = kwargs["ellipsis"] %}
+
+<!-- Ellipsis summary -->
+{% if extractor.has_ellipsis(obj, ellipsis=ellipsis) %}
+
+<div class="dropdown admonition">
+    <p class="admonition-title">Show details for repetitive variables</b></p>
+{% for group in extractor.ellipse_groups(obj, ellipsis=ellipsis) %}
+    {% with product=obj, obj=group, path=group.path, extractor=extractor, kwargs=kwargs %}
+    {% include "tpl_PDFS_subtree_ellipsis_summary.html" %}
+    {% endwith %}
+
+    {% set variables = extractor.iter_variables(obj, group.path, ellipsis=ellipsis)%}
+    {% for varpath, variable in variables %}
+        {% with product=obj, obj=variable, path=varpath, extractor=extractor, kwargs=kwargs %}
+        {% include "tpl_PDFS_subtree_ellipsis_summary.html" %}
+        {% endwith %}
+    {% endfor %}
+{% endfor %}
+</div>
+{% endif %}

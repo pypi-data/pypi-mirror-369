@@ -1,0 +1,53 @@
+{% set ellipsis = kwargs["ellipsis"] %}
+
+{% if ellipsis %}
+
+{% set idx = ellipsis.match(path) %}
+{% set pattern = ellipsis.pattern_repr[idx] %}
+{% set paths = ellipsis.path_used.get(idx, []) %}
+{% set used = ellipsis.variable_used.get(idx, {}) %}
+
+{% if paths %}
+
+<div class="ellipsis">
+    <!-- Developper information -->
+    {% if kwargs["mode"] == kwargs["DisplayMode"].dev %}
+        <div class="note">Pattern {{ idx }}:
+            user={{ ellipsis.patterns[idx] }}
+            repr={{ pattern }}
+            re={{ ellipsis.pattern_co[idx] }}
+        </div>
+    {% endif %}
+
+    In {{ obj.__class__.__name__ }} "{{ pattern }}", values can be:
+
+    <ul class="variable_values">
+        {% for id, values in used.items() %}
+        <li>{{ ellipsis.variables[id]["repr"] }}:
+            {% for value in extractor.unique_sorted_list(values) %}
+                {{value}},
+            {% endfor %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    All possible variables:
+    <div class="toggle docutils container">
+        <ul class="all_paths">
+            {% for path in paths %}
+                <li class="path">{{ellipsis.debug(path)}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <hr>
+</div>
+
+{% if kwargs["mode"] == kwargs["DisplayMode"].dev %}
+    <!-- Developper information -->
+    <div class="note">Code generated with {{ self }} applied on {{ path }}</div>
+{% endif %}
+
+{% endif %} {# paths #}
+
+{% endif %} {# ellipsis #}

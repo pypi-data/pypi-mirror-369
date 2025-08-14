@@ -1,0 +1,25 @@
+{% set attributes_to_show = kwargs["attributes_to_show"] %}
+
+<table class="grouped_data metadata">
+    <caption>Product properties</caption>
+    <tr>
+        <th class="name" scope="col">Name</th>
+        <th class="description" scope="col">Description</th>
+        <th class="details" scope="col">Note<br><span class="sample">(show value if constant)</span></th>
+    </tr>
+
+    {% for prefix, obj in objs.items() %}
+    {%if prefix %}
+    <tr class="group"><td colspan="3" class="name">{{ prefix }}</td></tr>
+    {%endif%}
+
+    {% for key, value in extractor.ellipse_attrs(obj, path, ellipsis=ellipsis) %}
+        {% with key=key, value=value, prefix=prefix, extractor=extractor, kwargs=kwargs %}
+        {% include "tpl_PDFS_tr_attribute.html" %}
+        {% endwith %}
+    {% endfor %} <!-- for key/val -->
+
+    {% endfor %} <!-- for obj in objs -->
+
+
+</table>
