@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: antkit
+Version: 0.0.1
+Summary: A Python package for intelligent information bagging system
+Home-page: https://github.com/lqxnjk/antkit
+Author: lqxnjk
+Author-email: lqxnjk@qq.com
+License: MIT
+Project-URL: Bug Reports, https://github.com/lqxnjk/antkit/issues
+Project-URL: Source, https://github.com/lqxnjk/antkit
+Keywords: ii,etls,lqxnjk,data
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.7
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: typing-extensions; python_version < "3.8"
+Provides-Extra: dev
+Provides-Extra: plot
+Provides-Extra: gpu
+Provides-Extra: all
+Requires-Dist: antkit[dev]; extra == "all"
+Requires-Dist: antkit[plot]; extra == "all"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-python
+Dynamic: summary
+
+## 构建依赖包
+
+```基础命令
+python -m pip install twine  -i https://mirrors.tencent.com/pypi/simple
+pip install wheel setuptools -i https://mirrors.tencent.com/pypi/simple
+python setup.py sdist bdist_wheel
+python -m build
+pip install .
+pip install -e .
+pip install -e .[dev]
+```
+
+```shell 构建命令
+#rm -rf './dist'
+#python -m build
+python setup.py sdist bdist_wheel
+python -m twine upload dist/*
+```
