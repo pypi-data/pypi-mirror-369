@@ -1,0 +1,1 @@
+"""Core ML Assistant CLI modules."""
