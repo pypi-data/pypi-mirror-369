@@ -1,0 +1,23 @@
+Metadata-Version: 2.4
+Name: redash_lite
+Version: 0.1.0
+Summary: Tiny client to trigger Redash queries and fetch fresh results
+Author-email: Your Name <you@example.com>
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: requests
+Dynamic: license-file
+
+# redash_mini
+
+A tiny Python client to run Redash queries and get fresh results.
+
+## Example
+
+```python
+from redash_mini import RedashClient
+
+client = RedashClient("https://redash.example.com", api_key="YOUR_API_KEY")
+rows = client.get_fresh_query_result(123, {"param": "value"})
+print(rows)
