@@ -1,0 +1,56 @@
+# Ollama Configuration
+# This file contains provider-specific configuration for Ollama
+# API keys and sensitive data should still use environment variables
+
+llm:
+  # Basic LLM configuration
+  model: "llama3.1:8b"
+  base_url: "http://localhost:11434/v1"
+  temperature: 0.1
+  max_tokens: 10000
+
+  # Ollama-specific model parameters
+  # These will be passed to the Ollama API in the request body
+  model_parameters:
+    # Context window size - number of tokens to consider for context
+    num_ctx: 4096
+
+    # Number of tokens to predict (-1 for unlimited until stop)
+    num_predict: -1
+
+    # Penalty for repeating tokens (1.0 = no penalty)
+    repeat_penalty: 1.1
+
+    # Limit the next token selection to the K most probable tokens
+    top_k: 40
+
+    # Cumulative probability cutoff for token selection
+    top_p: 0.9
+
+    # Model-level temperature (can override the general temperature)
+    # temperature: 0.1
+
+    # Random seed for reproducible outputs
+    # seed: 42
+
+    # Stop sequences
+    # stop: ["Human:", "Assistant:"]
+
+    # How long to keep model loaded in memory after use
+    # Examples: "5m" (5 minutes), "30s" (30 seconds), "2h" (2 hours)
+    # Special values: "0" (unload immediately), "-1" (keep forever)
+    # Can also be specified as integer seconds (e.g., 300 for 5 minutes)
+    keep_alive: "5m"
+
+embedder:
+  # Basic embedder configuration
+  model: "nomic-embed-text"
+  base_url: "http://localhost:11434/v1"
+  dimension: 768
+
+  # Ollama-specific embedding parameters (if supported by the model)
+  model_parameters:
+    # Options for the embedding model
+    # truncate: true
+    # Context window size - number of tokens to consider for context
+    num_ctx: 4096
