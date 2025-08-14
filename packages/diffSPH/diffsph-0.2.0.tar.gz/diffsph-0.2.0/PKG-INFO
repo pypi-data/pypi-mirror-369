@@ -1,0 +1,445 @@
+Metadata-Version: 2.4
+Name: diffSPH
+Version: 0.2.0
+Summary: A Fully differentiable SPH Solver.
+Author-email: Rene Winchenbach <contact@fluids.dev>
+Maintainer-email: Rene Winchenbach <contact@fluids.dev>
+License:                                  Apache License
+                                   Version 2.0, January 2004
+                                http://www.apache.org/licenses/
+        
+           TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+           1. Definitions.
+        
+              "License" shall mean the terms and conditions for use, reproduction,
+              and distribution as defined by Sections 1 through 9 of this document.
+        
+              "Licensor" shall mean the copyright owner or entity authorized by
+              the copyright owner that is granting the License.
+        
+              "Legal Entity" shall mean the union of the acting entity and all
+              other entities that control, are controlled by, or are under common
+              control with that entity. For the purposes of this definition,
+              "control" means (i) the power, direct or indirect, to cause the
+              direction or management of such entity, whether by contract or
+              otherwise, or (ii) ownership of fifty percent (50%) or more of the
+              outstanding shares, or (iii) beneficial ownership of such entity.
+        
+              "You" (or "Your") shall mean an individual or Legal Entity
+              exercising permissions granted by this License.
+        
+              "Source" form shall mean the preferred form for making modifications,
+              including but not limited to software source code, documentation
+              source, and configuration files.
+        
+              "Object" form shall mean any form resulting from mechanical
+              transformation or translation of a Source form, including but
+              not limited to compiled object code, generated documentation,
+              and conversions to other media types.
+        
+              "Work" shall mean the work of authorship, whether in Source or
+              Object form, made available under the License, as indicated by a
+              copyright notice that is included in or attached to the work
+              (an example is provided in the Appendix below).
+        
+              "Derivative Works" shall mean any work, whether in Source or Object
+              form, that is based on (or derived from) the Work and for which the
+              editorial revisions, annotations, elaborations, or other modifications
+              represent, as a whole, an original work of authorship. For the purposes
+              of this License, Derivative Works shall not include works that remain
+              separable from, or merely link (or bind by name) to the interfaces of,
+              the Work and Derivative Works thereof.
+        
+              "Contribution" shall mean any work of authorship, including
+              the original version of the Work and any modifications or additions
+              to that Work or Derivative Works thereof, that is intentionally
+              submitted to Licensor for inclusion in the Work by the copyright owner
+              or by an individual or Legal Entity authorized to submit on behalf of
+              the copyright owner. For the purposes of this definition, "submitted"
+              means any form of electronic, verbal, or written communication sent
+              to the Licensor or its representatives, including but not limited to
+              communication on electronic mailing lists, source code control systems,
+              and issue tracking systems that are managed by, or on behalf of, the
+              Licensor for the purpose of discussing and improving the Work, but
+              excluding communication that is conspicuously marked or otherwise
+              designated in writing by the copyright owner as "Not a Contribution."
+        
+              "Contributor" shall mean Licensor and any individual or Legal Entity
+              on behalf of whom a Contribution has been received by Licensor and
+              subsequently incorporated within the Work.
+        
+           2. Grant of Copyright License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              copyright license to reproduce, prepare Derivative Works of,
+              publicly display, publicly perform, sublicense, and distribute the
+              Work and such Derivative Works in Source or Object form.
+        
+           3. Grant of Patent License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              (except as stated in this section) patent license to make, have made,
+              use, offer to sell, sell, import, and otherwise transfer the Work,
+              where such license applies only to those patent claims licensable
+              by such Contributor that are necessarily infringed by their
+              Contribution(s) alone or by combination of their Contribution(s)
+              with the Work to which such Contribution(s) was submitted. If You
+              institute patent litigation against any entity (including a
+              cross-claim or counterclaim in a lawsuit) alleging that the Work
+              or a Contribution incorporated within the Work constitutes direct
+              or contributory patent infringement, then any patent licenses
+              granted to You under this License for that Work shall terminate
+              as of the date such litigation is filed.
+        
+           4. Redistribution. You may reproduce and distribute copies of the
+              Work or Derivative Works thereof in any medium, with or without
+              modifications, and in Source or Object form, provided that You
+              meet the following conditions:
+        
+              (a) You must give any other recipients of the Work or
+                  Derivative Works a copy of this License; and
+        
+              (b) You must cause any modified files to carry prominent notices
+                  stating that You changed the files; and
+        
+              (c) You must retain, in the Source form of any Derivative Works
+                  that You distribute, all copyright, patent, trademark, and
+                  attribution notices from the Source form of the Work,
+                  excluding those notices that do not pertain to any part of
+                  the Derivative Works; and
+        
+              (d) If the Work includes a "NOTICE" text file as part of its
+                  distribution, then any Derivative Works that You distribute must
+                  include a readable copy of the attribution notices contained
+                  within such NOTICE file, excluding those notices that do not
+                  pertain to any part of the Derivative Works, in at least one
+                  of the following places: within a NOTICE text file distributed
+                  as part of the Derivative Works; within the Source form or
+                  documentation, if provided along with the Derivative Works; or,
+                  within a display generated by the Derivative Works, if and
+                  wherever such third-party notices normally appear. The contents
+                  of the NOTICE file are for informational purposes only and
+                  do not modify the License. You may add Your own attribution
+                  notices within Derivative Works that You distribute, alongside
+                  or as an addendum to the NOTICE text from the Work, provided
+                  that such additional attribution notices cannot be construed
+                  as modifying the License.
+        
+              You may add Your own copyright statement to Your modifications and
+              may provide additional or different license terms and conditions
+              for use, reproduction, or distribution of Your modifications, or
+              for any such Derivative Works as a whole, provided Your use,
+              reproduction, and distribution of the Work otherwise complies with
+              the conditions stated in this License.
+        
+           5. Submission of Contributions. Unless You explicitly state otherwise,
+              any Contribution intentionally submitted for inclusion in the Work
+              by You to the Licensor shall be under the terms and conditions of
+              this License, without any additional terms or conditions.
+              Notwithstanding the above, nothing herein shall supersede or modify
+              the terms of any separate license agreement you may have executed
+              with Licensor regarding such Contributions.
+        
+           6. Trademarks. This License does not grant permission to use the trade
+              names, trademarks, service marks, or product names of the Licensor,
+              except as required for reasonable and customary use in describing the
+              origin of the Work and reproducing the content of the NOTICE file.
+        
+           7. Disclaimer of Warranty. Unless required by applicable law or
+              agreed to in writing, Licensor provides the Work (and each
+              Contributor provides its Contributions) on an "AS IS" BASIS,
+              WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+              implied, including, without limitation, any warranties or conditions
+              of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+              PARTICULAR PURPOSE. You are solely responsible for determining the
+              appropriateness of using or redistributing the Work and assume any
+              risks associated with Your exercise of permissions under this License.
+        
+           8. Limitation of Liability. In no event and under no legal theory,
+              whether in tort (including negligence), contract, or otherwise,
+              unless required by applicable law (such as deliberate and grossly
+              negligent acts) or agreed to in writing, shall any Contributor be
+              liable to You for damages, including any direct, indirect, special,
+              incidental, or consequential damages of any character arising as a
+              result of this License or out of the use or inability to use the
+              Work (including but not limited to damages for loss of goodwill,
+              work stoppage, computer failure or malfunction, or any and all
+              other commercial damages or losses), even if such Contributor
+              has been advised of the possibility of such damages.
+        
+           9. Accepting Warranty or Additional Liability. While redistributing
+              the Work or Derivative Works thereof, You may choose to offer,
+              and charge a fee for, acceptance of support, warranty, indemnity,
+              or other liability obligations and/or rights consistent with this
+              License. However, in accepting such obligations, You may act only
+              on Your own behalf and on Your sole responsibility, not on behalf
+              of any other Contributor, and only if You agree to indemnify,
+              defend, and hold each Contributor harmless for any liability
+              incurred by, or claims asserted against, such Contributor by reason
+              of your accepting any such warranty or additional liability.
+        
+           END OF TERMS AND CONDITIONS
+        
+           APPENDIX: How to apply the Apache License to your work.
+        
+              To apply the Apache License to your work, attach the following
+              boilerplate notice, with the fields enclosed by brackets "[]"
+              replaced with your own identifying information. (Don't include
+              the brackets!)  The text should be enclosed in the appropriate
+              comment syntax for the file format. We also recommend that a
+              file or class name and description of purpose be included on the
+              same "printed page" as the copyright notice for easier
+              identification within third-party archives.
+        
+           Copyright [2025] [TUM Physics-based Simulation]
+        
+           Licensed under the Apache License, Version 2.0 (the "License");
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
+        
+               http://www.apache.org/licenses/LICENSE-2.0
+        
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an "AS IS" BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License.
+        
+Project-URL: Repository, https://github.com/tum-pbs/diffSPH
+Project-URL: Issues, https://github.com/tum-pbs/diffSPH
+Keywords: sph,radius,pytorch
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch
+Requires-Dist: numpy
+Dynamic: license-file
+
+![](logov1.png)
+<!-- # diffSPH - A Framework for differentiable SPH Simulations -->
+
+[![arXiv](https://img.shields.io/badge/arXiv-2507.21684-<COLOR>.svg)](https://arxiv.org/abs/2507.21684)
+
+diffSPH is an open-source Smoothed Particle Hydrodynamics simulation framework built for adjoint problem solving and machine learning applications. diffSPH is written mostly in Python using PyTorch but also supports C++/CUDA extensions. The fundamentally differentiable nature of diffSPH make it a versatile basis for many different applications of SPH. Stay tunes for more details on the applications and design of diffSPH! This is the solver at [https://diffsph.fluids.dev/](https://diffsph.fluids.dev/). You can also find the preprint of our paper on _diffSPH_ [here](https://arxiv.org/abs/2507.21684). 
+
+## Installation
+
+The only major requirement for this solver is our companion software that handles the neighbor searching and related topics, which you can find more about [here](https://github.com/wi-re/torchCompactRadius). Other than that the solver is straightforward to setup and can also be used in Google colab
+
+```
+conda create -n diffSPHEnv python=3.12
+conda activate diffSPHEnv
+conda install nvidia/label/cuda-12.8.1::cuda-toolkit
+pip install toml scipy numba tqdm h5py matplotlib ipywidgets ipympl imageio scikit-image ipykernel imageio_ffmpeg portalocker
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+pip install torchCompactRadius
+pip install diffSPH
+```
+
+
+## Examples
+
+### Compressible Flows
+
+<table>
+    <tbody>
+        <tr>
+            <td style="width: 25%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/compressible/rayleighTaylor2d.ipynb"><img src="examples/compressible/videos/rayleighTaylor.gif"></a></td>
+            <td style="width: 25%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/compressible/KevinHelmHoltz.ipynb"><img src="examples/compressible/videos/kevin_helmholtz.png"></a></td>
+            <td style="width: 25%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/compressible/sod_1d.ipynb"><img src="examples/compressible/sod_1D.png"></a></td>
+            <td style="width: 25%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/compressible/sedov_2d.ipynb"><img src="examples/compressible/videos/sedov_2D.png"></a></td>
+        </tr>
+        <tr>
+            <td align="center">Rayleigh-Taylor Instability</td>
+            <td align="center">Kevin-Helmholtz Instability</td>
+            <td align="center">Sod-Shock Tube</td>
+            <td align="center">Sedov Blastwave</td>
+        </tr>
+    </tbody>
+</table>
+
+More examples can be found under examples/compressible
+
+### Weakly Compressibe Flows
+
+<table>
+    <tbody>
+        <tr>
+            <td style="width: 34%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/weaklyCompressible/05_TGV.ipynb"><img src="examples/weaklyCompressible/scripts/videos/05_taylorGreenVortex_2.png"></a></td>
+            <td style="width: 33%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/weaklyCompressible/03_RotatingSquarePatch.ipynb"><img src="examples/weaklyCompressible/scripts/videos/03_rotatingSquarePatch.png"></a></td>
+            <td style="width: 33%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/weaklyCompressible/09_LDC.ipynb"><img src="examples/weaklyCompressible/scripts/videos/09_lidDrivenCavity.png"></a></td>
+        </tr>
+        <tr>
+            <td align="center">Taylor Green Vortex</td>
+            <td align="center">Rotating Square Patch</td>
+            <td align="center">Lid-Driven Cavity</td>
+        </tr>
+        <tr>
+            <td style="width: 33%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/weaklyCompressible/13_DrivenSquare.ipynb"><img src="examples/weaklyCompressible/scripts/videos/13_DrivenSquare.png"></a></td>
+            <td style="width: 34%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/weaklyCompressible/18_flowPastObstacle.ipynb"><img src="examples/weaklyCompressible/scripts/videos/18_flowPastSphere.png"></a></td>
+            <td style="width: 33%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/examples/weaklyCompressible/15_Dambreak.ipynb"><img src="examples/weaklyCompressible/scripts/videos/15_damBreak.png"></a></td>
+        </tr>
+        <tr>
+            <td align="center">Driven Square</td>
+            <td align="center">Flow Past Cylinder</td>
+            <td align="center">Dam Break</td>
+        </tr>
+    </tbody>
+</table>
+
+More examples can be found under examples/weaklyCompressible
+
+### Incompressible Flows:
+
+<table>
+    <tbody>
+        <tr>
+            <td style="width: 40%;"><img src="examples/videos/05_taylorGreenVortex_2.gif"></td>
+            <td style="width: 60%;"></td>
+        </tr>
+        <tr>
+            <td align="center">Taylor Green Vortex</td>
+        </tr>
+    </tbody>
+</table>
+
+### Other Examples
+
+diffSPH can also be used to simulate a variety of other PDEs such as the wave equation
+
+<table>
+    <tbody>
+        <tr>
+            <td style="width: 40%;"><img src="examples/waveEqn2.gif"></td>
+            <td style="width: 60%;"></td>
+        </tr>
+        <tr>
+            <td align="center">Wave Equation 2D</td>
+        </tr>
+    </tbody>
+</table>
+
+### Inverse Problems
+
+diffSPH is meant as a framework for differentiable problem solving and supports all the common tasks in adjoint optimization and machine learning, including:
+
+<table>
+    <tbody>
+        <tr>
+            <td style="width: 25%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/gradients/autoShift.ipynb"><img src="examples/noisyDistributionShift2D_gradient.png"></a></td>
+            <td style="width: 25%;"><img src="examples/gammaOptim.png"></td>
+            <td style="width: 25%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/waveEquation/waveEqn.ipynb"><img src="examples/waveOptimized.png"></a></td>
+            <td style="width: 25%;"><a href="https://github.com/tum-pbs/diffSPH/blob/main/waveEquation/waveEqnInTheLoop.ipynb"><img src="examples/waveEqn_wUnroll.png"></a></td>
+        </tr>
+        <tr>
+            <td align="center">Loss-based Physics</td>
+            <td align="center">Parameter Optimization</td>
+            <td align="center">Shape Optimization</td>
+            <td align="center">Solver In The Loop</td>
+        </tr>
+    </tbody>
+</table>
+
+## Features
+
+diffSPH comes with a large variety of SPH schemes already builtin and can be easily extended to include more solver schemes and SPH properties:
+
+- $\delta$-SPH and $\delta^+$-SPH for weakly compressible simulations
+- IISPH and DFSPH for incompressible simulations
+- CompSPH, CRKSPH, PESPH and the classic Monaghan scheme for compressible simulations
+- mDBC boundary conditions for rigid bodies
+- Inlets and Oulets with buffer zones
+- Periodic BCs using minimum image conventions
+- Neumann and Dirichlet BCs
+- grad-H, kernel renormalization and CRK correction schemes
+- $\delta^+$ and implicit particle shifting
+- Monaghan and Owen schemes for adaptive particle support radii
+- Balsara, Morris, Rosswog, Cullen Dehnen artificial viscosity switches
+- Sub particle scale turbulence modelling
+- Differentiable generation of initial conditions using SDFs
+- Hierarchical and compact hashing based neighbor searching
+- Verlet lists for neighborhood searches
+- Most Common SPH Kernel Functions (Wendland, B-Spline, Poly6) used across the fields
+
+pip install toml scipy numba tqdm h5py matplotlib ipywidgets ipympl imageio scikit-image
+
+### Time Integration
+
+diffSPH comes builtin with a large number of temporal integration schemes which we validated against a dampened harmonic oscillator with a hidden state variable:
+
+$$
+\begin{aligned}
+\hat{k} &= k + \alpha e\\
+\frac{dx}{dt} &= u&\\
+m \frac{du}{dt} &= -\hat{k} x &- c u\\
+\frac{de}{dt} &= \beta \text{sgn}(u) u^2 &- \gamma e
+\end{aligned}
+$$
+<table>
+    <tbody>
+        <tr>
+            <td style="width: 25%;"><img src="examples/image-11.png"></td>
+            <td style="width: 25%;"><img src="examples/image-12.png"></td>
+        </tr>
+        <tr>
+            <td align="center">Physical Problem</td>
+            <td align="center">Integrator Accuracy</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+### Datasets
+
+There have been a variety of datasets already generated with diffSPH, including:
+
+
+<table>
+    <tbody>
+        <tr>
+            <td style="width: 50%;"><a href="https://huggingface.co/datasets/thuerey-group/SFBC_dataset_II"><img src="https://huggingface.co/datasets/thuerey-group/SFBC_dataset_II/resolve/main/data.png"></a></td>
+            <td style="width: 50%;"><a href="https://huggingface.co/datasets/Wi-Re/wcsph_flows"><img src="examples/periodicDS.png"></a></td>
+        </tr>
+        <tr>
+            <td align="center">SFBC Test Case II</td>
+            <td align="center">Periodic BCs</td>
+        </tr>
+        <tr>
+            <td style="width: 50%;"><a href="https://huggingface.co/datasets/Wi-Re/wcsph_flows_no_slip"><img src="examples/noSlip.png"></a></td>
+            <td style="width: 50%;"><a href="https://huggingface.co/datasets/Wi-Re/wcsph_flows_free_slip"><img src="examples/freeSlip.png"></a></td>
+        </tr>
+        <tr>
+            <td align="center">No-Slip</td>
+            <td align="center">Free-Slip</td>
+        </tr>
+    </tbody>
+</table>
+
+
+## Publications
+
+So far diffSPH has been used in the following publications:
+
+- Symmetric Fourier Basis Convolutions for Learning Lagrangian Fluid Simulations, R. Winchenbach, N. Thuerey, International Conference on Learning Representations 2024 https://arxiv.org/abs/2403.16680
+
+Workshop Papers:
+- MoriNet: A Machine Learning-based Mori-Zwanzig Perspective on Weakly Compressible SPH, R. Winchenbach and N. Thuerey, 2025 International SPHERIC Workshop Barcelona, Spain (pdf available under publications)
+- Physically-Motivated Machine Learning Models for Lagrangian Fluid Mechanics, R. Winchenbach and N.Thuerey, 2024 International SPHERIC Workshop Berlin, Germany (presentation and more information available here https://fluids.dev/spheric2024/)
+- Cross-Validation of SPH-based Machine Learning Models using the Taylor-Green Vortex Case - R. Winchenbach and N. Thuerey - Particle Methods and Applications Conference 2024 Santa Fe, USA (presentation and more information available here: https://pmac.fluids.dev)
+- A Hybrid Framework for Fluid Flow Simulations: Combining SPH with Machine Learning - R. Winchenbach and N. Thuerey - 2023 International SPHERIC Workshop Rhodes, Greece (pdf available under publications)
+
+## Acknoledgement
+
+This work has been in parts funded by the DFG Individual Research Grant TH 2034/1-2.
+
+
+
+
+
+
