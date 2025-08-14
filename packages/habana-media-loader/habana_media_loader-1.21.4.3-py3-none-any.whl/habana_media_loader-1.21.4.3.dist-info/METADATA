@@ -1,0 +1,234 @@
+Metadata-Version: 2.1
+Name: habana-media-loader
+Version: 1.21.4.3
+Summary: Dataloader using Habana hardware media pipeline
+Home-page: https://habana.ai/
+Author: Habana Labs Ltd., an Intel Company
+Author-email: support@habana.ai
+License: See LICENSE.txt
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: pillow-simd
+Requires-Dist: tqdm
+Requires-Dist: av (==12.1.0)
+
+# Habana Media Python package
+
+`habana_media_loader` is a package designed for easy integration of media processing on Gaudi2.
+Main entry point (Python import) is `habana_frameworks.mediapipe` module that contains all the necessary functions to work with Gaudi2.
+
+## Structure
+
+Properly built wheel contains:
+- `habana_frameworks` python namespace (with all the folder structure inside).
+- ``mediapipe`` folder catering media execution on device and ``medialoader`` folder catering pre-built mediapipe for tensorflow & pytorch frameworks.
+- proper licensing.
+
+## Media package (habana_frameworks.mediapipe and habana_frameworks.medialoaders)
+
+#### First part of media package contains media pipe which is responsible for media processing on device.
+Following are the steps to create mediapipe
+- Create a class derived from ``habana_frameworks.mediapipe`` super class.
+- In the class constructor initialize super class.
+- Create nodes required for execution along with it's parameters.
+- Define a method ``definegraph()`` which defines the data flow between nodes created in constructor.
+
+Following are the steps to execute a standalone mediapipe
+- Instantiate an object of defined mediapipe class.
+- Build the mediapipe by executing ``build()`` method of mediapipe object.
+- Initialize the iterator by calling ``iter_init()`` method of mediapipe object.
+- To produce one batch of dataset, execute ``run()`` method of mediapipe object. Each ``run()`` method call executes and produces one batch of device tensors.
+- To view or manipulate tensors on host ``as_cpu()`` method of device tensor object can be called, which yields host tensor object.
+- For numpy manipulation ``as_nparray()`` method of host tensor object can be called to get a numpy host array.
+
+Example:
+
+```python
+
+from habana_frameworks.mediapipe import fn
+from habana_frameworks.mediapipe.mediapipe import MediaPipe
+from habana_frameworks.mediapipe.media_types import imgtype as it
+from habana_frameworks.mediapipe.media_types import dtype as dt
+from habana_frameworks.mediapipe.media_types import layout as lt
+import time
+
+class myMediaPipe(MediaPipe):
+    def __init__(self, device, queue_depth, batch_size, channel, height, width):
+        super(
+            myMediaPipe,
+            self).__init__(
+            device,
+            queue_depth,
+            batch_size,
+            channel,
+            height,
+            width,
+            self.__class__.__name__,
+            layout=lt.NHWC)
+        mediapipe_seed = int(time.time_ns() % (2**31 - 1))
+        # create reader node and setting it's params
+        self.input = fn.ReadImageDatasetFromDir(dir="/path/to/jpeg/dir/",
+                                                format="JPEG",
+                                                shuffle=True,
+                                                seed=mediapipe_seed)
+        # create decoder node and set it's params
+        self.decode = fn.ImageDecoder(output_format=it.RGB_P,
+                                      resize=[224, 224])
+
+        # create transpose node and set it's params
+        self.transpose = fn.Transpose(permutation=[2, 0, 1, 3], tensorDim=4)
+
+    def definegraph(self):
+        # define actual data flow of nodes
+        jpegs, data = self.input()
+        images = self.decode(jpegs)
+        images = self.transpose(images)
+        # return output nodes of the graph
+        return images, data
+
+
+# test specific params
+batch_size = 4
+img_width = 224
+img_height = 224
+channels = 3
+queue_depth = 3
+iterations = 5
+
+# instantiating defined class
+pipe = myMediaPipe("hpu", queue_depth, batch_size,
+                   channels, img_height, img_width)
+# build the pipe
+pipe.build()
+# initialize iterator
+pipe.iter_init()
+
+batch_count = 0
+while(batch_count < iterations):
+    try:
+        # exectute and produce one batch of dataset.
+        images, labels = pipe.run()
+        # images and labels are device tensors.
+    except StopIteration:
+        print("stop iteration")
+        break
+    # as cpu will bring the device data to host and produce host tensors
+    # as_nparray will convert host tensors to numpy array.
+    images = images.as_cpu().as_nparray()
+    labels = labels.as_cpu().as_nparray()
+    batch_count = batch_count + 1
+
+
+```
+
+#### Second part of media package contains pre built media pipe for tensorflow and pytorch.
+
+###### tensorflow folder contains media_resnet_pipe containing resnet pipe for tensflow graph
+Following are the steps to use pre built mediapipe for tensorflow
+- Import ``ResnetPipe`` from ``habana_frameworks.medialoaders.tensorflow.media_resnet_pipe``
+- Instantiate an object of ``ResnetPipe`` with following parameters
+    - device name: hpu
+    - queue_depth: queue depth for media processing.
+    - batch_size: mediapipe output batch size.
+    - height: mediapipe output image height.
+    - width: mediapipe output image width.
+    - is_training: if is training pipe or validation pipe
+    - data_dir: jpeg data directory.
+    - out_dtype: output datatype of image.
+    - num_slices: number of slices to be done of dataset.
+    - slice_index: slice index to be used for this instance of execution.
+- Instantiate an object of  ``HabanaDataset`` which is derived from tensorflow dataset with following parameters
+    - output_shapes: list of output shapes of the  dataset.
+    - output_types: list of output datatype of the dataset.
+    - pipeline: media pipeline object.
+- Above dataset can be used for dataset iterations.
+
+Example:
+
+```python
+from habana_frameworks.medialoaders.tensorflow.media_resnet_pipe import ResnetPipe
+from habana_frameworks.tensorflow.media.habana_dataset import HabanaDataset
+
+# network specific parameters
+batch_size = 256
+num_channels= 3
+img_size = 224
+is_training = True
+dir_path = '/jpeg/path/'
+media_dtype = 'bfloat16'
+num_slices = 1
+slice_index = 0
+queue_depth = 3
+tf_media_dtype = tf.bfloat16
+tf_meta_dtype = tf.float32
+
+#pre defined mediapipe from medialoaders
+pipe = ResnetPipe("hpu", queue_depth, batch_size, num_channels,
+                  img_size, img_size, is_training,
+                  dir_path, media_dtype, num_slices, slice_index)
+
+# tensorflow predefine habanadataset class
+dataset = HabanaDataset(output_shapes=[(batch_size,
+                                        img_size,
+                                        img_size,
+                                        num_channels),
+                                       (batch_size,)],
+                        output_types=[tf_media_dtype, tf_meta_dtype], pipeline=pipe)
+# above dataset object is tf dataset object which is iteratable and can be fed to training node.
+
+
+```
+
+
+###### torch folder contains media_dataloader_mediapipe containing ``HPUMediaPipe`` which can be used to create resnet and SSD media pipe for pytorch
+Following are the steps to use ``HPUMediaPipe`` for pytorch
+- Import ``HPUMediaPipe`` from ``habana_frameworks.medialoaders.torch.media_dataloader_mediapipe``
+- Instantiate an object of ``HPUMediaPipe`` with following parameters:
+    - a_torch_transforms: transforms to be applied on mediapipe.
+    - a_root: directory path from which to load the images.
+    - a_annotation_file: path from which to load annotation file for SSD.
+    - a_batch_size: mediapipe output batch size.
+    - a_shuffle: whether images have to be shuffled. <True/False>
+    - a_drop_last: whether to drop the last incomplete batch or round up.<True/False>
+    - a_prefetch_count: queue depth for media processing.
+    - a_num_instances:  number of devices.
+    - a_instance_id: instance id of current device.
+    - a_model_ssd: whether mediapipe is to be created for SSD. <True/False>
+    - a_device: media device to run mediapipe on. <hpu>
+- Separate ``HPUMediaPipe`` objects can be created for training and validation.
+- Instantiate an object of ``HPUResnetPytorchIterator`` (for resnet) or ``HPUSsdPytorchIterator`` (for SSD) with following parameters
+    - mediapipe: media pipe object.
+
+Example for resnet media pipe:
+
+```python
+from habana_frameworks.medialoaders.torch.media_dataloader_mediapipe import HPUMediaPipe
+from habana_frameworks.mediapipe.plugins.iterator_pytorch import HPUResnetPytorchIterator
+
+normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                 std=[0.229, 0.224, 0.225])
+torch_transforms = transforms.Compose([
+            transforms.RandomResizedCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize,
+        ])
+
+root = "/JPEG/path"
+batch_size = 256
+shuffle = True
+drop_last = False
+prefetch_factor = 3
+num_instances = 1
+instance_id = 0
+
+pipeline = HPUMediaPipe(a_torch_transforms=torch_transforms, a_root=root, a_batch_size=batch_size,
+                        a_shuffle=shuffle, a_drop_last=drop_last, a_prefetch_count=prefetch_factor,
+                        a_num_instances=num_instances, a_instance_id=instance_id, a_device="hpu")
+
+iterator = HPUResnetPytorchIterator(mediapipe=pipeline)
+
+
+```
+
