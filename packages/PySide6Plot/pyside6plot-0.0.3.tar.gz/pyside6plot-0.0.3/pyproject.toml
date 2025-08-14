@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=64", "wheel", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PySide6Plot"
+dynamic = ["version"]
+license = "MIT"
+authors = [{ name = "YQ Cui", email = "qianyun210603@hotmail.com" }]
+description = "Scientific/Financial plot utilities with PySide6+pyqtgraph."
+readme = { file = "README.md", content-type = "text/markdown" }
+keywords = ["visualization", "plotting", "pyside6", "pyqtgraph", "financial", "scientific"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+requires-python = ">=3.11"
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "pyaml>=23.10.0",
+    "PySide6>=6.9.0,!=6.9.1; python_version>='3.12'",
+    "PySide6>=6.9.0; python_version<='3.12'",
+    "pyqtgraph>=0.13.3",
+    "PySide6-Fluent-Widgets[full]>=1.5.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.0.263",
+    "setuptools_scm>=8",
+    "setuptools>=64",
+    "wheel",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools_scm]
+
+[tool.ruff]
+target-version = "py312"
+output-format = "full"
+line-length = 120
+exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "UP",  # pyupgrade
+    "W",  # pycodestyle warning
+    "PL" # pylint
+]
+ignore = ["UP008", "E501", "PLR0913", "I001", "PLR2004", "PLR0915", "B027", "PLR5501", "PLR0912", "PLR0911"]
