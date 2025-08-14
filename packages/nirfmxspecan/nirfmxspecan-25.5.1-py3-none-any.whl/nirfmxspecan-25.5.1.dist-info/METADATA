@@ -1,0 +1,188 @@
+Metadata-Version: 2.3
+Name: nirfmxspecan
+Version: 25.5.1
+Summary: Python APIs for interacting with NI RFmx SpecAn Product
+License: MIT
+Keywords: nirfmxspecan
+Author: NI
+Author-email: opensource@ni.com
+Maintainer: Thangam V
+Maintainer-email: thangam.v@emerson.com
+Requires-Python: >=3.9,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Manufacturing
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Provides-Extra: dev
+Requires-Dist: fasteners (>=0.19)
+Requires-Dist: hightime (>=0.2.2)
+Requires-Dist: nirfmxinstr (==25.5.1)
+Requires-Dist: numpy (>=1.22) ; python_version >= "3.9" and python_version < "3.12" and implementation_name != "pypy"
+Requires-Dist: numpy (>=1.26) ; implementation_name != "pypy" and python_version == "3.12"
+Requires-Dist: numpy (>=2.1) ; implementation_name == "pypy" and python_version == "3.10"
+Requires-Dist: numpy (>=2.1) ; python_version >= "3.13" and python_version < "4.0" and implementation_name != "pypy"
+Requires-Dist: numpy (>=2.3) ; python_version >= "3.11" and python_version < "4.0" and implementation_name == "pypy"
+Project-URL: Documentation, https://nirfmxspecan.readthedocs.io/
+Project-URL: Repository, https://github.com/ni/nirfmx-python
+Description-Content-Type: text/markdown
+
+| **Info**      | Contains Python APIs for interacting with NI RFmx Products. |
+| :------------ | :-----------------------------------------------------------|
+| **Author**    | National Instruments                                        |
+
+# Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [About](#about)
+  - [Documentation](#documentation)
+  - [Operating System Support](#operating-system-support)
+- [Installation](#installation)
+- [License](#license)
+- [Support and Feedback](#support-and-feedback)
+- [Example](#example)
+
+
+# About
+
+The **nirfmx-python** repository generates Python bindings (Application Programming Interface)
+for interacting with the NI RFmx Products.
+
+**nirfmx-python** follows [Python Software Foundation](https://devguide.python.org/#status-of-python-branches)
+support policy for different versions.
+
+The following products are supported:
+
+* RFmx Instr (Python module: nirfmxinstr)
+* RFmx SpecAn (Python module: nirfmxspecan)
+
+
+## RFmx Instr Python API Status
+
+| Item                         | Details                      |
+|------------------------------|-------------------------------|
+| **Driver Version Tested**    | [2025 Q3](http://www.ni.com/downloads/)                      |
+| **PyPI Package Version**     | v19.1                        |
+| **Supported Python Versions**| Python 3.9+ (64-bit)    |
+| **Documentation**            | [RFmx Instr Docs](https://nirfmx-python-nirfmxinstr.readthedocs-hosted.com/en/latest/) |
+
+
+## RFmx SpecAn Python API Status
+
+| Item                         | Details                      |
+|------------------------------|-------------------------------|
+| **Driver Version Tested**    | [2025 Q3](http://www.ni.com/downloads/)                      |
+| **PyPI Package Version**     | v19.1                        |
+| **Supported Python Versions**| Python 3.9+ (64-bit)    |
+| **Documentation**            | [RFmx SpecAn Docs](https://nirfmx-python-nirfmxspecan.readthedocs-hosted.com/en/latest/) |
+
+
+## Documentation
+
+You can find the latest API documentation for the **nirfmx-python** package
+on [Read the Docs](https://nirfmx-python-nirfmxinstr.readthedocs-hosted.com/en/latest/)
+
+Refer to the [NI RFmx User Manual](https://www.ni.com/docs/en-US/bundle/rfmx/page/user-manual-welcome.html)
+for an overview of NI RFmx, system requirements, troubleshooting, key concepts, etc.
+
+
+## Operating System Support
+
+**nirfmx-python** supports Windows systems where the supported drivers are 
+installed. Refer to [NI Hardware and Operating System Compatibility](https://www.ni.com/r/hw-support) for 
+which versions of the driver support your hardware on a given operating system.
+
+
+# Installation
+
+You can use [pip](http://pypi.python.org/pypi/pip) to download
+[nirfmxinstr](https://pypi.org/project/nirfmxinstr/), [nirfmxspecan](https://pypi.org/project/nirfmxspecan/)
+and install it.
+    
+    $ python -m pip install nirfmxspecan
+
+
+# License
+
+This project is licensed under the MIT License. While the source code is not publicly released,
+the license permits binary distribution with attribution.
+
+**Note:** This Python driver depends on several third-party components that are subject to separate
+commercial licenses. Users are responsible for ensuring they have the appropriate rights and licenses
+to use those dependencies in their environments.
+
+
+# Support and Feedback
+
+For support with Python API, hardware, the driver runtime or any other questions,
+please visit [NI Community Forums](https://forums.ni.com/).
+
+
+# Example
+```python
+import nirfmxinstr
+import nirfmxspecan
+import numpy
+
+instr_session = None
+specan = None
+
+try:
+  # Open a RFmx Session
+  instr_session = nirfmxinstr.Session(resource_name="RFSA", option_string="")
+
+  # Configure RFmx Session
+  instr_session.configure_frequency_reference(selector_string="",
+    frequency_reference_source="OnboardClock", frequency_reference_frequency=10.0e+6)
+
+  # Create SpecAn Signal
+  specan = instr_session.get_specan_signal_configuration()
+
+  # Configure SpecAn Signal
+  specan.set_selected_ports(selector_string="", value="")
+  specan.configure_frequency(selector_string="", center_frequency=1e+9)
+  specan.configure_reference_level(selector_string="", reference_level=0.0)
+  specan.configure_external_attenuation(selector_string="", external_attenuation=0.0)
+
+  # Select Spectrum Measurement
+  specan.select_measurements(selector_string="",
+    measurements=nirfmxspecan.MeasurementTypes.SPECTRUM, enable_all_traces=True)
+
+  # Configure Spectrum Measurement
+  specan.spectrum.configuration.configure_span(selector_string="", span=1.0e+6)
+  specan.spectrum.configuration.configure_measurement_method(selector_string="",
+    measurement_method=nirfmxspecan.SpectrumMeasurementMethod.NORMAL)
+
+  specan.initiate(selector_string="", result_name="")
+
+  # Retrieve Results
+  spectrum = numpy.empty(0, dtype=numpy.float32)
+  x0, dx, _ = specan.spectrum.results.fetch_spectrum(selector_string="", timeout=10.0, spectrum=spectrum)
+  peak_amplitude, peak_frequency, frequency_resolution, error_code = (
+    specan.spectrum.results.fetch_measurement(selector_string="", timeout=10.0))
+
+  # Print Results
+  print(f"Peak Amplitude (dBm)             {peak_amplitude}")
+  print(f"Peak Frequency (Hz)              {peak_frequency}")
+
+except nirfmxinstr.RFmxError as e:
+  print("ERROR: " + str(e.description))
+
+finally:
+  # Dispose Signal & Session
+  if specan is not None:
+      specan.dispose()
+      specan = None
+  if instr_session is not None:
+      instr_session.close()
+      instr_session = None
+```
