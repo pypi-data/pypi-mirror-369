@@ -1,0 +1,68 @@
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "multiprogress"
+version = "0.4.0"
+description = "A Python package for displaying progress of multiple tasks."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "daizutabi", email = "daizutabi@gmail.com" }]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+requires-python = ">=3.10"
+dependencies = ["joblib", "rich", "watchfiles"]
+
+[project.urls]
+Documentation = "https://github.com/daizutabi/multiprogress"
+Source = "https://github.com/daizutabi/multiprogress"
+Issues = "https://github.com/daizutabi/multiprogress/issues"
+
+[dependency-groups]
+dev = ["pytest-cov>=6.0"]
+notebook = ["ipykernel", "ipywidgets", "marimo"]
+
+[tool.pytest.ini_options]
+addopts = ["--cov=multiprogress", "--cov-report=lcov:lcov.info"]
+
+[tool.coverage.report]
+exclude_lines = ["no cov", "raise NotImplementedError", "if TYPE_CHECKING:"]
+skip_covered = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["ALL"]
+unfixable = ["F401"]
+ignore = [
+  "ANN003",
+  "ANN401",
+  "D",
+  "E731",
+  "FBT001",
+  "FBT002",
+  "PGH003",
+  "PLR0913",
+  "SIM108",
+  "SLF001",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN", "FBT", "PT028", "S"]
+"notebooks/*" = ["ANN", "FBT", "PT028", "S"]
+"notebooks/marimo/*" = ["ALL"]
+
+[tool.pyright]
+include = ["src", "tests"]
+strictDictionaryInference = true
+strictListInference = true
+strictSetInference = true
