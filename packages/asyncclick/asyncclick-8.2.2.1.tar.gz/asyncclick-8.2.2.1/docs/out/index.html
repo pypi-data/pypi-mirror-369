@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to the AsyncClick Documentation &#8212; AsyncClick Documentation (8.x)</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/click.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/tabs.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/click-icon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Why Click?" href="why.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="why.html" title="Why Click?"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">AsyncClick Documentation (8.x)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to the AsyncClick Documentation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-the-asyncclick-documentation">
+<h1>Welcome to the AsyncClick Documentation<a class="headerlink" href="#welcome-to-the-asyncclick-documentation" title="Permalink to this headline">¶</a></h1>
+<a class="hide-header reference external image-reference" href="https://palletsprojects.com/p/click/"><img alt="_images/click-logo.png" class="align-center" src="_images/click-logo.png" style="width: 420.0px; height: 175.0px;" /></a>
+<p>AsyncClick ist a fork of Click that works well with (some) async
+frameworks. Supported: asyncio, trio, and curio.</p>
+<p>Click, in turn, is a Python package for creating beautiful command line interfaces
+in a composable way with as little code as necessary.  It’s the “Command
+Line Interface Creation Kit”.  It’s highly configurable but comes with
+sensible defaults out of the box.</p>
+<p>It aims to make the process of writing command line tools quick and fun
+while also preventing any frustration caused by the inability to implement
+an intended CLI API.</p>
+<p>AsyncClick in four points:</p>
+<ul class="simple">
+<li><p>arbitrary nesting of commands</p></li>
+<li><p>automatic help page generation</p></li>
+<li><p>supports lazy loading of subcommands at runtime</p></li>
+<li><p>seamlessly use async-enabled command and subcommand handlers</p></li>
+</ul>
+<p>What does it look like?  Here is an example of a simple Click program:</p>
+<p>And what it looks like when run:</p>
+<p>It automatically generates nicely formatted help pages:</p>
+<p>You can get the library directly from PyPI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">asyncclick</span>
+</pre></div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>asyncclick closely tracks click’s releases and development.
+In order to streamline this process, the documentation was changed
+as lightly as possible. Thus, the author decided not to mangle the
+text and did not replace <code class="docutils literal notranslate"><span class="pre">click</span></code> with <code class="docutils literal notranslate"><span class="pre">asyncclick</span></code>.</p>
+<p>Please adjust all <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">click</span></code> statements to
+<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">asyncclick</span> <span class="pre">as</span> <span class="pre">click</span></code>, or apply similar changes, as required.</p>
+</div>
+<p>This part of the documentation guides you through all of the library’s
+usage patterns.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="why.html">Why Click?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="why.html#why-not-argparse">Why not Argparse?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="why.html#why-not-docopt-etc">Why not Docopt etc.?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="why.html#why-hardcoded-behaviors">Why Hardcoded Behaviors?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="why.html#why-no-auto-correction">Why No Auto Correction?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#virtualenv">virtualenv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#screencast-and-examples">Screencast and Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-concepts-creating-a-command">Basic Concepts - Creating a Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#echoing">Echoing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#nesting-commands">Nesting Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#registering-commands-later">Registering Commands Later</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#adding-parameters">Adding Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#selecting-the-anyio-backend">Selecting the anyio backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#id2">Switching to Setuptools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="setuptools.html">Setuptools Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setuptools.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setuptools.html#testing-the-script">Testing The Script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setuptools.html#scripts-in-packages">Scripts in Packages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html#differences">Differences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html#parameter-types">Parameter Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html#parameter-names">Parameter Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html#implementing-custom-types">Implementing Custom Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="options.html#name-your-options">Name Your Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#basic-value-options">Basic Value Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#multi-value-options">Multi Value Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#tuples-as-multi-value-options">Tuples as Multi Value Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#multiple-options">Multiple Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#counting">Counting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#boolean-flags">Boolean Flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#feature-switches">Feature Switches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#choice-options">Choice Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#prompting">Prompting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#password-prompts">Password Prompts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#dynamic-defaults-for-prompts">Dynamic Defaults for Prompts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#callbacks-and-eager-options">Callbacks and Eager Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#yes-parameters">Yes Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#values-from-environment-variables">Values from Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#multiple-values-from-environment-values">Multiple Values from Environment Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#other-prefix-characters">Other Prefix Characters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#range-options">Range Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#callbacks-for-validation">Callbacks for Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html#optional-value">Optional Value</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arguments.html">Arguments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html#basic-arguments">Basic Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html#variadic-arguments">Variadic Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html#file-arguments">File Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html#file-path-arguments">File Path Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html#file-opening-safety">File Opening Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html#option-like-arguments">Option-Like Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands and Groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#callback-invocation">Callback Invocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#passing-parameters">Passing Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#nested-handling-and-contexts">Nested Handling and Contexts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#decorating-commands">Decorating Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#group-invocation-without-command">Group Invocation Without Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#custom-multi-commands">Custom Multi Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#merging-multi-commands">Merging Multi Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#multi-command-chaining">Multi Command Chaining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#multi-command-pipelines">Multi Command Pipelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#overriding-defaults">Overriding Defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#context-defaults">Context Defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands.html#command-return-values">Command Return Values</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="prompts.html">User Input Prompts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="prompts.html#option-prompts">Option Prompts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prompts.html#input-prompts">Input Prompts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prompts.html#confirmation-prompts">Confirmation Prompts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documenting Scripts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#help-texts">Help Texts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#preventing-rewrapping">Preventing Rewrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#truncating-help-texts">Truncating Help Texts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#meta-variables">Meta Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#command-short-help">Command Short Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#help-parameter-customization">Help Parameter Customization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="complex.html">Complex Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="complex.html#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="complex.html#building-a-git-clone">Building a Git Clone</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Patterns</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#command-aliases">Command Aliases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#parameter-modifications">Parameter Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#token-normalization">Token Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#invoking-other-commands">Invoking Other Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#callback-evaluation-order">Callback Evaluation Order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#forwarding-unknown-options">Forwarding Unknown Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#global-context-access">Global Context Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#detecting-the-source-of-a-parameter">Detecting the Source of a Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#managing-resources">Managing Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing Click Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#basic-testing">Basic Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#file-system-isolation">File System Isolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#input-streams">Input Streams</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#printing-to-stdout">Printing to Stdout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#ansi-colors">ANSI Colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pager-support">Pager Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#screen-clearing">Screen Clearing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#getting-characters-from-terminal">Getting Characters from Terminal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#waiting-for-key-press">Waiting for Key Press</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#launching-editors">Launching Editors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#launching-applications">Launching Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#printing-filenames">Printing Filenames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#standard-streams">Standard Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#intelligent-file-opening">Intelligent File Opening</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#finding-application-folders">Finding Application Folders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#showing-progress-bars">Showing Progress Bars</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="shell-completion.html">Shell Completion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="shell-completion.html#enabling-completion">Enabling Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shell-completion.html#custom-type-completion">Custom Type Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shell-completion.html#overriding-value-completion">Overriding Value Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shell-completion.html#adding-support-for-a-shell">Adding Support for a Shell</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exception Handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html#where-are-errors-handled">Where are Errors Handled?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html#what-if-i-don-t-want-that">What if I don’t want that?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html#which-exceptions-exist">Which Exceptions Exist?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unicode-support.html">Unicode Support</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unicode-support.html#surrogate-handling">Surrogate Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wincmd.html">Windows Console Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wincmd.html#unicode-arguments">Unicode Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wincmd.html#unicode-output-and-input">Unicode Output and Input</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
+<p>If you are looking for information on a specific function, class, or
+method, this part of the documentation is for you.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#decorators">Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#utilities">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#context">Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#types">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#formatting">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#parsing">Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#shell-completion">Shell Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#testing">Testing</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="miscellaneous-pages">
+<h2>Miscellaneous Pages<a class="headerlink" href="#miscellaneous-pages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">click-contrib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#asyncclick-8">asyncclick 8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-8-0">Version 8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-7-1-2">Version 7.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-7-1-1">Version 7.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-7-1">Version 7.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-7-0">Version 7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-6-7">Version 6.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-6-6">Version 6.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-6-4">Version 6.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-6-3">Version 6.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-6-2">Version 6.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-6-1">Version 6.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-6-0">Version 6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-5-1">Version 5.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-5-0">Version 5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-4-1">Version 4.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-4-0">Version 4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-3-3">Version 3.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-3-2">Version 3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-3-1">Version 3.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-3-0">Version 3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-6">Version 2.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-5">Version 2.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-4">Version 2.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-3">Version 2.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-2">Version 2.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-1">Version 2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-2-0">Version 2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-1">Version 1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-0">Version 1.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrading.html">Upgrading To Newer Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="upgrading.html#upgrading-to-asyncclick">Upgrading to asyncclick</a></li>
+<li class="toctree-l2"><a class="reference internal" href="upgrading.html#upgrading-to-7-0">Upgrading to 7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="upgrading.html#upgrading-to-3-2">Upgrading to 3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="upgrading.html#upgrading-to-2-0">Upgrading to 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">BSD-3-Clause License</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+
+  <h3>Project Links</h3>
+  <ul>
+    <li><a href="https://palletsprojects.com/donate">Donate to Pallets</a>
+  
+    <li><a href="https://palletsprojects.com/p/click/">Click Website</a>
+  
+    <li><a href="https://pypi.org/project/click/">PyPI releases</a>
+  
+    <li><a href="https://github.com/pallets/click/">Source Code</a>
+  
+    <li><a href="https://github.com/pallets/click/issues/">Issue Tracker</a>
+  
+    <li><a href="https://github.com/python-trio/asyncclick/">AsyncClick Fork</a>
+  </ul>
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to the AsyncClick Documentation</a><ul>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#api-reference">API Reference</a></li>
+<li><a class="reference internal" href="#miscellaneous-pages">Miscellaneous Pages</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014 Pallets, 2019 Matthias Urlichs.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  <script src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>

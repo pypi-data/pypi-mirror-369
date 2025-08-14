@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commands and Groups &#8212; AsyncClick Documentation (8.x)</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/click.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/tabs.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/click-icon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Input Prompts" href="prompts.html" />
+    <link rel="prev" title="Arguments" href="arguments.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="prompts.html" title="User Input Prompts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="arguments.html" title="Arguments"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AsyncClick Documentation (8.x)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Commands and Groups</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="commands-and-groups">
+<h1>Commands and Groups<a class="headerlink" href="#commands-and-groups" title="Permalink to this headline">¶</a></h1>
+<p>The most important feature of Click is the concept of arbitrarily nesting
+command line utilities.  This is implemented through the <code class="xref py py-class docutils literal notranslate"><span class="pre">Command</span></code>
+and <code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code> (actually <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiCommand</span></code>).</p>
+<div class="section" id="callback-invocation">
+<h2>Callback Invocation<a class="headerlink" href="#callback-invocation" title="Permalink to this headline">¶</a></h2>
+<p>For a regular command, the callback is executed whenever the command runs.
+If the script is the only command, it will always fire (unless a parameter
+callback prevents it.  This for instance happens if someone passes
+<code class="docutils literal notranslate"><span class="pre">--help</span></code> to the script).</p>
+<p>For groups and multi commands, the situation looks different.  In this case,
+the callback fires whenever a subcommand fires (unless this behavior is
+changed).  What this means in practice is that an outer command runs
+when an inner command runs:</p>
+<p>Here is what this looks like:</p>
+</div>
+<div class="section" id="passing-parameters">
+<h2>Passing Parameters<a class="headerlink" href="#passing-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Click strictly separates parameters between commands and subcommands. What this
+means is that options and arguments for a specific command have to be specified
+<em>after</em> the command name itself, but <em>before</em> any other command names.</p>
+<p>This behavior is already observable with the predefined <code class="docutils literal notranslate"><span class="pre">--help</span></code> option.
+Suppose we have a program called <code class="docutils literal notranslate"><span class="pre">tool.py</span></code>, containing a subcommand called
+<code class="docutils literal notranslate"><span class="pre">sub</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tool.py</span> <span class="pre">--help</span></code> will return the help for the whole program (listing
+subcommands).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tool.py</span> <span class="pre">sub</span> <span class="pre">--help</span></code> will return the help for the <code class="docutils literal notranslate"><span class="pre">sub</span></code> subcommand.</p></li>
+<li><p>But <code class="docutils literal notranslate"><span class="pre">tool.py</span> <span class="pre">--help</span> <span class="pre">sub</span></code> will treat <code class="docutils literal notranslate"><span class="pre">--help</span></code> as an argument for the main
+program. Click then invokes the callback for <code class="docutils literal notranslate"><span class="pre">--help</span></code>, which prints the
+help and aborts the program before click can process the subcommand.</p></li>
+</ul>
+</div>
+<div class="section" id="nested-handling-and-contexts">
+<h2>Nested Handling and Contexts<a class="headerlink" href="#nested-handling-and-contexts" title="Permalink to this headline">¶</a></h2>
+<p>As you can see from the earlier example, the basic command group accepts a
+debug argument which is passed to its callback, but not to the sync
+command itself.  The sync command only accepts its own arguments.</p>
+<p>This allows tools to act completely independent of each other, but how
+does one command talk to a nested one?  The answer to this is the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code>.</p>
+<p>Each time a command is invoked, a new context is created and linked with the
+parent context.  Normally, you can’t see these contexts, but they are
+there.  Contexts are passed to parameter callbacks together with the
+value automatically.  Commands can also ask for the context to be passed
+by marking themselves with the <code class="xref py py-func docutils literal notranslate"><span class="pre">pass_context()</span></code> decorator.  In that
+case, the context is passed as first argument.</p>
+<p>The context can also carry a program specified object that can be
+used for the program’s purposes.  What this means is that you can build a
+script like this:</p>
+<p>If the object is provided, each context will pass the object onwards to
+its children, but at any level a context’s object can be overridden.  To
+reach to a parent, <code class="docutils literal notranslate"><span class="pre">context.parent</span></code> can be used.</p>
+<p>In addition to that, instead of passing an object down, nothing stops the
+application from modifying global state.  For instance, you could just flip
+a global <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> variable and be done with it.</p>
+</div>
+<div class="section" id="decorating-commands">
+<h2>Decorating Commands<a class="headerlink" href="#decorating-commands" title="Permalink to this headline">¶</a></h2>
+<p>As you have seen in the earlier example, a decorator can change how a
+command is invoked.  What actually happens behind the scenes is that
+callbacks are always invoked through the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Context.invoke()</span></code> method
+which automatically invokes a command correctly (by either passing the
+context or not).</p>
+<p>This is very useful when you want to write custom decorators.  For
+instance, a common pattern would be to configure an object representing
+state and then storing it on the context and then to use a custom
+decorator to find the most recent object of this sort and pass it as first
+argument.</p>
+<p>For instance, the <code class="xref py py-func docutils literal notranslate"><span class="pre">pass_obj()</span></code> decorator can be implemented like this:</p>
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">Context.invoke()</span></code> command will automatically invoke the function
+in the correct way, so the function will either be called with <code class="docutils literal notranslate"><span class="pre">f(ctx,</span>
+<span class="pre">obj)</span></code> or <code class="docutils literal notranslate"><span class="pre">f(obj)</span></code> depending on whether or not it itself is decorated with
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pass_context()</span></code>.</p>
+<p>This is a very powerful concept that can be used to build very complex
+nested applications; see <a class="reference internal" href="complex.html#complex-guide"><span class="std std-ref">Complex Applications</span></a> for more information.</p>
+</div>
+<div class="section" id="group-invocation-without-command">
+<h2>Group Invocation Without Command<a class="headerlink" href="#group-invocation-without-command" title="Permalink to this headline">¶</a></h2>
+<p>By default, a group or multi command is not invoked unless a subcommand is
+passed.  In fact, not providing a command automatically passes <code class="docutils literal notranslate"><span class="pre">--help</span></code>
+by default.  This behavior can be changed by passing
+<code class="docutils literal notranslate"><span class="pre">invoke_without_command=True</span></code> to a group.  In that case, the callback is
+always invoked instead of showing the help page.  The context object also
+includes information about whether or not the invocation would go to a
+subcommand.</p>
+<p>Example:</p>
+<p>And how it works in practice:</p>
+</div>
+<div class="section" id="custom-multi-commands">
+<span id="id1"></span><h2>Custom Multi Commands<a class="headerlink" href="#custom-multi-commands" title="Permalink to this headline">¶</a></h2>
+<p>In addition to using <code class="xref py py-func docutils literal notranslate"><span class="pre">click.group()</span></code>, you can also build your own
+custom multi commands.  This is useful when you want to support commands
+being loaded lazily from plugins.</p>
+<p>A custom multi command just needs to implement a list and load method:</p>
+<p>These custom classes can also be used with decorators:</p>
+</div>
+<div class="section" id="merging-multi-commands">
+<h2>Merging Multi Commands<a class="headerlink" href="#merging-multi-commands" title="Permalink to this headline">¶</a></h2>
+<p>In addition to implementing custom multi commands, it can also be
+interesting to merge multiple together into one script.  While this is
+generally not as recommended as it nests one below the other, the merging
+approach can be useful in some circumstances for a nicer shell experience.</p>
+<p>The default implementation for such a merging system is the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">CommandCollection</span></code> class.  It accepts a list of other multi
+commands and makes the commands available on the same level.</p>
+<p>Example usage:</p>
+<p>And what it looks like:</p>
+<p>In case a command exists in more than one source, the first source wins.</p>
+</div>
+<div class="section" id="multi-command-chaining">
+<span id="id2"></span><h2>Multi Command Chaining<a class="headerlink" href="#multi-command-chaining" title="Permalink to this headline">¶</a></h2>
+<details class="changelog">
+<summary>Changelog</summary><div class="versionadded">
+<p><span class="versionmodified added">New in version 3.0.</span></p>
+</div>
+</details><p>Sometimes it is useful to be allowed to invoke more than one subcommand in
+one go.  For instance if you have installed a setuptools package before
+you might be familiar with the <code class="docutils literal notranslate"><span class="pre">setup.py</span> <span class="pre">sdist</span> <span class="pre">bdist_wheel</span> <span class="pre">upload</span></code>
+command chain which invokes <code class="docutils literal notranslate"><span class="pre">sdist</span></code> before <code class="docutils literal notranslate"><span class="pre">bdist_wheel</span></code> before
+<code class="docutils literal notranslate"><span class="pre">upload</span></code>.  Starting with Click 3.0 this is very simple to implement.
+All you have to do is to pass <code class="docutils literal notranslate"><span class="pre">chain=True</span></code> to your multicommand:</p>
+<p>Now you can invoke it like this:</p>
+<p>When using multi command chaining you can only have one command (the last)
+use <code class="docutils literal notranslate"><span class="pre">nargs=-1</span></code> on an argument.  It is also not possible to nest multi
+commands below chained multicommands.  Other than that there are no
+restrictions on how they work.  They can accept options and arguments as
+normal. The order between options and arguments is limited for chained
+commands. Currently only <code class="docutils literal notranslate"><span class="pre">--options</span> <span class="pre">argument</span></code> order is allowed.</p>
+<p>Another note: the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Context.invoked_subcommand</span></code> attribute is a bit
+useless for multi commands as it will give <code class="docutils literal notranslate"><span class="pre">'*'</span></code> as value if more than
+one command is invoked.  This is necessary because the handling of
+subcommands happens one after another so the exact subcommands that will
+be handled are not yet available when the callback fires.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is currently not possible for chain commands to be nested.  This
+will be fixed in future versions of Click.</p>
+</div>
+</div>
+<div class="section" id="multi-command-pipelines">
+<h2>Multi Command Pipelines<a class="headerlink" href="#multi-command-pipelines" title="Permalink to this headline">¶</a></h2>
+<details class="changelog">
+<summary>Changelog</summary><div class="versionadded">
+<p><span class="versionmodified added">New in version 3.0.</span></p>
+</div>
+</details><p>A very common usecase of multi command chaining is to have one command
+process the result of the previous command.  There are various ways in
+which this can be facilitated.  The most obvious way is to store a value
+on the context object and process it from function to function.  This
+works by decorating a function with <code class="xref py py-func docutils literal notranslate"><span class="pre">pass_context()</span></code> after which the
+context object is provided and a subcommand can store its data there.</p>
+<p>Another way to accomplish this is to setup pipelines by returning
+processing functions.  Think of it like this: when a subcommand gets
+invoked it processes all of its parameters and comes up with a plan of
+how to do its processing.  At that point it then returns a processing
+function and returns.</p>
+<p>Where do the returned functions go?  The chained multicommand can register
+a callback with <code class="xref py py-meth docutils literal notranslate"><span class="pre">MultiCommand.resultcallback()</span></code> that goes over all
+these functions and then invoke them.</p>
+<p>To make this a bit more concrete consider this example:</p>
+<p>That’s a lot in one go, so let’s go through it step by step.</p>
+<ol class="arabic simple">
+<li><p>The first thing is to make a <code class="xref py py-func docutils literal notranslate"><span class="pre">group()</span></code> that is chainable.  In
+addition to that we also instruct Click to invoke even if no
+subcommand is defined.  If this would not be done, then invoking an
+empty pipeline would produce the help page instead of running the
+result callbacks.</p></li>
+<li><p>The next thing we do is to register a result callback on our group.
+This callback will be invoked with an argument which is the list of
+all return values of all subcommands and then the same keyword
+parameters as our group itself.  This means we can access the input
+file easily there without having to use the context object.</p></li>
+<li><p>In this result callback we create an iterator of all the lines in the
+input file and then pass this iterator through all the returned
+callbacks from all subcommands and finally we print all lines to
+stdout.</p></li>
+</ol>
+<p>After that point we can register as many subcommands as we want and each
+subcommand can return a processor function to modify the stream of lines.</p>
+<p>One important thing of note is that Click shuts down the context after
+each callback has been run.  This means that for instance file types
+cannot be accessed in the <cite>processor</cite> functions as the files will already
+be closed there.  This limitation is unlikely to change because it would
+make resource handling much more complicated.  For such it’s recommended
+to not use the file type and manually open the file through
+<code class="xref py py-func docutils literal notranslate"><span class="pre">open_file()</span></code>.</p>
+<p>For a more complex example that also improves upon handling of the
+pipelines have a look at the <a class="reference external" href="https://github.com/pallets/click/tree/master/examples/imagepipe">imagepipe multi command chaining demo</a> in
+the Click repository.  It implements a pipeline based image editing tool
+that has a nice internal structure for the pipelines.</p>
+</div>
+<div class="section" id="overriding-defaults">
+<h2>Overriding Defaults<a class="headerlink" href="#overriding-defaults" title="Permalink to this headline">¶</a></h2>
+<p>By default, the default value for a parameter is pulled from the
+<code class="docutils literal notranslate"><span class="pre">default</span></code> flag that is provided when it’s defined, but that’s not the
+only place defaults can be loaded from.  The other place is the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">Context.default_map</span></code> (a dictionary) on the context.  This allows
+defaults to be loaded from a configuration file to override the regular
+defaults.</p>
+<p>This is useful if you plug in some commands from another package but
+you’re not satisfied with the defaults.</p>
+<p>The default map can be nested arbitrarily for each subcommand:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">default_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;debug&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># default for a top level option</span>
+    <span class="s2">&quot;runserver&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">5000</span><span class="p">}</span>  <span class="c1"># default for a subcommand</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The default map can be provided when the script is invoked, or
+overridden at any point by commands. For instance, a top-level command
+could load the defaults from a configuration file.</p>
+<p>Example usage:</p>
+<p>And in action:</p>
+</div>
+<div class="section" id="context-defaults">
+<h2>Context Defaults<a class="headerlink" href="#context-defaults" title="Permalink to this headline">¶</a></h2>
+<details class="changelog">
+<summary>Changelog</summary><div class="versionadded">
+<p><span class="versionmodified added">New in version 2.0.</span></p>
+</div>
+</details><p>Starting with Click 2.0 you can override defaults for contexts not just
+when calling your script, but also in the decorator that declares a
+command.  For instance given the previous example which defines a custom
+<code class="docutils literal notranslate"><span class="pre">default_map</span></code> this can also be accomplished in the decorator now.</p>
+<p>This example does the same as the previous example:</p>
+<p>And again the example in action:</p>
+</div>
+<div class="section" id="command-return-values">
+<h2>Command Return Values<a class="headerlink" href="#command-return-values" title="Permalink to this headline">¶</a></h2>
+<details class="changelog">
+<summary>Changelog</summary><div class="versionadded">
+<p><span class="versionmodified added">New in version 3.0.</span></p>
+</div>
+</details><p>One of the new introductions in Click 3.0 is the full support for return
+values from command callbacks.  This enables a whole range of features
+that were previously hard to implement.</p>
+<p>In essence any command callback can now return a value.  This return value
+is bubbled to certain receivers.  One usecase for this has already been
+show in the example of <a class="reference internal" href="#multi-command-chaining"><span class="std std-ref">Multi Command Chaining</span></a> where it has been
+demonstrated that chained multi commands can have callbacks that process
+all return values.</p>
+<p>When working with command return values in Click, this is what you need to
+know:</p>
+<ul class="simple">
+<li><p>The return value of a command callback is generally returned from the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseCommand.invoke()</span></code> method.  The exception to this rule has to
+do with <code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code>s:</p>
+<ul>
+<li><p>In a group the return value is generally the return value of the
+subcommand invoked.  The only exception to this rule is that the
+return value is the return value of the group callback if it’s
+invoked without arguments and <cite>invoke_without_command</cite> is enabled.</p></li>
+<li><p>If a group is set up for chaining then the return value is a list
+of all subcommands’ results.</p></li>
+<li><p>Return values of groups can be processed through a
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiCommand.result_callback</span></code>.  This is invoked with the
+list of all return values in chain mode, or the single return
+value in case of non chained commands.</p></li>
+</ul>
+</li>
+<li><p>The return value is bubbled through from the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Context.invoke()</span></code>
+and <code class="xref py py-meth docutils literal notranslate"><span class="pre">Context.forward()</span></code> methods.  This is useful in situations
+where you internally want to call into another command.</p></li>
+<li><p>Click does not have any hard requirements for the return values and
+does not use them itself.  This allows return values to be used for
+custom decorators or workflows (like in the multi command chaining
+example).</p></li>
+<li><p>When a Click script is invoked as command line application (through
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseCommand.main()</span></code>) the return value is ignored unless the
+<cite>standalone_mode</cite> is disabled in which case it’s bubbled through.</p></li>
+</ul>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/click-logo-sidebar.png" alt="Logo"/>
+            </a></p>
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Commands and Groups</a><ul>
+<li><a class="reference internal" href="#callback-invocation">Callback Invocation</a></li>
+<li><a class="reference internal" href="#passing-parameters">Passing Parameters</a></li>
+<li><a class="reference internal" href="#nested-handling-and-contexts">Nested Handling and Contexts</a></li>
+<li><a class="reference internal" href="#decorating-commands">Decorating Commands</a></li>
+<li><a class="reference internal" href="#group-invocation-without-command">Group Invocation Without Command</a></li>
+<li><a class="reference internal" href="#custom-multi-commands">Custom Multi Commands</a></li>
+<li><a class="reference internal" href="#merging-multi-commands">Merging Multi Commands</a></li>
+<li><a class="reference internal" href="#multi-command-chaining">Multi Command Chaining</a></li>
+<li><a class="reference internal" href="#multi-command-pipelines">Multi Command Pipelines</a></li>
+<li><a class="reference internal" href="#overriding-defaults">Overriding Defaults</a></li>
+<li><a class="reference internal" href="#context-defaults">Context Defaults</a></li>
+<li><a class="reference internal" href="#command-return-values">Command Return Values</a></li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="arguments.html" title="previous chapter">Arguments</a>
+          <li>Next: <a href="prompts.html" title="next chapter">User Input Prompts</a>
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014 Pallets, 2019 Matthias Urlichs.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  <script src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>

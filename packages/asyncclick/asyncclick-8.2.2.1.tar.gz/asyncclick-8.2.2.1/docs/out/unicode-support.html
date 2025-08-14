@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unicode Support &#8212; AsyncClick Documentation (8.x)</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/click.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/tabs.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/click-icon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Windows Console Notes" href="wincmd.html" />
+    <link rel="prev" title="Exception Handling" href="exceptions.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="wincmd.html" title="Windows Console Notes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="exceptions.html" title="Exception Handling"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AsyncClick Documentation (8.x)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Unicode Support</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="unicode-support">
+<h1>Unicode Support<a class="headerlink" href="#unicode-support" title="Permalink to this headline">¶</a></h1>
+<p>Click has to take extra care to support Unicode text in different
+environments.</p>
+<ul>
+<li><p>The command line in Unix is traditionally bytes, not Unicode. While
+there are encoding hints, there are some situations where this can
+break. The most common one is SSH connections to machines with
+different locales.</p>
+<p>Misconfigured environments can cause a wide range of Unicode
+problems due to the lack of support for roundtripping surrogate
+escapes. This will not be fixed in Click itself!</p>
+</li>
+<li><p>Standard input and output is opened in text mode by default. Click
+has to reopen the stream in binary mode in certain situations.
+Because there is no standard way to do this, it might not always
+work. Primarily this can become a problem when testing command-line
+applications.</p>
+<p>This is not supported:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="s1">&#39;Input here&#39;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Instead you need to do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="s1">&#39;Input here&#39;</span>
+<span class="n">in_stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">in_stream</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="n">out_stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">out_stream</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Remember in that case, you need to use <code class="docutils literal notranslate"><span class="pre">out_stream.getvalue()</span></code>
+and not <code class="docutils literal notranslate"><span class="pre">sys.stdout.getvalue()</span></code> if you want to access the buffer
+contents as the wrapper will not forward that method.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sys.stdin</span></code>, <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> are by default
+text-based. When Click needs a binary stream, it attempts to
+discover the underlying binary stream.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sys.argv</span></code> is always text. This means that the native type for
+input values to the types in Click is Unicode, not bytes.</p>
+<p>This causes problems if the terminal is incorrectly set and Python
+does not figure out the encoding. In that case, the Unicode string
+will contain error bytes encoded as surrogate escapes.</p>
+</li>
+<li><p>When dealing with files, Click will always use the Unicode file
+system API by using the operating system’s reported or guessed
+filesystem encoding. Surrogates are supported for filenames, so it
+should be possible to open files through the <code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code> type even
+if the environment is misconfigured.</p></li>
+</ul>
+<div class="section" id="surrogate-handling">
+<h2>Surrogate Handling<a class="headerlink" href="#surrogate-handling" title="Permalink to this headline">¶</a></h2>
+<p>Click does all the Unicode handling in the standard library and is
+subject to its behavior. Unicode requires extra care. The reason for
+this is that the encoding detection is done in the interpreter, and on
+Linux and certain other operating systems, its encoding handling is
+problematic.</p>
+<p>The biggest source of frustration is that Click scripts invoked by init
+systems, deployment tools, or cron jobs will refuse to work unless a
+Unicode locale is exported.</p>
+<p>If Click encounters such an environment it will prevent further
+execution to force you to set a locale. This is done because Click
+cannot know about the state of the system once it’s invoked and restore
+the values before Python’s Unicode handling kicked in.</p>
+<p>If you see something like this error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">RuntimeError</span><span class="p">:</span> <span class="n">Click</span> <span class="n">will</span> <span class="n">abort</span> <span class="n">further</span> <span class="n">execution</span> <span class="n">because</span> <span class="n">Python</span> <span class="n">was</span>
+  <span class="n">configured</span> <span class="n">to</span> <span class="n">use</span> <span class="n">ASCII</span> <span class="k">as</span> <span class="n">encoding</span> <span class="k">for</span> <span class="n">the</span> <span class="n">environment</span><span class="o">.</span> <span class="n">Consult</span>
+  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">click</span><span class="o">.</span><span class="n">palletsprojects</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">unicode</span><span class="o">-</span><span class="n">support</span><span class="o">/</span> <span class="k">for</span> <span class="n">mitigation</span>
+  <span class="n">steps</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>You are dealing with an environment where Python thinks you are
+restricted to ASCII data. The solution to these problems is different
+depending on which locale your computer is running in.</p>
+<p>For instance, if you have a German Linux machine, you can fix the
+problem by exporting the locale to <code class="docutils literal notranslate"><span class="pre">de_DE.utf-8</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LC_ALL</span><span class="o">=</span><span class="n">de_DE</span><span class="o">.</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">export</span> <span class="n">LANG</span><span class="o">=</span><span class="n">de_DE</span><span class="o">.</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+</div>
+<p>If you are on a US machine, <code class="docutils literal notranslate"><span class="pre">en_US.utf-8</span></code> is the encoding of choice.
+On some newer Linux systems, you could also try <code class="docutils literal notranslate"><span class="pre">C.UTF-8</span></code> as the
+locale:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LC_ALL</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">export</span> <span class="n">LANG</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+</div>
+<p>On some systems it was reported that <code class="docutils literal notranslate"><span class="pre">UTF-8</span></code> has to be written as
+<code class="docutils literal notranslate"><span class="pre">UTF8</span></code> and vice versa. To see which locales are supported you can
+invoke <code class="docutils literal notranslate"><span class="pre">locale</span> <span class="pre">-a</span></code>.</p>
+<p>You need to export the values before you invoke your Python script.</p>
+<p>In Python 3.7 and later you will no longer get a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> in
+many cases thanks to <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0538"><strong>PEP 538</strong></a> and <span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0540"><strong>PEP 540</strong></a>, which changed the
+default assumption in unconfigured environments. This doesn’t change the
+general issue that your locale may be misconfigured.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/click-logo-sidebar.png" alt="Logo"/>
+            </a></p>
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Unicode Support</a><ul>
+<li><a class="reference internal" href="#surrogate-handling">Surrogate Handling</a></li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="exceptions.html" title="previous chapter">Exception Handling</a>
+          <li>Next: <a href="wincmd.html" title="next chapter">Windows Console Notes</a>
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014 Pallets, 2019 Matthias Urlichs.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  <script src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>
