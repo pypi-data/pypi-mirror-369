@@ -1,0 +1,236 @@
+# Copyright 2020-2024 Canonical Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For further info, check https://github.com/canonical/charmcraft
+name: charmcraft
+base: core22
+summary: Charmcraft supports Kubernetes operator development and collaboration
+license: Apache-2.0
+description: |
+  Charmcraft enables collaboration between operator developers, and
+  publication on Charmhub.io, home of the Open Operator Collection.
+
+  Use `charmcraft` to:
+
+   * Init a new charm file structure
+   * Build your Kubernetes operator charm package
+   * Register your charm name on Charmhub
+   * Upload your charm to Charmhub
+   * Release your charm into channels
+
+  You can use charmcraft with operators written in any language but we
+  recommend the Python Operator Framework from https://pypi.org/project/ops/
+  developed at https://github.com/canonical/operator for ease of development
+  and collaboration.
+
+  Charmcraft and the Python Operator Framework extend the operator pattern
+  beyond Kubernetes with universal operators that drive Linux and
+  Windows apps. The universal operator pattern is very exciting for
+  multi-cloud application management.
+
+adopt-info: charmcraft # look for 'craftctl set *' in the charmcraft part
+architectures:
+  - build-on: s390x
+  - build-on: ppc64el
+  - build-on: arm64
+  - build-on: armhf
+  - build-on: amd64
+  - build-on: riscv64
+
+# https://github.com/snapcore/snapcraft/issues/4187
+environment:
+  PATH: "$SNAP/libexec/charmcraft:/snap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  LD_LIBRARY_PATH: "$SNAP/none"
+
+apps:
+  charmcraft:
+    # run Python in unbuffered mode
+    command: bin/python3 -u $SNAP/bin/charmcraft
+    completer: completion.sh
+    environment:
+      # have the cache outside of the version dirs (avoids keeping N copies)
+      XDG_CACHE_HOME: $SNAP_USER_COMMON/cache
+      # same for config
+      XDG_CONFIG_HOME: $SNAP_USER_COMMON/config
+      CRYPTOGRAPHY_OPENSSL_NO_LEGACY: "true"
+
+  spread:
+    command: bin/spread
+
+confinement: classic
+
+build-packages:
+  - pkg-config
+  - python3.10-dev
+  - libpython3.10-dev
+  - libsodium-dev
+  - libssl-dev
+  - libffi-dev
+  - python3-wheel
+  - python3-pip
+  - python3-setuptools-scm
+  - python3-dev
+  - libapt-pkg-dev
+  - liblzma-dev
+  - libxml2-dev
+  - libxslt1-dev
+  - libyaml-dev
+build-snaps:
+  - rustup
+  - astral-uv
+
+parts:
+  charmcraft-libs:
+    plugin: nil
+    stage-packages:
+      - libffi7 # Python3 foreign functions - used for rust modules
+      - libsodium23 # PyNaCl uses this
+      - libpython3-stdlib
+      - libpython3.10-stdlib
+      - libpython3.10-minimal
+      - python3-pip
+      - python3-setuptools
+      - python3-wheel
+      - python3-venv
+      - python3-minimal
+      - python3-distutils
+      - python3-pkg-resources
+      - python3.10-minimal
+    build-attributes:
+      - enable-patchelf
+  libgit2:
+    source: https://github.com/libgit2/libgit2/archive/refs/tags/v1.7.2.tar.gz
+    source-checksum: sha256/de384e29d7efc9330c6cdb126ebf88342b5025d920dcb7c645defad85195ea7f
+    plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+    build-attributes:
+      - enable-patchelf
+    prime:
+      - -usr/include
+  charmcraft:
+    after: [charmcraft-libs, libgit2]
+    source: .
+    plugin: nil
+    build-environment:
+      # CFLAGS for Python 3.10 and libyaml. Allows cryptography and pyyaml to find
+      # the appropriate system libraries.
+      - CFLAGS: "$(pkg-config python-3.10 yaml-0.1 --cflags)"
+      # Build all packages from source. Prevents issues like #1369.
+      # https://github.com/canonical/charmcraft/issues/1369
+      - PIP_NO_BINARY: ":all:"
+      - CRYPTOGRAPHY_OPENSSL_NO_LEGACY: "true"
+      - UV_FROZEN: "true"
+      - MAKEOPTS: -j$(nproc --all)
+      - UV_PYTHON_DOWNLOADS: never
+      - UV_COMPILE_BYTECODE: "true"
+      - CLICOLOR_FORCE: "true"
+      - UV_PROJECT_ENVIRONMENT: $CRAFT_PART_INSTALL
+    build-attributes:
+      - enable-patchelf
+    override-pull: |
+      # Need the full path for craftctl because we stage our own craftctl to the path.
+      /snap/snapcraft/current/libexec/snapcraft/craftctl default
+      # Ensure we don't have a dubious ownership error from git with a remote build.
+      git config --global --add safe.directory $CRAFT_PART_SRC
+      # Set up the rust compiler
+      rustup default 1.85
+    override-build: |
+      uv venv --relocatable $CRAFT_PART_INSTALL
+      uv sync --no-dev --no-editable --no-binary
+      . $CRAFT_PART_INSTALL/bin/activate
+      uv pip install -r requirements-jammy.txt
+      rm -f $CRAFT_PART_INSTALL/lib64
+
+      mkdir -p $CRAFT_PART_INSTALL/libexec/charmcraft
+      sed -i 's|#!/bin/sh|#!/snap/charmcraft/current/bin/python3|' $CRAFT_PART_INSTALL/bin/craftctl
+
+      version="$(uv pip show charmcraft | grep "Version:" | cut -d' ' -f2)"
+      /snap/snapcraft/current/libexec/snapcraft/craftctl set version="${version}"
+      [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
+      /snap/snapcraft/current/libexec/snapcraft/craftctl set grade="${grade}"
+
+      rm $CRAFT_PART_INSTALL/bin/python*
+      ln -s ../usr/bin/python3 $CRAFT_PART_INSTALL/bin/python3
+      ln -s python3 $CRAFT_PART_INSTALL/bin/python
+    stage:
+      - -bin/activate*
+      - -bin/chardetect
+      - -bin/craft-providers
+      - -bin/distro
+      - -bin/jsonschema
+      - -bin/deactivate*
+      - -bin/keyring
+      - -bin/normalizer
+      - -bin/pip*
+      - -bin/pydoc*
+      - -bin/snap-helpers
+      - -bin/tabulate
+    organize:
+      bin/craftctl: libexec/charmcraft/craftctl
+
+  bash-completion:
+    after: [charmcraft]
+    plugin: nil
+    build-environment:
+      - LD_LIBRARY_PATH: $CRAFT_STAGE/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
+      - PYTHONPATH: $CRAFT_STAGE/lib/python3.10/site-packages
+    override-build: |
+      python3 -m craft_cli.completion $CRAFT_PROJECT_NAME charmcraft.application:get_app_info \
+        > $CRAFT_PART_INSTALL/completion.sh
+
+  skopeo:
+    plugin: nil
+    source: https://github.com/containers/skopeo.git
+    source-tag: v1.17.0
+    build-environment:
+      - DISABLE_DOCS: "1"
+      - CGO_ENABLED: "1"
+    override-build: |
+      CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
+      mkdir "$CRAFT_PART_INSTALL"/bin
+      install -m755 skopeo "$CRAFT_PART_INSTALL"/bin/skopeo
+    stage-packages:
+      - libgpgme11
+      - libassuan0
+      - libbtrfs0
+      - libdevmapper1.02.1
+    build-attributes:
+      - enable-patchelf
+    build-snaps:
+      - go/1.21/stable
+    build-packages:
+      - libgpgme-dev
+      - libassuan-dev
+      - libbtrfs-dev
+      - libdevmapper-dev
+      - pkg-config
+    organize:
+      bin/skopeo: libexec/charmcraft/skopeo
+
+  spread:
+    plugin: go
+    source: https://github.com/snapcore/spread.git
+    source-depth: 1
+    build-packages:
+      - golang-go
+    build-environment:
+      - CGO_ENABLED: "0"
+    stage:
+      - -bin/humbox
+
+hooks:
+  configure:
+    environment:
+      PATH: "$SNAP/bin:$PATH"
