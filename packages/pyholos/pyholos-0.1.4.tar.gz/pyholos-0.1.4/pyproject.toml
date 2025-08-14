@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyholos"
+authors = [
+    { name = "Rami ALBASHA", email = "ralbasha@msfourrager.com" },
+]
+description = "A Python package for running the HOLOS 4.0 CLI."
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+dynamic = ['version', 'dependencies']
+
+[tool.setuptools.dynamic]
+version = { attr = "pyholos.version.__version__" }
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"pyholos" = ["resources/**/*"]
+
+[project.urls]
+Homepage = "https://github.com/Mon-Systeme-Fourrager/pyholos"
+Issues = "https://github.com/Mon-Systeme-Fourrager/pyholos/issues"
+
+[tool.ruff]
+
+[tool.ruff.format]
+quote-style = "preserve"
