@@ -1,0 +1,53 @@
+Metadata-Version: 2.2
+Name: pyceres
+Version: 2.5
+Summary: Factor graph optimization with Ceres, in Python
+Author-Email: Paul-Edouard Sarlin <psarlin@ethz.ch>, Philipp Lindenberger <plindenbe@ethz.ch>
+License: Apache-2.0
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3 :: Only
+Project-URL: Repository, https://github.com/cvg/pyceres
+Requires-Python: >=3.9
+Requires-Dist: numpy
+Description-Content-Type: text/markdown
+
+# pyceres
+
+This repository provides minimal Python bindings for the [Ceres Solver](http://ceres-solver.org/) and the implementation of factor graphs for bundle adjustment and pose graph optimization.
+
+## Installation
+
+Wheels for Python 9/10/11/12/13/14 on Linux, macOS 10+ (both Intel and Apple Silicon), and Windows can be installed using pip:
+```bash
+pip install pyceres
+```
+
+To build from source, follow the following steps:
+1. Install the Ceres Solver following [the official instructions](http://ceres-solver.org/installation.html).
+2. Clone the repository and build the package:
+
+```sh
+git clone https://github.com/cvg/pyceres.git
+cd pyceres
+python -m pip install .
+```
+
+Alternatively, you can build the Docker image:
+
+```sh
+docker build -t pyceres -f Dockerfile .
+```
+
+## Factor graph optimization
+
+Factors may be defined in Python (see [`examples/test_python_cost.py`](./examples/test_python_cost.py)) or in C++ with associated Python bindings.
+[PyCOLMAP](https://github.com/colmap/colmap/tree/main/pycolmap) provides the following cost functions in `pycolmap.cost_functions`:
+- reprojection error for different camera models, with fixed or variable pose and 3D points
+- reprojection error for multi-camera rigs, with fixed or variable rig extrinsics
+- error of absolute and relative poses
+- Sampson error for epipolar geometry
+
+See [`examples/`](./examples/) to use these factors.
+
+## Credits
+Pyceres was inspired by the work of Nikolaus Mitchell for [ceres_python_bindings](https://github.com/Edwinem/ceres_python_bindings) and is maintained by [Philipp Lindenberger](https://github.com/Phil26AT) and [Paul-Edouard Sarlin](https://psarlin.com/).
