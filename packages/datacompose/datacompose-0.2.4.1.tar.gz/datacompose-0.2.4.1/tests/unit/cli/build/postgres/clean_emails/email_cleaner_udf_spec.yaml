@@ -1,0 +1,67 @@
+name: "email_cleaner"
+description: "Email address cleaning specification"
+
+# Regex patterns for email validation and cleaning
+regex:
+  # Basic email pattern
+  email_pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+  # Common patterns to remove/fix
+  whitespace_pattern: '\s+'
+  multiple_dots: '\.{2,}'
+  leading_trailing_dots: '^\.+|\.+$'
+
+# Common typos and their corrections
+# More specific typos first to avoid substring conflicts
+typo_map:
+  'gmial.com': 'gmail.com'
+  'gmai.com': 'gmail.com'
+  'hotmial.com': 'hotmail.com'
+  'yahooo.com': 'yahoo.com'
+  'outlok.com': 'outlook.com'
+  'outlok.cmo': 'outlook.com'
+  'comcast.ent': 'comcast.net'
+  'aol.co': 'aol.com'
+  # Domain-only typos (applied to bare domains without TLD)
+  '@gmai': '@gmail.com'
+  '@yahooo': '@yahoo.com'
+  # Generic TLD fixes
+  '.cmo': '.com'
+  '.ocm': '.com'
+  '.con': '.com'
+
+# Processing flags
+flags:
+  lowercase: true
+  strict: true
+  remove_whitespace: true
+  fix_domain: true
+  validate_format: true
+
+# Additional cleaning options
+options:
+  default_domain: null  # Set to a domain if you want to append to emails missing @domain
+  max_length: 254  # RFC 5321 limit
+  min_length: 6    # Minimum reasonable email length (a@b.co)
+
+# Custom validation rules
+custom_rules:
+  # Corporate/trusted domains that bypass normal validation
+  corporate_domains: 
+    - 'company.com'
+    - 'corp.internal'
+    - 'localhost'
+  
+  # Domains to block/reject
+  blocked_domains:
+    - 'spam.com'
+    - 'fake.net'
+    - 'temporary.email'
+  
+  # Required TLD patterns (if specified, only these are allowed)
+  required_tlds: []  # Empty = allow all, or specify like ['.com', '.org', '.edu']
+  
+  # Advanced Gmail normalization
+  normalize_gmail_dots: true  # Remove dots from Gmail usernames
+  
+  # Allow plus addressing (user+tag@domain.com)
+  allow_plus_addressing: true
