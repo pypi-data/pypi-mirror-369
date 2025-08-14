@@ -1,0 +1,41 @@
+#!/bin/bash
+expected_lines=$2
+files=$1
+
+get_file_content() {
+  local file="$1"
+  if [[ "${file##*.}" == "pfw" ]]; then
+    cat "$file"
+  elif [[ "${file##*.}" == "gz" || "${file##*.}" == "pfw.gz" ]]; then
+    gzip -dc "$file"
+  else
+    cat "$file"
+  fi
+}
+
+
+for file in $(ls $files); do
+  num_posix_lines=$(get_file_content "$file" | wc -l 2> /dev/null)
+done
+
+if [[ "$num_posix_lines" -lt "$expected_lines" ]]; then
+  echo "Found $num_posix_lines expected $expected_lines"
+  for file in $(ls $files); do
+    get_file_content "$file" 
+  done
+  exit 1
+else
+  for file in $(ls $files); do
+    if jq --slurp -e >/dev/null 2>&1 <<< `get_file_content "$file" | grep -v "\["  | grep -v "\]"| grep -v "Binary" | awk '{$1=$1;print}'`; then
+      echo "Parsed JSON successfully and got something other than false/null";
+    else
+      echo "Failed to parse JSON, or got false/null";
+      jq --slurp -e <<< `get_file_content "$file" | grep -v "\[" | grep -v "\]" | grep -v "Binary" | awk '{$1=$1;print}'`
+      get_file_content "$file" | grep -v "\[" | grep -v "\]"  | awk '{$1=$1;print}'
+      exit 1
+    fi
+  done
+  
+fi
+rm -r $1 2> /dev/null
+exit 0
