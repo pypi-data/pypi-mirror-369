@@ -1,0 +1,46 @@
+[build-system]
+requires = ["scikit-build-core>=0.3.3", "numpy", "mypy"]
+build-backend = "scikit_build_core.build"
+
+
+[project]
+name = "pyopensim"
+version = "0.1.0"
+description="PyOpenSim: Portable Python bindings for OpenSim"
+readme = "README.md"
+authors = [ { name = "Senthur Ayyappan", email = "senthurayyappan@umich.edu" } ]
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+dependencies = [
+    "numpy",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+build = ["cibuildwheel"]
+
+
+[tool.scikit-build]
+wheel.expand-macos-universal-tags = true
+# Don't specify wheel.packages - let CMake handle the installation
+
+# Include stub files in the wheel for PEP 561 compliance
+wheel.packages = ["pyopensim", "pyopensim-stubs"]
+
+
+[tool.cibuildwheel]
+# Target python versions:
+build = ["cp310-*", "cp311-*", "cp312-*"]
+
+build-verbosity = 1
+test-command = "pytest {project}/tests"
+test-extras = ["test"]
+test-skip = ["*universal2:arm64"]
