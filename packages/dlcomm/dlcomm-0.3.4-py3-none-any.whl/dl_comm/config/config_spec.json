@@ -1,0 +1,24 @@
+{
+    "framework": ["pytorch", "jax", "tensorflow"],
+    "ccl_debug": ["on", "off"],
+  
+    "backend": {
+      "pytorch": ["xccl", "ccl", "mpi","nccl"],
+      "jax": ["xla"],
+      "tensorflow": ["xccl"]
+    },
+    "collective": ["allreduce", "broadcast", "gather", "scatter", "allgather", "reduce", "barrier", "alltoall", "alltoallsingle"],
+    "op": {
+      "allreduce": ["sum", "max", "min", "prod"],
+      "reduce": ["sum", "max", "min", "prod"],
+      "broadcast": [null],
+      "gather": [null],
+      "scatter": [null],
+      "allgather": [null],
+      "barrier": [null],
+      "alltoall": [null],
+      "alltoallsingle": [null]
+    },
+    "dtype": ["float16", "bfloat16", "float32", "float64", "int32", "int64"]
+  }
+  
