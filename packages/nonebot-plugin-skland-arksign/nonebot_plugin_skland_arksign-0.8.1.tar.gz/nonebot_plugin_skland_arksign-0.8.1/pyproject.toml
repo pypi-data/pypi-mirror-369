@@ -1,0 +1,123 @@
+[project]
+name = "nonebot-plugin-skland-arksign"
+version = "0.8.1"
+description = "用于每日定时签到森空岛明日方舟的Nonebot插件"
+authors = [
+    { name = "GuGuMur", email = "222153315@qq.com" },
+    { name = "Azide", email = "rukuy@qq.com" },
+]
+dependencies = [
+    "nonebot2>=2.2.1",
+    "httpx>=0.27.2",
+    "pydantic>=2.0.0",
+    "nonebot-plugin-apscheduler>=0.5.0",
+    "nonebot-plugin-alconna>=0.52.3",
+    "nonebot-plugin-datastore>=1.3.0",
+    "nonebot-plugin-session>=0.3.2",
+    "nonebot-plugin-session-saa>=0.2.0",
+    "nonebot-plugin-send-anything-anywhere>=0.6.1",
+    "nonebot-plugin-orm[default]>=0.7.6",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.license]
+text = "MIT"
+
+[project.optional-dependencies]
+sm_local = [
+    "cryptography>=43.0.1",
+]
+sm_htmlrender = [
+    "nonebot-plugin-htmlrender>=0.3.5",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pre-commit>=3.8.0",
+    "black>=24.8.0",
+    "ruff>=0.6.7",
+    "isort>=5.13.2",
+    "nb-cli>=1.4.2",
+    "nonebot-adapter-onebot>=2.4.5",
+]
+test = [
+    "nonebug>=0.3.7",
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+    "pytest-xdist>=3.6.1",
+    "pytest-mock>=3.14.0",
+    "nonebug-saa>=0.4.1",
+]
+
+[tool.nonebot]
+adapters = [
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
+]
+plugins = [
+    "nonebot_plugin_skland_arksign",
+]
+builtin_plugins = [
+    "echo",
+    "single_session",
+]
+
+[tool.ruff]
+select = [
+    "E",
+    "W",
+    "F",
+    "UP",
+    "C",
+    "T",
+    "PYI",
+    "PT",
+    "Q",
+]
+ignore = [
+    "E402",
+    "E501",
+    "C901",
+    "PT023",
+]
+line-length = 120
+target-version = "py310"
+
+[tool.black]
+line-length = 120
+preview = true
+target-version = [
+    "py310",
+    "py311",
+    "py312",
+]
+include = "\\.pyi?$"
+extend-exclude = ""
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip_gitignore = true
+length_sort = true
+force_sort_within_sections = true
+src_paths = [
+    "nonebot_plugin_skland_arksign",
+    "tests",
+]
+extra_standard_library = [
+    "typing_extensions",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
