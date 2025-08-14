@@ -1,0 +1,120 @@
+Metadata-Version: 2.1
+Name: crowd-vision
+Version: 0.1.0
+Summary: An advanced library for crowd detection, tracking, and analysis in videos.
+Home-page: https://github.com/yourusername/crowd_vision
+Author: Your Name
+Author-email: youremail@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: scikit-learn
+Requires-Dist: torch
+Requires-Dist: torchvision
+Requires-Dist: opencv-python>=4.5
+
+Crowd Vision: Advanced Crowd Tracking & Analysis 🚶‍♂️🚶‍♀️
+crowd_vision is a high-performance Python library for detecting, tracking, and analyzing crowds in video streams. It uses a hybrid tracking approach with Kalman filters and appearance features to maintain stable object IDs even in dense and complex scenes.
+
+The entire pipeline is wrapped in a simple-to-use API, allowing you to get detailed crowd analytics from a video file with just a few lines of code.
+
+✨ Features
+Robust Person Detection: Utilizes a pre-trained Faster R-CNN model from torchvision for accurate person detection.
+
+Hybrid Tracking Algorithm: Combines IOU (Intersection over Union) and appearance-based matching (color histograms) for reliable tracking that resists ID switches.
+
+Kalman Filter Motion Prediction: Predicts object motion to handle temporary occlusions and maintain consistent tracks.
+
+Motion-Aware Crowd Clustering: Uses the DBSCAN algorithm on both spatial and velocity features to intelligently identify and group individuals into crowds.
+
+Easy-to-Use API: Process an entire video and get detailed crowd analytics with a single function call.
+
+Detailed Output: Generates an annotated output video and a CSV log file with frame-by-frame data on crowd size and composition.
+
+⚙️ Installation
+Installation is a two-step process. For the best results, it's highly recommended to install the core deep learning and computer vision libraries first, as pip can sometimes struggle with their complex dependencies.
+
+Step 1: Install Core Dependencies (Recommended)
+
+Follow the official instructions for your specific system (e.g., with or without a CUDA-enabled GPU).
+
+PyTorch: Go to the PyTorch Official Website and select the correct options for your OS and package manager. This will give you the correct command to run.
+
+OpenCV: pip install opencv-python
+
+Step 2: Install crowd_vision
+
+Once the core libraries are installed, you can install the package directly from PyPI:
+
+pip install crowd_vision
+
+🚀 How to Use
+Using the library is designed to be straightforward. You provide a path to a video file and an output directory, and the analyze_video function handles the entire pipeline.
+
+from crowd_vision import analyze_video
+import os
+
+# 1. Define the path to your video and where to save the results
+video_input_path = "path/to/your/video.mp4"
+output_directory = "results/run_01"
+
+# 2. Create the output directory if it doesn't exist
+os.makedirs(output_directory, exist_ok=True)
+
+# 3. Check if the video file exists before running
+if os.path.exists(video_input_path):
+    print(f"Starting analysis for: {video_input_path}")
+
+    # 4. Run the full analysis pipeline
+    # You can customize many parameters here (see below)
+    analyze_video(
+        video_path=video_input_path,
+        output_dir=output_directory,
+        confidence_threshold=0.5,
+        motion_weight=0.2,
+        app_weight=0.5
+    )
+    print(f"✅ Analysis complete! Results saved in '{output_directory}'")
+else:
+    print(f"❌ Error: Video not found at '{video_input_path}'")
+
+
+Customization
+You can tweak the tracker's behavior by passing optional arguments to analyze_video:
+
+confidence_threshold: The minimum score for a person detection to be considered (e.g., 0.5).
+
+tracking_max_age: How many frames a track can be lost before it's deleted (e.g., 30).
+
+motion_weight: How much velocity matters when clustering people into groups (e.g., 0.2).
+
+app_weight: The balance between IOU and appearance for matching tracks (e.g., 0.5).
+
+📊 Output
+The analyze_video function will generate two files in your specified output directory:
+
+crowd_analysis_output.mp4: The original video, annotated with:
+
+Bounding boxes and unique IDs for each tracked person.
+
+A colored convex hull drawn around identified crowds.
+
+Text indicating the number of people in each crowd.
+
+crowd_analysis_data.csv: A CSV file containing a frame-by-frame log of all detected crowds, with the following columns:
+
+Frame
+
+Time_Seconds
+
+Crowd_ID
+
+Person_Count
+
+Track_IDs (a semicolon-separated list of the IDs of people in the crowd)
