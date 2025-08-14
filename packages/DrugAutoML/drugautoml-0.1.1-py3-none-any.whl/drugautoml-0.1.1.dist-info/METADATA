@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: DrugAutoML
+Version: 0.1.1
+Summary: Automated Machine Learning pipeline for bioactivity prediction using molecular fingerprints
+Home-page: https://github.com/aycapmkcu/DrugAutoML
+Author: Your Name
+Author-email: ayca.beyhan@msu.edu.tr
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: scikit-learn
+Requires-Dist: matplotlib
+Requires-Dist: seaborn
+Requires-Dist: optuna
+Requires-Dist: xgboost
+Requires-Dist: lightgbm
+Requires-Dist: joblib
+Requires-Dist: scipy
+Requires-Dist: rdkit-pypi
+Requires-Dist: shap
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# DrugAutoML
+
+**DrugAutoML** is an **end-to-end Automated Machine Learning (AutoML) pipeline** for **bioactivity prediction** in drug discovery.  
+It automates every stage — from reading raw datasets to generating predictions for new molecules — and produces both **high-performance models** and **explainable outputs**.
+
+---
+
+## 🚀 Features
+
+- **Data Preprocessing**  
+  Reads raw datasets, cleans and standardizes SMILES, removes invalid molecules, and labels compounds as *active* or *inactive* based on pChEMBL cutoffs or existing binary labels.
+
+- **Molecular Featurization**  
+  Generates **ECFP (Extended-Connectivity Fingerprints)** using RDKit with customizable radius, bit size, and count-based features.
+
+- **Data Splitting**  
+  Splits data into training and testing sets using:
+  - **Scaffold Split** (structure-aware)
+  - **Stratified Random Split** (class-proportion preserving)
+
+- **Model Selection**  
+  Hyperparameter optimization with **Optuna** for:
+  - Random Forest, Extra Trees, Logistic Regression, Linear SVC, XGBoost, LightGBM  
+  Uses repeated stratified k-fold CV and produces a ranked **leaderboard**.
+
+- **Model Finalization**  
+  Trains the best model, applies **probability calibration**, selects optimal classification threshold, evaluates on the test set, and saves the model.
+
+- **Explainability**  
+  - **SHAP** global importance plots (beeswarm, bar, signed bar)  
+  - **Bit Gallery** visualizations: highlights ECFP bits in test molecules that strongly influence predictions.
+
+- **Prediction on New Data**  
+  Scores unlabeled or labeled molecules, outputs probabilities and predictions, and computes metrics if labels are available.
+
+
+
