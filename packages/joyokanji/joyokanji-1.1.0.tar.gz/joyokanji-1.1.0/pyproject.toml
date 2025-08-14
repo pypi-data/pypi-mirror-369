@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "joyokanji"
+version = "1.1.0"
+description = "The joyokanji converts old-form kanji characters into new-form kanji characters."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "new-village" }
+]
+keywords = ["kanji", "japanese", "normalization", "text" ]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Topic :: Text Processing :: Linguistic",
+]
+
+[project.urls]
+Homepage = "https://github.com/new-village/joyo-kanji"
+Issues = "https://github.com/new-village/joyo-kanji/issues"
+
+[project.optional-dependencies]
+pdf = ["pdfminer.six"]
+ocr = ["pypdfium2", "pytesseract"]
+dev = ["pytest", "build"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["joyokanji*"]
+
+[tool.setuptools.package-data]
+joyokanji = ["config/*.json"]
