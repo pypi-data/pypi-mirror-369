@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-pgwatch"
+version = "1.0.0"
+description = "Django app for PostgreSQL LISTEN/NOTIFY with persistence and playback"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Ed Menendez", email = "ed@edmenendez.com"}
+]
+keywords = ["django", "postgresql", "notify", "listen", "database", "triggers"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "Django>=4.2",
+    "psycopg>=3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-django>=4.5",
+    "pytest-cov>=4.0",
+    "ruff>=0.1",
+    "mypy>=1.0",
+    "django-stubs>=4.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/edmenendez/django-pgwatch"
+Documentation = "https://github.com/edmenendez/django-pgwatch#readme"
+Repository = "https://github.com/edmenendez/django-pgwatch"
+"Bug Tracker" = "https://github.com/edmenendez/django-pgwatch/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["django_pgwatch*"]
+
+[tool.setuptools.package-data]
+django_pgwatch = ["migrations/*.py", "management/commands/*.py"]
+
+[tool.ruff]
+line-length = 90
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "PIE", "SIM"]
+ignore = ["E203", "E501"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.mypy]
+python_version = "3.9"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_files = "tests.py test_*.py *_tests.py"
+addopts = "--cov=django_pgwatch --cov-report=term-missing"
