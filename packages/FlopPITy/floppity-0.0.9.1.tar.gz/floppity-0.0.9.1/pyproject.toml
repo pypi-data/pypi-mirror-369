@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=75", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FlopPITy"
+dynamic = ["version"]
+#version="0.0.4"
+description = "normalising Flow exoPlanet Parameter Inference Toolkyt"
+readme = "README.md"
+license = "BSD-3-Clause"
+authors = [
+    { name = "Francisco Ardevol Martinez", email = "fardevolmartinez@amnh.org" }
+]
+requires-python = ">=3.10, <3.13"
+dependencies = [
+    "numpy<2",
+    "sbi",
+    "corner",
+    "cloudpickle"
+]
+
+#[tool.setuptools]
+#package-data = { "src/floppity" = ["data/data/obs_3.66_0.22_0.28.txt"] }
+
+[tool.setuptools_scm]
+#write_to = "src/floppity/version.py"
+local_scheme = "no-local-version"
+version_scheme = "no-guess-dev"
+tag_regex = "^v?(?P<version>.*)"
