@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: igwn-monitor
+Version: 1.3.1
+Summary: Nagios (Icinga) monitoring plugins for IGWN
+Author-email: Duncan Macleod <duncan.macleod@ligo.org>
+License: MIT
+Project-URL: Homepage, https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins
+Project-URL: Bug Tracker, https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins/-/issues/
+Project-URL: Source Code, https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins
+Project-URL: Documentation, https://computing.docs.ligo.org/monitoring/igwn-monitoring-plugins/
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: System :: Monitoring
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ciecplib
+Requires-Dist: gpstime
+Requires-Dist: gssapi
+Requires-Dist: igwn-auth-utils>=1.0.0
+Requires-Dist: requests
+Requires-Dist: requests-gssapi>=1.2.2
+Provides-Extra: test
+Requires-Dist: freezegun; extra == "test"
+Requires-Dist: pytest>=3.9.1; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: requests-mock; extra == "test"
+Provides-Extra: docs
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinx-argparse; extra == "docs"
+Requires-Dist: sphinx-automodapi; extra == "docs"
+Requires-Dist: sphinx-jsonschema; extra == "docs"
+Requires-Dist: sphinx_rtd_theme; extra == "docs"
+Provides-Extra: all
+Requires-Dist: beautifulsoup4; extra == "all"
+Requires-Dist: python-dateutil; extra == "all"
+Requires-Dist: dqsegdb2>=1.2.1; extra == "all"
+Requires-Dist: gwdatafind; extra == "all"
+Requires-Dist: htcondor; extra == "all"
+Requires-Dist: igwn-segments; extra == "all"
+Requires-Dist: jsonschema; extra == "all"
+Requires-Dist: ldap3; extra == "all"
+Requires-Dist: xrootd; extra == "all"
+Provides-Extra: check-data-availability
+Requires-Dist: dqsegdb2>=1.2.1; extra == "check-data-availability"
+Requires-Dist: igwn-segments; extra == "check-data-availability"
+Provides-Extra: check-dqsegdb-latency
+Requires-Dist: dqsegdb2>=1.2.1; extra == "check-dqsegdb-latency"
+Provides-Extra: check-docdb
+Requires-Dist: beautifulsoup4; extra == "check-docdb"
+Provides-Extra: check-file-latency
+Requires-Dist: gwdatafind; extra == "check-file-latency"
+Provides-Extra: check-gwdatafind-latency
+Requires-Dist: gwdatafind>=2.1.0; extra == "check-gwdatafind-latency"
+Provides-Extra: check-kerberos-principal-expiry
+Requires-Dist: ldap3; extra == "check-kerberos-principal-expiry"
+Provides-Extra: check-json
+Requires-Dist: jsonschema; extra == "check-json"
+Provides-Extra: check-htcondor
+Requires-Dist: htcondor; extra == "check-htcondor"
+Provides-Extra: check-vault-token
+Requires-Dist: python-dateutil; extra == "check-vault-token"
+Provides-Extra: check-xrootd-latency
+Requires-Dist: xrootd; extra == "check-xrootd-latency"
+Dynamic: license-file
+
+This project houses custom monitoring plugins designed to be executed
+on the remote host (not the monitoring instance).
+
+All plugins here must follow (as far as possible) the Monitoring Plugins
+Development Guidelines as outlined here:
+
+<https://www.monitoring-plugins.org/doc/guidelines.html>
+
+#### Installation
+
+Binary packages from this project are distributed for RHEL and Debian
+distributions supported by the IGWN Computing and Software group.
+For instructions on configuring your system package manager to
+follow the IGWN repositories, please see
+
+<https://computing.docs.ligo.org/guide/software/>
+
+The `igwn-monitoring-plugins` packages follow the convention for Nagios plugin
+packages for each platform and can be discovered on the relevant systems via
+
+```shell
+dnf search nagios-plugins-igwn*
+```
+
+for RHEL and derivatives, and
+
+```shell
+apt-cache search monitoring-plugins-igwn*
+```
+
+for Debian.

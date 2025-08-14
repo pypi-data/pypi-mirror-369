@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins/-/raw/main/igwn_monitor/plugins/check_json_schema.json",
+  "title": "JSON monitor status report",
+  "description": "JSON-format status report intended to be ingested by the IGWN check-json monitoring plugin",
+  "type": "object",
+  "required": [
+    "status_intervals"
+  ],
+  "properties": {
+    "author": {
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "Author name",
+          "description": "Name of the author of this report"
+        },
+        {
+          "type": "object",
+          "title": "Author details",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Author name",
+              "description": "Name of the author of this report"
+            },
+            "email": {
+              "type": "string",
+              "title": "Author email address",
+              "description": "Contact email address of the author of this report"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "created_gps": {
+      "type": "number",
+      "title": "Creation GPS",
+      "description": "GPS time of the creation of this report"
+    },
+    "created_unix": {
+      "type": "number",
+      "title": "Creation Unix time",
+      "description": "Unix time of the creation of this report"
+    },
+    "critical_txt": {
+      "type": "string",
+      "title": "Critical text",
+      "description": "Description of what CRITICAL (status 2) means"
+    },
+    "ok_txt": {
+      "type": "string",
+      "title": "OK text",
+      "description": "Description of what OK (status 0) means"
+    },
+    "status_intervals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_sec": {
+            "type": "integer",
+            "title": "Start seconds",
+            "description": "Time (from now) after which this status interval should start",
+            "minimum": 0
+          },
+          "end_sec": {
+            "type": "integer",
+            "title": "End seconds",
+            "description": "Time (from now) after which this status interval should end",
+            "minimum": 0
+          },
+          "num_status": {
+            "type": "integer",
+            "title": "Status value",
+            "description": "Status value for this interval",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "txt_status": {
+            "type": "string",
+            "title": "Status message",
+            "description": "Message to display for this status interval."
+          }
+        },
+        "required": [
+          "num_status",
+          "txt_status"
+        ]
+      }
+    },
+    "unknown_txt": {
+      "type": "string",
+      "title": "UNKNOWN text",
+      "description": "Description of what UNKNOWN (status 3) means"
+    },
+    "warning_txt": {
+      "type": "string",
+      "title": "WARNING text",
+      "description": "Description of what WARNING (status 1) means"
+    }
+  }
+}
