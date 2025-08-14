@@ -1,0 +1,20 @@
+[project]
+name = "asher-hello-cli"
+version = "0.1.1"
+description = "A simple CLI hello example using argparse."
+authors = [{ name = "Asher", email = "jasherleslie@gmail.com" }]
+requires-python = ">=3.12"
+dependencies = []
+readme = "README.md"
+license = "MIT"
+keywords = ["cli", "hello", "example"]
+
+[tool.poetry]
+packages = [{ include = "hello", from = "src" }]
+
+[tool.poetry.scripts]
+hello = "hello.main:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
