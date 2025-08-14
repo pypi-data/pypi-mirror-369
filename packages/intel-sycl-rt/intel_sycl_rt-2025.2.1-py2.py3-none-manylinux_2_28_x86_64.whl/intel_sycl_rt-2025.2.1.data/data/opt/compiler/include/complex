@@ -1,0 +1,322 @@
+// Copyright (C) 2012 Intel Corporation
+//
+// This software and the related documents are Intel copyrighted materials, and
+// your use of them is governed by the express license under which they were
+// provided to you ("License"). Unless the License provides otherwise, you may
+// not use, modify, copy, publish, distribute, disclose or transmit this
+// software or the related documents without Intel's prior written permission.
+//
+// This software and the related documents are provided as is, with no express
+// or implied warranties, other than those that are expressly stated in the
+// License.
+
+// Replacement header for C++ standard complex
+//
+// This replacement is necessary to support scalar complex (gnu complex)
+// specialization of several complex operators for some data types,
+// in particular float and double
+//
+// The replacement header will include whatever std. complex is in
+// the include search path so it is under the control of the user.
+
+#ifndef _INC_COMPLEX_
+#define _INC_COMPLEX_
+
+// Include system header
+#include_next <complex>
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__INTEL_CLANG_COMPILER) || defined(__clang__)
+#define _OVERRIDE_COMPLEX_SPECIALIZATION_
+#endif // _WIN32 || _WIN64 || __INTEL_CLANG_COMPILER
+
+// Complex specialization for float and double
+#ifndef _OVERRIDE_COMPLEX_SPECIALIZATION_
+#define _USE_COMPLEX_SPECIALIZATION_
+#endif // _OVERRIDE_COMPLEX_SPECIALIZATION_
+
+// Ensure specialization is enabled
+#if defined _USE_COMPLEX_SPECIALIZATION_
+// Ensure that we only specialize known complex system headers
+// where complex<float> and complex<double> is implemented based on
+// built-in complex data types, e.g. __complex__ float
+#if defined _GLIBCXX_COMPLEX
+
+#if defined(__cplusplus)
+#if __cplusplus >= 201103L
+#define __CONSTEXPR__ constexpr
+#else
+#define __CONSTEXPR__
+#endif
+#endif
+
+namespace std
+{
+// Check usage correctness
+#if !defined(__INTEL_COMPILER) && !defined(__INTEL_LLVM_COMPILER)
+#error "This Intel <complex> is for use only with the Intel C++ compilers!"
+#endif // __INTEL_COMPILER || __INTEL_LLVM_COMPILER
+
+// Disable error 308, 373 in order to access the private member of
+// complex<float|double>. Considered acceptable as members are used in the
+// member specialization as well.
+#pragma warning(push)
+#pragma warning(disable:308)
+#pragma warning(disable:373)
+
+    // Specialized conversion assignment:
+    //     complex<double> to complex<float>
+    //     complex<float> to complex<double>
+
+    template<>
+    inline complex<float>&
+        complex<float>::operator=(const complex<double>& __z)
+    {
+        _M_value = __z._M_value;
+        return *this;
+    }
+
+    template<>
+    inline complex<double>&
+        complex<double>::operator=(const complex<float>& __z)
+    {
+        _M_value = __z._M_value;
+        return *this;
+    }
+
+    // float:
+    // Specialization of complex<float> operation to take advantage of
+    // built-in complex types and operations
+
+    template<>
+    inline complex<float>&
+    complex<float>::operator+=(const complex<float>& __z) {
+        _M_value += __z._M_value;
+        return *this;
+    }
+
+    template<>
+    inline complex<float>&
+    complex<float>::operator-=(const complex<float>& __z) {
+        _M_value -= __z._M_value;
+        return *this;
+    }
+
+    template<>
+    inline complex<float>&
+    complex<float>::operator*=(const complex<float>& __z) {
+        _M_value *= __z._M_value;
+        return *this;
+    }
+
+    template<>
+    inline complex<float>&
+    complex<float>::operator/=(const complex<float>& __z) {
+        _M_value /= __z._M_value;
+        return *this;
+    }
+
+    inline complex<float> operator+(const complex<float>& __x,
+                                    const complex<float>& __y) {
+        return __x._M_value + __y._M_value;
+    }
+
+    inline complex<float> operator-(const complex<float>& __x,
+                                    const complex<float>& __y) {
+        return __x._M_value - __y._M_value;
+    }
+
+    inline complex<float> operator*(const complex<float>& __x,
+                                    const complex<float>& __y) {
+        return __x._M_value * __y._M_value;
+    }
+
+    inline complex<float> operator/(const complex<float>& __x,
+                                    const complex<float>& __y) {
+        return __x._M_value / __y._M_value;
+    }
+
+    inline complex<float> operator-(const complex<float>& __x) {
+        return -__x._M_value;
+    }
+
+    // template version declared inline _GLIBCXX_CONSTEXPR bool
+    // which becomes constexpr for C++11, however the replacement
+    // header must support gcc 3.4 to 4.7 (2012)
+    inline __CONSTEXPR__ bool operator==(const complex<float>& __x,
+                           const complex<float>& __y) {
+        return __x._M_value == __y._M_value;
+    }
+
+    inline __CONSTEXPR__ bool operator!=(const complex<float>& __x,
+                           const complex<float>& __y) {
+        return __x._M_value != __y._M_value;
+    }
+
+    inline complex<float> conj(const complex<float>& __z) {
+        return ~__z._M_value;
+    }
+
+    // Specializations for complex<float> op float and vice versa
+    // These operations avoid creation of std::complex temporary from
+    // float to complex conversion
+
+    inline complex<float> operator+(const complex<float>& __x,
+                                    const float& __y) {
+        return __x._M_value + __y;
+    }
+
+    inline complex<float> operator+(const float& __x,
+                                    const complex<float>& __y) {
+        return __x + __y._M_value;
+    }
+
+    inline complex<float> operator-(const complex<float>& __x,
+                                    const float& __y) {
+        return __x._M_value - __y;
+    }
+
+    inline complex<float> operator-(const float& __x,
+                                    const complex<float>& __y) {
+        return __x - __y._M_value;
+    }
+
+    inline complex<float> operator*(const complex<float>& __x,
+                                    const float& __y) {
+        return __x._M_value * __y;
+    }
+
+    inline complex<float> operator*(const float& __x,
+                                    const complex<float>& __y) {
+        return __x * __y._M_value;
+    }
+
+    inline complex<float> operator/(const complex<float>& __x,
+                                    const float& __y) {
+        return __x._M_value / __y;
+    }
+
+    inline complex<float> operator/(const float& __x,
+                                    const complex<float>& __y) {
+        return __x / __y._M_value;
+    }
+
+    // double:
+    // Specialization of complex<double> operation to take advantage of
+    // built-in complex types and operations
+
+    template<>
+    inline complex<double>&
+    complex<double>::operator+=(const complex<double>& __z) {
+        _M_value += __z._M_value;
+        return *this;
+    }
+
+    template<>
+    inline complex<double>&
+    complex<double>::operator-=(const complex<double>& __z) {
+        _M_value -= __z._M_value;
+        return *this;
+    }
+
+    template<>
+    inline complex<double>&
+    complex<double>::operator*=(const complex<double>& __z) {
+        _M_value *= __z._M_value;
+        return *this;
+    }
+
+    template<>
+    inline complex<double>&
+    complex<double>::operator/=(const complex<double>& __z) {
+        _M_value /= __z._M_value;
+        return *this;
+    }
+
+    inline complex<double> operator+(const complex<double>& __x,
+                                     const complex<double>& __y) {
+        return __x._M_value + __y._M_value;
+    }
+
+    inline complex<double> operator-(const complex<double>& __x,
+                                     const complex<double>& __y) {
+        return __x._M_value - __y._M_value;
+    }
+
+    inline complex<double> operator*(const complex<double>& __x,
+                                     const complex<double>& __y) {
+        return __x._M_value * __y._M_value;
+    }
+
+    inline complex<double> operator/(const complex<double>& __x,
+                                     const complex<double>& __y) {
+        return __x._M_value / __y._M_value;
+    }
+
+    inline complex<double> operator-(const complex<double>& __x) {
+        return -__x._M_value;
+    }
+
+    inline __CONSTEXPR__ bool operator==(const complex<double>& __x,
+                           const complex<double>& __y) {
+        return __x._M_value == __y._M_value;
+    }
+
+    inline __CONSTEXPR__ bool operator!=(const complex<double>& __x,
+                           const complex<double>& __y) {
+        return __x._M_value != __y._M_value;
+    }
+
+    inline complex<double> conj(const complex<double>& __z) {
+        return ~__z._M_value;
+    }
+
+    // Specializations for complex<double> op double and vice versa
+    // These operations avoid creation of std::complex temporary from
+    // double to complex conversion
+
+    inline complex<double> operator+(const complex<double>& __x,
+                                     const double& __y) {
+        return __x._M_value + __y;
+    }
+
+    inline complex<double> operator+(const double& __x,
+                                     const complex<double>& __y) {
+        return __x + __y._M_value;
+    }
+
+    inline complex<double> operator-(const complex<double>& __x,
+                                     const double& __y) {
+        return __x._M_value - __y;
+    }
+
+    inline complex<double> operator-(const double& __x,
+                                     const complex<double>& __y) {
+        return __x - __y._M_value;
+    }
+
+    inline complex<double> operator*(const complex<double>& __x,
+                                     const double& __y) {
+        return __x._M_value * __y;
+    }
+
+    inline complex<double> operator*(const double& __x,
+                                     const complex<double>& __y) {
+        return __x * __y._M_value;
+    }
+
+    inline complex<double> operator/(const complex<double>& __x,
+                                     const double& __y) {
+        return __x._M_value / __y;
+    }
+
+    inline complex<double> operator/(const double& __x,
+                                     const complex<double>& __y) {
+        return __x / __y._M_value;
+    }
+
+#pragma warning(pop)
+} // End namespace std
+
+#endif // _GLIBCXX_COMPLEX
+#endif // _USE_COMPLEX_SPECIALIZATION_
+#endif // _INC_COMPLEX_
