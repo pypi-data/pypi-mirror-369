@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finance-ops-scripts"
+version = "0.3.0"
+description = "Utilities for finance ops (Ramp mapper, etc.)"
+readme = "README.md"          # simple string is fine
+requires-python = ">=3.10"
+license = "MIT"               # SPDX string; avoids the deprecation warning
+
+# Optional niceties (uncomment/fill when ready)
+# authors = [{ name = "Your Name" }]
+# keywords = ["finance", "ramp", "csv", "mapping"]
+# classifiers = [
+#   "Programming Language :: Python :: 3",
+#   "Programming Language :: Python :: 3.12",
+#   "License :: OSI Approved :: MIT License",
+#   "Operating System :: OS Independent",
+# ]
+
+[project.urls]
+Homepage = "https://github.com/mvp-zplace/finance-ops-scripts"
+Repository = "https://github.com/mvp-zplace/finance-ops-scripts"
+Issues = "https://github.com/mvp-zplace/finance-ops-scripts/issues"
+
+[project.scripts]
+ramp-map = "scripts.python.ramp_export_mapper:main"
+
+[tool.setuptools]
+# Ensure LICENSE is included in built dists
+license-files = ["LICENSE*", "LICENSE.txt"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scripts", "scripts.*"]   # your current layout
+
+# ---- Tooling configs ----
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["output", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]  # pyflakes, pycodestyle, isort, bugbear
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+exclude = "output|.venv"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+pretty = true
