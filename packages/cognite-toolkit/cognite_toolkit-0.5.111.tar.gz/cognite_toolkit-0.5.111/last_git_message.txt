@@ -1,0 +1,28 @@
+[CDF-25497] 🐛 Avoid reusing sessions in transformations (#1830)
+
+# Description
+
+The user is experiencing error like these:
+<img width="1154" height="479" alt="image"
+src="https://github.com/user-attachments/assets/d99cd567-f53a-43f6-82c9-b5ba7662462b"
+/>
+I think this is because of the caching of the session, thus removing
+that.
+
+## Changelog
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## cdf
+
+### Fixed
+
+- When deploying transformations with credentials, Toolkit no longer
+reuses the session for the same credentials. This should remove the
+`Failed to bind nonce with session...` errors.
+
+## templates
+
+No changes.
