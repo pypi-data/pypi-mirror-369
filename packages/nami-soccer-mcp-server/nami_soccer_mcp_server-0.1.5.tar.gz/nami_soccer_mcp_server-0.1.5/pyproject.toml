@@ -1,0 +1,21 @@
+[project]
+name = "nami-soccer-mcp-server"
+version = "0.1.5"
+description = "soccer-mcp-server fork"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=2.11.0",
+    "mcp>=1.9.0",
+]
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.uv.workspace]
+members = ["venv"]
+
+[project.scripts]
+nami-soccer-mcp-server = "nami_soccer_mcp_server:soccer_server.main"
