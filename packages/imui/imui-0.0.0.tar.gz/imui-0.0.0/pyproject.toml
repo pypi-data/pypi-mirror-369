@@ -1,0 +1,50 @@
+[build-system]
+requires = ["scikit-build-core==0.11.5", "nanobind==2.7.0"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "imui"
+dynamic = ["version"]
+description = ""
+readme = "README.md"
+authors = [
+    {name = "Jiau Zhang", email = "jiauzhang@163.com"},
+]
+classifiers = [
+    'Intended Audience :: Developers',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Programming Language :: Python :: 3.10',
+]
+keywords = [
+    'Deep Learning',
+    'Artificial Intelligence',
+]
+requires-python = ">= 3.10"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/jiauzhang/imui"
+
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+build.verbose = false
+logging.level = "INFO"
+cmake.version = ">=3.26.1"
+wheel.install-dir = "imui"
+cmake.build-type = "Release"
+build-dir = "build/{wheel_tag}"
+cmake.define.SKBUILD = "ON"
+
+[tool.scikit-build.wheel.packages]
+imui = "python/imui"
+
+[tool.scikit-build.metadata.version]
+provider = "scikit_build_core.metadata.regex"
+input = "python/imui/version.py"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q"
+testpaths = ["tests"]
+norecursedirs = ["tests/cpp"]
