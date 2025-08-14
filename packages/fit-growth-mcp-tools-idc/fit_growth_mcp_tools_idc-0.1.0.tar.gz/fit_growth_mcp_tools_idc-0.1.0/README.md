@@ -1,0 +1,56 @@
+# Fit Growth MCP Tools IDC
+
+基于MCP协议的Schema和SQL查询工具服务器。
+
+## 功能特性
+
+- 获取SQL数据口径信息
+- 执行理财通相关的SQL查询  
+- 检查服务器状态
+- 获取当前系统时间
+
+## 环境配置
+
+1. 复制环境变量模板文件：
+```bash
+cp .env.example .env
+```
+
+2. 编辑`.env`文件，配置以下环境变量：
+
+```bash
+# API配置
+QUERY_API_URL=http://11.168.42.59:13699/common-quiz/chain/workflow/quiz.do
+
+# Schema查询令牌
+SCHEMA_TOKEN=your_schema_token_here
+
+# SQL执行令牌  
+SQL_TOKEN=your_sql_token_here
+```
+
+## 安装依赖
+
+```bash
+uv sync
+```
+
+## 运行服务
+
+```bash
+uv run fit-growth-mcp-tools-idc
+```
+
+## 工具说明
+
+### get_sql_schema
+获取SQL数据口径信息，根据用户需求分析需要用到的数据表、字段、枚举值、关联方式和易错点等信息。
+
+### execute_sql_query  
+执行理财通相关的SQL代码，获取数据结果。
+
+### check_server_status
+检查目标服务器的连接状态。
+
+### get_current_time
+获取当前系统时间，用于处理涉及"今天"、"昨天"、"近xx天"等模糊时间描述的查询。
