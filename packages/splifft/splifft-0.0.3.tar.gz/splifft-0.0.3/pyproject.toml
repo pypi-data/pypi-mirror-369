@@ -1,0 +1,93 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "splifft"
+version = "0.0.3"
+description = "Lightweight utilities for music source separation."
+authors = [{ name = "undef13" }]
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+keywords = [
+    "artificial intelligence",
+    "deep learning",
+    "audio",
+    "music",
+    "source separation",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+readme = "README.md"
+dependencies = [
+    "annotated-types>=0.7.0",
+    "einops>=0.8.1",
+    "numpy>=2.2.6",
+    "torch>=2.7.1",
+]
+
+[project.urls]
+Documentation = "https://undef13.github.io/splifft/"
+Repository = "https://github.com/undef13/splifft"
+Releases = "https://github.com/undef13/splifft/releases"
+
+[project.optional-dependencies]
+config = ["pydantic>=2.11.5"]
+inference = [
+    "torchaudio>=2.7.1",
+    "torchcodec>=0.6",
+    "soundfile>=0.13.1 ; sys_platform == 'Windows'",
+    "rich>=14.1.0",
+]
+cli = ["typer>=0.16.0"]
+sageattention = ["sageattention>=1.0.6"]
+# the following are experimental, used only in scripts
+networking = [
+    "aiolimiter>=1.2.1",
+    "httpx[http2,zstd,socks]>=0.28.1",
+    "orjson>=3.10.18",
+]
+analysis = ["matplotlib>=3.10.3", "polars>=1.30.0"]
+
+[project.scripts]
+splifft = "splifft.__main__:app"
+
+[dependency-groups]
+dev = ["ipykernel>=6.29.5", "pandas>=2.3.0"]
+docs = [
+    "mkdocs-inline-select-svg-plugin>=0.1.0",
+    "mkdocs-material[imaging]>=9.6.14",
+    "mkdocstrings-python>=1.16.12",
+]
+lint = ["ruff>=0.11.12"]
+test = ["pytest>=8.4.0"]
+typing = ["mypy>=1.16.0"]
+
+[tool.uv]
+default-groups = "all"
+
+[tool.uv.workspace]
+members = ["docs/examples/ext_project"]
+exclude = ["docs/*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+ignore_missing_imports = true
+strict = true
+plugins = ["pydantic.mypy"]

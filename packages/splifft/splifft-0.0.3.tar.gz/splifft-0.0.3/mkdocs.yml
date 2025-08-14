@@ -1,0 +1,99 @@
+site_name: splifft
+site_description: Lightweight utilities for music source separation.
+repo_name: undef13/splifft
+repo_url: https://github.com/undef13/splifft
+site_url: https://undef13.github.io/splifft/
+nav:
+  - Home: "index.md"
+  - Models: "models.md"
+  - Library Tutorial: "tutorial.md"
+  - Concepts & Definitions: "concepts.md"
+  - API Reference:
+    - All: "api/index.md"
+    - Models: "api/models.md"
+    - Config: "api/config.md"
+    - Core: "api/core.md"
+    - IO: "api/io.md"
+    - Inference: "api/inference.md"
+    - Training: "api/training.md"
+theme:
+  name: material
+  features:
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - navigation.expand
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://numpy.org/doc/stable/objects.inv
+            - https://docs.pytorch.org/docs/stable/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
+          options:
+            docstring_section_style: table
+            docstring_style: sphinx
+            members_order: source
+            group_by_category: false
+            merge_init_into_class: true
+            signature_crossrefs: true
+            separate_signature: true
+            show_if_no_docstring: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            show_source: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            summary: true
+      enable_inventory: true
+  - search
+  - social
+  - inline-select-svg
+markdown_extensions:
+  - abbr
+  - attr_list
+  - admonition
+  - footnotes
+  - md_in_html
+  - pymdownx.blocks.admonition
+  - pymdownx.blocks.details
+  - pymdownx.details
+  - pymdownx.tilde
+  - pymdownx.highlight:
+      pygments_lang_class: true
+  - pymdownx.magiclink
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.arithmatex:
+      generic: true
+extra_javascript:
+  - assets/js/katex.js
+  - https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js
+  - https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js
+extra_css:
+  - assets/css/plots.css
+  - https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css
