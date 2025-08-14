@@ -1,0 +1,42 @@
+default:
+  image: ${DEVOPS_REGISTRY}usgs/conda:latest
+  tags:
+    - build
+
+stages:
+  - test
+  - build
+
+run formatter:
+  script:
+    - source /etc/profile.d/conda.sh
+    - pip install black
+    - black esi_utils_vectors/*.py
+  stage: test
+
+run tests:
+  script:
+    - source /etc/profile.d/conda.sh
+    - conda install python=3.12 git
+    - pip install .[test]
+    - pytest .
+  stage: test
+
+run build:
+  rules:
+    # Run this job when a tag is created manually
+    - if: $CI_COMMIT_TAG
+  script:
+    - source /etc/profile.d/conda.sh
+    - conda install python=3.12 pip git
+    - pip install .[build]
+    - python -m build
+    - python -m zipfile --list dist/*whl
+    - |
+      if [ $? -eq 0 ]; then
+        echo "Build succesful, uploading to PyPi ..."
+        python -m twine upload dist/*
+      else
+        echo "Build failed, wheel will not be uploaded to PyPi ..."
+      fi
+  stage: build

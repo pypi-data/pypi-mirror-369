@@ -1,0 +1,44 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "wheel",
+    "setuptools_scm[toml]>=3.4",]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[project]
+name = "esi-utils-vectors"
+dynamic = ["version"]
+description = "USGS Earthquake Impact Utilities for Vectors"
+authors = [
+    {name = "Mike Hearne", email="mhearne@usgs.gov"},
+    {name = "Gabe Ferragut", email="gferragut@usgs.gov"}
+]
+license = {file = "LICENSE.md"}
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+    "esi-extern-openquake>=1.0.0",
+    "numpy>=1.26"
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=0.7.0",
+    "black>=21",
+    "flake8>=3.9",
+    "ipython>=7.26"
+]
+test = [
+    "pytest>=6.2",
+    "pytest-cov>=2.12",
+    "pytest-console-scripts>=1.2",
+]
+build = [
+    "build",
+    "packaging>=24.2",
+    "twine",
+    "check-wheel-contents",
+]
