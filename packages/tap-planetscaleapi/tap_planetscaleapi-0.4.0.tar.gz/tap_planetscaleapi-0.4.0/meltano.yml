@@ -1,0 +1,35 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: tap-planetscaleapi
+default_environment: test
+environments:
+- name: test
+plugins:
+  extractors:
+  - name: tap-planetscaleapi
+    namespace: tap_planetscaleapi
+    pip_url: -e .
+    repo: https://github.com/edgarrmondragon/tap-planetscaleapi
+    capabilities:
+    - state
+    - catalog
+    - discover
+    - about
+    - stream-maps
+    settings:
+    - name: service_token_id
+      kind: string
+      label: Service Token ID
+      description: The PlanetScale API Token ID
+    - name: service_token
+      kind: password
+      label: Service Token
+      description: The PlanetScale API Token
+      sensitive: true
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
+  - name: target-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/target-csv.git
