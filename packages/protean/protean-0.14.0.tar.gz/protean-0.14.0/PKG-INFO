@@ -1,0 +1,159 @@
+Metadata-Version: 2.3
+Name: protean
+Version: 0.14.0
+Summary: Protean Application Framework
+License: BSD 3-Clause
+Keywords: ddd,domain-driven-design,clean-architecture,hexagonal-architecture,onion-architecture,microservices,python-framework,repository-pattern,cqrs,event-sourcing,aggregates,entities,value-objects,services,bounded-contexts,asynchronous,event-driven-architecture,cqrs-framework,event-sourcing-framework
+Author: Subhash Bhushan C
+Author-email: subhash@team8solutions.com
+Requires-Python: >=3.11,<4.0
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: License :: Other/Proprietary License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Provides-Extra: elasticsearch
+Provides-Extra: fastapi
+Provides-Extra: flask
+Provides-Extra: message-db
+Provides-Extra: mssql
+Provides-Extra: postgresql
+Provides-Extra: redis
+Provides-Extra: sendgrid
+Provides-Extra: sqlite
+Requires-Dist: bleach (>=4.1.0)
+Requires-Dist: cffi (>=1.16.5)
+Requires-Dist: copier (>=9.1.1,<10.0.0)
+Requires-Dist: elasticsearch (>=7.17.9,<7.18.0) ; extra == "elasticsearch"
+Requires-Dist: elasticsearch-dsl (>=7.4.1,<7.5.0) ; extra == "elasticsearch"
+Requires-Dist: fastapi (>=0.110.0) ; extra == "fastapi"
+Requires-Dist: flask (>=1.1.1) ; extra == "flask"
+Requires-Dist: greenlet (>=3.0.3,<4.0.0)
+Requires-Dist: inflection (>=0.5.1)
+Requires-Dist: ipython (>=8.23,<10.0)
+Requires-Dist: marshmallow (>=3.15.0)
+Requires-Dist: message-db-py (>=0.2.0) ; extra == "message-db"
+Requires-Dist: psycopg2 (>=2.9.9) ; extra == "postgresql"
+Requires-Dist: pydantic-core (>=2.19.1,<3.0.0)
+Requires-Dist: pyodbc (>=5.0.0) ; extra == "mssql"
+Requires-Dist: python-dateutil (>=2.8.2)
+Requires-Dist: redis (>=5.0.7,<6.5.0) ; extra == "redis"
+Requires-Dist: sendgrid (>=6.1.3) ; extra == "sendgrid"
+Requires-Dist: sqlalchemy (>=2.0.30,<2.1.0) ; extra == "postgresql" or extra == "sqlite" or extra == "mssql"
+Requires-Dist: typer (>=0.12.3)
+Requires-Dist: uvicorn (>=0.27.1) ; extra == "fastapi"
+Requires-Dist: werkzeug (>=2.0.0)
+Project-URL: Documentation, https://protean.readthedocs.io/en/latest/
+Project-URL: Repository, https://github.com/proteanhq/protean
+Description-Content-Type: text/markdown
+
+# Protean
+
+**Protean** is an opinionated and pragmatic framework for building event-driven applications using the CQRS pattern.
+
+[![Python](https://img.shields.io/pypi/pyversions/protean?label=Python)](https://github.com/proteanhq/protean/)
+[![Release](https://img.shields.io/pypi/v/protean?label=Release&style=flat-square)](https://pypi.org/project/protean/)
+[![Build Status](https://github.com/proteanhq/protean/actions/workflows/ci.yml/badge.svg)](https://github.com/proteanhq/protean/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/proteanhq/protean/graph/badge.svg?token=0sFuFdLBOx)](https://codecov.io/gh/proteanhq/protean)
+
+## Installation
+
+Protean is available on PyPI:
+
+```console
+$ python -m pip install protean
+Collecting protean
+  Downloading protean-0.13.0-py3-none-any.whl.metadata (5.9 kB)
+...
+Installing collected packages: ...
+Successfully installed ...
+```
+
+Protean officially supports Python 3.11+.
+
+## Quick Start
+
+```python
+from protean import Domain
+from protean.fields import String, Text
+
+domain = Domain(name="Publishing")
+
+@domain.aggregate
+class Post:
+    title = String(required=True, max_length=1000)
+    slug = String(required=True, max_length=1024)
+    content = Text(required=True)
+
+domain.init()
+with domain.domain_context():
+    post = Post(
+        title="Hello World",
+        slug="hello-world",
+        content="Lorem Ipsum ..."
+    )
+
+    domain.repository_for(Post).add(post)
+```
+
+## Documentation
+
+Online docs are available at [https://docs.proteanhq.com](https://docs.proteanhq.com).
+
+## Contributing
+
+> **Note**: Protean framework is not associated or related to [Protean eGov Technologies](https://www.proteantech.in/) or [Code for Gov Tech](https://codeforgovtech.in/) initiatives.
+
+1. Check for open issues or open a fresh issue to start a discussion
+    around a feature idea or a bug.
+2. Fork [the repository](https://github.com/proteanhq/protean) on
+    GitHub, branch off `main` and start making your changes.
+3. Write a test which shows that the bug was fixed or that the feature
+    works as expected.
+4. Send a pull request and bug the maintainer until it gets merged and
+    published.
+
+For more information, please check out the
+[community](https://docs.proteanhq.com/community/) section.
+
+## License
+
+BSD 3-Clause License
+
+Copyright (c) 2018-2024, Subhash Bhushan C.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
