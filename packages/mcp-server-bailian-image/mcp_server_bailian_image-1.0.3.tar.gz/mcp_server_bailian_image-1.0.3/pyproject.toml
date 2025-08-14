@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-server-bailian-image"
+version = "1.0.3"
+description = "阿里云百炼-通义万相图像生成MCP服务器"
+authors = [
+    {name = "AliyunBailian", email = "support@aliyun.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion"
+]
+keywords = [
+    "mcp", 
+    "model-context-protocol", 
+    "aliyun", 
+    "bailian", 
+    "tongyi", 
+    "wanxiang", 
+    "image", 
+    "text-to-image", 
+    "generation", 
+    "ai", 
+    "artificial-intelligence",
+    "computer-vision"
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "dashscope>=1.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/aliyun/mcp-server-bailian-image"
+Repository = "https://github.com/aliyun/mcp-server-bailian-image"
+Documentation = "https://help.aliyun.com/zh/model-studio/text-to-image-v2-api-reference"
+"Bug Reports" = "https://github.com/aliyun/mcp-server-bailian-image/issues"
+
+[project.scripts]
+mcp-server-bailian-image = "mcp_server_bailian_image.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["mcp_server_bailian_image*"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=22.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+]
