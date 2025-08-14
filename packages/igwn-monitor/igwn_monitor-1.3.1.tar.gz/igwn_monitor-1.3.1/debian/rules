@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpkg/pkg-info.mk
+
+# don't run the pytest suite during dpkg-buildpackage
+export PYBUILD_DISABLE = test
+
+# move the console scripts into place as plugins
+export PYBUILD_AFTER_INSTALL := \
+	mkdir -p {destdir}/usr/lib/nagios/plugins/ && \
+	mv -v \
+	  {destdir}/usr/bin/check_* \
+	  {destdir}/usr/lib/nagios/plugins/ \
+	;
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild

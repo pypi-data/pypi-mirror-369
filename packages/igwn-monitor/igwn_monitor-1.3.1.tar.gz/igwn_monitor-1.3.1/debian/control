@@ -1,0 +1,274 @@
+# -- source package
+
+Source: igwn-monitor
+Homepage: https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins
+Vcs-Browser: https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins/
+Vcs-git: https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins.git
+Maintainer: Duncan Macleod <duncan.macleod@ligo.org>
+Section: science
+Priority: optional
+Standards-Version: 4.2.1
+X-Python3-Version: >= 3.9
+Build-Depends:
+ debhelper-compat (= 12),
+ dh-python,
+ pybuild-plugin-pyproject,
+ python3-all,
+ python3-importlib-metadata,
+ python3-setuptools,
+ python3-setuptools-scm,
+ python3-wheel,
+
+# -- python3-igwn-monitor
+
+Package: python3-igwn-monitor
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+ python3-ciecplib,
+ python3-gpstime,
+ python3-gssapi,
+ python3-igwn-auth-utils (>= 1.0.0),
+ python3-requests,
+ python3-requests-gssapi (>= 1.2.2) | python3-requests-kerberos (>= 0.9.0),
+Description: Python library for IGWN monitoring plugins
+ The igwn-monitor library provides Python routines to support custom
+ Nagios (Icinga) monitoring plugins for IGWN.
+
+# -- meta package
+
+Package: monitoring-plugins-igwn
+Architecture: all
+Depends:
+ ${misc:Depends},
+ monitoring-plugins-igwn-common (= ${binary:Version}),
+ monitoring-plugins-igwn-cvmfs (= ${binary:Version}),
+ monitoring-plugins-igwn-docdb (= ${binary:Version}),
+ monitoring-plugins-igwn-dqsegdb (= ${binary:Version}),
+ monitoring-plugins-igwn-gds (= ${binary:Version}),
+ monitoring-plugins-igwn-gitlab (= ${binary:Version}),
+ monitoring-plugins-igwn-gracedb (= ${binary:Version}),
+ monitoring-plugins-igwn-grafana (= ${binary:Version}),
+ monitoring-plugins-igwn-gwdatafind (= ${binary:Version}),
+ monitoring-plugins-igwn-gwosc (= ${binary:Version}),
+ monitoring-plugins-igwn-json (= ${binary:Version}),
+ monitoring-plugins-igwn-htcondor (= ${binary:Version}),
+ monitoring-plugins-igwn-kerberos (= ${binary:Version}),
+ monitoring-plugins-igwn-koji (= ${binary:Version}),
+ monitoring-plugins-igwn-mattermost (= ${binary:Version}),
+ monitoring-plugins-igwn-nds (= ${binary:Version}),
+ monitoring-plugins-igwn-pelican (= ${binary:Version}),
+ monitoring-plugins-igwn-scitoken (= ${binary:Version}),
+ monitoring-plugins-igwn-vault (= ${binary:Version}),
+ monitoring-plugins-igwn-xrootd (= ${binary:Version}),
+Description: Nagios/Icinga monitoring plugins for IGWN (metapackage)
+ Extra Nagios (Icinga) plugins for IGWN.
+ .
+ This metapackage installs all of the IGWN monitoring plugins.
+
+# -- plugins packages
+
+Package: monitoring-plugins-igwn-common
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-gwdatafind,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) common plugins
+ Common Nagios (Icinga) monitoring plugins for IGWN.
+
+Package: monitoring-plugins-igwn-cvmfs
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-requests,
+Description: IGWN Nagios (Icinga) monitoring plugins for CVMFS
+ Nagios (Icinga) plugins monitoring plugins for CVMFS.
+
+Package: monitoring-plugins-igwn-docdb
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-bs4,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-requests,
+Description: IGWN Nagios (Icinga) monitoring plugins for DocDB
+ Nagios (Icinga) plugins monitoring plugins to check a DocDB server.
+
+Package: monitoring-plugins-igwn-dqsegdb
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-dqsegdb2 (>= 1.2.1),
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugins for DQSegDB
+ Nagios (Icinga) plugins monitoring plugins to check a DQSegDB server.
+
+Package: monitoring-plugins-igwn-gds
+Architecture: all
+Depends:
+ ${misc:Depends},
+ gds-lsmp,
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugin to check GDS services
+ Nagios (Icinga) monitoring plugin to check GDS services.
+
+Package: monitoring-plugins-igwn-gitlab
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugin to check a GitLab instance
+ Nagios (Icinga) monitoring plugin to check a GitLab instance.
+
+Package: monitoring-plugins-igwn-gracedb
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugin to check a GraceDB server
+ Nagios (Icinga) monitoring plugin to check a GraceDB server.
+
+Package: monitoring-plugins-igwn-grafana
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugin to check a Grafana instance
+ Nagios (Icinga) monitoring plugin to check a Grafana instance.
+
+Package: monitoring-plugins-igwn-gwdatafind
+Architecture: all
+Depends:
+ ${misc:Depends},
+ monitoring-plugins-igwn-common (= ${binary:Version}),
+ python3,
+ python3-dqsegdb2 (>= 1.2.1),
+ python3-gwdatafind (>= 2.1.0),
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-igwn-segments,
+Description: IGWN Nagios (Icinga) plugins to check a GWDataFind server
+ Nagios (Icinga) plugins to check a GWDataFind server.
+
+Package: monitoring-plugins-igwn-gwosc
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugin to check a GWOSC server
+ Nagios (Icinga) monitoring plugin to check a GWOSC server.
+
+Package: monitoring-plugins-igwn-htcondor
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-htcondor | python3-condor | htcondor | condor,
+Description: IGWN Nagios (Icinga) plugin to check an HTCondor Pool
+ Nagios (Icinga) plugin to check the status of an HTCondor Pool.
+
+Package: monitoring-plugins-igwn-json
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-importlib-resources | python3 (>= 3.8.0),
+ python3-jsonschema,
+ python3-tz,
+Description: IGWN Nagios (Icinga) plugin to parse remote JSON
+ Nagios (Icinga) plugins to parse remote JSON output and format as
+ a monitoring plugin.
+
+Package: monitoring-plugins-igwn-kerberos
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-ldap3,
+Description: IGWN Nagios (Icinga) monitoring plugin for Kerberos
+ Nagios (Icinga) monitoring plugins for Kerberos.
+
+Package: monitoring-plugins-igwn-koji
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugin to check a Koji instance
+ Nagios (Icinga) monitoring plugin to check a Koji instance.
+
+Package: monitoring-plugins-igwn-mattermost
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugin to check a Mattermost instance
+ Nagios (Icinga) monitoring plugin to check a Mattermost instance.
+
+Package: monitoring-plugins-igwn-nds
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-nds2-client,
+Description: IGWN Nagios (Icinga) monitoring plugins to check an NDS server
+ Nagios (Icinga) monitoring plugins to check an NDS(2) server.
+
+Package: monitoring-plugins-igwn-pelican
+Architecture: all
+Depends:
+ ${misc:Depends},
+ pelican,
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+Description: IGWN Nagios (Icinga) monitoring plugins to check a Pelican federation
+ Nagios (Icinga) monitoring plugins to check a Pelican federation.
+
+Package: monitoring-plugins-igwn-scitoken
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-dateutil,
+ python3-scitokens,
+ python3-tz,
+Description: IGWN Nagios (Icinga) monitoring plugins to check SciTokens
+ Nagios (Icinga) monitoring plugin to check for a Vault or Bearer SciToken
+ and validate it.
+
+Package: monitoring-plugins-igwn-vault
+Architecture: all
+Depends:
+ ${misc:Depends},
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-requests,
+Description: IGWN Nagios (Icinga) monitoring plugin to check a Vault server
+ Nagios (Icinga) monitoring plugin to check a Hashicorp Vault server.
+
+Package: monitoring-plugins-igwn-xrootd
+Architecture: all
+Depends:
+ ${misc:Depends},
+ monitoring-plugins-igwn-common (= ${binary:Version}),
+ python3,
+ python3-igwn-monitor (= ${binary:Version}),
+ python3-xrootd,
+Description: IGWN Nagios (Icinga) monitoring plugins to check an XRootD server
+ Nagios (Icinga) monitoring plugins to check an XRootD server.

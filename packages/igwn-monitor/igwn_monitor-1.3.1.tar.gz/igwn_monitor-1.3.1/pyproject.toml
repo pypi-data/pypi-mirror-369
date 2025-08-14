@@ -1,0 +1,234 @@
+[build-system]
+requires = [
+  "setuptools >= 70.0.0",
+  "setuptools_scm[toml] >= 3.4",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "igwn-monitor"
+description = "Nagios (Icinga) monitoring plugins for IGWN"
+authors = [
+  { name = "Duncan Macleod", email = "duncan.macleod@ligo.org" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: System :: Monitoring",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+
+# requirements
+requires-python = ">= 3.9"
+dependencies = [
+  "ciecplib",
+  "gpstime",
+  "gssapi",
+  "igwn-auth-utils >= 1.0.0",
+  "requests",
+  "requests-gssapi >= 1.2.2",
+]
+
+dynamic = [
+  "version"
+]
+
+[project.optional-dependencies]
+test = [
+  "freezegun",
+  "pytest >= 3.9.1",
+  "pytest-cov",
+  "requests-mock",
+]
+docs = [
+  "sphinx",
+  "sphinx-argparse",
+  "sphinx-automodapi",
+  "sphinx-jsonschema",
+  "sphinx_rtd_theme",
+]
+
+# plugin-specific requirements
+all = [
+  "beautifulsoup4",
+  "python-dateutil",
+  "dqsegdb2 >= 1.2.1",
+  "gwdatafind",
+  "htcondor",
+  "igwn-segments",
+  "jsonschema",
+  "ldap3",
+  "xrootd",
+]
+check_data_availability = [
+  "dqsegdb2 >= 1.2.1",
+  "igwn-segments",
+]
+check_dqsegdb_latency = [
+  "dqsegdb2 >= 1.2.1",
+]
+check_docdb = [
+  "beautifulsoup4",
+]
+check_file_latency = [
+  "gwdatafind",
+]
+check_gwdatafind_latency = [
+  "gwdatafind >= 2.1.0",
+]
+check_kerberos_principal_expiry = [
+  "ldap3",
+]
+check_json = [
+  "jsonschema",
+]
+check_htcondor = [
+  "htcondor",
+]
+check_vault_token = [
+  "python-dateutil",
+]
+check_xrootd_latency = [
+  "xrootd",
+]
+
+[project.scripts]
+check_command = "igwn_monitor.plugins.check_command:main"
+check_cvmfs_age = "igwn_monitor.plugins.check_cvmfs_age:main"
+check_data_availability = "igwn_monitor.plugins.check_data_availability:main"
+check_docdb = "igwn_monitor.plugins.check_docdb:main"
+check_dqsegdb_latency = "igwn_monitor.plugins.check_dqsegdb_latency:main"
+check_dqsegdb = "igwn_monitor.plugins.check_dqsegdb:main"
+check_file_latency = "igwn_monitor.plugins.check_file_latency:main"
+check_gettoken = "igwn_monitor.plugins.check_gettoken:main"
+check_gitlab = "igwn_monitor.plugins.check_gitlab:main"
+check_gracedb = "igwn_monitor.plugins.check_gracedb:main"
+check_grafana = "igwn_monitor.plugins.check_grafana:main"
+check_gwdatafind_latency = "igwn_monitor.plugins.check_gwdatafind_latency:main"
+check_gwdatafind = "igwn_monitor.plugins.check_gwdatafind:main"
+check_gwosc = "igwn_monitor.plugins.check_gwosc:main"
+check_htcondor = "igwn_monitor.plugins.check_htcondor:main"
+check_json = "igwn_monitor.plugins.check_json:main"
+check_kdc = "igwn_monitor.plugins.check_kdc:main"
+check_kerberos_principal_expiry = "igwn_monitor.plugins.check_kerberos_principal_expiry:main"
+check_koji = "igwn_monitor.plugins.check_koji:main"
+check_mattermost = "igwn_monitor.plugins.check_mattermost:main"
+check_nds2 = "igwn_monitor.plugins.check_nds2:main"
+check_nmap = "igwn_monitor.plugins.check_nmap:main"
+check_partitions = "igwn_monitor.plugins.check_partitions:main"
+check_pelican_latency = "igwn_monitor.plugins.check_pelican_latency:main"
+check_rsync = "igwn_monitor.plugins.check_rsync:main"
+check_scitoken_issuer = "igwn_monitor.plugins.check_scitoken_issuer:main"
+check_scitoken = "igwn_monitor.plugins.check_scitoken:main"
+check_url = "igwn_monitor.plugins.check_url:main"
+check_vault = "igwn_monitor.plugins.check_vault:main"
+check_vault_token = "igwn_monitor.plugins.check_vault_token:main"
+check_xrdcp = "igwn_monitor.plugins.check_xrdcp:main"
+check_xrootd_latency = "igwn_monitor.plugins.check_xrootd_latency:main"
+check_xrootd_ping = "igwn_monitor.plugins.check_xrootd_ping:main"
+
+[project.urls]
+"Homepage" = "https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins"
+"Bug Tracker" = "https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins/-/issues/"
+"Source Code" = "https://git.ligo.org/computing/monitoring/igwn-monitoring-plugins"
+"Documentation" = "https://computing.docs.ligo.org/monitoring/igwn-monitoring-plugins/"
+
+# -- tools
+
+[tool.coverage.paths]
+source = [
+  "igwn_monitor/",
+  "*/igwn_monitor/",
+]
+
+[tool.coverage.report]
+omit = [
+  "*/_version.py",
+]
+precision = 1
+
+[tool.coverage.run]
+source = [ "igwn_monitor" ]
+
+[tool.pytest.ini_options]
+addopts = "-r a"
+filterwarnings = [
+  "error",
+  "ignore:.*pkg_resources",
+  "ignore:.*utcfromtimestamp",
+  # don't error on issues from CONDOR_CONFIG
+  "default:Neither the environment variable CONDOR_CONFIG",
+  # don't error on warnings about jsonschema versions
+  # (allows running with old versions for EL8/Bullseye)
+  "default:The metaschema specified by \\$schema was not found",
+  # warning from ldap3 -> pyasn1
+  "ignore:tagMap is deprecated",
+  "ignore:typeMap is deprecated",
+]
+minversion = "3.9.1"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN",  # type annotations (until python >=3.8)
+  "D203",  # blank line before class docstring
+  "D213",  # docstring summary on second line
+  "D413",  # blank line after last section
+  "PLR0913",  # too many arguments
+  "SIM108",  # if-else instead of ternary if
+  "TID252",  # relative imports from parent modules
+]
+# allow 'mock_...' variables to go unused in tests
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|mock_.*)$"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+
+[tool.ruff.lint.per-file-ignores]
+# ignore unused import in __init__
+"__init__.py" = [
+  "F401",
+]
+# allow unused imports in compatibility shim module
+"igwn_monitor/compat.py" = [
+  "F401",  # unused-import
+]
+"*/tests/*" = [
+  "ANN",  # type annotations
+  "B904",  # raise from
+  "EM101",  # string literal in exception
+  "PLR2004",  # magic value used in comparison
+  "S101",  # assert
+]
+"docs/*" = [
+  "A",  # builtins
+  "ANN",  # type annotations
+  "D",  # docstrings
+  "INP001",  # implicit namespace package
+]
+
+[tool.setuptools.package-data]
+"igwn_monitor.plugins" = [ "*.json" ]
+
+[tool.setuptools.packages.find]
+include = [
+  "igwn_monitor*",
+]
+
+[tool.setuptools_scm]
+write_to = "igwn_monitor/_version.py"
