@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qr-vision-service"
+version = "1.0.0"
+description = "Comprehensive QR Code & Barcode Service with region detection and multi-engine support"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+authors = [
+    {name = "QR Vision", email = "dnt.doanngocthanh@gmail.com"}
+]
+keywords = ["qr", "qrcode", "barcode", "vision", "detection", "region", "zxing", "boofcv"]
+classifiers = [ 
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+dependencies = [
+    "pillow>=8.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy",
+]
+
+[project.urls]
+Homepage = "https://github.com/k23doanngocthanh/vision"
+Repository = "https://github.com/k23doanngocthanh/vision"
+Documentation = "https://github.com/k23doanngocthanh/vision#readme"
+Issues = "https://github.com/k23doanngocthanh/vision/issues"
+
+[project.scripts]
+qr-vision = "qr_vision_service.cli:main"
+
+[tool.setuptools]
+packages = ["qr_vision_service"]
+
+[tool.setuptools.package-data]
+qr_vision_service = ["*.jar", "*.md"]
