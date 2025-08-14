@@ -1,0 +1,59 @@
+import threading
+from pam.service import Service
+from pam.models.request_command import RequestCommand
+from pam.utils import log
+#pylint: disable=import-error
+from #MODULE_NAME#.functions import create_report, load_csv_file
+
+class #CLASS_NAME#(Service):
+
+    #pylint: disable=useless-parent-delegation
+    def __init__(self, task_manager, req):
+        super().__init__(task_manager, req)
+
+    def on_start(self):
+        log("on_start")
+
+        some_param = self.request.runtime_parameters.get("some_param", "")
+        log("Runtime Parameters:")
+        log(f"some_param = {some_param}")
+
+        self._request_data()
+
+    def on_data_input(self, req: RequestCommand):
+        log(f"on_data_input req.is_end = {req.is_end}")
+
+        #RUN IN A SEPERATED THREAD TO PREVENT HTTP REQUEST BLOCKING
+        thread = threading.Thread(
+            target=lambda: self.__run_process_data_in_thread(req),
+            daemon=True,
+        )
+        thread.start()
+
+    def __run_process_data_in_thread(self, req: RequestCommand):
+        dataframe = self.__process_data(req.input_files)
+        self._upload_result(dataframe)
+
+        if not req.is_end:
+            self._request_data(req.next)
+        else:
+            report_df = create_report()
+            report_name = "#CLASS_NAME#_report1"
+            self._upload_report(report_name, report_df)
+            
+            self._exit()
+
+    def __process_data(self, input_files):
+        file_path = input_files[0]
+        df = load_csv_file(file_path)
+        df['finished'] = True
+        return df
+
+    def on_destroy(self):
+        log("on_destroy")
+
+    def on_terminate(self):
+        log("on_terminate")
+
+    def get_status(self):
+        return ""
