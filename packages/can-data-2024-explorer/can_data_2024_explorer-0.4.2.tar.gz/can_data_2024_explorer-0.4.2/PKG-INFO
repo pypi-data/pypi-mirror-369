@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: can-data-2024-explorer
+Version: 0.4.2
+Summary: Library for viewing CAN bus data from HSM research machines.
+Author-email: Jakub Wolosz <jakub.wolosz@ifos-gmbh.de>, "Lukas J. Schreiber" <lukas.schreiber@ifos-gmbh.de>
+Description-Content-Type: text/markdown
+Requires-Dist: pandas~=2.1
+Requires-Dist: matplotlib~=3.9
+Requires-Dist: cantools>=40.1.0
+Requires-Dist: setuptools
+Project-URL: Home, https://www.ifos-gmbh.de
+
+# README - CAN Data Explorer
+
+![iFOS logo](/assets/iFOS_Logo_klein_transparent.png)
+![Project logo](/assets/co2forit.png)
+
+___
+
+### Data download and installation
+
+1. Download the CAN data from the [CO2ForIT SharePoint][1].
+
+2. Unzip the CAN data at
+`2024Q2_Testdaten_Blankenhain/*/can_ifos_logs/CAN_logs.7z`.
+
+3. If you're viewing this online, download the `CAN_Data_Explorer` directory.
+
+4. Install the conda or [mamba][2]
+Environment Manager if you don't have it yet
+(You can check if you have it by typing `conda --version` on the command line).
+If you only have conda, replace `mamba` with `conda` in the commands below.
+
+5. Navigate to the CAN_Data_Explorer folder in the console. E.g.:
+
+        cd /home/user/Downloads/CAN_Data_Explorer
+
+6. Create a new environment from *environment.yml* file using:
+
+        mamba env create -f environment.yml
+
+### How to run the script
+
+7. Run *CAN_Data_Explorer.py* in that environment. E.g.:
+
+        mamba activate co2forit
+        python -m CAN_Data_Explorer
+
+8. Now the GUI should open.
+    * Use the *Input Parameters* box to enter the locations of the CAN
+    measurement files, the DBC file and the time period.
+    * Use the *Fuel Calculator* tab to compute the fuel consumed in that time
+    period.
+    * Use the *Diagrams* tab to plot diagrams of selected CAN signals.
+    The signal selection patterns are applied from top to bottom (like this: ↯);
+    every signal is only plotted once.
+    The <kbd>?</kbd> button brings up a PDF that explains the available signals.
+    Create the diagram by clicking on *Draw the figure.*
+    The time needed to create the diagram is proportional to the duration of the
+    selected time period.
+    You can pan and zoom these diagrams and save them to disk.
+
+9. You can also integrate the functions from this library in your own Python
+scripts. See:
+
+        python
+        >>> import CAN_Data_Explorer as cde
+        >>> help(cde)
+
+[1]: https://rifevdortmund.sharepoint.com/:f:/r/sites/CO2For-IT/Freigegebene%20Dokumente/Daten/2024Q2_Testdaten_Blankenhain?csf=1&web=1&e=rBQQkY.
+[2]: https://mamba.readthedocs.io/en/latest/
