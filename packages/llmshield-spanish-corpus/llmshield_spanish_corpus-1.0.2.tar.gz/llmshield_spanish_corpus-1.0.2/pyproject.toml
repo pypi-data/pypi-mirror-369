@@ -1,0 +1,96 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmshield_spanish_corpus"
+version = "1.0.2"
+description = "Spanish language corpus for LLMShield entity detection."
+readme = "README.md"
+authors = [
+  { name = "Aditya Dedhia", email = "aditya@brainpolo.com" },
+  { name = "Sebastian Andres El Khoury Seoane", email = "sebasandres0694@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Text Processing :: Linguistic",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+license-files = ["LICENSE.txt"]
+keywords = [
+  "llm",
+  "ai",
+  "security",
+  "privacy",
+  "nlp",
+  "corpus",
+  "spanish",
+  "llmshield",
+]
+requires-python = ">=3.12"
+
+[project.urls]
+Homepage = "https://github.com/brainpolo/llmshield_spanish_corpus"
+Issues = "https://github.com/brainpolo/llmshield_spanish_corpus/issues"
+
+[tool.setuptools]
+packages = ["llmshield_spanish_corpus"]
+
+[tool.setuptools.package-data]
+"llmshield_spanish_corpus" = ["data/*.txt"]
+
+[tool.setuptools.exclude-package-data]
+"*" = [
+  "*.pyc",
+  "*.pyo",
+  "*.pyd",
+  "__pycache__",
+  "tests/*",
+  ".github/*",
+  ".coverage",
+  "htmlcov/*",
+  ".pytest_cache/*",
+  ".mypy_cache/*",
+  "build/*",
+  "dist/*",
+  "*.egg-info",
+  "Makefile",
+]
+
+[tool.ruff]
+line-length = 79 # Pep-8 limit
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = [
+  "E",   # pycodestyle
+  "F",   # Pyflakes
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "SIM", # flake8-simplify
+  "I",   # isort
+  "PL",  # pylint rules
+  "D",   # pydocstyle rules
+]
+ignore = [
+  "D203", # 1 blank line required before class docstring (conflicts with D211)
+  "D213", # Multi-line docstring summary should start at the second line (conflicts with D212)
+]
+
+exclude = ["venv/*"]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 20
+quote-style = "double"
+line-ending = "auto"
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2.2",  # PEP 517 compliant package building
+  "twine>=6.1.0",  # Package uploading to PyPI
+  "ruff>=0.11.13", # Fast Python linter and formatter
+]
