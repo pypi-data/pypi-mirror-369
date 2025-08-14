@@ -1,0 +1,48 @@
+Metadata-Version: 2.4
+Name: earth2-api-wrapper
+Version: 0.2.0
+Summary: Unofficial Earth2 API wrapper with CLI (Python). Includes comprehensive safeguards to protect Earth2's bandwidth.
+Author: 
+License: MIT
+Keywords: earth2,api,wrapper
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: httpx>=0.27
+Requires-Dist: typer>=0.12
+Requires-Dist: rich>=13.0.0
+Requires-Dist: tabulate>=0.9.0
+
+# earth2-api-wrapper (Python)
+
+Unofficial Earth2 API wrapper with CLI. Read-only operations. Excludes raiding/dispensing/charging/jewel/civilian automation.
+
+Dev install:
+
+```bash
+pip install -e .
+python -m earth2_api_wrapper.cli trending
+```
+
+Environment variables when needed:
+- E2_COOKIE
+- E2_CSRF
+
+Examples:
+```bash
+# Trending
+python -m earth2_api_wrapper.cli trending
+
+# Property
+python -m earth2_api_wrapper.cli property <uuid>
+
+# Market search
+python -m earth2_api_wrapper.cli market --country AU --tier 1 --tile-count 5-50 --items 100
+
+# Leaderboard
+python -m earth2_api_wrapper.cli leaderboard --type players --sort-by tiles_count --country AU
+
+# Resources
+python -m earth2_api_wrapper.cli resources <uuid>
+```
+
+
