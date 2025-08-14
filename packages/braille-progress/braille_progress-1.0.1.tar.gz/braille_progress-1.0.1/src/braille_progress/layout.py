@@ -1,0 +1,261 @@
+from __future__ import annotations
+
+import time
+from dataclasses import dataclass
+from typing import List, Optional, Sequence, Tuple, Union
+
+from .braille import BrailleRenderer
+from .model import TaskState
+from .ratio import RatioStrategy
+from .stats import TaskRuntime, fmt_hms
+from .style import AnsiStyler
+from .theme import ProgressTheme
+from .util import pad_to, trim_plain_to, visible_width, strip_ansi
+
+
+class RenderContext:
+    def __init__(self, theme: ProgressTheme, styler: AnsiStyler, bars: BrailleRenderer, ratio: RatioStrategy, columns: int):
+        self.theme = theme
+        self.styler = styler
+        self.bars = bars
+        self.ratio = ratio
+        self.columns = columns
+
+class Segment:
+    def width(self, t: TaskState, rt: TaskRuntime, ctx: RenderContext) -> Optional[int]:
+        return 0
+    def render(self, t: TaskState, rt: TaskRuntime, ctx: RenderContext, width: int) -> str:
+        return ""
+
+@dataclass
+class Text(Segment):
+    s: str
+    def width(self, t, rt, ctx): return visible_width(self.s)
+    def render(self, t, rt, ctx, width): return self.s
+
+@dataclass
+class Gap(Segment):
+    n: int = 1
+    def width(self, t, rt, ctx): return self.n
+    def render(self, t, rt, ctx, width): return " " * self.n
+
+@dataclass
+class Spacer(Segment):
+    def width(self, t, rt, ctx): return None
+    def render(self, t, rt, ctx, width): return " " * width
+
+@dataclass
+class Rule(Segment):
+    char: str = "─"
+    color: Optional[str] = "bright_black"
+    def width(self, t, rt, ctx): return None
+    def render(self, t, rt, ctx, width):
+        s = self.char * max(0, width)
+        return ctx.styler.color(s, fg=self.color) if self.color else s
+
+@dataclass
+class Now(Segment):
+    fmt: str = "%H:%M:%S"
+    width_fixed: Optional[int] = None
+    color: Optional[str] = None
+    def width(self, t, rt, ctx):
+        w = self.width_fixed if self.width_fixed is not None else visible_width(time.strftime(self.fmt))
+        return w
+    def render(self, t, rt, ctx, width):
+        s = time.strftime(self.fmt)
+        s = s[:width].rjust(width)
+        return ctx.styler.color(s, fg=self.color) if self.color else s
+
+@dataclass
+class Name(Segment):
+    width_fixed: int
+    color: str = "bright_cyan"
+    def width(self, t, rt, ctx): return self.width_fixed
+    def render(self, t, rt, ctx, width):
+        return pad_to(ctx.styler.color(t.name[:width], fg=self.color), width)
+
+@dataclass
+class Bar(Segment):
+    cells: int
+    bracket_color: str = "bright_black"
+    empty_color: str = "bright_black"
+    def width(self, t, rt, ctx): return 2 + self.cells
+    def render(self, t, rt, ctx, width):
+        ratio = ctx.ratio.ratio(t)
+        c = ctx.theme.stage_color(t.stage, t.failed, t.finished)
+        left = ctx.styler.color("[", fg=self.bracket_color, dim=True)
+        right = ctx.styler.color("]", fg=self.bracket_color, dim=True)
+        inner = ctx.bars.bar(ratio, cells=self.cells, fill_color=c, empty_color=self.empty_color)
+        return pad_to(left + inner + right, width)
+
+@dataclass
+class Percent(Segment):
+    width_fixed: int
+    def width(self, t, rt, ctx): return self.width_fixed
+    def render(self, t, rt, ctx, width):
+        return pad_to(ctx.bars.pct_text(ctx.ratio.ratio(t)), width)
+
+@dataclass
+class Status(Segment):
+    width_fixed: int
+    def width(self, t, rt, ctx): return self.width_fixed
+    def render(self, t, rt, ctx, width):
+        color = ctx.theme.stage_color(t.stage, t.failed, t.finished)
+        if t.failed: s = "✗ FAIL"
+        elif t.finished: s = "✓ OK"
+        else:
+            st = (t.stage or "").lower()
+            s = {"writing":"writing","validated":f"validated {t.total}","scanning":"scanning","md_written":"md saved","md_zip":"md packed","no_md":"no md"}.get(st, st)
+        return pad_to(ctx.styler.color(trim_plain_to(s, width), fg=color), width)
+
+@dataclass
+class MiniBar(Segment):
+    cells: int
+    bracket_color: str = "bright_black"
+    empty_color: str = "bright_black"
+    fill_color: str = "cyan"
+    def width(self, t, rt, ctx): return 2 + self.cells
+    def render(self, t, rt, ctx, width):
+        if t.total <= 0:
+            return " " * width
+        left = ctx.styler.color("[", fg=self.bracket_color, dim=True)
+        right = ctx.styler.color("]", fg=self.bracket_color, dim=True)
+        ratio = 0.0 if t.total <= 0 else (t.done / max(1, t.total))
+        inner = ctx.bars.bar(ratio, cells=self.cells, fill_color=self.fill_color, empty_color=self.empty_color)
+        return pad_to(left + inner + right, width)
+
+class Counter(Segment):
+    def width(self, t, rt, ctx):
+        d = max(1, len(str(max(1, t.total))))
+        return 1 + d + 1 + d
+    def render(self, t, rt, ctx, width):
+        d = max(1, len(str(max(1, t.total))))
+        s = f" {t.done:>{d}}/{t.total:<{d}}"
+        return pad_to(ctx.styler.color(s, fg="bright_black"), width)
+
+@dataclass
+class Label(Segment):
+    color: str = "bright_black"
+    def width(self, t, rt, ctx): return None
+    def render(self, t, rt, ctx, width):
+        lbl = t.label or ""
+        if visible_width(lbl) > width:
+            p = strip_ansi(lbl)
+            lbl = "…" + p[-(max(1, width - 1)):] if width > 0 else ""
+        return pad_to(ctx.styler.color(lbl, fg=self.color), width)
+
+@dataclass
+class Elapsed(Segment):
+    width_fixed: int = 8
+    prefix: str = ""
+    def width(self, t, rt, ctx): return self.width_fixed if self.width_fixed > 0 else visible_width(self.prefix) + 5
+    def render(self, t, rt, ctx, width):
+        now = rt.updated or rt.created
+        base = rt.started or rt.created
+        sec = max(0.0, (now - base) if now and base else 0.0)
+        s = f"{self.prefix}{fmt_hms(sec)}" if self.prefix else fmt_hms(sec)
+        return pad_to(s, width)
+
+@dataclass
+class AvgRate(Segment):
+    width_fixed: int = 10
+    unit: str = "it/s"
+    def width(self, t, rt, ctx): return self.width_fixed
+    def render(self, t, rt, ctx, width):
+        r = rt.ewma_rate if rt.ewma_rate > 0 else 0.0
+        s = f"{r:.2f} {self.unit}"
+        return pad_to(s, width)
+
+@dataclass
+class ETA(Segment):
+    width_fixed: int = 8
+    def width(self, t, rt, ctx): return self.width_fixed
+    def render(self, t, rt, ctx, width):
+        if t.total > 0 and rt.ewma_rate > 0:
+            rem = max(0, t.total - t.done)
+            sec = rem / rt.ewma_rate if rem > 0 else 0.0
+            s = fmt_hms(sec)
+        else:
+            s = "--:--"
+        return pad_to(s, width)
+
+class Layout:
+    def __init__(self, segments: Sequence[Segment]):
+        self.segments = list(segments)
+
+    def _assign_widths(self, t: TaskState, rt: TaskRuntime, ctx: RenderContext) -> List[int]:
+        fixed: List[Tuple[int, int]] = []
+        flex_idx: List[int] = []
+        for i, seg in enumerate(self.segments):
+            w = seg.width(t, rt, ctx)
+            if w is None:
+                flex_idx.append(i)
+                fixed.append((i, 0))
+            else:
+                fixed.append((i, max(0, int(w))))
+        used = sum(w for _, w in fixed)
+        remain = max(0, ctx.columns - used)
+        if flex_idx:
+            per = remain // len(flex_idx)
+            extra = remain % len(flex_idx)
+            for k, idx in enumerate(flex_idx):
+                fixed[idx] = (idx, per + (1 if k < extra else 0))
+        else:
+            if used > ctx.columns:
+                over = used - ctx.columns
+                shrunk = False
+                for i, seg in enumerate(self.segments):
+                    if isinstance(seg, Label):
+                        w = max(0, fixed[i][1] - over)
+                        fixed[i] = (i, w)
+                        shrunk = True
+                        break
+                if not shrunk and fixed:
+                    j, w0 = len(fixed) - 1, fixed[-1][1]
+                    fixed[-1] = (j, max(0, w0 - over))
+        return [w for _, w in fixed]
+
+    def render_line(self, t: TaskState, rt: TaskRuntime, ctx: RenderContext) -> str:
+        widths = self._assign_widths(t, rt, ctx)
+        parts = [seg.render(t, rt, ctx, widths[i]) for i, seg in enumerate(self.segments)]
+        return "".join(parts)
+
+def default_layout(theme: ProgressTheme) -> Layout:
+    return Layout([
+        Name(theme.name_w),
+        Text(" | "),
+        Bar(theme.bar_cells),
+        Percent(theme.pct_w),
+        Gap(2),
+        Status(theme.right_w),
+        Text(" | "),
+        MiniBar(theme.mini_cells),
+        Counter(),
+        Gap(2),
+        Label(),
+    ])
+
+@dataclass
+class VGap:
+    n: int = 1
+
+Row = Union[Layout, VGap, Sequence[Segment]]
+
+class VLayout:
+    def __init__(self, rows: Sequence[Row]):
+        self.rows: List[Union[Layout, VGap]] = []
+        for r in rows:
+            if isinstance(r, VGap) or isinstance(r, Layout):
+                self.rows.append(r)
+            else:
+                self.rows.append(Layout(list(r)))
+    def render(self, ctx: RenderContext) -> List[str]:
+        dummy_t = TaskState(name="")
+        dummy_rt = TaskRuntime()
+        out: List[str] = []
+        for r in self.rows:
+            if isinstance(r, VGap):
+                out.extend([" " * ctx.columns] * max(0, r.n))
+            else:
+                out.append(r.render_line(dummy_t, dummy_rt, ctx))
+        return out
