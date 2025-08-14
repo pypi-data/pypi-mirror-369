@@ -1,0 +1,180 @@
+<div class="card scheduled-query-result-widget">
+    {% if show_query_info and scheduled_query %}
+    <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <h3 class="card-title d-flex align-items-center">
+                <i class="ti ti-database icon me-2"></i>
+                {{ scheduled_query.name }}
+            </h3>
+            <div class="card-options">
+                {% if scheduled_query.enabled %}
+                    <span class="badge bg-success">Enabled</span>
+                {% else %}
+                    <span class="badge bg-secondary">Disabled</span>
+                {% endif %}
+            </div>
+        </div>
+        {% if show_execution_details %}
+        <div class="text-muted mt-2">
+            <div class="row">
+                <div class="col-md-6">
+                    <small><strong>Schedule:</strong> <code>{{ scheduled_query.cron_schedule }}</code></small>
+                </div>
+                <div class="col-md-6">
+                    {% if formatted_execution_time %}
+                        <small><strong>Executed:</strong> {{ formatted_execution_time }}</small>
+                    {% endif %}
+                    {% if formatted_duration %}
+                        <small class="ms-3"><strong>Duration:</strong> {{ formatted_duration }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="card-body">
+        {% if result_type == "metric" %}
+            <!-- Single Metric Display -->
+            <div class="metric-card rounded-xl p-4 text-white shadow-lg" style="background: var(--tblr-primary);">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h4 class="m-0 text-capitalize opacity-90">{{ processed_result.metric_name.replace('_', ' ') }}</h4>
+                    <i class="ti ti-trending-up opacity-75"></i>
+                </div>
+                <div class="h1 m-0 fw-bold">{{ format_number(processed_result.metric_value) }}</div>
+                {% if formatted_execution_time %}
+                    <div class="text-muted-light mt-2 opacity-75">{{ formatted_execution_time }}</div>
+                {% endif %}
+            </div>
+
+        {% elif result_type == "table" or result_type == "tuple_table" %}
+            <!-- Table Display -->
+            <div class="table-responsive">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h4 class="m-0">Query Results</h4>
+                    <span class="badge bg-primary">{{ processed_result.total_rows }} rows</span>
+                </div>
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            {% for column in processed_result.columns %}
+                            <th>{{ column.replace('_', ' ').title() }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in processed_result.data %}
+                        <tr>
+                            {% if result_type == "table" %}
+                                {% for column in processed_result.columns %}
+                                <td>{{ format_number(row[column]) if row[column] is number else row[column] }}</td>
+                                {% endfor %}
+                            {% else %}
+                                {% for value in row %}
+                                <td>{{ format_number(value) if value is number else value }}</td>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if processed_result.total_rows > max_table_rows %}
+                <div class="text-center text-muted mt-2">
+                    <small>Showing first {{ max_table_rows }} of {{ processed_result.total_rows }} rows</small>
+                </div>
+                {% endif %}
+            </div>
+
+        {% elif result_type == "status_message" %}
+            <!-- Status Message Display -->
+            <div class="alert alert-info d-flex align-items-center">
+                <i class="ti ti-info-circle me-2"></i>
+                <span>{{ processed_result }}</span>
+            </div>
+
+        {% elif result_type == "error" %}
+            <!-- Error Display -->
+            <div class="alert alert-danger">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="ti ti-alert-circle me-2"></i>
+                    <strong>Execution Error</strong>
+                </div>
+                <details class="cursor-pointer">
+                    <summary class="mb-2">View Error Details</summary>
+                    <pre class="bg-light p-2 rounded border text-wrap" style="white-space: pre-wrap; word-break: break-word;">{{ error_message }}</pre>
+                </details>
+            </div>
+
+        {% elif result_type == "json" %}
+            <!-- JSON Display -->
+            <div class="bg-light rounded p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h5 class="m-0">JSON Result</h5>
+                    <span class="badge bg-secondary">JSON</span>
+                </div>
+                <pre class="m-0 text-wrap" style="white-space: pre-wrap; word-break: break-word;">{{ processed_result | tojson(indent=2) }}</pre>
+            </div>
+
+        {% elif result_type == "raw_text" %}
+            <!-- Raw Text Display -->
+            <div class="bg-light rounded p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h5 class="m-0">Query Result</h5>
+                    <span class="badge bg-secondary">Text</span>
+                </div>
+                <pre class="m-0 text-wrap" style="white-space: pre-wrap; word-break: break-word;">{{ processed_result }}</pre>
+            </div>
+
+        {% elif result_type == "no_result" %}
+            <!-- No Result Display -->
+            <div class="text-center py-4">
+                <i class="ti ti-database-off icon icon-lg text-muted mb-3"></i>
+                <h4 class="text-muted">No Result Available</h4>
+                <p class="text-muted">This query hasn't been executed yet or produced no output.</p>
+            </div>
+
+        {% else %}
+            <!-- Unknown Result Type -->
+            <div class="alert alert-warning">
+                <div class="d-flex align-items-center">
+                    <i class="ti ti-alert-triangle me-2"></i>
+                    <span>Unknown result format: {{ result_type }}</span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if show_query_info and scheduled_query and scheduled_query.grafana_metric_config %}
+    <div class="card-footer">
+        <div class="d-flex align-items-center">
+            <i class="ti ti-chart-line me-2 text-muted"></i>
+            <small class="text-muted">
+                <strong>Grafana Export:</strong> 
+                {{ scheduled_query.grafana_metric_config.metric_name }}
+                {% if scheduled_query.grafana_metric_config.labels and scheduled_query.grafana_metric_config.labels.service %}
+                    ({{ scheduled_query.grafana_metric_config.labels.service }})
+                {% endif %}
+            </small>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.scheduled-query-result-widget .metric-card {
+    background: linear-gradient(135deg, var(--tblr-primary) 0%, var(--tblr-primary-dark) 100%);
+}
+
+.scheduled-query-result-widget .text-muted-light {
+    opacity: 0.8;
+}
+
+.scheduled-query-result-widget .cursor-pointer {
+    cursor: pointer;
+}
+
+.scheduled-query-result-widget .cursor-pointer:hover {
+    opacity: 0.8;
+}
+</style>
