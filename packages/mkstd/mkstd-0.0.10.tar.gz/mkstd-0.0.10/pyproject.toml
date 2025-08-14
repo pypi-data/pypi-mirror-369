@@ -1,0 +1,103 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkstd"
+dynamic = ["version"]
+
+description = "Make standards compatible with HDF5/JSON/XML/YAML."
+readme = "README.md"
+authors = [{ name = "Dilan Pathirana", email = "dilan.pathirana@uni-bonn.de" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["standard", "hdf5", "json", "xml", "yaml"]
+dependencies = [
+    "pydantic>=2.7.4",
+
+    # Type: array
+    "pydantic_numpy",
+    #"pydantic_numpy>=6.0.0",  # disabled while we still support numpyv1
+
+    # Format: HDF5
+    # TODO try itsh5py for valid PyPI dependency?
+    # "hdfdict@git+https://github.com/SiggiGue/hdfdict",
+    # for patching hdfdict
+    #"wrapt",
+    # TODO currently directly embedding hdfdict and patching it,
+    # at mkstd/standards/hdfdict. Hence, its requirements are here
+    #"h5py-wrapper>=1.1",
+    # TODO possible switch to h5pywrappers, which has a JSON save/load feature
+    "h5py>=3.11",
+
+    # Format: YAML
+    "pyyaml>=6.0.2",
+    "oyaml>=1.0",
+
+    # Format: XML
+    "defusedxml>=0.7.1",
+    "xmlschema>=3.3.1",
+]
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = ["black", "isort", "pytest", "pre-commit>=3.8.0"]
+# for use with libroadrunner until numpyv2 is supported there.
+# https://github.com/sys-bio/roadrunner/pull/1236
+numpyv1 = ["pydantic_numpy<6", "numpy<2"]
+
+[project.urls]
+Homepage = "https://github.com/dilpath/mkstd"
+
+[tool.setuptools.dynamic]
+version = {attr = "mkstd.__version__"}
+
+[tool.ruff]
+line-length = 79
+extend-include = ["*.ipynb"]
+lint.ignore = [
+    "ANN002",
+    "ANN003",
+    "ANN101",
+    "B027",
+    "D100",
+    "D105",
+    "D107",
+    "D202",
+    "E501",
+    "F403",
+    "F405",
+    "D413"
+]
+lint.select = [
+    "F",  # Pyflakes
+    "I",  # isort
+    "D",  # pydocstyle (PEP 257)
+    "S",  # flake8-bandit
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "T20",  # flake8-print
+    "W",  # pycodestyle Warnings
+    "E",  # pycodestyle Errors
+    "UP",  # pyupgrade
+    "ANN",  # flakes-annotations
+]
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+[tool.ruff.lint.per-file-ignores]
+"*/__init__.py" = [
+    "F401",
+    "D205",
+]
+"test/*" = [
+    "T201",
+    "S101",
+    "D",
+]
+"*.ipynb" = [
+    "T20", "E402", "D"
+]
