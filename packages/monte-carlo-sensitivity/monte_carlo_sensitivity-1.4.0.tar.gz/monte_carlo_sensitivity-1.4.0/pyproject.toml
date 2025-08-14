@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "monte-carlo-sensitivity"
+version = "1.4.0"
+description = "Monte Carlo Sensitivity Analysis"
+readme = "README.md"
+authors = [
+    { name = "Gregory Halverson", email = "gregory.h.halverson@jpl.nasa.gov" },
+    { name = "Margaret Johnson", email = "maggie.johnson@jpl.nasa.gov" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy"
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "pytest>=6.0",
+    "pytest-cov",
+    "jupyter",
+    "pytest",
+    "twine"
+]
+
+[tool.setuptools.package-data]
+monte_carlo_sensitivity = ["*.txt"]
+
+[project.urls]
+"Homepage" = "https://github.com/JPL-Evapotranspiration-Algorithms/monte-carlo-sensitivity"
