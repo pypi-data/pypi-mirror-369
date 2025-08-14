@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: translatron
+Version: 0.0.1.dev0
+Summary: Tools for Twilio+AWS translation projects
+Author-email: "David W.H. Swenson" <dwhs@hyperblazer.net>
+License: MIT
+Project-URL: homepage, https://github.com/dwhswenson/translatron
+Project-URL: repository, https://github.com/dwhswenson/translatron
+Project-URL: changelog, https://github.com/dwhswenson/translatron/releases
+Keywords: translation,aws,twilio,transcription,text-to-speech
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: twilio
+Requires-Dist: boto3
+Requires-Dist: click
+Requires-Dist: pydantic
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: moto[all]; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: autorelease; extra == "dev"
+Dynamic: license-file
+
+# Translatron
+
+Translatron is a set of tools to handle translation of Twilio messages and
+voice mails using serverless AWS infrastructure. It allows you to use different
+translation services.
+
+Overall, Translatron consists of three main components:
+
+1. A Python library to simplify writing the Twilio-and-translation focused AWS lambda
+   functions. (`src/translatron`)
+2. Terraform modules to deploy the necessary AWS infrastructure. (`modules/`,
+   as well as the `.tf` files in the root directory)
+3. A set of example lambda functions that use the Python library to perform
+   translation of Twilio messages and voice mails, along with deployment tools
+   (`lambdas`)
