@@ -1,0 +1,262 @@
+Metadata-Version: 2.4
+Name: ari3d
+Version: 0.1.4
+Summary: Analyse Regions in 3D
+Author-email: Jan Philipp Albrecht <j.p.albrecht@fu-berlin.de>, Jose Ricardo Assuncao Godinho <jragodinho@uma.es>
+License-Expression: MIT
+Project-URL: Repository, https://gitlab.com/ida-mdc/ari3d
+Keywords: X-ray,imaging,data analysis
+Classifier: Development Status :: 3 - Alpha
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Utilities
+Requires-Python: ~=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PyQt6==6.7.1
+Requires-Dist: PyQt6-Qt6==6.7.1
+Requires-Dist: pandas
+Requires-Dist: pillow
+Requires-Dist: numpy
+Requires-Dist: napari
+Requires-Dist: zarr==2.18.7
+Requires-Dist: watchdog
+Requires-Dist: joblib
+Requires-Dist: album~=0.12
+Requires-Dist: numcodecs==0.15.1
+Requires-Dist: snakemake
+Dynamic: license-file
+
+# ARI3D
+
+## Introduction
+
+ARI3D is an interactive workflow that lets you analyse your mineral particles in micro CT images.
+
+It is based on the MSPacMan workflow: A Standardized and semiautomated workflow for characterization of
+liberated particles in 3D X-ray micro-computed tomography images (https://doi.org/10.1016/j.powtec.2023.119159),
+but extended to allow for more flexibility and usability as well as application to a wider range
+of mineral particle types or even other materials.
+
+Each workflow step is developed as an album solutions (https://album.solutions/).
+The software itself can be installed via pip as a package as described below.
+
+## Solutions
+
+Each workflow step is executed in its own micromamba environment and hence there are will
+be no compatibility issues between these.
+
+Moreover, each step is individually callable (executable) via album.
+
+## Installation
+
+Please install ARI3D via pip in the following way:
+
+Install micromamba https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html.
+
+If the installation fails on Windows 11 try the following:
+
+- open powershell
+- run command: `Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe` # this will install winget
+- run command: `winget install --id=Mamba.Micromamba -e` # this will install micromamba
+- run command: `micromamba.exe shell hook -s powershell | Out-String | Invoke-Expression`
+- run command: `micromamba shell init --shell powershell --root-prefix=~/.local/share/mamba` # sets the path to micromamba, may need admin login
+- run command: `micromamba activate`
+
+On Windows systems when working with micromamba you need to have configured the policy to allow running scripts.
+You can do this by running the following command in an elevated powershell:
+
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Install the environment(the place where the software will live) with:
+
+```
+micromamba create -n ari3d python==3.11 git -c conda-forge
+```
+
+Then execute:
+
+```
+micromamba activate ari3d
+```
+
+Now install the software via:
+
+```
+pip install ari3d
+```
+
+Now we can run the software with:
+
+```
+ari3d
+```
+
+The software automatically installs the necessary dependencies. This can take some time.
+After that the main GUI should open.
+
+Installing necessary dependencies can fail. Especially for MacOS users, the installation of the
+segmentation solution can fail, as it requires a GPU and the correct CUDA version.
+We recommend to use a Linux or Windows system with a GPU for the segmentation step.
+
+## Common issues when installing:
+
+bzip2 not available: https://github.com/mamba-org/mamba/issues/2940
+
+"Could not resolve host: repo.anaconda.com" error: Your configuration most likely holds a commercial repository hosted
+by anaconda. Probably your institution has a proxy that blocks the connection to the anaconda repository. Remove the
+commercial repository from your configuration and try again.
+
+## Uninstall
+
+To uninstall the entire software suit do the following in your micromamba terminal (e.g. powershell or shell):
+
+```
+micromamba activate
+micromamba remove -n ari3d --all
+```
+
+This will remove the environment and all installed packages and steps.
+
+The workflow steps Ari3d employs are installed to disk.
+By default Ari3d will write to the `~/<USERHOME>/.ari3d` directory.
+You can remove the installation by deleting this directory.
+
+## Run the entire workflow
+
+We provide a headless workflow that can be run in the terminal.
+This workflow is realized with SnakeMake (https://snakemake.readthedocs.io/en/stable/).
+To run the workflow, you need to have the mspacman workflow installed as described above.
+
+Then you can display the help message of the workflow with:
+
+```
+ari3d-cli -h
+```
+
+We provide a docker image of the workflow that can be used to run the workflow in a container.
+Due to image size (around 30 GB), we do not provide it on docker hub, but in the following link:
+https://syncandshare.desy.de/index.php/s/SBi9FPnAwYcm2CE
+
+## Install the workflow via album
+
+We provide the ARI3D workflow as an album solution.
+The solution is inside the github repository of the ARI3D project.
+It installs the entire workflow, all models and all steps of the workflow.
+
+To install the workflow via album, first install album (see https://album.solutions/installation.html).
+
+Then you can install the ARI3D workflow with the following command:
+
+```
+git clone https://gitlab.com/ida-mdc/ari3d.git
+album install ari3d
+```
+
+Then run the workflow with:
+
+```
+album run de.mdc:ari3d:0.1.0 --input INPUT_PATH --output OUTPUT_PATH
+```
+
+Where `INPUT_PATH` is the path to your input data and `OUTPUT_PATH` is the path where you want to store the output data.
+
+## Run individual steps without GUI
+
+When using the software without the GUI, you can use the album command line interface to run the individual steps.
+
+Especially for the segmentation step, this is useful, as the segmentation step
+can take a long time and requires special hardware (e.g. GPU).
+We will describe the usage of the album command line interface exemplary for the segmentation step:
+
+Install micromamba (https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#linux-and-macos)
+on your linux based system.
+
+Then do the following:
+
+Install your album base environment:
+
+```
+micromamba create -n album python==3.11 git -c conda-forge
+micromamba activate album
+```
+
+Install the album software:
+
+```
+pip install album
+```
+
+Add the mspacman catalog to the album software:
+
+```
+album catalog add https://gitlab.com/ida-mdc/ari3d.git
+```
+
+Install your step with:
+
+```
+album install de.mdc:particleSeg3D-predict:0.1.0
+```
+
+Now you can look at how to execute the step with:
+
+```
+album info de.mdc:particleSeg3D-predict:0.1.0
+```
+
+A call of the step could then look like this:
+
+```
+album run de.mdc:particleSeg3D-predict:0.1.0 --input PARAMETER_VALUE --output PARAMETER_VALUE --model PARAMETER_VALUE
+```
+
+Where the PARAMETER_VALUEs are placeholders for the actual values you want to use.
+Remember there is more than one parameter to set. You can see them with the info command.
+
+## Run the docker container
+
+To run the docker container, you need to have docker installed on your system.
+You can then run the container with the following command:
+
+```
+docker run -it --rm -v /path/to/your/input:/input -v /path/to/your/output:/output ari3d:latest
+```
+
+Where `/path/to/your/input` is the path to your input data and `/path/to/your/output` is the path where you want to store the output data.
+
+## Docker Export Requirements
+
+For full reproducibility, we provide a docker export of the ARI3D workflow.
+
+The software utilizes PyQt6 for building the graphical user interface (GUI).
+Despite the fact that the workflow is designed to run headless, the GUI is still required as a dependency.
+
+For linux containers that requires having shared system libraries installed.
+
+We recommend the following shared libraries to be installed in your container:
+
+| Package              | Purpose                                                                                                           |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `tzdata`             | Timezone data used by the system clock and applications to handle time zones properly.                            |
+| `libgl1`             | OpenGL rendering library – required for 3D and hardware-accelerated graphics.                                     |
+| `libglx-mesa0`       | Part of the Mesa 3D Graphics Library that implements the GLX interface to connect OpenGL and the X Window System. |
+| `libxkbcommon-x11-0` | Keyboard handling library that provides keyboard layout parsing and handling for X11 systems.                     |
+| `libegl1`            | Interface between rendering APIs like OpenGL ES and the native platform window system.                            |
+| `libfontconfig1`     | Font discovery and configuration library – allows Qt and other GUI libraries to locate system fonts.              |
+| `libglib-2.0-0`      | Core low-level utility library used by GTK and Qt (through DBus or GLib-based modules).                           |
+| `libdbus-1-3`        | DBus library for inter-process communication, often used for event/message communication in Linux desktops.       |
+
+We used albums container export feature to create the docker image.
+
+To export the container, you can use the following command:
+
+```
+cd ari3d
+album docker --solution . --output . --install-flags="--allow-recursive" --install-deps="DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends tzdata libgl1 libglx-mesa0 libxkbcommon-x11-0 libegl1 libfontconfig1 libglib-2.0-0 libdbus-1-3"
+```

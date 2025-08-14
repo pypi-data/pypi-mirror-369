@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ari3d"
+version = "0.1.4"
+authors = [
+  {name = "Jan Philipp Albrecht", email = "j.p.albrecht@fu-berlin.de"},
+  {name = "Jose Ricardo Assuncao Godinho", email = "jragodinho@uma.es"},
+]
+description = "Analyse Regions in 3D"
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+keywords = ["X-ray", "imaging", "data analysis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Utilities"
+]
+requires-python = "~=3.11"
+dependencies = [
+    "PyQt6==6.7.1",
+    "PyQt6-Qt6==6.7.1",
+    "pandas",
+    "pillow",
+    "numpy",
+    "napari",
+    "zarr==2.18.7",
+    "watchdog",
+    "joblib",
+    "album~=0.12",
+    "numcodecs==0.15.1",  # zarr dependency
+    "snakemake",
+
+]
+
+[project.urls]
+Repository = "https://gitlab.com/ida-mdc/ari3d"
+
+[project.gui-scripts]
+ari3d = "ari3d.gui.ari3d:run_gui"
+
+[project.scripts]
+ari3d-cli = "ari3d.workflow.ari3d_cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"] # implicit namespaces by default
+
+[tool.setuptools.package-data]
+ari3d = ["ari3d/*.yml", "ari3d/*.csv", "ari3d/*.json"]

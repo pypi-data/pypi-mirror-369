@@ -1,0 +1,160 @@
+"""Module for defining the Snakefile workflow for the ARI3D project."""
+import os
+from pathlib import Path
+from PyQt6.QtWidgets import QWidget, QApplication
+
+from ari3d.gui.controller.io.album_c import AlbumController
+from ari3d.gui.controller.io.project_c import OpenProjectController
+from ari3d.gui.controller.io.view_c import ImageViewController
+from ari3d.gui.controller.solutions.extract_properties_c import ExtractPropertiesDialogController
+from ari3d.gui.controller.solutions.particleSeg_c import UI_ParticleSeg3DPredictController
+from ari3d.gui.controller.solutions.streamlit_c import DataViewerDialogController
+from ari3d.gui.ari3d_logging import Ari3dLogger
+from ari3d.utils.operations.file_operations import copy as cpy  # to avoid conflict with built-in copy
+
+
+input_dir = Path(config["input_dir"])
+project_dir = Path(config["input_dir"]).joinpath("project")
+parameters_file = Path(config["parameters_file"])
+loglevel = config["loglevel"]
+
+def dummy_qt_app():
+    """Ensure a QApplication instance is created if not already present."""
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication([])  # Create a new QApplication instance
+    return app
+
+
+rule create:
+    input:
+        project_dir=input_dir,
+        parameters_file=parameters_file
+    output:
+        str(project_dir.joinpath("project_created.txt"))
+    run:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
+        _ = dummy_qt_app()
+
+        # set loglevel
+        Ari3dLogger(loglevel=loglevel)
+
+        opc = OpenProjectController(QWidget())
+        opc._create_project(project_path=input.project_dir, interactive=False)
+
+        # copy the parameters file input to the report directory
+        cpy(input.parameters_file, opc.report_path)
+
+
+rule install:
+    input:
+        project_dir=input_dir,
+        created_project=str(project_dir.joinpath("project_created.txt")),
+    output:
+        str(project_dir.joinpath("installation_done.txt"))
+    run:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
+        _ = dummy_qt_app()
+
+        # set loglevel
+        Ari3dLogger(loglevel=loglevel)
+
+        project_controller = OpenProjectController(QWidget())
+        project_controller.open_project(
+            project_path=input.project_dir,
+            interactive=False
+        )
+        album_api = AlbumController(QWidget(), interactive=False)
+        album_api.install_required()
+        album_api.write_install_txt(project_controller.project_files_path)
+
+rule segment:
+    input:
+        project_dir=input_dir,
+        install_completed=str(project_dir.joinpath("installation_done.txt"))
+    output:
+        str(project_dir.joinpath("segmentation_created.txt"))
+    run:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
+        _ = dummy_qt_app()
+
+        # set loglevel
+        Ari3dLogger(loglevel=loglevel)
+
+        project_controller = OpenProjectController(QWidget())
+        project_controller.open_project(
+            project_path=input.project_dir,
+            interactive=False
+        )
+        album_api = AlbumController(QWidget(), interactive=False)
+        particle_seg_dialog_controller = UI_ParticleSeg3DPredictController(
+            QWidget(),
+            album_api,
+            project_controller,
+            ImageViewController(QWidget(), project_controller),
+            interactive=False
+        )
+        particle_seg_dialog_controller.set_defaults()
+        particle_seg_dialog_controller._run_particlseSeg3d_solution()
+
+
+rule extract:
+    input:
+        project_dir=input_dir,
+        segmentation_created=str(project_dir.joinpath("segmentation_created.txt"))
+    output:
+        str(project_dir.joinpath("histogram_created.txt"))
+    run:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
+        _ = dummy_qt_app()
+
+        # set loglevel
+        Ari3dLogger(loglevel=loglevel)
+
+        project_controller = OpenProjectController(QWidget())
+        project_controller.open_project(
+            project_path=input.project_dir,
+            interactive=False
+        )
+        album_api = AlbumController(QWidget(), interactive=False)
+        p_extraction_controller = ExtractPropertiesDialogController(
+            QWidget(),
+            album_api,
+            project_controller,
+            interactive=False
+        )
+        p_extraction_controller.on_extract_properties_click()
+
+rule quantify:
+    input:
+        project_dir=input_dir,
+        histogram_created=str(project_dir.joinpath("histogram_created.txt"))
+    output:
+        str(project_dir.joinpath("quantification_done.txt"))
+    run:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
+        _ = dummy_qt_app()
+
+        # set loglevel
+        Ari3dLogger(loglevel=loglevel)
+
+        project_controller = OpenProjectController(QWidget())
+        project_controller.open_project(
+            project_path=input.project_dir,
+            interactive=False
+        )
+        album_api = AlbumController(QWidget(), interactive=False)
+        dv_controller = DataViewerDialogController(
+            QWidget(),
+            album_api,
+            project_controller,
+            interactive=False
+        )
+        dv_controller._run_streamlit_solution()
+
+
+
+# Rule workflow
+rule all:
+    input:
+        str(project_dir.joinpath("quantification_done.txt"))

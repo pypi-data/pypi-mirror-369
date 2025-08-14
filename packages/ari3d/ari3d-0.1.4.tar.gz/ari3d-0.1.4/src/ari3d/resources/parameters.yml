@@ -1,0 +1,55 @@
+### Parameters file to load default values for mspacman ###
+
+# Manual thresholding for segmentation
+manual_thresholding: 12000
+dilation_erosion_operations: [2, 1, 1, 2] # 1=dilation, 2=erosion, put as many as you want [dilation, erosion, dilation, ...]
+
+# Property Extraction Parameters
+voxel_size: 5
+background: 500
+feret_angle: 10
+mesh_spacing: 1
+start_slice: -1
+end_slice: -1
+save_labels: False
+remove_small: 1000
+num_threads: -1
+inertia: False
+ferets: False
+entropy: False
+mean_max: False
+aspect_ratio: False
+moments: False
+euler: False
+solidity: False
+histogram: True
+basic_properties: True
+
+# segmentation parameters
+average_particle_size_mm: 0
+voxel_size_mm: 0
+model_path: ""
+apply_to_slice: -1
+save_seg_labels: True
+
+# mineralogy parameters
+binInput: 256 # Number to be divided by the initial number of bins. The higher the input the less number of bins plotted
+savgolInput: 4 # Savgol smoothing intensity. This slider is not interactive! The new input is only visible in the plot after pressing randomize. Tip: higher values increase the smootheness
+enableSavgol: False
+enablePVB: True # Enable PVB (Partial Volume Blurr Correction) - True/False
+gray_value_width: 0 # Grey-value width. Distance between two valeys on either side of a peak - integer
+min_frequency: 0.001 # Minimum height of peaks from bottom
+prominence: 0.0 # Minimum height of climb from a valey left or right from the peak
+horizDistance: 1 # Minimum horizontal distance between neighbour peaks - integer
+vertDistance: 0.0 # Minimum vertical distance between neighbour peaks
+background_q: 500 # Background value
+DensityA: 1 # density Material A
+DensityB: 1 # density Material B
+DensityC: 1 # density Material C
+DensityD: 1 # density Material D
+DensityE: 1 # density Material E
+MaxGreyValueA: 6000 # Phase_1_threshold
+MaxGreyValueB: 11111 # Phase_2_threshold
+MaxGreyValueC: 22222 # Phase_3_threshold
+MaxGreyValueD: 25555 # Phase_4_threshold
+MaxGreyValueE: 65555 # Phase_5_threshold
