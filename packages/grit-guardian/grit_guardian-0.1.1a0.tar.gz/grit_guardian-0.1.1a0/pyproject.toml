@@ -1,0 +1,43 @@
+[project]
+name = "grit-guardian"
+version = "0.1.1a0"
+description = "Terminal-based habit tracker with virtual companion"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Patrick Weiss", email = "patrick.weiss@iu-study.org" }]
+license = { text = "MIT" }
+keywords = ["habit-tracker", "cli", "productivity", "terminal"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+  "click (>=8.2.1,<9.0.0)",
+  "sphinx (>=8.2.3,<9.0.0)",
+  "sphinxcontrib-mermaid (>=1.0.0,<2.0.0)",
+  "sphinx-copybutton (>=0.5.2,<0.6.0)",
+  "sphinx-autobuild (>=2024.10.3,<2025.0.0)",
+]
+
+[project.urls]
+homepage = "https://github.com/pi-weiss/grit-guardian"
+repository = "https://github.com/pi-weiss/grit-guardian"
+documentation = "https://grit-guardian.readthedocs.io"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{include = "grit_guardian", from = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.2.1,<9.0.0"
+pytest-cov = ">=6.2.1,<7.0.0"
+sphinx-rtd-theme = "^3.0.2"
+
+[tool.poetry.scripts]
+grit-guardian = "grit_guardian.cli:main"
+gg = "grit_guardian.cli:main"
