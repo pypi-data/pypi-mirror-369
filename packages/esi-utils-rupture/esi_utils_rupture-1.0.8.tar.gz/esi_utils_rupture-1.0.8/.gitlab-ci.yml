@@ -1,0 +1,54 @@
+default:
+  image: code.usgs.gov:5001/devops/images/usgs/python:3.12-build
+  tags:
+    - build
+  before_script:
+    - python --version
+    - export PATH="/home/usgs-user/.local/bin:$PATH"
+
+# repository rules
+.fork: &fork
+  if: >
+    $CI_PROJECT_PATH != 'ghsc/esi/esi-utils-rupture'
+    && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+  variables:
+    ENVIRONMENT: development
+
+.upstream: &upstream
+  if: >
+    $CI_PROJECT_PATH == 'ghsc/esi/esi-utils-rupture'
+    && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    ENVIRONMENT: staging
+
+stages:
+  - test
+  - build
+
+run formatter:
+  script:
+    - pip install -e .[dev]
+    - black esi_utils_rupture/*.py
+  stage: test
+
+run tests:
+  script:
+    - pip install -e .[test]
+    - pytest .
+  rules:
+    - *fork
+    - *upstream
+  stage: test
+
+run build:
+  script:
+    - pip install .[build]
+    - python -m build
+    - python -m zipfile --list dist/*whl
+    - python -m twine upload dist/*
+  stage: build
+  rules:
+    # Run this job when a tag is created manually
+    - if: $CI_COMMIT_TAG
+
+    # - pip install --upgrade --no-dependencies https://github.com/gem/oq-engine/archive/engine-3.12.zip
