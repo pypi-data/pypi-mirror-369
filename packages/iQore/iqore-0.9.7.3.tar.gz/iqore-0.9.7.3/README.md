@@ -1,0 +1,156 @@
+# iQore SDK (`iqore`)
+
+Cloud-Injected Optimization for Quantum Circuits
+
+Secure, high-performance enhancements for your Qiskit circuits — powered by iQore’s encrypted, cloud-native optimization engine.
+
+---
+
+## Overview
+
+The iQore SDK is a plug-and-play circuit optimizer that upgrades any Qiskit circuit by injecting secure, cloud-hosted logic at runtime.
+
+- Drop-in compatibility with Qiskit
+- Secure cloud logic injection
+- No local optimizer code
+- No changes to your algorithm or hardware
+
+---
+
+## Key Features
+
+- Encrypted Optimization Logic  
+  All enhancement logic is delivered securely from the cloud, never exposed or downloaded.
+
+- Qiskit-Ready  
+  Seamlessly integrate with any `QuantumCircuit` — simulator or QPU.
+
+- Smart Upgrade  
+  Dynamically improves entanglement, depth, and gate timing using iQore’s proprietary methods.
+
+- No Setup Overhead  
+  Just save your token and call `optimize()`.
+
+---
+
+## Quick Start
+
+### Install
+
+```bash
+pip install iqore
+```
+
+### Authenticate
+
+```python
+from iQore import iQoreRuntimeService
+iQoreRuntimeService.save_account("your_unique_token_here")
+```
+
+### Optimize Your Circuit
+
+```python
+from qiskit import QuantumCircuit
+from qiskit_aer import AerSimulator
+from iQore import iQD
+import numpy as np
+
+backend = AerSimulator()
+matrix = np.random.rand(4, 4)
+qc = QuantumCircuit(4)
+
+iQD.optimize(
+    qc,
+    qubit_count=4,
+    backend=backend,
+    matrix=matrix,
+    enable_iQD_dtc=True  # Enables advanced tensor control
+)
+
+# User-defined logic comes after optimization
+qc.cx(0, 1)
+qc.measure_all()
+```
+
+Note: `iQD.optimize()` is non-destructive. You can append logic to the circuit after optimization.
+
+---
+
+## API Reference
+
+### `iQD.optimize(qc, *, qubit_count, backend, matrix=None, enable_iQD_dtc=False)`
+
+| Parameter         | Type               | Description                                                 |
+|------------------|--------------------|-------------------------------------------------------------|
+| `qc`             | QuantumCircuit     | Input circuit to optimize                                   |
+| `qubit_count`    | int                | Number of qubits involved                                   |
+| `backend`        | str or Backend     | Qiskit backend name or object                               |
+| `matrix`         | np.ndarray         | Optional enhancement tuning matrix                          |
+| `enable_iQD_dtc` | bool               | Optional flag to enable Dynamic Tensor Controller mode      |
+
+---
+
+## How It Works
+
+1. The SDK authenticates using your saved token
+2. It requests an encrypted optimization payload from iQore's secure backend
+3. The logic is decrypted and executed in-memory
+4. Your circuit is upgraded — without exposing proprietary logic or requiring code changes
+
+No token = no optimization. Your workflows stay secure.
+
+---
+
+## Supported Environments
+
+- Qiskit simulators (aer_simulator, statevector, etc.)
+- IBM Quantum backends (Qiskit Runtime and legacy)
+- Advanced workloads: QAOA, VQE, Grover, Clifford+T
+- Research pipelines needing high fidelity and coherence
+
+---
+
+## Token Management
+
+```python
+iQoreRuntimeService.save_account(token: str, overwrite=False)
+iQoreRuntimeService.get_token() -> str
+iQoreRuntimeService.active_account() -> str
+```
+
+---
+
+## Requirements
+
+- Python >= 3.10
+- Qiskit == 1.4.2
+- Internet connection (for payload injection)
+
+---
+
+## Support
+
+- Documentation: https://docs.iqore.com
+- Email: team@iqore.com
+- Website: https://iqore.com
+
+---
+
+## License and Terms of Service
+
+By downloading and/or using the iQore SDK, you agree to the [iQore Terms of Service](https://www.iqore.com/terms-of-service).
+
+This SDK is licensed under a proprietary license. Redistribution, reverse engineering, decompilation, sublicensing, or extraction of embedded logic is strictly prohibited without prior written consent from iQore.
+
+Any unauthorized use, modification, or distribution of the SDK constitutes a violation of intellectual property law and may be subject to civil litigation, including but not limited to monetary damages under applicable U.S. and international statutes.
+
+For enterprise licensing, commercial deployment, or legal inquiries, contact [team@iqore.com](mailto:team@iqore.com).
+
+---
+
+## About iQore
+
+iQore pioneers secure, physics-aware quantum-classical optimization. Our SDK enables developers and researchers to extract higher fidelity, cleaner circuits, and smarter performance from today’s quantum systems — with zero compromise.
+
+From Chaos to Coherence

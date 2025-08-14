@@ -1,0 +1,20 @@
+# Include required top-level files
+include README.md
+include LICENSE.md
+include setup.py
+include pyproject.toml
+
+# Include all obfuscated SDK files
+recursive-include iQore *
+
+# Include encrypted runtime
+recursive-include pyarmor_runtime_006585 *
+
+# Include all documentation PDFs and assets
+recursive-include docs *
+
+# Exclude trash, caches, and source leakage
+global-exclude __pycache__/*
+global-exclude *.pyo
+global-exclude *.pyc
+global-exclude *.egg-info
