@@ -1,0 +1,104 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "ddcDatabases"
+version = "2.0.6"
+description = "Simplified Database ORM Connections"
+license = "MIT"
+readme = "README.md"
+authors = ["Daniel Costa <danieldcsta@gmail.com>"]
+maintainers = ["Daniel Costa"]
+repository = "https://github.com/ddc/ddcDatabases"
+homepage = "https://pypi.org/project/ddcDatabases"
+packages = [{include = "ddcDatabases"}]
+package-mode = true
+keywords = [
+    "python3", "python-3", "python",
+    "databases", "database", "ddcDatabases",
+    "mongodb", "mongodb-database",
+    "mssql", "mssql-database",
+    "mysql", "mysql-database",
+    "oracle", "oracle-database",
+    "pgsql", "postgres", "postgresql", "postgressql", "postgresql-database",
+    "sqlite", "sqlite3", "sqlite3-database",
+]
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+    "Environment :: Other Environment",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+]
+
+[tool.poetry.build]
+script = "build.py"
+generate-setup-file = false
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic-settings = "^2.10.1"
+SQLAlchemy = "^2.0.43"
+greenlet = "^3.2.4"
+aioodbc = {version = "^0.5.0", optional = true}
+aiomysql = {version = "^0.2.0", optional = true}
+asyncpg = {version = "^0.30.0", optional = true}
+cx-oracle = {version = "^8.3.0", optional = true}
+pymongo = {version = "^4.14.0", optional = true}
+pymysql = {version = "^1.1.1", optional = true}
+psycopg2-binary = {version = "^2.9.10", optional = true}
+pyodbc = {version = "^5.2.0", optional = true}
+
+[tool.poetry.extras]
+mongodb = ["pymongo"]
+mssql = ["pyodbc", "aioodbc"]
+mysql = ["pymysql", "aiomysql"]
+oracle = ["cx-oracle"]
+pgsql = ["psycopg2-binary", "asyncpg"]
+all = ["pymongo", "pyodbc", "aioodbc", "pymysql", "aiomysql", "cx-oracle", "psycopg2-binary", "asyncpg"]
+
+[tool.poetry.group.test.dependencies]
+faker = "^37.5.3"
+poethepoet = "^0.37.0"
+pytest = "^8.4.1"
+pytest-asyncio = "^1.1.0"
+pytest-cov = "^6.2.1"
+
+[tool.poe.tasks]
+_test = "python -m pytest -v --cov --cov-report=term --cov-report=xml --junitxml=junit.xml -o junit_family=legacy"
+tests = ["_test"]
+test = ["tests"]
+
+[tool.coverage.run]
+omit = [
+    "build.py",
+    "tests/*",
+    "*/__init__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+show_missing = false
+skip_covered = false
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
