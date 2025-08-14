@@ -1,0 +1,23 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "mcp-server-greeter"
+version = "0.1.0"
+description = "A simple MCP server that greets you"
+authors = [
+    {name="Adon Mathew", email="adon.pmpm@gmail.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">3.9"
+dependencies = [
+    "mcp>=0.1.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+mcp-server-greeter = "mcp_server_greeter.main:main"
