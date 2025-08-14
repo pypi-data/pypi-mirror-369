@@ -1,0 +1,63 @@
+Metadata-Version: 2.4
+Name: youtrack-lap
+Version: 1.0.0
+Summary: A very limited client library for accessing YouTrack REST API
+Author-email: Paolo Latella <paolo.latella@recube.it>
+License: MIT
+Requires-Python: >=3.8
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: requests>=2.25.0
+Provides-Extra: dev
+Requires-Dist: black>=22.0; extra == 'dev'
+Requires-Dist: flake8>=4.0; extra == 'dev'
+Requires-Dist: pytest>=7.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# YouTrack REST Client
+
+A very limited client library for accessing YouTrack REST API
+
+## Installation
+
+Using UV:
+```bash
+uv add youtrack-rest-client
+```
+
+## Usage
+
+```python
+from youtrack_rest_client import Connection, Issue, Project
+
+# Initialize client
+client = Connection(base_url="https://your-instance.youtrack.cloud", token="your-token")
+
+# Get projects
+projects = client.get_projects()
+
+# Work with a specific project
+project = Project(client, 'PROJECT-ID')
+issues = project.get_issues()
+
+# Work with a specific issue
+issue = Issue(client, 'PROJECT-123')
+work_items = issue.get_work_items()
+```
+
+## Development
+
+Install dependencies:
+```bash
+uv sync --dev
+```
+
+Create token file:
+```bash
+mkdir -p secrets
+echo "your-youtrack-token" > secrets/yt_token.txt
+```
+
+Run example:
+```bash
+uv run python examples/basic_usage.py
+```

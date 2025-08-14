@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "youtrack-lap"
+version = "1.0.0"
+description = "A very limited client library for accessing YouTrack REST API"
+authors = [
+    { name = "Paolo Latella", email = "paolo.latella@recube.it" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.25.0",
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=22.0",
+    "flake8>=4.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/youtrack_lap"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "venv*/",
+    "secrets/",
+    ".vscode/",
+    ".idea/",
+    "*.egg-info/",
+    "__pycache__/",
+]
