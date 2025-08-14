@@ -1,0 +1,110 @@
+Metadata-Version: 2.4
+Name: hl_gaming_official_ff_data
+Version: 2.3.8
+Summary: Python client for HL Gaming Official Free Fire API
+Home-page: https://www.hlgamingofficial.com/p/api.html
+Author: Haroon Brokha
+Author-email: developers@hlgamingofficial.com
+License: MIT
+Project-URL: Documentation, https://www.hlgamingofficial.com/p/free-fire-account-information-python.html
+Project-URL: Homepage, https://www.hlgamingofficial.com
+Project-URL: Contact, https://www.hlgamingofficial.com/p/contact-us.html
+Project-URL: Feedback, https://www.hlgamingofficial.com/p/feedback.html
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.28.0
+Provides-Extra: cache
+Requires-Dist: cachetools>=5.0.0; extra == "cache"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# HL Gaming Official FF Data API (hl-gaming-official-ff-data)
+
+[![PyPI Version](https://img.shields.io/pypi/v/hl-gaming-official-ff-data.svg)](https://pypi.org/project/hl-gaming-official-ff-data/) 
+[![Downloads](https://img.shields.io/pypi/dm/hl-gaming-official-ff-data.svg)](https://pypi.org/project/hl-gaming-official-ff-data/)
+
+Official Python client for [HL Gaming Official's Free Fire API](https://www.hlgamingofficial.com/p/api.html)  
+Easily fetch player data from Free Fire using your API key.
+
+---
+
+## 📦 Installation
+
+```bash
+pip install hl-gaming-official-ff-data
+```
+
+---
+
+## 🚀 Usage Example
+
+```python
+from hl_gaming_official_ff_data import HLFFClient
+
+api_key = "your-api-key"
+player_uid = "9351564274"
+user_uid = "your-user-uid"
+region = "pk"
+
+client = HLFFClient(api_key=api_key, region=region)
+try:
+    data = client.get_player_data(player_uid=player_uid, user_uid=user_uid)
+    print("✅ Player Data:", data)
+except Exception as e:
+    print("❌ Error:", e)
+```
+
+---
+
+## ❗ Error Handling & Tips
+
+- ✅ Make sure `api_key`, `player_uid`, and `user_uid` are correct.
+- ⚠️ Region must be a valid code like `pk`, `in`, etc.
+- ❌ If the API returns a 403 or 400 error, check your parameters or visit [API Docs](https://www.hlgamingofficial.com/p/free-fire-api-data-documentation.html)
+
+---
+
+## 📄 Documentation
+
+- 📘 [API Docs](https://www.hlgamingofficial.com/p/free-fire-api-data-documentation.html)
+- 🌐 [Main Website](https://www.hlgamingofficial.com)
+
+---
+
+
+## 📝 Changelog
+
+### Version 2.3.4
+- Updated package name and branding  
+- Added better error handling and user guidance  
+- Improved documentation and examples  
+
+---
+
+## 👨‍💻 Developed by Haroon Brokha
+
+📧 Contact: [developers@hlgamingofficial.com](mailto:developers@hlgamingofficial.com)  
+🌐 Project maintained for the HL Gaming Official Community
+
+---
+
+*This README is automatically generated and maintained.*
