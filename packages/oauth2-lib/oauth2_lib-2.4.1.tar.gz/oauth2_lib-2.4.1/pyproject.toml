@@ -1,0 +1,147 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "oauth2_lib"
+dist-name = "oauth2-lib"
+author = "SURF"
+author-email = "automation-beheer@surf.nl"
+home-page = "https://github.com/workfloworchestrator/oauth2-lib"
+classifiers = [
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Telecommunications Industry",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.11",
+]
+requires = [
+    "requests>=2.19.0",
+    "structlog>=20.2.0",
+    "fastapi>=0.90.1",
+    "httpx[http2]>=0.23.0,<0.28",
+    "authlib==1.3.1",
+    "pydantic>=2",
+    "pydantic-settings",
+    "strawberry-graphql>=0.171.1",
+    "asyncstdlib",
+]
+description-file = "README.md"
+requires-python = ">=3.11,<3.14"
+
+[tool.flit.metadata.urls]
+Documentation = "https://workfloworchestrator.org/"
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "apache-license-check",
+    "black",
+    "ruff",
+    "mypy",
+    "pygments",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-xdist",
+    "requests_mock",
+    "urllib3_mock==0.3.3",
+]
+dev = ["bumpversion", "pre-commit"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip = ["src", "venv"]
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | venv
+    | src
+  )/
+)
+'''
+
+
+[tool.nitpick]
+style = "github://workfloworchestrator/nitpick-style@main/nitpick-style.toml"
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".cache",
+    ".eggs",
+    "__pycache__",
+    "dist",
+    "src",
+    "crypt.py",
+    "venv",
+    "build",
+    ".venv",
+]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+ignore = [
+    "B008",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D107",
+    "D202",
+    "E501",
+    "S101",
+    "N806",
+    "B904",
+    "N802",
+    "N801",
+    "N818",
+    "S113", # HTTPX has a default timeout
+]
+select = [
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "I",
+    "N",
+    "RET",
+    "S",
+    "T",
+    "W",
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
