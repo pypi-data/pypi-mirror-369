@@ -1,0 +1,746 @@
+---
+output: html_document
+#  html_document:
+#    toc: true
+#    toc_depth: 3
+params:
+  database_synid_mappingid:
+    value: x
+  release:
+    value: x
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      fig.height = 8,
+                      fig.width = 10)
+```
+
+---
+title: '`r release`'
+---
+
+```{r intro}
+suppressMessages(library(synapser))
+foo = capture.output(synLogin())
+suppressMessages(library(ggplot2))
+suppressMessages(library(RColorBrewer))
+suppressMessages(library(jsonlite))
+suppressMessages(library(knitr))
+
+source("R/dashboard_template_functions.R")
+
+createCenterColumn <- function(clinicalDf) {
+  if (is.null(clinicalDf$CENTER)) {
+    centers = unlist(
+      lapply(strsplit(clinicalDf$PATIENT_ID, "-"), function(x) return(x[2])))
+  } else {
+    centers = clinicalDf$CENTER
+  }
+  return(centers)
+}
+
+getFileDf <- function(fileName, releaseFiles) {
+  synId = unlist(lapply(releaseFiles, function(x) {
+    if (x$name == fileName) {
+      return(x$id)
+    }
+  }))
+  if (length(synId) > 0) {
+    ent = synGet(synId,followLink = T)
+    df = read.csv(ent$path,sep = "\t", comment.char = "#", stringsAsFactors = F)
+    return(df)
+  } else {
+    return(NULL)
+  }
+}
+
+plotCenterXRace <- function(genieClinData) {
+  t = as.data.frame.matrix(table(genieClinData$CENTER,genieClinData$PRIMARY_RACE))
+  t = data.frame(n = rowSums(t),t)
+  # kable(t)
+
+  # kable(data.frame("Percent.Unknown" = (t[,"Unknown"]/rowSums(t[,colnames(t) != "n"]))*100), digits = 2)
+
+  # reduce table to none "Unknown" data
+  # t$n = t$n - t$Unknown
+  # t = t[,!(colnames(t) == "Unknown")]
+  # find sites with greater than 100 nono "Unknown" patients wrt race
+  # k = which(t$n > 100)
+  t = t[,c("n", "White", "Black", "Asian", "Native.American",
+           "Other", "Unknown")]
+  t[,colnames(t) != "n"] = t[,colnames(t) != "n"]/rowSums(t[,colnames(t) != "n"])
+  # kable(t[k,],digits = 3)
+
+  # Center vs Race BARCHARTS
+  t$Center = rownames(t)
+  l = c("White", "Black", "Asian", "Native.American",
+        "Other", "Unknown")
+  t = reshape(t,
+              direction = "long",
+              idvar = ("Center"),
+              varying = l,
+              v.names = "Percentage",
+              times = l,
+              drop = "n")
+  colnames(t)[colnames(t) == "time"] = "Race"
+  t$Race = factor(t$Race,l)
+  plot(ggplot(t,aes(Race, Percentage, group = Center)) +
+         geom_bar(stat = "identity") +
+         facet_wrap(~Center, ncol = 4) +
+         ylim(0,1) +
+         coord_flip() +
+         ggtitle("Distribution of race across centers"))
+}
+
+plotCenterXEthnicity <- function(genieClinData) {
+  t = as.data.frame.matrix(table(genieClinData$CENTER,genieClinData$ETHNICITY))
+  # t = data.frame(n = rowSums(t),t)
+  # kable(t)
+
+  # kable(data.frame("Percent.Unknown" = (t[,"Unknown"]/rowSums(t[,colnames(t) != "n"]))*100), digits = 2)
+
+  # t$n = t$n - t$Unknown
+  # t = t[,!(colnames(t) == "Unknown")]
+  # k = which(t$n > 100)
+  t[,colnames(t) != "n"] = t[,colnames(t) != "n"]/rowSums(t[,colnames(t) != "n"])
+  # kable(t[k,],digits = 3)
+
+  # Center vs Ethnicity BARCHARTS
+  t$Center = rownames(t)
+  l = c("Non-Spanish/non-Hispanic", "Spanish/Hispanic", "Unknown")
+  t = reshape(t,
+              direction = "long",
+              idvar = ("Center"),
+              varying = l,
+              v.names = "Percentage",
+              times = l,
+              drop = "n")
+  colnames(t)[colnames(t) == "time"] = "Ethnicity"
+  t$Ethnicity = factor(t$Ethnicity,l)
+  plot(ggplot(t,aes(Ethnicity, Percentage, group = Center)) +
+         geom_bar(stat = "identity") +
+         facet_wrap(~Center,ncol = 4) +
+         ylim(0,1) +
+         coord_flip() +
+         ggtitle("Distribution of ethnicity across centers"))
+}
+
+plotCenterXSex <- function(genieClinData) {
+  t = as.data.frame.matrix(table(genieClinData$CENTER,genieClinData$SEX))
+  t = data.frame(n = rowSums(t),t)
+  kable(t)
+
+  t[,colnames(t) != "n"] = t[,colnames(t) != "n"]/rowSums(t[,colnames(t) != "n"])
+  kable(t,digits = 3)
+
+  # Center vs Sex BARCHARTS
+  t$Center = rownames(t)
+  l = c("Female","Male")
+  t = reshape(t,
+              direction = "long",
+              idvar = ("Center"),
+              varying = l,
+              v.names = "Percentage",
+              times = l,
+              drop = "n")
+  colnames(t)[colnames(t) == "time"] = "Sex"
+  t$Sex = factor(t$Sex, l)
+  plot(ggplot(t,aes(Sex,Percentage,group = Center)) +
+         geom_bar(stat = "identity") +
+         facet_wrap(~Center,ncol = 4) +
+         ylim(0,1) +
+         coord_flip() +
+         ggtitle("Distribution of sex across centers"))
+}
+
+plotCenterXAge <- function(genieClinData) {
+  if (mean(as.numeric(genieClinData$AGE_AT_SEQ_REPORT),na.rm = T) < 100) {
+    multiply = T
+  } else {
+    multiply = F
+  }
+  genieClinData$age_days <- genieClinData$AGE_AT_SEQ_REPORT
+  k = grep("^>",genieClinData$AGE_AT_SEQ_REPORT) # these are the >=90 group that get mapped to 90
+  genieClinData$age_days[k] = 32872
+  k = grep("^<",genieClinData$AGE_AT_SEQ_REPORT) # these are the <=18 group that get mapped to 18
+  genieClinData$age_days[k] = 6573
+  genieClinData$age_days = as.numeric(genieClinData$AGE_AT_SEQ_REPORT)
+  if (multiply) {
+    genieClinData$age_days <- genieClinData$age_days * 365
+  }
+
+  k = is.na(genieClinData$age_days)
+  t = as.data.frame.matrix(table(genieClinData$CENTER,k))
+  kable(data.frame("Percent.Unknown"=(t[,"TRUE"]/rowSums(t))*100),digits=2)
+
+  k = !is.na(genieClinData$age_days)
+  plot(ggplot(genieClinData[k,], aes(x = (age_days/365), group = CENTER)) +
+         geom_histogram(aes(y = (..count..)/width/tapply(..count..,..group..,sum)[..group..]),
+                        breaks = c(0,seq(19,89,2),90,108),
+                        closed = "left") +
+         facet_wrap(~CENTER,ncol = 4) +
+         ylab("Density") +
+         xlab("Age") +
+         ggtitle("Distribution of age across centers"))
+}
+
+get_release_synid <- function(release_folder_fileview_synid, release) {
+  release_folder = synTableQuery(
+    sprintf("select id from %s where name = '%s'",
+            release_folder_fileview_synid, release)
+  )
+  release_folderdf = release_folder$asDataFrame()
+  if (nrow(release_folderdf) == 0) {
+    stop(sprintf("Could not find release: %s", release))
+  }
+  release_folderdf$id
+}
+
+get_latest_public_release <- function(release) {
+  # HACK: until we create tables for these hardcoded synids in
+  # TEST and STAGING projects, will have to return staging 
+  # version of the public release folder here
+  if (grepl("STAGING", release)){
+    return("syn7871696")
+  } else{
+      major_release = unlist(strsplit(release, "[.]"))[1]
+      public_major_release = as.numeric(major_release) - 1
+      public_rel = synTableQuery(paste0(
+        "select * from syn22233011 where ",
+        sprintf("name like 'Release %s.", public_major_release),
+        "%-public' order by name DESC"
+      ))
+      public_reldf = public_rel$asDataFrame()
+      nrow_df = nrow(public_reldf)
+      if (nrow_df == 0) {
+        stop(sprintf("Could not find public release for: %s", public_major_release))
+      } else if (nrow_df == 1) {
+        public_reldf$id
+      } else {
+        # The releases are ordered by latest first, so
+        # always take the first element
+        public_reldf$id[1]
+      }
+  }
+}
+```
+
+```{r downloads, echo=FALSE, message=FALSE, results = 'hide'}
+database_synid_mapping = synTableQuery(sprintf('select * from %s',
+                                               database_synid_mappingid))
+database_synid_mappingdf = as.data.frame(database_synid_mapping)
+release_folder_fileview_synid = database_synid_mappingdf$Id[
+  database_synid_mappingdf$Database == "releaseFolder"
+]
+release_synid = get_release_synid(release_folder_fileview_synid, release)
+releaseFiles = as.list(synGetChildren(release_synid))
+this_samples <- getFileDf("data_clinical.txt", releaseFiles)
+if (is.null(this_samples)) {
+  this_samples <- getFileDf("data_clinical_sample.txt", releaseFiles)
+  this_patient <- getFileDf("data_clinical_patient.txt", releaseFiles)
+  this_patient$CENTER <- createCenterColumn(this_patient)
+  this_samples$CENTER <- createCenterColumn(this_samples)
+} else {
+  this_patient <- this_samples
+  this_patient <- this_patient[!duplicated(this_patient$PATIENT_ID),]
+}
+this_bed <- getFileDf("genomic_information.txt", releaseFiles)
+if (is.null(this_bed)) {
+  this_bed <- getFileDf("genie_combined.bed", releaseFiles)
+}
+this_assays = as.character(unique(this_samples$SEQ_ASSAY_ID))
+this_mut <- getFileDf("data_mutations_extended.txt", releaseFiles)
+assay_infodf = getFileDf("assay_information.txt", releaseFiles)
+
+# this_cna <- getFileDf("data_CNA.txt", releaseFiles)
+#this_fus <- getFileDf("data_fusions.txt", releaseFiles)
+
+# Get most recent public release clinical file
+public_release_synid = get_latest_public_release(release)
+public_release_files = as.list(synGetChildren(public_release_synid))
+public_sampledf <- getFileDf("data_clinical_sample.txt", public_release_files)
+
+public_sampledf$CENTER = sapply(strsplit(public_sampledf$SEQ_ASSAY_ID, "-"),
+                                function(x) x[1])
+```
+
+
+## Sample and Variant Count per center
+Please confirm that the the number of samples and variants in this release is what you expect. The "New Sample" column shows the number of new samples submitted since the last public release. A gentle reminder for sites that it is GENIE policy to submit at least 500 samples per year.  Please contact AACR if you cannot do this.
+
+```{r sampleTable}
+sampleCounts = table(this_samples$CENTER)
+samplesPerReleaseDf = as.data.frame(sampleCounts)
+colnames(samplesPerReleaseDf) = c("Center", "Samples")
+variant_counts = table(this_mut$Center)
+variant_countsdf = as.data.frame(variant_counts)
+colnames(variant_countsdf) = c("Center", "Variants")
+release_infodf = merge.data.frame(samplesPerReleaseDf, variant_countsdf, by="Center", all=T)
+release_infodf[is.na(release_infodf)] = 0
+samplesPerReleaseDf = rbind(release_infodf,
+                            data.frame("Center" = "Total",
+                                       "Samples" = sum(sampleCounts),
+                                       "Variants" = sum(variant_counts)))
+
+# Get sample difference
+public_center_sample_count = table(public_sampledf$CENTER)
+center_differences = c()
+for (center in names(sampleCounts)) {
+  center_current =  sampleCounts[center]
+  public_center_current = public_center_sample_count[center]
+  if (is.na(public_center_current)) {
+    public_center_current = 0
+  }
+  if (is.na( center_current)) {
+    center_current = 0
+  }
+  release_difference = center_current - public_center_current
+  center_differences[center] = release_difference
+}
+center_differences = c(center_differences, sum(center_differences))
+samplesPerReleaseDf["New Samples"] = center_differences
+kable(samplesPerReleaseDf, row.names = F,
+      caption = "Number of samples and variants per center")
+```
+
+---
+
+## GENIE Retraction Policy
+
+```{r determine_retraction, echo=F, include=F}
+sampledb_synid = database_synid_mappingdf$Id[
+  database_synid_mappingdf$Database == "sample"
+]
+sample_retract_synid = database_synid_mappingdf$Id[
+  database_synid_mappingdf$Database == "sampleRetraction"
+]
+patient_retract_synid = database_synid_mappingdf$Id[
+  database_synid_mappingdf$Database == "patientRetraction"
+]
+
+sample_table = synTableQuery(sprintf("SELECT SAMPLE_ID FROM %s",
+                                     sampledb_synid))
+
+db_samplesdf = sample_table$asDataFrame()
+
+# check for samples in public release that are no longer in
+# consortium release
+exist_idx = public_sampledf$SAMPLE_ID %in% this_samples$SAMPLE_ID
+in_db_samples_idx = public_sampledf$SAMPLE_ID %in% db_samplesdf$SAMPLE_ID
+
+# Get all possibly retracted
+# The reason possibly because samples could have been renamed
+possible_retracted = public_sampledf[!exist_idx & !in_db_samples_idx,
+                                     c("SAMPLE_ID", "PATIENT_ID", "CENTER")]
+
+# Determine if sample is explicitly or implicitly retracted
+# assume most samples are implicitly retracted
+if (nrow(possible_retracted) > 0) {
+  possible_retracted$RETRACTION = "implicit"
+  # Get explicitly retracted
+  retracted_patient = synTableQuery(
+    sprintf("select geniePatientId from %s", patient_retract_synid)
+  )
+  retracted_patientdf = retracted_patient$asDataFrame()
+  retracted_sample = synTableQuery(
+    sprintf("select genieSampleId from %s", sample_retract_synid)
+  )
+  retracted_sampledf = retracted_sample$asDataFrame()
+
+  retracted_patients_idx = possible_retracted$PATIENT_ID %in%
+    retracted_patientdf$geniePatientId
+  retracted_samples_idx = possible_retracted$SAMPLE_ID %in%
+    retracted_sampledf$genieSampleId
+
+  possible_retracted$RETRACTION[
+      retracted_patients_idx & retracted_samples_idx
+  ] = 'explicit'
+
+}
+write.csv(possible_retracted, "samples_to_retract.csv", row.names=F, quote=F)
+ent = synStore(File("samples_to_retract.csv", parent=release_synid))
+unlink("samples_to_retract.csv")
+```
+
+This table below lists the number of samples explicitly or implicitly retracted by centers.
+
+
+```{r}
+if (nrow(possible_retracted) > 0) {
+  kable(table(possible_retracted$CENTER, possible_retracted$RETRACTION))
+} else {
+  kable(possible_retracted)
+}
+```
+
+These `r paste0("[sample/patient IDs](https://www.synapse.org/#!Synapse:", ent$properties$id, "){target='_blank'}")`
+have been marked for retraction from GENIE and have been removed from the GENIE database.
+However, removal from public release files occurs according to the following fixed schedule.
+Please apprise your patients of this schedule so that they are aware of the timeline for retraction of their data.
+If you see samples that should not be retracted, please upload a fix to your data or email genie.dcc@sagebase.org immediately.
+
+
+For patient retractions submitted between these months, a new public release will be generated that removes the affected records. The new release will be issued no later than July or January, respectively:
+
+* January-June
+* July-December
+
+---
+
+### Genome nexus failed annotations summary
+
+The table below displays the number of failed annotations per center. If a center has no failed annotations, no record will appear in the table for that center.
+
+```{r}
+maf_table_synid = get_syn_id_from_mapped_database(
+  database_name="vcf2maf", 
+  database_synid_mappingid = database_synid_mappingid
+)
+
+# get narrow maf table
+maf_table <- as.data.frame(synTableQuery(sprintf('select * from %s', maf_table_synid)))
+
+counts_table <- get_failed_annotation_table_counts(
+  maf_table, 
+  group_by_cols = "Center", 
+  counts_col_name = "Number of failed annotations"
+  )
+knitr::kable(counts_table, col.names = c("Center", "Number of failed annotations"))
+
+#get project page on synapse
+main_syn_id <- get_syn_id_from_mapped_database(
+    database_name="main", 
+    database_synid_mappingid = database_synid_mappingid
+)
+```
+
+Follow this navigation guide from the `r paste0("[Synapse project files page](https://www.synapse.org/#!Synapse:", main_syn_id, "/files/){target='_blank'}")` to find your center's detailed failed annotations error report.
+
+Files &rarr; Centers &rarr; [Center name] &rarr; Errors &rarr; failed_annotations_error_report.txt
+
+View the version comment column in Synapse for your report to find the version associated with this release.
+
+---
+
+## Distribution of Clinical Attributes
+Please use the below distributions to access the validity of your clinical data.  There will be some tips for what to look for in each section.
+
+### Race
+Some european sites like GRCC, CRUK, and NKI do not collect race information from their patients.  If your institution does not either, you should see empty barplots.
+
+```{r race}
+#Center X Race
+par(mar = c(10,3,3,1))
+plotCenterXRace(this_patient)
+```
+
+### Ethnicity
+Some european sites like GRCC, CRUK, and NKI do not collect ethnicity information from their patients.  If your institution does not either, you should see empty barplots.
+
+```{r ethnicity}
+#Center X Ethnicity
+par(mar = c(10,3,3,1))
+plotCenterXEthnicity(this_patient)
+```
+
+### Sex
+CRUK submits samples from breast cancer patients, so their samples are all female.
+
+```{r sex}
+#Center X Sex
+par(mar = c(10,3,3,1))
+plotCenterXSex(this_patient)
+```
+
+### Age
+CHOP submits mainly pediatric cases, so their distribution is different from the rest.
+
+
+```{r age}
+#Center X Age
+par(mar = c(10,3,3,1))
+plotCenterXAge(this_samples)
+```
+
+
+```{r seqyear, include=F, echo=F}
+check_seq_year = "SEQ_YEAR" %in% colnames(this_samples)
+```
+
+<!-- `r if(check_seq_year) {"### Sequencing year\nThis is to show the SEQ_YEAR distribution."}` -->
+
+<!-- ```{r, echo=F} -->
+<!-- if (check_seq_year) { -->
+<!--   kable(table(this_samples$SEQ_YEAR, this_samples$CENTER)) -->
+<!-- } -->
+<!-- ``` -->
+
+
+### Cancer Type (Null)
+This will show NULL or UNKNOWN cancer types.
+
+```{r cancertype}
+unknown_cancer_type = this_samples$CANCER_TYPE %in% c("UNKNOWN", '')
+null_cancer_type = is.na(this_samples$CANCER_TYPE)
+
+na_cancer_type_subset = this_samples[unknown_cancer_type | null_cancer_type, ]
+kable(table(na_cancer_type_subset$CANCER_TYPE, na_cancer_type_subset$CENTER))
+```
+
+---
+
+## Missing Variant Counts
+These are the sites with missing `t_depth`, `t_alt_count` and `t_ref_count` values.
+```{r variantcounts, echo=F}
+missing_t_depth_idx = is.na(this_mut$t_depth)
+missing_t_ref_count_idx = is.na(this_mut$t_ref_count)
+missing_t_alt_count_idx =  is.na(this_mut$t_alt_count)
+
+missing_t_depth = table(this_mut$Center[missing_t_depth_idx])
+missing_t_ref_count = table(this_mut$Center[missing_t_ref_count_idx])
+missing_t_alt_count = table(this_mut$Center[missing_t_alt_count_idx])
+centers = unique(c(names(missing_t_depth),
+                   names(missing_t_ref_count),
+                   names(missing_t_alt_count)))
+missing_counts = matrix(data=NA, nrow=length(centers), ncol=3,
+                        dimnames = list(centers,
+                                        c("t_depth", "t_alt_count",
+                                          "t_ref_count")))
+
+
+missing_counts[names(missing_t_depth), 't_depth'] = missing_t_depth
+missing_counts[names(missing_t_ref_count), 't_ref_count'] = missing_t_ref_count
+missing_counts[names(missing_t_alt_count), 't_alt_count'] = missing_t_alt_count
+missing_counts[is.na(missing_counts)] = 0
+kable(missing_counts)
+```
+
+---
+
+## Top 5 most frequently mutated genes per pipeline
+
+To assist with discovering artifacts in a center's data, this will summarize the top 5 most frequently mutated genes per pipline for all non-synonymous mutations.  All mutations that have `Variant_Classifications` of "Silent", "Intron", "3'UTR", "3'Flank", "5'UTR", "IGR" and "5'Flank" are filtered out with the exception of TERT promoters. One of the easiest questions to answer is:
+
+**Has the frequently mutated gene list changed significantly? Is TP53 still #1?**
+
+### All pipelines
+
+Top 5 most frequently mutated genes per pipeline for all pipelines.
+
+```{r, include=F}
+# Filter maf file to only contain non synonymous variants.
+# Follow same strategy here:
+# https://github.com/cBioPortal/cbioportal/blob/v3.3.4/core/src/main/java/org/mskcc/cbio/portal/scripts/MutationFilter.java#L86
+filter_maf <- function(mafdf) {
+  filter_classifications = c("Silent", "Intron", "3'UTR",
+                             "3'Flank", "5'UTR", "IGR")
+  non_coding_mutations = mafdf$Variant_Classification %in% filter_classifications
+  # Remove non coding
+  mafdf <- mafdf[!non_coding_mutations, ]
+  flank_classification = mafdf$Variant_Classification == "5'Flank"
+  tert_mutations = mafdf$Hugo_Symbol == "TERT"
+  # Remove 5'Flank unless it is TERT
+  mafdf[!flank_classification | tert_mutations, ]
+}
+filtered_mafdf <- filter_maf(this_mut)
+
+```
+
+
+```{r top_5_mutated, echo=FALSE}
+mergeddf = merge.data.frame(filtered_mafdf[,c("Tumor_Sample_Barcode", "Hugo_Symbol")],
+                            this_samples[,c("SAMPLE_ID", "SEQ_ASSAY_ID")],
+                            by.x = "Tumor_Sample_Barcode",
+                            by.y = "SAMPLE_ID")
+# TODO: can remove NA is fixed
+na_pipeline = assay_infodf$SEQ_PIPELINE_ID == ""
+assay_infodf$SEQ_PIPELINE_ID[na_pipeline] = assay_infodf$SEQ_ASSAY_ID[na_pipeline]
+
+# Merge in assay information to group by seq pipeline id
+mergeddf = merge.data.frame(mergeddf,
+                            assay_infodf[,c("SEQ_ASSAY_ID", "SEQ_PIPELINE_ID")],
+                            by = "SEQ_ASSAY_ID")
+
+mutated_genes = table(mergeddf$Hugo_Symbol, mergeddf$SEQ_PIPELINE_ID)
+# Top 5 mutated genes per panel
+top_5_mutated_genes = apply(mutated_genes, 2, function(x) {
+  list(sort(x, decreasing = T)[1:5])
+})
+top_5_mutated_genes_string = apply(mutated_genes, 2, function(x) {
+  top_5 = sort(x, decreasing = T)[1:5]
+  paste(names(top_5), top_5, sep = ": ")
+})
+transposed_matrix = t(top_5_mutated_genes_string)
+final_matrix = cbind(transposed_matrix, table(mergeddf$SEQ_PIPELINE_ID)[row.names(transposed_matrix)])
+colnames(final_matrix) = c(1, 2, 3, 4, 5, "Total Variants")
+kable(final_matrix,
+      caption = "Distribution of top 5 most frequently mutated genes per SEQ_PIPELINE_ID")
+
+```
+
+
+### Panels Covering TP53
+
+These are all the pipelines that cover TP53 that don't have TP53 as the top mutated genes.  If your pipeline is shown in the table below, it is _possible_ that you have artifacts in your data.  **Please review and reupload if your data is incorrect**  The release notes will capture if sites have confirmed that the variants shown in this table has no artifacts.
+
+
+```{r highlight_panels, echo=FALSE}
+this_bed = merge.data.frame(this_bed,
+                            assay_infodf[,c("SEQ_ASSAY_ID", "SEQ_PIPELINE_ID")],
+                            by = "SEQ_ASSAY_ID")
+if (!is.null(this_bed)) {
+  panels_covering_tp53 = unique(this_bed$SEQ_PIPELINE_ID[this_bed$Hugo_Symbol == "TP53"])
+  # Exclude panels if TP53 is top mutated
+  tp53_not_top = sapply(names(top_5_mutated_genes), function(seq_assay) {
+    if (names(top_5_mutated_genes[[seq_assay]][[1]][1]) != "TP53") {
+      return(seq_assay)
+    }
+  })
+  relevant_panels = mutated_genes[, colnames(mutated_genes) %in% panels_covering_tp53]
+  relevant_panels = relevant_panels[, colnames(relevant_panels) %in% unlist(tp53_not_top)]
+  top_5_mutated_genes_string = apply(relevant_panels, 2, function(x) {
+    top_5 = sort(x, decreasing = T)[1:5]
+    paste(names(top_5), top_5, sep = ": ")
+  })
+  transposed_matrix = t(top_5_mutated_genes_string)
+  final_matrix = cbind(transposed_matrix, table(mergeddf$SEQ_PIPELINE_ID)[row.names(transposed_matrix)])
+  colnames(final_matrix) = c(1, 2, 3, 4, 5, "Total Variants")
+  kable(final_matrix,
+        caption = "Distribution of top 5 most frequently mutated genes per SEQ_PIPELINE_ID")
+}
+```
+
+---
+
+## Assay information vs genomic information discrepancies
+
+During processing, each panel's bed file undergoes gene symbol harmonization and is used to generate a gene panel file used in cBioPortal.
+A user of the GENIE data pointed out that the expected gene count numbers in the data guide did not match up to the number of genes in the gene panel files made from each center's bed files.  The table below was created to assist with resolving these issues.
+
+**Here are some action items required if your panel appears in the table**. The assay_information.yaml file is a file that I assisted all the centers to create, and can be found in each center’s input directory.
+
+* `num_genes_remapped`:  number of unique genes a panel has after submitted genes are remapped
+* `num_genes_submitted`: number of unique genes found in site's submitted BED file prior to remapping
+* `num_genes_expected`: size of panel as defined in site's submitted assay_information.yaml file
+
+1. If the `num_genes_expected` is NA, this means your panel is either missing from your assay_information.yaml, or the file is in an invalid format and cannot be processed.  Please provide a fix.
+2. If the `num_genes_remapped` does not match `num_genes_expected`, please make sure one of the two values is correct.
+   a. If `num_genes_expected` is incorrect, please update the value in your `assay_information.yaml` file.
+   b. If `num_genes_remapped` is incorrect, please update your coordinates or gene symbols in the bed file.  Please view the bed submission guidelines to learn more about the remapping.
+3. If there is a huge difference between your `num_genes_submitted` and `num_genes_remapped`, there is a high chance that you are submitting "invalid" gene symbols.  (ie.  PDGFRA1 is not equivalent to PDGFRA and PDGFRA1 is an invalid symbol name)
+
+
+```{r genepanel_diff, echo=F}
+if (!is.null(assay_infodf) & !is.null(this_bed)) {
+  gene_panel_bed = this_bed[this_bed$Feature_Type == "exon" & this_bed$includeInPanel == "True" & this_bed$Hugo_Symbol != "", ]
+  # Get count of symbols per panel
+  symbol_count_per_panel = table(gene_panel_bed$Hugo_Symbol, gene_panel_bed$SEQ_ASSAY_ID)
+  # Get whether or not a panel contains a certain symbol
+  symbol_bool_per_panel = symbol_count_per_panel > 0
+  # Sum of the columns gets number of unique genes per panel
+  number_of_genes = data.frame(colSums(symbol_bool_per_panel))
+
+  submitted_count = table(gene_panel_bed$ID, gene_panel_bed$SEQ_ASSAY_ID)
+  submitted_bool_per_panel = submitted_count > 0
+  num_submitted_genes = colSums(submitted_bool_per_panel)
+  colnames(number_of_genes) = "num_genes_remapped"
+  number_of_genes$num_genes_submitted = NA
+  number_of_genes$num_genes_expected = NA
+  number_of_genes[names(num_submitted_genes), "num_genes_submitted"] = num_submitted_genes
+  number_of_genes[assay_infodf$SEQ_ASSAY_ID, "num_genes_expected"] = assay_infodf$number_of_genes
+
+  different_from_expected = number_of_genes[c(which(number_of_genes$num_genes_remapped != number_of_genes$num_genes_expected),
+                                              which(is.na(number_of_genes$num_genes_expected))),]
+  kable(different_from_expected,
+        caption = "Number of submitted vs expected genes in a bed file")
+}
+```
+
+---
+
+## Possible Non-center Related Data Issues
+
+This section includes QC issues that are mostly related to the Sage Bionetworks pipeline, Genome Nexus or _maybe_ center related issues.
+
+### Duplicated Variants
+
+```{r, include=F, echo=F}
+variant <- paste0(this_mut$Tumor_Sample_Barcode, "_",
+                  this_mut$Chromosome, ":",
+                  this_mut$Start_Position, "_",
+                  this_mut$Reference_Allele, "/",
+                  this_mut$Tumor_Seq_Allele2)
+duplicated_idx = duplicated(variant)
+
+write.csv(this_mut[duplicated_idx,
+                   c("Chromosome", "Start_Position", "Reference_Allele",
+                     "Tumor_Seq_Allele2", "Tumor_Sample_Barcode")],
+          "duplicated_variants.csv",
+          row.names=F, quote=F)
+duplicate_v_ent = synStore(File("duplicated_variants.csv", parent=release_synid))
+unlink("duplicated_variants.csv")
+```
+
+There are `r sum(duplicated_idx)` duplicated variant(s). Ignore the rest if the number is 0. These `r paste0('[duplicated variants](https://www.synapse.org/#!Synapse:', duplicate_v_ent$properties$id, "){target='_blank'}")` are potentially caused by the annotation pipeline as no duplicated variants are allowed in each maf or vcf file.
+
+
+### Non-somatic Variants
+
+```{r nonsomatic, echo=F, include=F}
+non_somatic <- this_mut[this_mut$Reference_Allele==this_mut$Tumor_Seq_Allele2 &
+                          this_mut$Reference_Allele==this_mut$Tumor_Seq_Allele1,]
+write.csv(non_somatic[, c("Hugo_Symbol", "Chromosome", "Reference_Allele",
+                          "Tumor_Seq_Allele1", "Tumor_Seq_Allele2",
+                          "Tumor_Sample_Barcode")],
+          "non_somatic.csv",
+          row.names=F, quote=F)
+non_somatic_ent = synStore(File("non_somatic.csv", parent=release_synid))
+unlink("non_somatic.csv")
+```
+
+There are `r nrow(non_somatic)` non somatic variant(s). Ignore the rest if the number is 0. These `r paste0('[variants](https://www.synapse.org/#!Synapse:', non_somatic_ent$properties$id, "){target='_blank'}")` should be removed from the data.
+
+### SNV labelled as DNP
+
+```{r is_dnp, echo=F, include=F}
+is_dnp <- nchar(this_mut$Reference_Allele) == nchar(this_mut$Tumor_Seq_Allele2) &
+          nchar(this_mut$Reference_Allele)==2 & this_mut$Variant_Type == "DNP"
+dnp <- this_mut[is_dnp, ]
+not_dnp <- dnp[
+  substr(dnp$Reference_Allele, 1, 1) == substr(dnp$Tumor_Seq_Allele2, 1, 1) |
+  substr(dnp$Reference_Allele, 1, 2) == substr(dnp$Tumor_Seq_Allele2, 1, 2),
+]
+write.csv(not_dnp[,c("Hugo_Symbol", "Chromosome", "Reference_Allele",
+                     "Tumor_Seq_Allele2", "Tumor_Sample_Barcode",
+                     "Variant_Type")],
+          "snv_as_dnp.csv",
+          row.names=F, quote=F)
+dnp_ent = synStore(File("snv_as_dnp.csv", parent=release_synid))
+unlink("snv_as_dnp.csv")
+```
+
+There are `r nrow(not_dnp)` SNV(s) labelled as DNP(s). Ignore the rest if the number is 0. These are `r paste0('[variants](https://www.synapse.org/#!Synapse:', dnp_ent$properties$id, "){target='_blank'}")` that have variant type DNP that should be SNV.
+
+### SNV labelled as ONP
+
+```{r is_onp, echo=F, include=F}
+is_onp <- nchar(this_mut$Reference_Allele) == nchar(this_mut$Tumor_Seq_Allele2) &
+          nchar(this_mut$Reference_Allele) == 3 & this_mut$Variant_Type == "ONP"
+onp <- this_mut[is_onp, ]
+not_onp <- onp[
+  substr(onp$Reference_Allele, 1, 1) == substr(onp$Tumor_Seq_Allele2, 1, 1) |
+  substr(onp$Reference_Allele, 1, 2) == substr(onp$Tumor_Seq_Allele2, 1, 2),
+]
+
+write.csv(not_onp[, c("Hugo_Symbol", "Chromosome", "Reference_Allele",
+                      "Tumor_Seq_Allele2", "Tumor_Sample_Barcode",
+                      "Variant_Type")],
+          "snv_as_onp.csv", row.names=F, quote=F)
+onp_ent = synStore(File("snv_as_onp.csv", parent=release_synid))
+unlink("snv_as_onp.csv")
+
+```
+
+There are `r nrow(not_onp)` SNV(s) labelled as ONP(s). Ignore the rest if the number is 0. These are `r paste0('[variants](https://www.synapse.org/#!Synapse:', onp_ent$properties$id, "){target='_blank'}")` that have variant type ONP that should be SNV.
