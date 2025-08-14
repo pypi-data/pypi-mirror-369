@@ -1,0 +1,177 @@
+name: Automated Package Release
+
+on:
+  release:
+    types: [published]
+
+env:
+  PYTHON_VERSION: '3.11'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for tagging
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: |
+          uv sync
+          uv run pip install --upgrade pip
+
+      - name: Get version from release tag
+        run: |
+          # Extract version from release tag (remove 'v' prefix)
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "✅ Version from release tag: $VERSION"
+
+          # Validate version format (semantic versioning)
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Error: Version must be in format X.Y.Z (e.g., 0.2.2)"
+            exit 1
+          fi
+          echo "✅ Version format validated: $VERSION"
+
+      - name: Run tests
+        run: |
+          uv run pytest --cov=zenodotos --cov-report=html
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run ty check
+
+      - name: Verify version in pyproject.toml
+        run: |
+          # Get current version from pyproject.toml
+          CURRENT_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "Current version in pyproject.toml: $CURRENT_VERSION"
+          echo "Target version from release tag: $VERSION"
+
+          if [ "$CURRENT_VERSION" = "$VERSION" ]; then
+            echo "✅ Version in pyproject.toml matches release tag"
+          else
+            echo "❌ Version mismatch: pyproject.toml has $CURRENT_VERSION but release tag is v$VERSION"
+            echo "Please ensure pyproject.toml version matches the release tag before publishing"
+            exit 1
+          fi
+
+      - name: TestPyPI Release
+        if: ${{ !inputs.skip_testpypi }}
+        run: |
+          echo "🚀 Publishing to TestPyPI..."
+          ./scripts/release.sh --testpypi
+        env:
+          TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+
+
+
+      - name: Check TestPyPI availability
+        if: ${{ !inputs.skip_testpypi }}
+        run: |
+          echo "🔍 Checking TestPyPI availability..."
+          ./scripts/check-package-availability.sh --testpypi --wait zenodotos $VERSION
+        env:
+          TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+
+      - name: Test TestPyPI installation
+        if: ${{ !inputs.skip_testpypi }}
+        run: |
+          echo "🧪 Testing TestPyPI installation..."
+          ./scripts/test-package-install.sh --testpypi zenodotos $VERSION
+
+      - name: PyPI Release
+        run: |
+          echo "🚀 Publishing to PyPI..."
+          ./scripts/release.sh --pypi
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+
+
+      - name: Check PyPI availability
+        run: |
+          echo "🔍 Checking PyPI availability..."
+          ./scripts/check-package-availability.sh --pypi --wait zenodotos $VERSION
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+      - name: Test PyPI installation
+        run: |
+          echo "🧪 Testing PyPI installation..."
+          ./scripts/test-package-install.sh --pypi zenodotos $VERSION
+
+      - name: Verify Git tag exists
+        run: |
+          echo "🏷️ Verifying Git tag exists..."
+          if git tag --list | grep -q "v$VERSION"; then
+            echo "✅ Git tag v$VERSION exists"
+          else
+            echo "❌ Git tag v$VERSION not found"
+            exit 1
+          fi
+
+      - name: Update GitHub Release
+        run: |
+          echo "📝 Updating GitHub Release with package information..."
+
+          # Get the release notes from the existing release
+          RELEASE_BODY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION" | \
+            jq -r '.body // ""')
+
+          # Add package information to release notes
+          PACKAGE_INFO="
+
+          ## Package Information
+
+          ### Verification
+          - ✅ Published to TestPyPI
+          - ✅ TestPyPI availability confirmed
+          - ✅ TestPyPI installation tested
+          - ✅ Published to PyPI
+          - ✅ PyPI availability confirmed
+          - ✅ PyPI installation tested
+
+          ### Installation
+          \`\`\`bash
+          pip install zenodotos==$VERSION
+          \`\`\`
+
+          ### Package Links
+          - **PyPI**: https://pypi.org/project/zenodotos/$VERSION/
+          - **TestPyPI**: https://test.pypi.org/project/zenodotos/$VERSION/"
+
+          # Update the release
+          curl -X PATCH \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION" \
+            -d "{\"body\":\"$RELEASE_BODY$PACKAGE_INFO\"}"
+
+      - name: Success message
+        run: |
+          echo "🎉 Release v$VERSION completed successfully!"
+          echo ""
+          echo "📦 Package is available on PyPI:"
+          echo "   https://pypi.org/project/zenodotos/$VERSION/"
+          echo ""
+          echo "🏷️ Git tag: v$VERSION"
+          echo ""
+          echo "📋 Release updated:"
+          echo "   https://github.com/${{ github.repository }}/releases/tag/v$VERSION"
