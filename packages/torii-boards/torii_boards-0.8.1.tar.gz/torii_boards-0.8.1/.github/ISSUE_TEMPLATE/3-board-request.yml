@@ -1,0 +1,84 @@
+name: 'Suggest a Board'
+description: 'Suggest a Board'
+type: 'Feature'
+labels: [
+  'enhancement',
+  'new-board-request',
+]
+
+body:
+  - type: markdown
+    attributes:
+      value: '## Suggest a Board'
+  - type: markdown
+    attributes:
+      value: >
+        Thank you for wanting to expand our collection of boards!
+
+
+        Before you continue, try to check if what you're suggesting has already been requested
+        before, you can use the filter `is:issue label:new-board-request` in the Torii Boards
+        [issue tracker](https://github.com/shrine-maiden-heavy-industries/torii-boards/issues)
+        to search, or [use this pre-defined filter](https://github.com/shrine-maiden-heavy-industries/torii-boards/issues?q=is%3Aissue%20label%3Anew-board-request)
+
+
+        Also, make sure to review the [Contribution Guidelines](https://github.com/shrine-maiden-heavy-industries/torii-boards/blob/main/CONTRIBUTING.md#suggesting-features).
+
+  - type: input
+    id: board-vendor
+    attributes:
+      label: 'Board Vendor'
+      description: 'The manufacturer of the board itself, not of the device on the board.'
+      placeholder: 'e.g. Avnet, Digilent, AMD'
+    validations:
+      required: true
+
+  - type: input
+    id: board-name
+    attributes:
+      label: 'Board Name/Part Number'
+      description: 'The name and part number for the board.'
+      placeholder: 'e.g. CertusPro-NX Versa Board: LFCPNX-VERSA-EVN'
+    validations:
+      required: true
+
+  - type: input
+    id: device-vendor
+    attributes:
+      label: 'Device Vendor'
+      description: 'The manufacturer of the device on the board.'
+      placeholder: 'e.g. Lattice, AMD, Altera'
+    validations:
+      required: true
+
+  - type: input
+    id: device-part-number
+    attributes:
+      label: 'Device Part Number'
+      description: 'The part number of the device on the board.'
+      placeholder: 'e.g. LFE5UM5G-85F-8BG381i'
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra-details
+    attributes:
+      label: 'Extra Details'
+      description: >
+        Provide any extra details about the board here.
+
+
+        For example, links to the board on the vendors website, links to board documentation, etc.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 'Code of Conduct'
+      description: >
+        By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/shrine-maiden-heavy-industries/torii-boards/blob/main/CODE_OF_CONDUCT.md)
+        and [AI usage Policy](https://github.com/shrine-maiden-heavy-industries/torii-boards/blob/main/CONTRIBUTING.md#ai-usage-policy).
+      options:
+        - label: 'I agree to follow the Torii Boards Code of Conduct and AI Usage Policy'
+          required: true
