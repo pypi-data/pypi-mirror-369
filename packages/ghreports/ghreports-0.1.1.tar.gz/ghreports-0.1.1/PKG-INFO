@@ -1,0 +1,69 @@
+Metadata-Version: 2.3
+Name: ghreports
+Version: 0.1.1
+Summary: GitHub Report tool
+License: BSD 3 Clause
+Author: Ivan Ogasawara
+Author-email: ivan.ogasawara@gmail.com
+Requires-Python: >=3.9,<4
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: Jinja2 (>=3)
+Requires-Dist: aiohttp (>=3.7.1)
+Requires-Dist: atpublic (>=4.0)
+Requires-Dist: gql (>=3)
+Requires-Dist: pandas (>=1.4.2)
+Requires-Dist: pandoc (>=2.1)
+Requires-Dist: python-dotenv (>=0.21.1)
+Requires-Dist: pyyaml (>=5.4)
+Requires-Dist: requests (>=2.23)
+Requires-Dist: tabulate (>=0.8.9)
+Requires-Dist: typer (>=0.16.0,<0.17.0)
+Requires-Dist: types-pyyaml (>=6.0.12.20250516,<7.0.0.0)
+Requires-Dist: websockets (>=8.1)
+Description-Content-Type: text/markdown
+
+# GitHub Report
+
+GitHub Report tool.
+
+- Free software: BSD 3 Clause
+- Documentation: https://opensciencelabs.github.io/ghreports
+
+## Configuration file
+
+In order to create a configuration file, add to your project, at the root level,
+a file called .ghreports.yaml, with the following structure:
+
+```yaml
+name: myproject-name-slug
+title: "My Report Title"
+env-file: .env
+repos:
+  - myorg-1/myproject1
+authors:
+  - gh-username-1: GitHub Username 1
+output-dir: "/tmp/ghreports"
+```
+
+## How to run the ghreports
+
+```bash
+
+ghreports --start-date 2025-07-01 --end-date 2025-07-31 --config-file tests/.ghreports.yaml
+
+```
+
+You can also specify the token in the command line as an argument:
+
+```bash
+
+ghreports --start-date 2025-07-01 --end-date 2025-07-31 --gh-token blabla --config-file tests/.ghreports.yaml
+
+```
+
