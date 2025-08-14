@@ -1,0 +1,142 @@
+[project]
+name = "pymatviz"
+version = "0.17.2"
+description = "A toolkit for visualizations in materials informatics"
+authors = [{ name = "Janosh Riebesell", email = "janosh.riebesell@gmail.com" }]
+readme = "readme.md"
+license = { file = "license" }
+keywords = [
+    "chemistry",
+    "crystallography",
+    "data analysis",
+    "data visualization",
+    "materials informatics",
+    "plotly",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+urls = { Homepage = "https://github.com/janosh/pymatviz" }
+requires-python = ">=3.11"
+dependencies = [
+    "kaleido>=1.0.0",
+    "numpy>=2",
+    # output-formatting needed for pandas Stylers,
+    # see https://github.com/pandas-dev/pandas/blob/-/pyproject.toml
+    "anywidget>=0.9.18",
+    "moyopy[interface]>=0.4.1",
+    "nbformat>=5.10",
+    "pandas[output-formatting,xml]>=2.2",
+    "plotly>=6",
+    "pymatgen>=2025.2.18",
+    "pyyaml>=6",
+    "scikit-learn>=1.5",
+    "scipy>=1.14",
+]
+
+[project.optional-dependencies]
+auto-text-pos = ["adjustText>=0.8"]
+df-pdf-export = ["pdfCropMargins>=2", "weasyprint>=60"]
+df-svg-export = ["bs4>=0.0.2", "cssutils>=2.9", "lxml>=4.9"]
+make-assets = ["matminer>=0.9"]
+gh-pages = ["jupyter>=1.1", "lazydocs>=0.4", "nbconvert>=7.16"]
+phonons = ["phonopy>=2.31"] # only needed if user passes in phonopy objects
+test = [
+    "pymatviz[auto-text-pos, df-pdf-export, df-svg-export, cluster, phonons]",
+    "pytest-cov>=6",
+    "pytest-split>=0.9",
+    "pytest>=8",
+]
+brillouin = ["seekpath>=2.1"]
+cluster = ["matminer>=0.9"]
+# umap-learn not included in cluster because its numba dep clashes with other packages
+# <3.13 pin pending new llvmlite wheels https://github.com/lmcinnes/umap/issues/1163
+umap = ["umap-learn>=0.5; python_version < '3.13'"]
+
+[build-system]
+requires = ["uv_build>=0.8.10"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "pymatviz"
+module-root = ""
+source-include = ["pymatviz/**/*.csv", "pymatviz/**/*.yml"]
+source-exclude = [".venv", "web"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:warnings"
+
+[tool.ruff]
+target-version = "py311"
+output-format = "concise"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN401",  # Any-type
+    "C408",    # unnecessary-collection-call
+    "C901",    # complex-structure
+    "COM812",  # trailing comma missing
+    "D205",    # 1 blank line required between summary line and description
+    "E731",    # do not assign a lambda expression, use a def
+    "EM101",   # raw-string-in-exception
+    "EM102",   # f-string-in-exception
+    "ERA001",  # dead code
+    "FIX002",  # line-contains-todo
+    "PLC0415", # import should be at top-level
+    "PLR0911", # too-many-return-statements
+    "PLR0912", # too-many-branches
+    "PLR0913", # function-with-too-many-arguments
+    "PLR0915", # too-many-statements
+    "PLR2004", # magic-number-comparison
+    "PTH",     # prefer pathlib over os.path
+    "S108",    # Probable insecure usage of temporary file or directory
+    "SIM105",  # Use contextlib.suppress instead of try-except-pass
+    "SLF001",  # Access private class members
+    "TD",      # TODO related
+    "TRY003",  # raise-vanilla-args
+]
+pydocstyle.convention = "google"
+isort.lines-after-imports = 2
+isort.split-on-trailing-comma = false
+pep8-naming.ignore-names = ["E_kin", "E_pot", "E_tot", "kT"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # unused-import
+"**/tests/*" = [
+    "D100",    # missing-module-docstring
+    "D101",    # missing-class-docstring
+    "D103",    # missing-function-docstring
+    "D107",    # missing-init-docstring
+    "FBT001",  # boolean-type-hint-positional-argument
+    "INP001",  # implicit-namespace-package
+    "PLR2004", # magic-value-comparison
+    "S101",    # use of assert
+]
+"examples/*" = [
+    "INP001", # implicit-namespace-package
+    "T201",   # print found
+]
+"assets/scripts/*" = [
+    "INP001", # implicit-namespace-package
+    "T201",   # print found
+]
+
+[tool.ty.rules]
+unresolved-import = "ignore"
+# TODO: Unable to resolve submodules: https://github.com/astral-sh/ty/issues/445
+unresolved-attribute = "ignore"
+# TODO: Unable to work with **kwargs: https://github.com/astral-sh/ty/issues/247
+missing-argument = "ignore"
+
+[dependency-groups]
+dev = ["pre-commit>=4.3.0", "ty>=0.0.1a17"]
