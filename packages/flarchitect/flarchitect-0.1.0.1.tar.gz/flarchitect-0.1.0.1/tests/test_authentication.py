@@ -1,0 +1,370 @@
+"""Authentication method integration tests."""
+
+import base64
+from collections.abc import Generator
+
+import pytest
+from flask import Flask, Response, request
+from flask.testing import FlaskClient
+from flask_sqlalchemy import SQLAlchemy
+from marshmallow import Schema, fields
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from flarchitect import Architect
+from flarchitect.authentication.jwt import (
+    generate_access_token,
+    generate_refresh_token,
+    refresh_access_token,
+)
+from flarchitect.authentication.user import (
+    current_user,
+    get_current_user,
+    set_current_user,
+)
+from flarchitect.exceptions import CustomHTTPException
+from flarchitect.utils.response_helpers import create_response
+
+db = SQLAlchemy()
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, unique=True)
+    password_hash = db.Column(db.String)
+    api_key_hash = db.Column(db.String)
+
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
+
+    def check_api_key(self, key: str) -> bool:
+        return check_password_hash(self.api_key_hash, key)
+
+
+class UsernameSchema(Schema):
+    """Schema for serializing responses containing a username."""
+
+    username = fields.Str()
+
+
+@pytest.fixture()
+def client_basic() -> Generator[FlaskClient, None, None]:
+    """Create a test client configured for basic authentication."""
+    app = Flask(__name__)
+    app.config.update(
+        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        FULL_AUTO=False,
+        API_CREATE_DOCS=False,
+        API_AUTHENTICATE_METHOD=["basic"],
+        API_USER_MODEL=User,
+        API_USER_LOOKUP_FIELD="username",
+        API_CREDENTIAL_CHECK_METHOD="check_password",
+    )
+    db.init_app(app)
+    with app.app_context():
+        architect = Architect(app=app)
+        architect.init_api(app=app, api_full_auto=False)
+        architect.api.make_auth_routes()
+
+        @app.errorhandler(CustomHTTPException)
+        def handle_custom(exc: CustomHTTPException):
+            return create_response(
+                status=exc.status_code,
+                errors={"error": exc.error, "reason": exc.reason},
+            )
+
+        @app.route("/basic")
+        @architect.schema_constructor(model=User, output_schema=UsernameSchema)
+        def basic_route() -> dict[str, str]:
+            """Return the authenticated user's name for verification."""
+            return {"username": current_user.username}
+
+        db.create_all()
+        user = User(
+            username="alice",
+            password_hash=generate_password_hash("wonderland"),
+            api_key_hash=generate_password_hash("key"),
+        )
+        db.session.add(user)
+        db.session.commit()
+        yield app.test_client()
+
+
+@pytest.fixture()
+def client_api_key() -> Generator[FlaskClient, None, None]:
+    """Create a test client configured for API key authentication."""
+    app = Flask(__name__)
+    app.config.update(
+        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        FULL_AUTO=False,
+        API_CREATE_DOCS=False,
+        API_AUTHENTICATE_METHOD=["api_key"],
+        API_USER_MODEL=User,
+        API_CREDENTIAL_HASH_FIELD="api_key_hash",
+        API_CREDENTIAL_CHECK_METHOD="check_api_key",
+        API_USER_LOOKUP_FIELD="username",
+    )
+    db.init_app(app)
+    with app.app_context():
+        architect = Architect(app=app)
+        architect.init_api(app=app, api_full_auto=False)
+        architect.api.make_auth_routes()
+
+        @app.errorhandler(CustomHTTPException)
+        def handle_custom(exc: CustomHTTPException):
+            return create_response(
+                status=exc.status_code,
+                errors={"error": exc.error, "reason": exc.reason},
+            )
+
+        @app.route("/key")
+        @architect.schema_constructor(model=User, output_schema=UsernameSchema)
+        def key_route() -> dict[str, str]:
+            """Return the authenticated user's name for verification."""
+            return {"username": current_user.username}
+
+        db.create_all()
+        user = User(
+            username="bob",
+            password_hash=generate_password_hash("pw"),
+            api_key_hash=generate_password_hash("secret"),
+        )
+        db.session.add(user)
+        db.session.commit()
+        yield app.test_client()
+
+
+@pytest.fixture()
+def client_jwt() -> Generator[tuple[FlaskClient, str, str], None, None]:
+    """Create a test client configured for JWT authentication."""
+    app = Flask(__name__)
+    app.config.update(
+        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        FULL_AUTO=False,
+        API_CREATE_DOCS=False,
+        API_AUTHENTICATE_METHOD=["jwt"],
+        API_USER_MODEL=User,
+        API_USER_LOOKUP_FIELD="username",
+    )
+    app.config["ACCESS_SECRET_KEY"] = "access"
+    app.config["REFRESH_SECRET_KEY"] = "refresh"
+    db.init_app(app)
+    with app.app_context():
+        architect = Architect(app=app)
+
+        @app.errorhandler(CustomHTTPException)
+        def handle_custom(exc: CustomHTTPException):
+            return create_response(
+                status=exc.status_code,
+                errors={"error": exc.error, "reason": exc.reason},
+            )
+
+        @app.route("/jwt")
+        @architect.schema_constructor(model=User, output_schema=UsernameSchema)
+        def jwt_route() -> dict[str, str]:
+            """Return the authenticated user's name for verification."""
+            return {"username": current_user.username}
+
+        db.create_all()
+        user = User(
+            username="carol",
+            password_hash=generate_password_hash("pass"),
+            api_key_hash=generate_password_hash("key"),
+        )
+        db.session.add(user)
+        db.session.commit()
+        access = generate_access_token(user)
+        refresh = generate_refresh_token(user)
+        yield app.test_client(), access, refresh
+
+
+@pytest.fixture()
+def client_custom() -> Generator[FlaskClient, None, None]:
+    """Create a test client using a custom authentication callback."""
+
+    def custom_auth() -> bool:
+        """Simple custom authentication using a fixed token."""
+        if request.headers.get("Authorization") != "Custom secret":
+            return False
+        user = User.query.first()
+        if user:
+            set_current_user(user)
+            return True
+        return False
+
+    app = Flask(__name__)
+    app.config.update(
+        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        FULL_AUTO=False,
+        API_CREATE_DOCS=False,
+        API_AUTHENTICATE_METHOD=["custom"],
+        API_CUSTOM_AUTH=custom_auth,
+    )
+    db.init_app(app)
+    with app.app_context():
+        architect = Architect(app=app)
+
+        @app.errorhandler(CustomHTTPException)
+        def handle_custom(exc: CustomHTTPException):
+            return create_response(
+                status=exc.status_code,
+                errors={"error": exc.error, "reason": exc.reason},
+            )
+
+        @app.route("/custom")
+        @architect.schema_constructor(model=User, output_schema=UsernameSchema)
+        def custom_route() -> dict[str, str]:
+            """Return the authenticated user's name for verification."""
+            return {"username": current_user.username}
+
+        db.create_all()
+        user = User(
+            username="diana",
+            password_hash=generate_password_hash("pass"),
+            api_key_hash=generate_password_hash("key"),
+        )
+        db.session.add(user)
+        db.session.commit()
+        yield app.test_client()
+
+
+def assert_unauthorized(resp: Response) -> None:
+    """Assert unauthorized response and cleared user context.
+
+        Args:<<<<<<< arched/add-test-cases-for-authentication-errors
+    329
+
+
+            resp (Response): Flask response object to verify.
+    """
+    assert resp.status_code == 401
+    assert get_current_user() is None
+
+
+def test_basic_success_and_failure(client_basic: FlaskClient) -> None:
+    """Test basic authentication and ensure user context resets."""
+    assert get_current_user() is None
+
+    credentials = base64.b64encode(b"alice:wonderland").decode("utf-8")
+    resp = client_basic.get("/basic", headers={"Authorization": f"Basic {credentials}"})
+    assert resp.status_code == 200
+    assert resp.get_json()["value"]["username"] == "alice"
+    assert get_current_user() is None
+
+    bad_credentials = base64.b64encode(b"alice:wrong").decode("utf-8")
+    resp_bad = client_basic.get("/basic", headers={"Authorization": f"Basic {bad_credentials}"})
+    assert resp_bad.status_code == 401
+    assert get_current_user() is None
+
+
+def test_basic_login(client_basic: FlaskClient) -> None:
+    """Validate basic login endpoint with correct and incorrect credentials."""
+
+    credentials = base64.b64encode(b"alice:wonderland").decode("utf-8")
+    resp = client_basic.post("/auth/login", headers={"Authorization": f"Basic {credentials}"})
+    assert resp.status_code == 200
+    assert resp.get_json()["value"]["username"] == "alice"
+
+    bad_credentials = base64.b64encode(b"alice:bad").decode("utf-8")
+    resp_bad = client_basic.post("/auth/login", headers={"Authorization": f"Basic {bad_credentials}"})
+    assert resp_bad.status_code == 401
+
+
+def test_api_key_success_and_failure(client_api_key: FlaskClient) -> None:
+    """Test API key authentication and ensure user context resets."""
+    assert get_current_user() is None
+
+    resp = client_api_key.get("/key", headers={"Authorization": "Api-Key secret"})
+    assert resp.status_code == 200
+    assert resp.get_json()["value"]["username"] == "bob"
+    assert get_current_user() is None
+
+    resp_bad = client_api_key.get("/key", headers={"Authorization": "Api-Key invalid"})
+    assert resp_bad.status_code == 401
+    assert get_current_user() is None
+
+
+def test_api_key_login(client_api_key: FlaskClient) -> None:
+    """Validate API key login endpoint."""
+
+    resp = client_api_key.post("/auth/login", headers={"Authorization": "Api-Key secret"})
+    assert resp.status_code == 200
+    assert resp.get_json()["value"]["username"] == "bob"
+
+    resp_bad = client_api_key.post("/auth/login", headers={"Authorization": "Api-Key wrong"})
+    assert resp_bad.status_code == 401
+
+
+def test_jwt_success_and_failure(client_jwt: tuple[FlaskClient, str, str]) -> None:
+    """Test JWT authentication, refresh, and ensure user context resets."""
+    client, access_token, refresh_token = client_jwt
+    assert get_current_user() is None
+
+    resp = client.get("/jwt", headers={"Authorization": f"Bearer {access_token}"})
+    assert resp.status_code == 200
+    assert resp.get_json()["value"]["username"] == "carol"
+    assert get_current_user() is None
+
+    new_access_token, user = refresh_access_token(refresh_token)
+    assert user.username == "carol"
+    resp_new = client.get("/jwt", headers={"Authorization": f"Bearer {new_access_token}"})
+    assert resp_new.status_code == 200
+    assert resp_new.get_json()["value"]["username"] == "carol"
+    assert get_current_user() is None
+
+    resp_bad = client.get("/jwt", headers={"Authorization": "Bearer bad"})
+    assert resp_bad.status_code == 401
+    assert get_current_user() is None
+
+    with pytest.raises(CustomHTTPException):
+        refresh_access_token(refresh_token)
+    assert get_current_user() is None
+
+
+def test_jwt_no_authorization_header(
+    client_jwt: tuple[FlaskClient, str, str],
+) -> None:
+    """Ensure JWT auth fails without an Authorization header."""
+    client, _, _ = client_jwt
+    assert get_current_user() is None
+    resp = client.get("/jwt")
+    assert_unauthorized(resp)
+
+
+def test_jwt_missing_bearer_prefix(
+    client_jwt: tuple[FlaskClient, str, str],
+) -> None:
+    """Reject tokens lacking the Bearer prefix."""
+    client, access_token, _ = client_jwt
+    assert get_current_user() is None
+    resp = client.get("/jwt", headers={"Authorization": access_token})
+    assert_unauthorized(resp)
+
+
+def test_jwt_expired_token(client_jwt: tuple[FlaskClient, str, str]) -> None:
+    """Reject expired JWT access tokens."""
+    client, _, _ = client_jwt
+    with client.application.app_context():
+        user = User.query.filter_by(username="carol").first()
+        assert user is not None
+        expired_token = generate_access_token(user, expires_in_minutes=-1)
+    assert get_current_user() is None
+    resp = client.get("/jwt", headers={"Authorization": f"Bearer {expired_token}"})
+    assert_unauthorized(resp)
+
+
+def test_custom_success_and_failure(client_custom: FlaskClient) -> None:
+    """Test custom authentication and ensure user context resets."""
+    assert get_current_user() is None
+
+    resp = client_custom.get("/custom", headers={"Authorization": "Custom secret"})
+    assert resp.status_code == 200
+    assert resp.get_json()["value"]["username"] == "diana"
+    assert get_current_user() is None
+
+    resp_bad = client_custom.get("/custom", headers={"Authorization": "Wrong token"})
+    assert resp_bad.status_code == 401
+    assert get_current_user() is None
