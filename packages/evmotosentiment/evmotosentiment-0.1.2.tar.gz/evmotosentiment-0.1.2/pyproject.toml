@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evmotosentiment"
+version = "0.1.2"
+description = "Package to analyse Motorcycle EV swap related issues"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.11"
+dependencies = [
+    "commitizen>=4.8.3",
+    "pandas>=2.3.1",
+    "pyment>=0.3.3",
+    "pytest>=8.4.1",
+    "setuptools>=80.9.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = true
+major_version_zero = true
