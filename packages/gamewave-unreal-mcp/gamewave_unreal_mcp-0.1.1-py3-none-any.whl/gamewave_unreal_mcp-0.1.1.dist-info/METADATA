@@ -1,0 +1,190 @@
+Metadata-Version: 2.1
+Name: gamewave-unreal-mcp
+Version: 0.1.1
+Summary: Unreal MCP Server: The most advanced and powerful server for Unreal Engine integration via the Model Context Protocol (MCP).
+Author-email: GameWave <fridayue5@gmail.com>
+License: GNU GENERAL PUBLIC LICENSE
+        Version 3, 29 June 2007
+        
+        Copyright (C) 2024 GameWave
+        
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+        
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+        
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+        
+        For more information, contact: fridayue5@gmail.com
+Project-URL: Homepage, https://gamewave.dev
+Project-URL: Support, https://discord.gg/3q88TDTUTS
+Keywords: unreal,engine,ue5,mcp,model,context,protocol,blueprint,umg,automation
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Games/Entertainment
+Classifier: Topic :: Multimedia :: Graphics :: 3D Modeling
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mcp[cli]>=1.4.1
+Requires-Dist: fastmcp>=0.2.0
+Requires-Dist: uvicorn
+Requires-Dist: fastapi
+Requires-Dist: pydantic>=2.6.1
+Requires-Dist: requests
+
+# Unreal MCP (Model Context Protocol)
+
+🚀 **The most advanced and powerful server for Unreal Engine integration via the Model Context Protocol (MCP).**
+
+Transform your Unreal Engine workflow with AI-powered automation, blueprint generation, and intelligent development assistance.
+
+## 🎯 Quick Setup
+
+### Prerequisites
+- **Python 3.10+** 
+- **Unreal Engine 5+** 
+- **uvx installed**
+- **MCP Client** (Claude Desktop, Cursor, or Windsurf)
+
+### Installation
+
+1. **Download Unreal Engine Plugin:**
+   > 📦 **Plugin Download:** *Link will be updated in next version*
+
+2. **Configure MCP Client:**
+   
+   Add this configuration to your MCP client settings:
+   
+   ```json
+   {
+     "mcpServers": {
+       "unreal-mcp": {
+         "command": "uvx",
+         "args": [
+            "gamewave-unreal-mcp"
+         ]
+       }
+     }
+   }
+   ```
+
+   **For Friday** Already configured. Download it here: https://gamewave.dev/
+   **For Claude Desktop:** Add to `%APPDATA%\Claude\claude_desktop_config.json`  
+   **For Cursor:** Add to your Cursor MCP settings  
+   **For Windsurf:** Add to your Windsurf MCP configuration
+
+4. **Launch Unreal Engine** and start your MCP client!
+
+## ✨ Features
+
+### 🖥️ Client Support
+- **✅ Friday Custom Desktop App Support**
+
+### 🛠️ Blueprint Development  
+- **✅ Create blueprints** with custom parent classes
+- **✅ Add & configure components** (StaticMesh, Camera, Light, etc.)
+- **✅ Set component properties** and static mesh assets
+- **✅ Configure physics properties** (simulation, gravity, mass, damping)
+- **✅ Set Pawn-specific properties** (auto possess, rotation control, damageability)
+- **✅ Compile Blueprints** and set class default properties
+- **✅ Add variables** of any type (Boolean, Integer, Float, Vector, Struct, Array, Delegate, Blueprint references)
+- **✅ Add interfaces** to Blueprints and create Blueprint Interfaces
+- **✅ Add custom event nodes** and call BlueprintCallable functions by name
+- **✅ List all components** (including inherited) for inspection and automation
+- **✅ Dynamic Blueprint Action Discovery** - discover available actions for specific pin types, classes, and hierarchies
+- **✅ Intelligent Node Creation** - create Blueprint nodes using discovered action names from Unreal's action database
+- **✅ Pin Requirement Analysis** - get detailed information about node pins and their type requirements
+- **✅ Class Hierarchy Exploration** - explore complete functionality across inheritance chains
+
+### 🔗 Blueprint Node Graph
+- **✅ Add event nodes** for standard events (BeginPlay, Tick) and input actions
+- **✅ Add custom event nodes** and create function call nodes with target components and parameters
+- **✅ Connect nodes** with proper pin linkages for execution and data flow
+- **✅ Add variables** with various types (Boolean, Integer, Float, Vector, Struct, etc.)
+- **✅ Create component references** and self references in the graph
+- **✅ Find and identify nodes** in the Blueprint graph by type/event
+- **✅ Get variable type information** for automation
+- **✅ Build complete gameplay logic chains** through the Blueprint visual scripting system
+
+### 🎮 Actor/Level/Scene Control
+- **✅ Spawn/Delete Actors** and shapes
+- **✅ Move, rotate and scale** objects
+- **✅ Query actor properties** and find actors by name or pattern
+- **✅ List all actors** in the current level
+- **✅ Set and query light properties** (intensity, color, attenuation, shadows, source size)
+- **✅ Spawn actors** from Blueprint classes with custom transforms
+- **🚧 Change materials and color** (coming soon)
+
+### 🤖 AI Integration
+- **🛠️ Prompt to 3D model** fetch and spawn (in development)
+
+### ⚙️ Control Systems
+- **✅ Run Python scripts** directly in Unreal
+- **🚧 Run Console Commands** (coming soon)
+
+### 🎨 UI Development
+- **✅ Create UMG Widget Blueprints** for building user interfaces
+- **✅ Add and customize UI components** (text, buttons, images, checkboxes, sliders, etc.)
+- **✅ Add any widget component type** to a widget
+- **✅ Create complex layouts** with scrollboxes, borders, containers, and nested hierarchies
+- **✅ Set up event bindings** and property bindings for dynamic UI
+- **✅ Add widgets to viewport** with z-ordering control
+- **✅ Set and query widget component properties** (text, color, brush, etc.)
+- **✅ Change widget placement, size, and alignment**
+- **✅ Check for component existence** and get hierarchical layout information
+- **✅ Get container dimensions** for layout automation
+
+### 📁 Project Management
+- **✅ Create and organize** content browser folders for asset management
+- **✅ Create project folders** for non-content files (logs, intermediate, etc.)
+- **✅ Set up input mappings** for keyboard, mouse, and gamepad controls
+- **✅ Enhanced Input System:** Create Input Action assets with value types (Digital, Analog, Axis2D, Axis3D)
+- **✅ Enhanced Input System:** Create Input Mapping Context assets for organized input handling
+- **✅ Enhanced Input System:** Add key mappings between contexts and actions with modifier support
+- **✅ Enhanced Input System:** List and query Enhanced Input Actions and Mapping Contexts with metadata
+- **✅ Enhanced Input System:** Full integration with UE 5.5+ Enhanced Input architecture
+- **✅ Create, update, and inspect** Unreal structs
+- **✅ List folder contents** for project and content folders
+
+### 🎛️ Editor Controls
+- **✅ Focus viewport** on specific actors or locations with custom distance
+- **✅ Control viewport camera** orientation with precise angle settings
+- **✅ Find actors in the scene** using name pattern matching and wildcards
+- **✅ Access and modify** actor properties through the editor interface
+- **✅ Create and configure** different light types (Point, Spot, Directional)
+- **✅ Adjust light properties** (intensity, color, attenuation, shadows, source size)
+- **✅ Spawn Blueprint actors** with custom logic and components
+
+## Full Setup with the most powerful agent for Unreal Engine
+
+- **visit gamewave.dev** 
+
+## 📝 License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Support
+
+- **Email:** fridayue5@gmail.com
+- **Issues:** Create an issue in this repository
+- **Documentation:** Check the `/docs` folder for detailed guides
+
+---
+
+**⚡ Transform your Unreal Engine development with the power of AI!** 
+
+Made with ❤️ by GameWave
