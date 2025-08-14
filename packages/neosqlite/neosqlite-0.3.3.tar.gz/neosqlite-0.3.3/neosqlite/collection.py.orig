@@ -1,0 +1,80 @@
+def _create_fts_index(self, field: str):
+        """
+        Create an FTS5 index on the specified field for text search.
+
+        Args:
+            field: The field to create the FTS index on.
+        """
+        # Create FTS5 virtual table
+        index_name = field.replace(".", "_")
+        fts_table_name = f"{self.name}_{index_name}_fts"
+        
+        # Check if FTS5 is available by trying to create a simple FTS table
+        try:
+            # Try to create a temporary FTS table to check if FTS5 is available
+            self.db.execute("CREATE VIRTUAL TABLE IF NOT EXISTS temp.fts_test USING fts5(test)")
+            self.db.execute("DROP TABLE IF EXISTS temp.fts_test")
+        except sqlite3.OperationalError:
+            raise MalformedQueryException("FTS5 is not available in this SQLite installation")
+        
+        # Create the FTS table
+        self.db.execute(
+            f"""
+            CREATE VIRTUAL TABLE IF NOT EXISTS {fts_table_name} 
+            USING fts5(content='{self.name}', content_rowid='id', {index_name})
+            """
+        )
+        
+        # Create triggers to keep the FTS index in sync with the main table
+        # Delete existing triggers if they exist
+        self.db.execute(f"DROP TRIGGER IF EXISTS {self.name}_{index_name}_fts_insert")
+        self.db.execute(f"DROP TRIGGER IF EXISTS {self.name}_{index_name}_fts_update")
+        self.db.execute(f"DROP TRIGGER IF EXISTS {self.name}_{index_name}_fts_delete")
+        
+        # Insert trigger
+        self.db.execute(
+            f"""
+            CREATE TRIGGER IF NOT EXISTS {self.name}_{index_name}_fts_insert
+            AFTER INSERT ON {self.name}
+            BEGIN
+                INSERT INTO {fts_table_name}(rowid, {index_name}) 
+                VALUES (new.id, json_extract(new.data, '$.{field}'));
+            END
+            """
+        )
+        
+        # Update trigger
+        self.db.execute(
+            f"""
+            CREATE TRIGGER IF NOT EXISTS {self.name}_{index_name}_fts_update
+            AFTER UPDATE ON {self.name}
+            BEGIN
+                INSERT INTO {fts_table_name}({fts_table_name}, rowid, {index_name}) 
+                VALUES ('delete', old.id, json_extract(old.data, '$.{field}'));
+                INSERT INTO {fts_table_name}(rowid, {index_name}) 
+                VALUES (new.id, json_extract(new.data, '$.{field}'));
+            END
+            """
+        )
+        
+        # Delete trigger
+        self.db.execute(
+            f"""
+            CREATE TRIGGER IF NOT EXISTS {self.name}_{index_name}_fts_delete
+            AFTER DELETE ON {self.name}
+            BEGIN
+                INSERT INTO {fts_table_name}({fts_table_name}, rowid, {index_name}) 
+                VALUES ('delete', old.id, json_extract(old.data, '$.{field}'));
+            END
+            """
+        )
+        
+        # Populate the FTS index with existing data
+        self.db.execute(
+            f"""
+            INSERT INTO {fts_table_name}(rowid, {index_name})
+            SELECT id, json_extract(data, '$.{field}') 
+            FROM {self.name} 
+            WHERE json_extract(data, '$.{field}') IS NOT NULL
+            """
+        )
