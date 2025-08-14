@@ -1,0 +1,46 @@
+Metadata-Version: 2.4
+Name: pggo
+Version: 0.0.1b0
+Summary: A PostgreSQL driver written in Golang for Python
+Author-email: Lucas Lima Fernandes <lucas.lfernandes@live.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/lucaslimafernandes/pggo
+Project-URL: Issues, https://github.com/lucaslimafernandes/pggo/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+Dynamic: requires-python
+
+# pggo
+
+Author: Lucas Lima Fernandes
+
+Driver PostgreSQL implementado em Go (pgx) exposto para Python via lib C compartilhada, empacotado como wheel.
+
+
+## Instalação 
+
+```bash
+pip install pggo
+```
+
+## Teste
+
+```python
+from pggo import connect
+c = connect("postgres://user:pass@host:5432/db?sslmode=disable")
+cur = c.cursor()
+cur.execute("select 1 as x")
+print(cur.fetchall())  # [{'x': 1}]
+c.close()
+```
