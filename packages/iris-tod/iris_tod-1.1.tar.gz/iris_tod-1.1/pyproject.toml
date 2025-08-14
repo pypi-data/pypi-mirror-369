@@ -1,0 +1,33 @@
+[project]
+name = "iris-tod" # Pilih nama yang unik dan relevan di PyPI
+version = "1.1"
+authors = [
+  { name="Joel Indra", email="anonre@anonre.com" },
+]
+description = "A powerful Python-based security tool that analyzes HTTP security headers for websites and automatically generates clickjacking payloads when vulnerabilities are detected."
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    # Salin semua dependensi dari requirements.txt ke sini
+    "numpy",
+    "pandas"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/joelindra/Iris"
+Issues = "https://github.com/joelindra/Iris/issues"
+
+[project.scripts]
+iris = "iris.iris:main" # Atur perintah CLI dan entry point
+
+[tool.hatch.build.targets.wheel]
+packages = ["iris"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
