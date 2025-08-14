@@ -1,0 +1,69 @@
+Metadata-Version: 2.4
+Name: bprogress
+Version: 0.1.1
+Summary: Braille-based multi progress bars with ANSI colors (docker-compose style)
+Project-URL: Homepage, https://github.com/yourname/braille-progress
+Project-URL: Repository, https://github.com/yourname/braille-progress
+Author-email: Your Name <you@example.com>
+License: Copyright (c) 2011-2024 GitHub Inc.
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+License-File: LICENSE
+Keywords: ansi,braille,cli,progress,terminal
+Classifier: Environment :: Console
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Utilities
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+# braille-progress
+
+Braille (U+2800–U+28FF) 기반 다중 프로그레스바 + ANSI 컬러.  
+고정폭 레이아웃으로 퍼센트/상태/라벨 흔들림 없이 정갈하게 표시.
+
+## Quick Start
+
+```python
+from braille_progress import Progress
+p = Progress(force_tty=True, force_color=True)
+with p.task("demo", total=50) as t:
+    for i in range(50):
+        t.advance(stage="writing", label=f"item_{i:03d}")
+p.close()
+```
+
+## Multiprocess
+
+```python
+from braille_progress import Progress, progress_message
+# 워커: q.put_nowait(progress_message(i, stage="WRITING", done=k, total=N, label="case")))
+```
+
+## CLI
+
+```bash
+braille-progress-demo --items 80 --force-tty --force-color
+```
+
+## License
+MIT License
+
+## `tests/test_basic.py`
+
+```python
+from braille_progress import Progress
+
+def test_construct():
+    p = Progress(force_tty=False, force_color=False)  # CI에서도 동작
+    h = p.add("t", total=3)
+    p.update(h, stage="validated", total=3)
+    for _ in range(3):
+        h.advance(stage="writing")
+    p.done(h)
+    assert p.all_finished()
+```
