@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "atio"
+version = "2.1.0"
+authors = [
+    { name="Seo Jae Oh", email="seojaeohcoder@gmail.com" },
+]
+keywords = ["atomic", "file", "writer", "pandas", "polars", "numpy", "data"]
+urls = { Homepage = "https://github.com/seojaeohcode/atomic-writer" }
+description = "Safe atomic file writer for Pandas, Polars, NumPy, and other data objects"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+
+
+dependencies = [
+    "pandas>=2.3.1",
+    "pyarrow>=17.0",
+    "polars>=1.0",
+    "numpy>=2.0,<3.0",
+    "sqlalchemy>=2.0",
+    "openpyxl>=3.1",
+    "connectorx>=0.3.0",
+    "fsspec>=2024.5.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest~=8.4",
+    "build~=1.2",
+    "twine~=5.1",
+    "sphinx_rtd_theme==1.0.0",
+    "myst-parser==0.18.0"
+]
+
+# `find_packages()` 역할을 하는 부분 (src 레이아웃 사용 시)
+[tool.setuptools]
+packages = { find = { where = ["src"] } }
