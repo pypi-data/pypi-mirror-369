@@ -1,0 +1,54 @@
+Metadata-Version: 2.4
+Name: rjsonc
+Version: 0.1.2
+Classifier: Programming Language :: Rust
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Dist: pytest ; extra == 'tests'
+Provides-Extra: tests
+License-File: LICENSE
+Summary: Load JSON with comments. Fast.
+Keywords: json,comments,comment,json-comment,json-comments
+Author-email: AWeirdDev <awdjared@gmail.com>
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+
+# rjsonc
+Remove JSON comments, **FAST**. No, really. I'm not paying bills for the slow Regex snail.
+
+Supports Python typing.
+
+```sh
+$ pip install rjsonc
+```
+
+## Usage
+Quite literally. I mean, all it does is removing comments. What else do you expect?
+
+```python
+import rjsonc
+
+JSON = """{
+    "name": "John Dough",  // now that's action packed
+    "age": 69,
+    /*
+
+    DEPRECATED, I PROMISE!
+    
+    "criminal_records": ["stealing"]
+
+    */
+    "is_cool": true // that's what i'm talkin' about!
+}"""
+
+rjsonc.loads(JSON)
+# {'name': 'John Dough', 'age': 69, 'is_cool': True}
+```
+
+## <kbd>def</kbd> loads
+```python
+def loads(s: str | bytes) -> Any
+```
+
+Loads JSON, tolerating comments.
+
