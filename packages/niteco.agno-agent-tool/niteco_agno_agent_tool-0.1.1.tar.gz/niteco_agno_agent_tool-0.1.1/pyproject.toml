@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "niteco.agno-agent-tool"
+version = "0.1.1"
+authors = [
+    {name = "Niteco", email = "info@niteco.com"},
+]
+description = "A service that manages and executes agno agents with OPAL SDK integration"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "fastapi>=0.95.0",
+    "agno>=1.7.0",
+    "optimizely-opal.opal-tools-sdk>=0.1.0",
+    "pydantic>=2.0.0",
+    "uvicorn>=0.20.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/niteco/agno-agent-tool"
+"Bug Reports" = "https://github.com/niteco/agno-agent-tool/issues"
+"Source" = "https://github.com/niteco/agno-agent-tool"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=22.0",
+    "isort>=5.0",
+    "mypy>=1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["niteco*"]
+
