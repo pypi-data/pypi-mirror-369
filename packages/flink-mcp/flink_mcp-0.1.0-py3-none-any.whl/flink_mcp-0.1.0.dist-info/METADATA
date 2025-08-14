@@ -1,0 +1,66 @@
+Metadata-Version: 2.4
+Name: flink-mcp
+Version: 0.1.0
+Summary: MCP server for Apache Flink SQL Gateway
+Author-email: Maciek Brynski <maciej.brynski@cledar.com>
+License: Apache-2.0
+Project-URL: Homepage, https://github.com/cledar/flink-mcp
+Project-URL: Repository, https://github.com/cledar/flink-mcp
+Project-URL: Issues, https://github.com/cledar/flink-mcp/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: mcp[cli]
+Requires-Dist: httpx>=0.27
+Requires-Dist: python-dotenv>=1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: ruff>=0.5.0; extra == "dev"
+
+## flink-mcp — Flink MCP Server
+
+This project provides an MCP server that connects to Apache Flink SQL Gateway.
+
+### Prerequisites
+
+- A running Apache Flink cluster and SQL Gateway
+  - Start cluster: `./bin/start-cluster.sh`
+  - Start gateway: `./bin/sql-gateway.sh start -Dsql-gateway.endpoint.rest.address=localhost`
+  - Verify: `curl http://localhost:8083/v1/info`
+
+- Configure environment:
+  - Set `SQL_GATEWAY_API_BASE_URL` (default `http://localhost:8083`). You can use a `.env` file at repo root.
+
+### Run
+
+Install and run via the console script:
+
+```bash
+pip install -e .
+flink-mcp
+```
+
+MCP clients should launch the server over stdio with command: `flink-mcp`.
+
+Ensure `SQL_GATEWAY_API_BASE_URL` is set in your environment or `.env`.
+
+### Tools
+
+- `open_new_session(properties: dict|None)` → returns `sessionHandle`
+- `get_session_handle_config(session_handle: str)`
+- `execute_query(session_handle: str, query: str, execution_config: dict|None)` → returns `operationHandle`
+- `get_operation_status(session_handle: str, operation_handle: str)`
+- `fetch_result_page(session_handle: str, operation_handle: str, token: int=0)`
+
+### Notes
+
+- Endpoints target SQL Gateway v3-style paths when available.
+- Inspired by: "Hands-on MCP Server Deep Dive: Connecting Flink SQL Gateway to the LLM Ecosystem".
+
+
