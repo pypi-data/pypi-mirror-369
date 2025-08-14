@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bprogress"
+version = "1.0.0"
+description = "Braille-based multi progress bars with ANSI colors (docker-compose style)"
+readme = "README.md"
+
+license = { file = "LICENSE" }
+
+requires-python = ">=3.8"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+keywords = ["progress", "terminal", "braille", "ansi", "cli"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Environment :: Console",
+  "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/kibalab/braille-progress"
+Repository = "https://github.com/kibalab/braille-progress"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/braille_progress"]
+
+[tool.hatch.build]
+include = [
+  "src/braille_progress/**",
+  "README.md",
+  "LICENSE",
+  "CHANGELOG.md",
+]
