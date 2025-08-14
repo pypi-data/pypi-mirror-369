@@ -1,0 +1,107 @@
+[project]
+name = "stsci.skypac"
+description = "Sky matching on image mosaic"
+requires-python = ">=3.10"
+authors = [
+    { name = "Mihai Cara", email = "help@stsci.edu" },
+    { name = "Warren Hack" },
+    { name = "Pey Lian Lim" },
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Development Status :: 7 - Inactive",
+]
+dependencies = [
+    "astropy>=5.0.4",
+    "numpy",
+    "spherical_geometry>=1.2.2",
+    "stsci.imagestats",
+    "stsci.tools",
+    "stwcs",
+    "packaging>=21.1",
+]
+license-files = ["LICENSE.txt"]
+dynamic = [
+    "version"
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+repository = "https://github.com/spacetelescope/stsci.skypac"
+"Bug Reports" = "https://github.com/spacetelescope/stsci.skypac/issues/"
+Source = "https://github.com/spacetelescope/stsci.skypac/"
+Help = "https://hsthelp.stsci.edu/"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-doctestplus",
+]
+docs = [
+    "numpydoc",
+    "graphviz",
+    "sphinx",
+    "sphinx_rtd_theme",
+    "sphinx_automodapi",
+]
+
+[build-system]
+requires = [
+    "setuptools>=61.2",
+    "setuptools_scm[toml]>=3.6",
+    "wheel",
+]
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["."]
+include = ["stsci", "stsci.skypac"]
+exclude = [
+    "pars*",
+    "stsci.skypac.pars",
+]
+
+[tool.setuptools.package-data]
+"*" = [
+    "README.rst",
+    "LICENSE.txt",
+    "CHANGELOG.rst",
+    "*.fits",
+    "*.txt",
+    "*.inc",
+    "*.cfg",
+    "*.csv",
+    "*.yaml",
+    "*.json",
+]
+"stsci.skypac" = [
+    "*.help",
+    "skypac/pars/*",
+]
+
+[tool.setuptools_scm]
+version_file = "stsci/skypac/version.py"
+
+[tool.pytest.ini_options]
+minversion = "4.6"
+addopts = "--ignore=build"
+norecursedirs = [
+    "build",
+    "docs/_build",
+    "relic",
+]
+doctest_plus = "enabled"
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "ELLIPSIS",
+    "FLOAT_CMP",
+]
+junit_family = "xunit2"
