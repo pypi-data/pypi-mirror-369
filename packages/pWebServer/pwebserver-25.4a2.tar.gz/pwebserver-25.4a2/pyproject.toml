@@ -1,0 +1,31 @@
+[project]
+name = "pWebServer"
+version = "25.4.a2"
+description = "Small, asynchronous web server for use with Raspberry Pi Pico W boards and similar"
+authors = [
+    { name = "Stephen Sadowski", email = "stephen.sadowski+opensource@sjsadowski.com" },
+]
+dependencies = []
+requires-python = ">=3.11"
+readme = "README.md"
+
+[project.license]
+text = "MIT"
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.24.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "src",
+]
