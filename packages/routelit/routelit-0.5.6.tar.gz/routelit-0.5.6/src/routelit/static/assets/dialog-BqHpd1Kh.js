@@ -1,0 +1,1 @@
+import{u as i,j as s}from"./app--5U4-9K0.js";function a({id:t,children:o,closable:e=!0,open:r=!0,...l}){const n=i(t,"close");return s.jsxs("dialog",{open:r,...l,children:[e&&s.jsx("button",{className:"rl-close-button",onClick:()=>n({}),children:"×"}),o]})}export{a as default};
