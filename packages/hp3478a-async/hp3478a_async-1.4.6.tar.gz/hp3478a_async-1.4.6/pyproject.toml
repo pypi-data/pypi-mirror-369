@@ -1,0 +1,81 @@
+[project]
+name = "hp3478a-async"
+authors = [
+  { name="Patrick Baus", email="patrick.baus@physik.tu-darmstadt.de" },
+]
+description = "Python3 AsyncIO HP3478A driver"
+readme = "README.md"
+license = { text="GNU General Public License v3 (GPLv3)" }
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Topic :: Home Automation",
+    "Topic :: Scientific/Engineering",
+]
+keywords = ["HP3478A", "GPIB", "API"]
+dependencies = [
+    "typing-extensions; python_version <'3.11'",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/PatrickBaus/pyAsyncHP3478A"
+"Bug Tracker" = "https://github.com/PatrickBaus/pyAsyncHP3478A/issues"
+"Download" = "https://github.com/PatrickBaus/pyAsyncHP3478A/releases"
+"Documentation" = "https://patrickbaus.github.io/pyAsyncHP3478A/"
+
+[project.optional-dependencies]
+linux-gpib = ["async-gpib", "gpib-ctypes"]
+
+prologix-gpib = ["prologix-gpib-async"]
+
+dev = [
+    "aiofiles", "async-gpib", "black", "build", "gpib-ctypes", "isort", "mypy", "pre-commit", "prologix-gpib-async",
+    "pylint", "pytest", "twine",
+]
+
+doc = [
+    "myst-parser", "sphinx",
+]
+
+test = [
+    "mypy", "pylint", "pytest", "aiofiles", "gpib-ctypes", "prologix-gpib-async", "setuptools",
+]
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 120
+
+[tool.isort]
+line_length = 120
+profile = "black"
+
+[tool.black]
+line-length = 120
+
+[tool.pytest.ini_options]
+markers = [
+    # conftest.py reorders tests moving slow ones to the end of the list
+    "slow",
+]
+
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "typing-extensions; python_version <'3.11'",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "hp3478a_async.__version__"}
