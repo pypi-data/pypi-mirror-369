@@ -1,0 +1,64 @@
+[project]
+name = "mbeauv-mcp-trello"
+version = "0.1.0"
+description = "MCP extension for Trello"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["mcp", "trello", "claude", "extension", "api"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Office/Business",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mcp-cli>=0.5.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/mcp-trello"
+Documentation = "https://github.com/yourusername/mcp-trello#readme"
+Repository = "https://github.com/yourusername/mcp-trello"
+Issues = "https://github.com/yourusername/mcp-trello"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_trello"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+    "/server_config.example.json",
+]
+
+[dependency-groups]
+dev = [
+    "build>=1.3.0",
+    "hatchling>=1.27.0",
+    "twine>=6.1.0",
+]
