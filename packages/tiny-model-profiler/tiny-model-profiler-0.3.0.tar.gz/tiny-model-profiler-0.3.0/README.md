@@ -1,0 +1,88 @@
+Tiny Model Profiler
+
+A lightweight tool to quickly profile PyTorch models.  
+Shows parameter count, estimated memory usage, and FLOPs in one command.
+
+Author: Mahika Shah
+------------------------------------------------------------
+
+Features
+--------
+1. Parameter Count – Total trainable parameters in your model
+2. Memory Usage – Estimated size (in MB) of model parameters (float32)
+3. FLOPs – Estimated multiply–add operations (requires torchinfo)
+4. Lightweight – No heavy dependencies
+
+------------------------------------------------------------
+
+Installation
+------------
+Run:
+    pip install tiny-model-profiler
+
+Requirements:
+    torch >= 1.7.0
+    torchinfo (installed automatically for FLOPs estimation)
+
+------------------------------------------------------------
+
+Usage Example
+-------------
+
+Example 1: Using a torchvision model
+------------------------------------
+from tiny_model_profiler import profile
+import torchvision.models as models
+
+# Load a pretrained ResNet-18
+model = models.resnet18()
+
+# Profile the model
+profile(model, input_size=(1, 3, 224, 224))
+
+Expected Output:
+----------------
+Parameters: 11,689,512
+Estimated Memory: 44.63 MB
+FLOPs: 3.64 GFLOPs
+
+
+Example 2: Using a custom model
+-------------------------------
+import torch.nn as nn
+from tiny_model_profiler import profile
+
+class DummyModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc = nn.Linear(10, 5)
+
+    def forward(self, x):
+        return self.fc(x)
+
+model = DummyModel()
+profile(model, input_size=(1, 10))
+
+Expected Output:
+----------------
+Parameters: 55
+Estimated Memory: 0.00 MB
+FLOPs: 50.00 FLOPs
+
+------------------------------------------------------------
+
+Function Details
+----------------
+profile(model, input_size=(1, 3, 224, 224))
+
+Arguments:
+    model (torch.nn.Module) – The model to profile
+    input_size (tuple) – Input tensor size for FLOPs estimation
+                         Format: (batch_size, channels, height, width)
+                         For MLPs: (batch_size, input_features)
+
+Output:
+    Prints:
+      - Total Parameters
+      - Estimated Memory Usage in MB
+      - Estimated FLOPs
