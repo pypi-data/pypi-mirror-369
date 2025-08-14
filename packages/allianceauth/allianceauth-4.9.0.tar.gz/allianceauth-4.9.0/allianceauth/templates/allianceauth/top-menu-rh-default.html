@@ -1,0 +1,21 @@
+{% load i18n %}
+{% if user.is_authenticated %}
+<li class="nav-item">
+    <a href="{% url 'authentication:add_character' %}" class="nav-link" title="{% translate 'Add Character' %}">
+        <i class="fa-solid fa-user-plus"></i>
+        <span class="d-lg-none d-md-inline m-2">{% translate "Add Character" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="{% url 'authentication:change_main_character' %}" class="nav-link" title="{% translate 'Change Main' %}">
+        <i class="fa-solid fa-shuffle"></i>
+        <span class="d-lg-none d-md-inline m-2">{% translate "Change Main" %}</span>
+    </a>
+</li>
+{% else %}
+<li class="nav-item">
+    <a href="{% url 'authentication:login' %}" class="nav-link" title="{% translate 'Sign In' %}">
+        <i class="fa-solid fa-right-to-bracket fa-fw "></i> {% translate "Sign In" %}
+    </a>
+</li>
+{% endif %}
