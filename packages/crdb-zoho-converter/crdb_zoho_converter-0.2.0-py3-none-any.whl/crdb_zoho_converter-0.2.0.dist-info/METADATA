@@ -1,0 +1,560 @@
+Metadata-Version: 2.4
+Name: crdb-zoho-converter
+Version: 0.2.0
+Summary: Convert CRDB bank statements (XLS/XLSX) into CSV for Zoho Books
+Author-email: Leon Kasdorf <lkasdorf@users.noreply.github.com>
+License:                                  Apache License
+                                   Version 2.0, January 2004
+                                http://www.apache.org/licenses/
+        
+           TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+           1. Definitions.
+        
+              "License" shall mean the terms and conditions for use, reproduction,
+              and distribution as defined by Sections 1 through 9 of this document.
+        
+              "Licensor" shall mean the copyright owner or entity authorized by
+              the copyright owner that is granting the License.
+        
+              "Legal Entity" shall mean the union of the acting entity and all
+              other entities that control, are controlled by, or are under common
+              control with that entity. For the purposes of this definition,
+              "control" means (i) the power, direct or indirect, to cause the
+              direction or management of such entity, whether by contract or
+              otherwise, or (ii) ownership of fifty percent (50%) or more of the
+              outstanding shares, or (iii) beneficial ownership of such entity.
+        
+              "You" (or "Your") shall mean an individual or Legal Entity
+              exercising permissions granted by this License.
+        
+              "Source" form shall mean the preferred form for making modifications,
+              including but not limited to software source code, documentation
+              source, and configuration files.
+        
+              "Object" form shall mean any form resulting from mechanical
+              transformation or translation of a Source form, including but
+              not limited to compiled object code, generated documentation,
+              and conversions to other media types.
+        
+              "Work" shall mean the work of authorship, whether in Source or
+              Object form, made available under the License, as indicated by a
+              copyright notice that is included in or attached to the work
+              (an example is provided in the Appendix below).
+        
+              "Derivative Works" shall mean any work, whether in Source or Object
+              form, that is based on (or derived from) the Work and for which the
+              editorial revisions, annotations, elaborations, or other modifications
+              represent, as a whole, an original work of authorship. For the purposes
+              of this License, Derivative Works shall not include works that remain
+              separable from, or merely link (or bind by name) to the interfaces of,
+              the Work and Derivative Works thereof.
+        
+              "Contribution" shall mean any work of authorship, including
+              the original version of the Work and any modifications or additions
+              to that Work or Derivative Works thereof, that is intentionally
+              submitted to Licensor for inclusion in the Work by the copyright owner
+              or by an individual or Legal Entity authorized to submit on behalf of
+              the copyright owner. For the purposes of this definition, "submitted"
+              means any form of electronic, verbal, or written communication sent
+              to the Licensor or its representatives, including but not limited to
+              communication on electronic mailing lists, source code control systems,
+              and issue tracking systems that are managed by, or on behalf of, the
+              Licensor for the purpose of discussing and improving the Work, but
+              excluding communication that is conspicuously marked or otherwise
+              designated in writing by the copyright owner as "Not a Contribution."
+        
+              "Contributor" shall mean Licensor and any individual or Legal Entity
+              on behalf of whom a Contribution has been received by Licensor and
+              subsequently incorporated within the Work.
+        
+           2. Grant of Copyright License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              copyright license to reproduce, prepare Derivative Works of,
+              publicly display, publicly perform, sublicense, and distribute the
+              Work and such Derivative Works in Source or Object form.
+        
+           3. Grant of Patent License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              (except as stated in this section) patent license to make, have made,
+              use, offer to sell, sell, import, and otherwise transfer the Work,
+              where such license applies only to those patent claims licensable
+              by such Contributor that are necessarily infringed by their
+              Contribution(s) alone or by combination of their Contribution(s)
+              with the Work to which such Contribution(s) was submitted. If You
+              institute patent litigation against any entity (including a
+              cross-claim or counterclaim in a lawsuit) alleging that the Work
+              or a Contribution incorporated within the Work constitutes direct
+              or contributory patent infringement, then any patent licenses
+              granted to You under this License for that Work shall terminate
+              as of the date such litigation is filed.
+        
+           4. Redistribution. You may reproduce and distribute copies of the
+              Work or Derivative Works thereof in any medium, with or without
+              modifications, and in Source or Object form, provided that You
+              meet the following conditions:
+        
+              (a) You must give any other recipients of the Work or
+                  Derivative Works a copy of this License; and
+        
+              (b) You must cause any modified files to carry prominent notices
+                  stating that You changed the files; and
+        
+              (c) You must retain, in the Source form of any Derivative Works
+                  that You distribute, all copyright, patent, trademark, and
+                  attribution notices from the Source form of the Work,
+                  excluding those notices that do not pertain to any part of
+                  the Derivative Works; and
+        
+              (d) If the Work includes a "NOTICE" text file as part of its
+                  distribution, then any Derivative Works that You distribute must
+                  include a readable copy of the attribution notices contained
+                  within such NOTICE file, excluding those notices that do not
+                  pertain to any part of the Derivative Works, in at least one
+                  of the following places: within a NOTICE text file distributed
+                  as part of the Derivative Works; within the Source form or
+                  documentation, if provided along with the Derivative Works; or,
+                  within a display generated by the Derivative Works, if and
+                  wherever such third-party notices normally appear. The contents
+                  of the NOTICE file are for informational purposes only and
+                  do not modify the License. You may add Your own attribution
+                  notices within Derivative Works that You distribute, alongside
+                  or as an addendum to the NOTICE text from the Work, provided
+                  that such additional attribution notices cannot be construed
+                  as modifying the License.
+        
+              You may add Your own copyright statement to Your modifications and
+              may provide additional or different license terms and conditions
+              for use, reproduction, or distribution of Your modifications, or
+              for any such Derivative Works as a whole, provided Your use,
+              reproduction, and distribution of the Work otherwise complies with
+              the conditions stated in this License.
+        
+           5. Submission of Contributions. Unless You explicitly state otherwise,
+              any Contribution intentionally submitted for inclusion in the Work
+              by You to the Licensor shall be under the terms and conditions of
+              this License, without any additional terms or conditions.
+              Notwithstanding the above, nothing herein shall supersede or modify
+              the terms of any separate license agreement you may have executed
+              with Licensor regarding such Contributions.
+        
+           6. Trademarks. This License does not grant permission to use the trade
+              names, trademarks, service marks, or product names of the Licensor,
+              except as required for reasonable and customary use in describing the
+              origin of the Work and reproducing the content of the NOTICE file.
+        
+           7. Disclaimer of Warranty. Unless required by applicable law or
+              agreed to in writing, Licensor provides the Work (and each
+              Contributor provides its Contributions) on an "AS IS" BASIS,
+              WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+              implied, including, without limitation, any warranties or conditions
+              of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+              PARTICULAR PURPOSE. You are solely responsible for determining the
+              appropriateness of using or redistributing the Work and assume any
+              risks associated with Your exercise of permissions under this License.
+        
+           8. Limitation of Liability. In no event and under no legal theory,
+              whether in tort (including negligence), contract, or otherwise,
+              unless required by applicable law (such as deliberate and grossly
+              negligent acts) or agreed to in writing, shall any Contributor be
+              liable to You for damages, including any direct, indirect, special,
+              incidental, or consequential damages of any character arising as a
+              result of this License or out of the use or inability to use the
+              Work (including but not limited to damages for loss of goodwill,
+              work stoppage, computer failure or malfunction, or any and all
+              other commercial damages or losses), even if such Contributor
+              has been advised of the possibility of such damages.
+        
+           9. Accepting Warranty or Additional Liability. While redistributing
+              the Work or Derivative Works thereof, You may choose to offer,
+              and charge a fee for, acceptance of support, warranty, indemnity,
+              or other liability obligations and/or rights consistent with this
+              License. However, in accepting such obligations, You may act only
+              on Your own behalf and on Your sole responsibility, not on behalf
+              of any other Contributor, and only if You agree to indemnify,
+              defend, and hold each Contributor harmless for any liability
+              incurred by, or claims asserted against, such Contributor by reason
+              of your accepting any such warranty or additional liability.
+        
+           END OF TERMS AND CONDITIONS
+        
+           APPENDIX: How to apply the Apache License to your work.
+        
+              To apply the Apache License to your work, attach the following
+              boilerplate notice, with the fields enclosed by brackets "[]"
+              replaced with your own identifying information. (Don't include
+              the brackets!)  The text should be enclosed in the appropriate
+              comment syntax for the file format. We also recommend that a
+              file or class name and description of purpose be included on the
+              same "printed page" as the copyright notice for easier
+              identification within third-party archives.
+        
+           Copyright [yyyy] [name of copyright owner]
+        
+           Licensed under the Apache License, Version 2.0 (the "License");
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
+        
+               http://www.apache.org/licenses/LICENSE-2.0
+        
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an "AS IS" BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License.
+        
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas<3,>=2.2.2
+Requires-Dist: xlrd==2.0.1
+Requires-Dist: openpyxl>=3.1.0
+Dynamic: license-file
+
+## CRDB → ZOHO Books Converter
+
+Converts CRDB bank statements (XLS/XLSX) into the CSV format that can be imported into Zoho Books.
+
+### Contents
+- `convert_crdb_to_zoho.py`: CLI script for conversion
+- `_inspect_xls.py`: small helper script to analyze new/changed XLS layouts
+- `files/`: workspace for input/output files (ignored via `.gitignore`)
+
+### Requirements
+- Python 3.11 (or compatible)
+- Windows PowerShell (examples below use PowerShell paths)
+- Linux/macOS shells are supported (examples provided)
+ - Dependencies: see `requirements.txt` (includes `pandas`, `xlrd`, `openpyxl`)
+
+### Quick start
+Linux/macOS (bash/zsh):
+```bash
+git clone https://github.com/lkasdorf/CRDB_con_2025.git && cd CRDB_con_2025
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+# Batch conversion (recommended)
+crdb-convert --source source --dest converted
+
+# Single file
+crdb-convert -i source/statement.xlsx -o converted/statement.csv
+
+# With mapping and per-row diagnostics
+crdb-convert --source source --dest converted --map-file mapping.json --report-dir converted/reports
+```
+
+Windows (PowerShell):
+```powershell
+git clone https://github.com/lkasdorf/CRDB_con_2025.git
+Set-Location .\CRDB_con_2025
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e .
+
+# Batch conversion (recommended)
+crdb-convert --source source --dest converted
+
+# Single file
+crdb-convert -i source\statement.xlsx -o converted\statement.csv
+
+# With mapping and per-row diagnostics
+crdb-convert --source source --dest converted --map-file mapping.json --report-dir converted\reports
+```
+
+Alternative (global install via pipx):
+```bash
+pip install pipx && pipx ensurepath
+pipx install .
+crdb-convert --help
+```
+
+### Setup (recommended with virtual environment)
+Windows (PowerShell):
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+Linux/macOS (bash/zsh):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+```
+
+### Usage
+Windows (PowerShell):
+1) Place the CRDB source file (e.g., `crdb_input.xls`) into `source/` for batch mode, or `files/` for single-file mode.
+2) Batch conversion (recommended):
+```powershell
+.\.venv\Scripts\python.exe convert_crdb_to_zoho.py --source source --dest converted
+```
+3) Force re-run even if targets exist:
+```powershell
+.\.venv\Scripts\python.exe convert_crdb_to_zoho.py --source source --dest converted --force
+```
+4) Single-file conversion (optional):
+```powershell
+.\.venv\Scripts\python.exe convert_crdb_to_zoho.py -i files\crdb_input.xls -o converted\crdb_input.csv
+```
+
+Linux/macOS (bash/zsh):
+1) Place the CRDB source file (e.g., `crdb_input.xls`) into `source/` for batch mode, or `files/` for single-file mode.
+2) Batch conversion (recommended):
+```bash
+python3 convert_crdb_to_zoho.py --source source --dest converted
+```
+3) Force re-run even if targets exist:
+```bash
+python3 convert_crdb_to_zoho.py --source source --dest converted --force
+```
+4) Single-file conversion (optional):
+```bash
+python3 convert_crdb_to_zoho.py -i files/crdb_input.xls -o converted/crdb_input.csv
+```
+5) Import the generated CSV(s) from `converted/` into Zoho Books.
+
+Inspector (optional):
+```bash
+crdb-inspect --help
+crdb-inspect --input files/crdb_input.xls --engine auto --sheet 0 --max-scan-rows 500
+```
+
+### Installation (local/standalone)
+
+Option A: Install into a virtual environment (recommended)
+- Windows (PowerShell): see "Setup" above. Then:
+```powershell
+pip install -e .
+```
+- Linux/macOS:
+```bash
+pip install -e .
+```
+After this, the commands `crdb-convert` and `crdb-inspect` are available on your PATH.
+
+Option B: System-wide via pipx (clean, isolated)
+- Prerequisite: install `pipx` (`pip install pipx` and then `pipx ensurepath`).
+```bash
+pipx install .
+```
+You can now use the tools globally: `crdb-convert --help`.
+
+Option C: Run directly with Python (no installation)
+```bash
+python3 convert_crdb_to_zoho.py --source source --dest converted
+```
+
+Optional: Build standalone binaries (no Python required on target system)
+- Install PyInstaller and build binaries:
+```bash
+pip install pyinstaller
+pyinstaller --onefile --name crdb-convert convert_crdb_to_zoho.py
+pyinstaller --onefile --name crdb-inspect _inspect_xls.py
+```
+The generated binaries are in `dist/` (`crdb-convert`, `crdb-inspect`). They are OS/arch specific.
+
+After installing/building:
+- Show help: `crdb-convert --help`
+- See examples under "Usage" and "CLI options".
+
+### Install from PyPI (recommended for end users)
+Using pipx (global, isolated; auto PATH integration):
+```bash
+pip install pipx && pipx ensurepath
+pipx install crdb-zoho-converter
+crdb-convert --help
+```
+
+Alternative with pip --user:
+```bash
+pip install --user crdb-zoho-converter
+# Ensure ~/.local/bin (Linux/macOS) or the Windows user Scripts folder is on PATH
+```
+
+### Download prebuilt binaries (GitHub Releases)
+Linux/macOS (download and add to PATH):
+```bash
+curl -L -o /usr/local/bin/crdb-convert \
+  https://github.com/lkasdorf/CRDB_con_2025/releases/download/vX.Y.Z/crdb-convert
+chmod +x /usr/local/bin/crdb-convert
+crdb-convert --help
+
+# Optional inspector tool
+sudo curl -L -o /usr/local/bin/crdb-inspect \
+  https://github.com/lkasdorf/CRDB_con_2025/releases/download/vX.Y.Z/crdb-inspect
+sudo chmod +x /usr/local/bin/crdb-inspect
+```
+
+Windows (PowerShell):
+```powershell
+if (-Not (Test-Path "$env:USERPROFILE\bin")) { New-Item -ItemType Directory $env:USERPROFILE\bin | Out-Null }
+Invoke-WebRequest -Uri https://github.com/lkasdorf/CRDB_con_2025/releases/download/vX.Y.Z/crdb-convert.exe -OutFile $env:USERPROFILE\bin\crdb-convert.exe
+# Make it available on PATH for future sessions:
+setx PATH "$env:PATH;$env:USERPROFILE\bin"
+crdb-convert.exe --help
+
+# Optional inspector tool
+Invoke-WebRequest -Uri https://github.com/lkasdorf/CRDB_con_2025/releases/download/vX.Y.Z/crdb-inspect.exe -OutFile $env:USERPROFILE\bin\crdb-inspect.exe
+```
+
+### Add to PATH (so you can run `crdb-convert` from anywhere)
+
+- Virtual environment (recommended): Activating the venv automatically adds its `Scripts` (Windows) or `bin` (Linux/macOS) folder to PATH.
+  - Windows (PowerShell): `\.venv\Scripts\Activate.ps1`
+  - Linux/macOS (bash/zsh): `source .venv/bin/activate`
+
+- pipx (global, isolated): Run `pipx ensurepath` once and restart your shell.
+  - Verify: `which crdb-convert` (Linux/macOS) or `where crdb-convert` (Windows)
+
+- pip --user (if you use it): Ensure the user bin directory is on PATH.
+  - Linux/macOS: `~/.local/bin` (add to `~/.bashrc`/`~/.zshrc` if needed)
+    ```bash
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+  - Windows: Find your user base with `py -m site --user-base` or `python -m site --user-base`.
+    Add its `Scripts` subfolder to PATH (e.g., `%USERPROFILE%\AppData\Roaming\Python\Python311\Scripts`).
+
+- PyInstaller binaries: Put the files from `dist/` into a directory already on PATH, or extend PATH.
+  - Linux/macOS (temporary for current session):
+    ```bash
+    export PATH="$(pwd)/dist:$PATH"
+    ```
+  - Linux/macOS (permanent): add the same line to `~/.bashrc`/`~/.zshrc`.
+  - Windows (PowerShell, permanent): Control Panel → Environment Variables → PATH → add `...\dist`. Or (with care):
+    ```powershell
+    setx PATH "$env:PATH;$(Get-Location)\dist"
+    ```
+
+### CLI options
+All flags are optional; defaults are chosen to work out-of-the-box with typical CRDB exports.
+
+- `-i, --input PATH`: Single-file input (XLS/XLSX).
+- `-o, --output PATH`: Output CSV path in single-file mode. Default: `<dest>/<input_stem>.csv`.
+- `--source PATH`: Source directory for batch mode. Default: `source/`.
+- `--dest PATH`: Output directory for batch mode. Default: `converted/`.
+- `--log PATH`: Path to log file. Default: `<dest>/conversion.log`.
+- `--force`: Overwrite existing target CSVs.
+
+- `--strict`: Fail on parsing/validation warnings.
+- `--dry-run`: Validate and report only; do not write CSV.
+- `--delimiter ";"`: CSV delimiter (default `;`).
+- `--max-scan-rows 500`: Max rows to scan while searching for the header.
+- `--engine auto|xlrd|openpyxl`: Excel reader engine (default `auto`).
+- `--trace`: Enable detailed DEBUG tracing in logs.
+- `--trace-max-rows 20`: Number of rows to trace.
+- `--sheet NAME|INDEX`: Select sheet by name or 0-based index.
+- `--header-row N`: Override detected header row (1-based).
+
+Mapping (column selection):
+- `--map-file PATH`: JSON mapping configuration (see below).
+- `--map-posting STR`: Override mapping for posting date column.
+- `--map-details STR`: Override mapping for details/narration column.
+- `--map-debit STR`: Override mapping for debit column.
+- `--map-credit STR`: Override mapping for credit column.
+
+Diagnostics reports:
+- `--report PATH`: Per-row diagnostics CSV in single-file mode.
+- `--report-dir PATH`: Directory for per-row diagnostics CSVs in batch mode (filename: `<stem>.report.csv`).
+
+Notes:
+- Supports `.xls` and `.xlsx`. For `.xlsx`, `openpyxl` is used.
+- The log file is written to `<dest>/conversion.log` by default.
+- Logging:
+  - `--json-logs` to emit structured logs (one JSON per line)
+  - `--log-rotate-size` and `--log-rotate-backups` for rotating log files
+
+Numbers/locale:
+- `--decimal .|,` decimal separator
+- `--thousands .|,|'|space` thousands separator (optional)
+- `--currency CODE|SYMBOL` currency code/symbol to strip (optional)
+
+CSV formatting:
+- `--encoding` output file encoding (default utf-8)
+- `--quotechar` CSV quote character (default ")
+- `--no-header` do not write CSV header row
+
+Redaction:
+- `--redact` masks sensitive fields in outputs (reports/logs/CSV)
+
+Summary:
+- `--summary PATH|DIR` write a JSON summary file (single-file) or to a directory (batch)
+
+### Target format (CSV)
+Semicolon-separated (;) with this header:
+```
+Date;Withdrawals;Deposits;Payee;Description;Reference Number
+```
+
+Notes:
+- Dates are output as `YYYY-MM-DD`.
+- Amounts are decimals with a dot (e.g., `212.40`).
+- `Payee` remains empty, `Description` defaults to `Transfer`, `Reference Number` contains the CRDB details/narration.
+
+### Mapping configuration
+Mapping kann die Auswahl der Eingabespalten steuern. Beispiel `mapping.json`:
+```json
+{
+  "posting_date": ["Posting Date", "Transaction Date"],
+  "details": ["Details", "Narration", "Description"],
+  "debit": ["Debit", "Withdrawal"],
+  "credit": ["Credit", "Deposit"]
+}
+```
+
+Anmerkungen:
+- Werte können String oder Liste sein. Die Suche vergleicht case-insensitive, zuerst exakt, dann als Teilstring. Fallback-Heuristik bleibt aktiv.
+- CLI-Overrides (`--map-*`) haben Vorrang vor der Datei.
+
+### Diagnostics und Validierung
+Der Konverter sammelt Validierungs- und Parsing-Warnungen und protokolliert Beispiele. Bei `--strict` wird mit Fehler abgebrochen.
+
+Mögliche Issues je Zeile (wichtig für den Report):
+- `date_unparsed`: Datum konnte nicht geparst werden.
+- `debit_unparsed`, `credit_unparsed`: Beträge nicht interpretierbar, obwohl Ziffern vorhanden.
+- `both_amounts`: Debit und Credit gleichzeitig > 0.
+- `negative_debit`, `negative_credit`: Negative Beträge erkannt.
+- `date_missing_with_amount`: Betrag vorhanden, aber Datum leer.
+
+Per-Row-Diagnose kann optional als CSV erzeugt werden (`--report`/`--report-dir`).
+
+### Helper script (optional)
+Shows header candidate(s) and sample rows from the XLS file – useful if the CRDB layout changes:
+```powershell
+.\.venv\Scripts\python.exe _inspect_xls.py
+```
+```bash
+python3 _inspect_xls.py
+```
+
+### Versioning
+Semantic Versioning (MAJOR.MINOR.PATCH). Update the version in `pyproject.toml` under `[project].version`.
+
+Examples:
+- Stable release: `0.2.0` → `0.2.1`
+- Next minor: `0.2.1` → `0.3.0`
+- Development pre-release (editable installs and packaging will expose this): `0.3.0.dev1`, `0.3.0a1`, `0.3.0b1`.
+
+Check installed version:
+```bash
+crdb-convert --version
+```
+
+Release checklist:
+- Bump `[project].version` in `pyproject.toml`
+- Commit and tag (optional): `git tag vX.Y.Z && git push --tags`
+- Reinstall if using editable: `pip install -e .`
+
+Repository notes:
+- The `files/` directory is added to `.gitignore` and not versioned.
+- The `source/` and `converted/` directories are versioned but kept empty in a fresh clone via `.gitkeep` files. Output CSVs and logs will appear in `converted/` after running the converter.
+
+### License
+See `LICENSE`.
