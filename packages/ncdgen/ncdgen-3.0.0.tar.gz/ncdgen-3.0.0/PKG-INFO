@@ -1,0 +1,43 @@
+Metadata-Version: 2.4
+Name: ncdgen
+Version: 3.0.0
+Summary: Plane geometry diagram generation using Newclid
+Project-URL: Homepage, https://newclid.github.io/Newclid/
+Project-URL: Repository, https://github.com/Newclid/Newclid.git
+Author-email: AutoMathis <automathis@protonmail.com>
+License-Expression: Apache-2.0
+License-File: LICENSE
+License-File: NOTICE.md
+Requires-Python: >=3.11
+Requires-Dist: google-cloud-batch
+Requires-Dist: hydra-core>=1.3.2
+Requires-Dist: networkx>=3.5
+Requires-Dist: newclid[yuclid]
+Requires-Dist: numpy>=1.26.4
+Requires-Dist: protobuf
+Requires-Dist: pydantic>=2.11.5
+Requires-Dist: types-networkx>=3.5.0.20250709
+Requires-Dist: types-protobuf
+Description-Content-Type: text/markdown
+
+# Data generation based on Newclid JGEX constructions
+
+## Installation
+
+From root:
+```bash
+uv sync --package ncdgen
+```
+
+
+## Usage
+
+### Run localy
+
+Local CLI is using [hydra](https://hydra.cc/docs/advanced/override_grammar/basic/) for specifying configurations overrides if needed for quick experiments.
+
+```bash
+uv run --no-sync ncdgen --config-name baseline
+```
+
+To see all available configuration fields for data generation see [DiagramGenerationConfig](src/ncdgen/generation_configuration.py#L19).
