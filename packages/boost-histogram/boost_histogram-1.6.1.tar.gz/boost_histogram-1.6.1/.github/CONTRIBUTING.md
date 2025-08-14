@@ -1,0 +1,304 @@
+See the [Scikit-HEP Developer introduction][skhep-dev-intro] for a
+detailed description of best practices for developing Scikit-HEP packages.
+
+[skhep-dev-intro]: https://scikit-hep.org/developer/intro
+
+# Contributing
+
+## Building from source
+
+This repository has dependencies in submodules. Check out the repository like this:
+
+```bash
+git clone --recursive https://github.com/scikit-hep/boost-histogram.git
+cd boost-histogram
+```
+
+<details><summary>Faster version (click to expand)</summary>
+
+```bash
+git clone https://github.com/scikit-hep/boost-histogram.git
+cd boost-histogram
+git submodule update --init --depth 10
+```
+
+</details>
+
+## Setting up a development environment
+
+### Nox
+
+The fastest way to start with development is to use nox. If you don't have nox,
+you can use `pipx run nox` to run it without installing, or `pipx install nox`.
+If you don't have pipx (pip for applications), then you can install with with
+`pip install pipx` (the only case were installing an application with regular
+pip is reasonable). If you use macOS, then pipx and nox are both in brew, use
+`brew install pipx nox`.
+
+To use, run `nox`. This will lint and test using every installed version of
+Python on your system, skipping ones that are not installed. You can also run
+specific jobs:
+
+```console
+$ nox -l # List all the defined sessions
+$ nox -s lint  # Lint only
+$ nox -s tests  # Tests only
+$ nox -s docs -- serve  # Build and serve the docs
+$ nox -s make_pickle  # Make a pickle file for this version
+```
+
+Nox handles everything for you, including setting up a temporary virtual
+environment for each run.
+
+### Pip
+
+While developers often work in CMake, the "correct" way to develop a python
+package is in a virtual environment. This is how you would set one up with
+Python's built-in venv:
+
+```bash
+python3 -m venv .venv
+source ./.venv/bin/activate
+pip install -ve. --group dev
+```
+
+Or if you use uv:
+
+```bash
+uv sync
+```
+
+<details><summary>Optional: External Jupyter kernel (click to expand)</summary>
+
+You can set up a kernel for external Jupyter then deactivate your environment:
+
+```bash
+python -m ipykernel install --user --name boost-hist
+deactivate
+```
+
+Now, you can run notebooks using your system JupyterLab, and it will list
+the environment as available!
+
+</details>
+
+To rebuild, rerun `pip install -ve .` from the environment, if the commit has
+changed, you will get a new build. Due to the `-e`, Python changes do not require
+a rebuild.
+
+### CMake
+
+CMake is common for C++ development, and ties nicely to many C++ tools, like
+IDEs. If you want to use it for building, you can. Make a build directory and
+run CMake. If you have a specific Python you want to use, add
+`-DPython_EXECUTABLE=$(which python)` or similar to the CMake line. If you need
+help installing the latest CMake version, [visit this
+page](https://cliutils.gitlab.io/modern-cmake/chapters/intro/installing.html);
+one option is to use pip to install CMake.
+
+You have three options for running code in python:
+
+1. Run from the build directory (only works with some commands, like `python -m
+pytest`, and not others, like `pytest`
+2. Add the build directory to your PYTHONPATH environment variable
+3. Set `CMAKE_INSTALL_PREFIX` to your site-packages and install (recommended
+   for virtual environments).
+
+Here is the recommendation for a CMake install, using uv:
+
+```bash
+uv venv
+uv pip install --group dev
+cmake --workflow default
+
+# Option 3 only:
+cmake --install --preset default --prefix $(python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(plat_specific=False,standard_lib=False))")
+```
+
+Note that option 3 will require reinstalling if the python files change, while
+options 1-2 will not if you have a recent version of CMake (symlinks are made).
+
+## Testing
+
+Run the unit tests (requires pytest and NumPy).
+
+```bash
+python3 -m pytest
+```
+
+For CMake, you can use `ctest --preset default` (the workflow above will run the tests).
+
+The build requires `setuptools_scm`. The tests require `numpy`, `pytest`, and
+`pytest-benchmark`. `pytest-sugar` adds some nice formatting.
+
+## Benchmarking
+
+You can enable benchmarking with `--benchmark-enable` when running tests. You
+can also run explicit performance tests with `scripts/performance_report.py`.
+
+```bash
+python3 -m pytest --benchmark-enable --benchmark-sort fullname
+```
+
+For example, if you want to benchmark before and after a change:
+
+```bash
+python3 -m pytest --benchmark-enable --benchmark-autosave
+# Make change
+python3 -m pytest --benchmark-enable --benchmark-autosave
+
+pytest-benchmark compare 0001 0002 --sort fullname --histogram
+```
+
+Note, while the histogram option (`--histogram`) is nice, it does require
+`pygal` and `pygaljs` to be installed. Feel free to leave it off if not needed.
+
+</details>
+
+## Formatting
+
+Code should be well formatted; CI will check it and one of the authors can help
+reformat your code. If you want to check it yourself, you should use
+[`pre-commit`](https://pre-commit.com).
+
+Just [install pre-commit](https://pre-commit.com/#install), probably using brew
+on macOS or pip on other platforms, then run:
+
+```bash
+pre-commit install
+```
+
+Now all changed files will be checked every time you git commit. You can check
+it yourself (even without installing the hooks) using:
+
+```bash
+pre-commit run --all-files
+```
+
+Developers should update the pre-commit dependencies once in a while, you can
+do this automatically with:
+
+```bash
+pre-commit autoupdate -j8
+```
+
+> #### Note about skipping Docker
+>
+> Pre-commit uses docker to ensure a consistent run of clang-format. If you do
+> not want to install/run Docker, you should use `SKIP=docker-clang-format`
+> when running pre-commit, and instead run `clang-format -style=file -i
+<files>` yourself.
+
+## Clang-Tidy
+
+To run Clang tidy, the following recipe should work. Files will be modified in
+place, so you can use git to monitor the changes.
+
+```bash
+docker run --rm -v $PWD:/pybind11 -it silkeh/clang:20
+apt update && apt install -y python3-dev python3-pip git ninja-build
+python3 -m pip install setuptools_scm --break-system-packages
+cmake --preset tidy
+cmake --build --preset tidy
+```
+
+To autofix, use:
+
+```bash
+cmake --preset --preset tidy -DCMAKE_CXX_CLANG_TIDY="clang-tidy;--fix"
+cmake --build --preset tidy -j1
+```
+
+Remember to build single-threaded if applying fixes!
+
+## Include what you use
+
+To run include what you use, install (`brew install include-what-you-use` on
+macOS), then run:
+
+```bash
+cmake -S . -B build-iwyu -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=$(which include-what-you-use)
+cmake --build build
+```
+
+## Timing steps
+
+Make time/memory taken can be set
+`CMAKE_CXX_COMPILER_LAUNCHER`/`CMAKE_CXX_LINKER_LANCHER`. Some examples:
+
+```
+# Linux:
+#   "time"
+#   "time;-v"
+#   "time;-f;'%U user %S system %E elapsed %P CPU %M KB'"
+# macOS:
+#   "time"
+# macOS with brew install gnu-time:
+#   "gtime;-f;'%U user %S system %E elapsed %P CPU %M KB'"
+#
+```
+
+## Common tasks
+
+<details><summary>Updating dependencies (click to expand)</summary>
+
+This will checkout new versions of the dependencies.
+
+```bash
+nox -s bump_boost -- 1.88.0
+```
+
+</details>
+
+<details><summary>Making a new release (click to expand)</summary>
+
+- Finish merging open PRs that you want in the new version
+- Add most recent changes to the `docs/CHANGELOG.md`
+- Sync master with develop using `git checkout master; git merge develop --ff-only` and push
+- Make sure the `cmake --preset tidy` build runs on master without issues (manually trigger if needed)
+- Make the GitHub release in the GitHub UI. Copy the changelog entries and
+  links for that version; this has to be done as part of the release and tag
+  procedure for archival tools (Zenodo) to pick them up correctly.
+  - Title should be `"Version <version number>"`
+  - Version tag should be `"v" + major + "." + minor + "." + patch`.
+- GHA will build and send to PyPI for you when you release.
+- Conda-forge will automatically make a PR to update within an hour or so, and
+  it will merge automatically if it passes.
+
+</details>
+
+<details><summary>Making a compiler flamegraph (click to expand)</summary>
+
+This requires LLVM 9+, and is based on [this post](https://aras-p.info/blog/2019/01/16/time-trace-timeline-flame-chart-profiler-for-Clang/).
+
+```bash
+brew install llvm         # macOS way to get clang-9
+python3 -m venv .env_core # general environment (no install will be made)
+. .env_core/bin/activate
+pip install dependency-groups
+pip-install-dependency-groups dev
+CXX="/usr/local/opt/llvm/bin/clang++" cmake -S . -B build-llvm \
+    -DCMAKE_CXX_FLAGS="-ftime-trace" \
+    -DPYTHON_EXECUTABLE=$(which python)
+cmake --build build-llvm/
+```
+
+Now open a browser with [SpeedScope](https://www.speedscope.app), and load one of the files.
+
+</details>
+
+<details><summary>Adding a contributor (click to expand)</summary>
+
+First, you need to install the [all contributor CLI](https://allcontributors.org/docs/en/cli/installation):
+
+```bash
+yarn add --dev all-contributors-cli
+```
+
+Then, you can add contributors:
+
+```bash
+yarn all-contributors add henryiii maintenance,code,doc
+```
+
+</details>

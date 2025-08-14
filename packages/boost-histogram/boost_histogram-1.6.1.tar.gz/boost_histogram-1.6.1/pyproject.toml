@@ -1,0 +1,317 @@
+[build-system]
+requires = ["scikit-build-core>=0.11", "pybind11>=3"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "boost-histogram"
+dynamic = ["version"]
+description = "The Boost::Histogram Python wrapper."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Hans Dembinski", email = "hans.dembinski@gmail.com" },
+    { name = "Henry Schreiner", email = "hschrein@cern.ch" },
+]
+keywords = [
+    "boost-histogram",
+    "histogram",
+]
+license = "BSD-3-Clause AND BSL-1.0"
+license-files = [
+    "LICENSE", "extern/*/LICENSE"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Free Threading :: 3 - Stable",
+    "Programming Language :: Python :: Free Threading",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy",
+]
+
+[project.urls]
+"Bug Tracker" = "https://github.com/scikit-hep/boost-histogram/issues"
+Changelog = "https://boost-histogram.readthedocs.io/en/latest/CHANGELOG.html"
+Chat = " https://gitter.im/HSF/PyHEP-histogramming"
+Discussions = "https://github.com/scikit-hep/boost-histogram/discussions"
+Documentation = "https://boost-histogram.readthedocs.io/"
+Homepage = "https://github.com/scikit-hep/boost-histogram"
+
+
+[dependency-groups]
+dev = [
+    { include-group = "test" },
+    "ipykernel",
+    "nbconvert",
+    "setuptools_scm",
+    "typer",
+    "uhi",
+]
+docs = [
+    "ipython",
+    "myst_parser>=0.13",
+    "nbsphinx",
+    "numpy",
+    "sphinx-book-theme>=0.0.33",
+    "sphinx>=4.0",
+    "sphinx_copybutton",
+]
+examples = [
+    "matplotlib",
+    "netCDF4",
+    "numba",
+    "uproot",
+    "xarray",
+    "xhistogram",
+]
+test-core = [
+    "cloudpickle",
+    "pytest-benchmark",
+    "pytest>=6.0",
+    "pytest-benchmark",
+    "numpy",
+]
+test = [
+    { include-group = "test-core" },
+    "hypothesis>=6.0; sys_platform != 'ios'", # slow on iOS, can fail health check
+    "pytest-xdist; sys_platform != 'ios'",  # No processes on iOS
+]
+github = [
+  { include-group = "test" },
+  "setuptools_scm",
+  "pytest-github-actions-annotate-failures"
+]
+
+
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
+sdist.exclude = [
+  "extern/**/*.py",
+  "extern/**/*.md",
+  "extern/**/*.rst",
+  "extern/**/*.toml",
+  "extern/*/checks/**",
+  "extern/*/test/**",
+  "extern/*/benchmark/**",
+  "extern/*/doc/**",
+  "extern/*/examples/**",
+  "extern/*/tools/**",
+  "extern/pybind11/docs/**",
+  "extern/pybind11/tests/**",
+  "extern/*/README.md",
+]
+logging.level = "INFO"
+
+[[tool.scikit-build.generate]]
+path = "boost_histogram/version.py"
+template = '''
+__version__ = version = "$version"
+'''
+
+[tool.setuptools_scm]
+
+
+[tool.uv.pip]
+only-binary = ["numpy"]
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+junit_family = "xunit2"
+addopts = [
+  "-ra",
+  "--strict-markers",
+  "--strict-config",
+  "--import-mode=importlib",
+]
+filterwarnings = [
+  "error",
+  "default:could not create cache path:pytest.PytestCacheWarning",
+]
+xfail_strict = true
+testpaths = ["tests"]
+required_plugins = ["pytest-benchmark"]
+log_cli_level = "DEBUG"
+
+[tool.mypy]
+python_version = "3.9"
+files = ["src"]
+strict = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+module = ["matplotlib.*", "typer"]
+ignore_missing_imports = true
+
+
+[tool.cibuildwheel]
+build-frontend = "build[uv]"
+test-groups = ["test"]
+test-command = "python -m pytest -n auto --benchmark-disable tests"
+test-sources = ["pyproject.toml", "tests"]
+test-environment.CI = "1"  # Hypothosis needs this on GraalPy
+test-skip = [
+  "cp3{9,10}-win_arm64",
+  "cp3{9,10}-musllinux_*",
+  "pp310-manylinux_aarch64",
+  "pp310-macosx_arm64",
+  "cp31*-musllinux_*", # Threading test crashes
+  "gp311_242-macosx_x86_64",
+  "gp311_242-manylinux_aarch64",
+  "gp311_242-win*",  # pytest crashes with module 'io' has no attribute '_WindowsConsoleIO'
+  "cp314*-ios_*",  # No numpy wheels yet
+]
+enable = ["cpython-freethreading", "pypy", "graalpy"]
+environment-pass = ["SETUPTOOLS_SCM_PRETEND_VERSION"]
+environment.PIP_ONLY_BINARY = "numpy"
+environment.PIP_PREFER_BINARY = "1"
+environment.UV_ONLY_BINARY = "numpy"
+environment.UV_PREFER_BINARY = "1"
+
+[tool.cibuildwheel.pyodide]
+build-frontend = {name = "build", args = ["--exports", "whole_archive"]}
+test-command = "pytest --benchmark-disable tests"
+test-groups = ["test-core"]  # Working around a bug with markers in pyodide
+
+[tool.cibuildwheel.ios]
+build-frontend = "build"
+xbuild-tools = ["cmake", "ninja"]
+test-command = "python -m pytest --benchmark-disable tests"
+environment.PIP_EXTRA_INDEX_URL = "https://pypi.anaconda.org/beeware/simple/"
+
+# [tool.cibuildwheel.android]
+# build-frontend = "build"
+# xbuild-tools = ["cmake", "ninja"]
+# test-command = "pytest --benchmark-disable tests"
+# environment.PIP_EXTRA_INDEX_URL = "https://chaquo.com/pypi-13.1"
+
+[[tool.cibuildwheel.overrides]]
+select = "pp310-macosx_arm64"
+inherit.environment = "append"
+environment.MACOSX_DEPLOYMENT_TARGET = "14.0"
+
+[[tool.cibuildwheel.overrides]]
+select = ["gp*"]
+inherit.environment = "append"
+environment.UV_INDEX = "https://www.graalvm.org/python/wheels/"
+environment.UV_INDEX_STRATEGY = "unsafe-best-match"
+test-command = "pytest --benchmark-disable tests"
+
+[tool.pylint]
+py-version = "3.9"
+ignore-patterns = ['.*\.pyi']
+ignore = "version.py"
+extension-pkg-allow-list = ["boost_histogram._core"]
+reports.output-format = "colorized"
+similarities.ignore-imports = "yes"
+messages_control.disable = [
+  "cyclic-import", # TODO: move files out of _internal
+  "fixme",
+  "invalid-name",
+  "line-too-long",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "c-extension-no-member", # C extensions mess with this
+  "protected-access",
+  "too-few-public-methods",
+  "too-many-arguments",
+  "too-many-branches",
+  "too-many-lines",
+  "too-many-locals",
+  "too-many-return-statements",
+  "too-many-statements",
+  "too-many-positional-arguments",
+  "wrong-import-position",
+  "unused-argument", # Covered by ruff
+  "unsubscriptable-object", # Wrongly triggered
+]
+
+[tool.ruff.lint]
+extend-select = [
+  "ARG",         # flake8-unused-arguments
+  "B",           # flake8-bugbear
+  "C4",          # flake8-comprehensions
+  "EXE",         # flake8-executable
+  "FURB",        # refurb
+  "G",           # flake8-logging-format
+  "I",           # isort
+  "ICN",         # flake8-import-conventions
+  "ISC",         # flake8-implicit-str-concat
+  "PD",          # pandas-vet
+  "PGH",         # pygrep-hooks
+  "PIE",         # flake8-pie
+  "PL",          # pylint
+  "PT",          # flake8-pytest-style
+  "PTH",         # flake8-use-pathlib
+  "PYI",         # flake8-pyi
+  "TID251",      # flake8-tidy-imports.banned-api
+  "RET",         # flake8-return
+  "RUF",         # Ruff-specific
+  "SIM",         # flake8-simplify
+  "T20",         # flake8-print
+  "UP",          # pyupgrade
+  "YTT",         # flake8-2020
+]
+ignore = [
+  "PLR09",          # Too many X
+  "PLR2004",        # Magic value in comparison
+  "PT013",          # from pytest import approx is fine
+  "PT011",          # pytest.raises too broad
+  "PYI034",         # We are returning Self, just generic
+]
+typing-modules = ["boost_histogram._compat.typing"]
+isort.required-imports = ["from __future__ import annotations"]
+exclude = ["extern/*"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.Self".msg = "Use boost_histogram._compat.typing.Self instead."
+"typing_extensions.Self".msg = "Use boost_histogram._compat.typing.Self instead."
+
+[tool.ruff.lint.mccabe]
+max-complexity = 13
+
+[tool.ruff.lint.per-file-ignores]
+"docs/*" = ["T20"]
+"examples/*" = ["T20"]
+"scripts/*" = ["T20"]
+"tests/*" = ["T20"]
+"notebooks/*" = ["T20"]
+"*.pyi" = ["F401", "TID251"]
+"docs/conf.py" = ["ARG001"]
+"src/boost_histogram/test.py" = ["PT"]
+"**.ipynb" = ["I002", "E731"]
+"src/boost_histogram/_compat/**.py" = ["TID251"]
