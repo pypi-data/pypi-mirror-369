@@ -1,0 +1,3219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureChainLib User Manual</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            page-break-before: always;
+        }
+        
+        h1:first-of-type {
+            page-break-before: avoid;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 20px;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            line-height: 1.4;
+            page-break-inside: avoid;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .toc {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        
+        .toc > ul {
+            padding-left: 0;
+        }
+        
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        
+        .important {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .header h1 {
+            border: none;
+            color: white;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        
+        .section-number {
+            font-weight: bold;
+            color: #3498db;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PureChainLib User Manual</h1>
+        <p>Version 1.0.5</p>
+        <p>Complete Guide for Zero Gas Cost Blockchain Development</p>
+    </div>
+
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#chapter1"><span class="section-number">1</span> Getting Started</a>
+                <ul>
+                    <li><a href="#1.1">1.1 System Requirements</a></li>
+                    <li><a href="#1.2">1.2 Installation</a></li>
+                    <li><a href="#1.3">1.3 Initial Setup</a></li>
+                    <li><a href="#1.4">1.4 Understanding Zero Gas Cost</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter2"><span class="section-number">2</span> Basic Operations</a>
+                <ul>
+                    <li><a href="#2.1">2.1 Connecting to PureChain</a></li>
+                    <li><a href="#2.2">2.2 Creating Transactions</a></li>
+                    <li><a href="#2.3">2.3 Mining Blocks</a></li>
+                    <li><a href="#2.4">2.4 Checking Balances</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter3"><span class="section-number">3</span> Smart Contract Development</a>
+                <ul>
+                    <li><a href="#3.1">3.1 Contract Types Overview</a></li>
+                    <li><a href="#3.2">3.2 Token Contracts</a></li>
+                    <li><a href="#3.3">3.3 NFT Contracts</a></li>
+                    <li><a href="#3.4">3.4 Escrow Contracts</a></li>
+                    <li><a href="#3.5">3.5 Voting Contracts</a></li>
+                    <li><a href="#3.6">3.6 Storage Contracts</a></li>
+                    <li><a href="#3.7">3.7 Custom Contracts</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter4"><span class="section-number">4</span> Network Configuration</a>
+                <ul>
+                    <li><a href="#4.1">4.1 Network Types</a></li>
+                    <li><a href="#4.2">4.2 Custom Networks</a></li>
+                    <li><a href="#4.3">4.3 Switching Networks</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter5"><span class="section-number">5</span> Explorer Integration</a>
+                <ul>
+                    <li><a href="#5.1">5.1 Transaction Queries</a></li>
+                    <li><a href="#5.2">5.2 Block Exploration</a></li>
+                    <li><a href="#5.3">5.3 Account Information</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter6"><span class="section-number">6</span> API Development</a>
+                <ul>
+                    <li><a href="#6.1">6.1 REST API Setup</a></li>
+                    <li><a href="#6.2">6.2 WebSocket Events</a></li>
+                    <li><a href="#6.3">6.3 Custom Endpoints</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter7"><span class="section-number">7</span> Advanced Features</a>
+                <ul>
+                    <li><a href="#7.1">7.1 Consensus Mechanisms</a></li>
+                    <li><a href="#7.2">7.2 P2P Networking</a></li>
+                    <li><a href="#7.3">7.3 Database Storage</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter8"><span class="section-number">8</span> Complete Examples</a>
+                <ul>
+                    <li><a href="#8.1">8.1 Building a DApp</a></li>
+                    <li><a href="#8.2">8.2 Token Economy</a></li>
+                    <li><a href="#8.3">8.3 NFT Marketplace</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter9"><span class="section-number">9</span> Troubleshooting</a>
+                <ul>
+                    <li><a href="#9.1">9.1 Common Issues</a></li>
+                    <li><a href="#9.2">9.2 Error Messages</a></li>
+                    <li><a href="#9.3">9.3 Performance Optimization</a></li>
+                </ul>
+            </li>
+            <li><a href="#chapter10"><span class="section-number">10</span> API Reference</a>
+                <ul>
+                    <li><a href="#10.1">10.1 PureChain Class</a></li>
+                    <li><a href="#10.2">10.2 Blockchain Methods</a></li>
+                    <li><a href="#10.3">10.3 Contract Engine</a></li>
+                    <li><a href="#10.4">10.4 Network Provider</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h1 id="chapter1"><span class="section-number">1</span> Getting Started</h1>
+
+    <h2 id="1.1">1.1 System Requirements</h2>
+    
+    <p>Before installing PureChainLib, ensure your system meets the following requirements:</p>
+    
+    <table>
+        <tr>
+            <th>Component</th>
+            <th>Minimum Version</th>
+            <th>Recommended Version</th>
+        </tr>
+        <tr>
+            <td>Node.js</td>
+            <td>16.0.0</td>
+            <td>18.0.0 or later</td>
+        </tr>
+        <tr>
+            <td>npm</td>
+            <td>8.0.0</td>
+            <td>9.0.0 or later</td>
+        </tr>
+        <tr>
+            <td>Operating System</td>
+            <td>Windows 10, macOS 10.14, Ubuntu 18.04</td>
+            <td>Latest stable versions</td>
+        </tr>
+        <tr>
+            <td>RAM</td>
+            <td>4 GB</td>
+            <td>8 GB or more</td>
+        </tr>
+        <tr>
+            <td>Disk Space</td>
+            <td>500 MB</td>
+            <td>1 GB or more</td>
+        </tr>
+    </table>
+
+    <h2 id="1.2">1.2 Installation</h2>
+    
+    <h3>Installing via npm</h3>
+    
+    <p>The recommended way to install PureChainLib is through npm:</p>
+    
+    <pre><code>npm install purechainlib</code></pre>
+    
+    <p>For global installation (to use CLI tools):</p>
+    
+    <pre><code>npm install -g purechainlib</code></pre>
+    
+    <h3>Installing from Source</h3>
+    
+    <p>To install from the source code:</p>
+    
+    <pre><code># Clone the repository
+git clone https://github.com/islarpee000/purechainlib.git
+
+# Navigate to the project directory
+cd purechainlib
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build</code></pre>
+
+    <h3>Verifying Installation</h3>
+    
+    <p>Create a test file to verify the installation:</p>
+    
+    <pre><code>// test-install.js
+const { PureChain } = require('purechainlib');
+
+console.log('PureChainLib installed successfully!');
+const purechain = new PureChain();
+console.log('PureChain instance created');</code></pre>
+    
+    <p>Run the test:</p>
+    
+    <pre><code>node test-install.js</code></pre>
+
+    <h2 id="1.3">1.3 Initial Setup</h2>
+    
+    <h3>Project Structure</h3>
+    
+    <p>Create a new project directory and initialize it:</p>
+    
+    <pre><code>mkdir my-purechain-project
+cd my-purechain-project
+npm init -y
+npm install purechainlib</code></pre>
+    
+    <h3>Basic Configuration File</h3>
+    
+    <p>Create a configuration file for your project:</p>
+    
+    <pre><code>// config.js
+module.exports = {
+  network: 'testnet', // or 'mainnet' when available
+  apiPort: 3000,
+  wsPort: 3001,
+  dataDir: './blockchain-data',
+  logLevel: 'info'
+};</code></pre>
+
+    <h3>Environment Variables</h3>
+    
+    <p>Create a <code>.env</code> file for sensitive configuration:</p>
+    
+    <pre><code># .env
+NODE_ENV=development
+API_PORT=3000
+WS_PORT=3001
+DATA_DIR=./blockchain-data
+LOG_LEVEL=info</code></pre>
+
+    <h2 id="1.4">1.4 Understanding Zero Gas Cost</h2>
+    
+    <div class="important">
+        <strong>Key Concept:</strong> PureChain operates with ZERO gas costs. This revolutionary feature means all transactions, contract deployments, and interactions are completely free.
+    </div>
+    
+    <h3>What Zero Gas Cost Means</h3>
+    
+    <table>
+        <tr>
+            <th>Operation</th>
+            <th>Traditional Blockchain</th>
+            <th>PureChain</th>
+        </tr>
+        <tr>
+            <td>Simple Transfer</td>
+            <td>$0.50 - $5.00</td>
+            <td>FREE ($0.00)</td>
+        </tr>
+        <tr>
+            <td>Token Contract Deployment</td>
+            <td>$50 - $500</td>
+            <td>FREE ($0.00)</td>
+        </tr>
+        <tr>
+            <td>NFT Minting</td>
+            <td>$10 - $100</td>
+            <td>FREE ($0.00)</td>
+        </tr>
+        <tr>
+            <td>Smart Contract Interaction</td>
+            <td>$1 - $20</td>
+            <td>FREE ($0.00)</td>
+        </tr>
+    </table>
+    
+    <h3>Implementation in Code</h3>
+    
+    <p>When using PureChainLib, you don't need to:</p>
+    <ul>
+        <li>Check wallet balance for gas</li>
+        <li>Calculate gas prices</li>
+        <li>Set gas limits</li>
+        <li>Worry about failed transactions due to insufficient gas</li>
+    </ul>
+    
+    <pre><code>// Traditional blockchain (NOT needed in PureChain)
+const gasPrice = await web3.eth.getGasPrice();
+const gasLimit = 21000;
+const totalCost = gasPrice * gasLimit;
+
+// PureChain - Simple and free!
+const result = await purechain.contractEngine.deployContract(config, deployer, 0);</code></pre>
+
+    <h1 id="chapter2"><span class="section-number">2</span> Basic Operations</h1>
+
+    <h2 id="2.1">2.1 Connecting to PureChain</h2>
+    
+    <h3>Default Connection</h3>
+    
+    <p>The simplest way to connect to PureChain:</p>
+    
+    <pre><code>const { PureChain } = require('purechainlib');
+
+async function connect() {
+  // Creates instance with default testnet configuration
+  const purechain = new PureChain();
+  
+  // Start the connection
+  await purechain.start();
+  
+  console.log('Connected to:', purechain.networkConfig.name);
+  console.log('Chain ID:', purechain.networkConfig.chainId);
+  console.log('RPC URL:', purechain.networkConfig.rpcUrl);
+  
+  // Always stop when done
+  await purechain.stop();
+}
+
+connect();</code></pre>
+
+    <h3>Custom Configuration</h3>
+    
+    <p>Connect with specific configuration options:</p>
+    
+    <pre><code>const { PureChain } = require('purechainlib');
+
+async function customConnect() {
+  const purechain = new PureChain({
+    networkConfig: 'testnet',
+    blockchain: {
+      difficulty: 2,
+      miningReward: 100
+    },
+    api: {
+      port: 3000,
+      rateLimit: {
+        windowMs: 15 * 60 * 1000,
+        max: 100
+      }
+    },
+    storage: {
+      type: 'memory'
+    }
+  });
+  
+  await purechain.start();
+  
+  // Your blockchain operations
+  
+  await purechain.stop();
+}
+
+customConnect();</code></pre>
+
+    <h3>Connection States</h3>
+    
+    <p>Monitor connection status:</p>
+    
+    <pre><code>const purechain = new PureChain();
+
+// Before connection
+console.log('Provider:', purechain.provider); // null
+
+// Start connection
+await purechain.start();
+console.log('Provider connected:', purechain.provider !== null); // true
+
+// Check network details
+if (purechain.provider) {
+  const blockNumber = await purechain.provider.getBlockNumber();
+  console.log('Current block:', blockNumber);
+}
+
+// Disconnect
+await purechain.stop();
+console.log('Provider disconnected');</code></pre>
+
+    <h2 id="2.2">2.2 Creating Transactions</h2>
+    
+    <h3>Simple Transfer Transaction</h3>
+    
+    <pre><code>const { PureChain, Transaction, TransactionType } = require('purechainlib');
+
+async function createTransfer() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Method 1: Using blockchain.createTransaction
+  purechain.blockchain.createTransaction({
+    from: 'alice',
+    to: 'bob',
+    amount: 100,
+    timestamp: Date.now()
+  });
+  
+  // Method 2: Using Transaction class
+  const tx = new Transaction({
+    from: 'alice',
+    to: 'bob',
+    amount: 100,
+    type: TransactionType.TRANSFER,
+    data: { message: 'Payment for services' }
+  });
+  
+  // Transaction properties
+  console.log('Transaction ID:', tx.id);
+  console.log('From:', tx.from);
+  console.log('To:', tx.to);
+  console.log('Amount:', tx.amount);
+  console.log('Fee:', tx.fee); // Always 0
+  console.log('Timestamp:', new Date(tx.timestamp).toISOString());
+  
+  // Add to blockchain
+  purechain.blockchain.addTransaction(tx);
+  
+  await purechain.stop();
+}
+
+createTransfer();</code></pre>
+
+    <h3>Transaction Types</h3>
+    
+    <p>PureChain supports multiple transaction types:</p>
+    
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Purpose</th>
+            <th>Required Fields</th>
+        </tr>
+        <tr>
+            <td>TRANSFER</td>
+            <td>Send funds between addresses</td>
+            <td>from, to, amount</td>
+        </tr>
+        <tr>
+            <td>CONTRACT_CREATION</td>
+            <td>Deploy new smart contract</td>
+            <td>from, data (contract code)</td>
+        </tr>
+        <tr>
+            <td>CONTRACT_CALL</td>
+            <td>Interact with smart contract</td>
+            <td>from, to (contract), data (method)</td>
+        </tr>
+        <tr>
+            <td>STAKE</td>
+            <td>Stake tokens for PoS</td>
+            <td>from, amount, data (duration)</td>
+        </tr>
+        <tr>
+            <td>UNSTAKE</td>
+            <td>Remove staked tokens</td>
+            <td>from, amount</td>
+        </tr>
+    </table>
+
+    <h3>Batch Transactions</h3>
+    
+    <pre><code>async function batchTransactions() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Create multiple transactions
+  const transactions = [
+    { from: 'alice', to: 'bob', amount: 50 },
+    { from: 'alice', to: 'charlie', amount: 30 },
+    { from: 'bob', to: 'david', amount: 20 },
+    { from: 'charlie', to: 'eve', amount: 10 }
+  ];
+  
+  // Add all transactions to pending pool
+  transactions.forEach(tx => {
+    purechain.blockchain.createTransaction({
+      ...tx,
+      timestamp: Date.now()
+    });
+  });
+  
+  console.log('Pending transactions:', purechain.blockchain.pendingTransactions.length);
+  
+  // Mine all transactions in one block
+  await purechain.blockchain.minePendingTransactions('miner');
+  
+  console.log('All transactions processed!');
+  console.log('Total gas cost: 0');
+  
+  await purechain.stop();
+}
+
+batchTransactions();</code></pre>
+
+    <h2 id="2.3">2.3 Mining Blocks</h2>
+    
+    <h3>Manual Mining</h3>
+    
+    <pre><code>async function mineBlocks() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Add some transactions
+  purechain.blockchain.createTransaction({
+    from: 'alice',
+    to: 'bob',
+    amount: 100,
+    timestamp: Date.now()
+  });
+  
+  console.log('Before mining:');
+  console.log('Pending transactions:', purechain.blockchain.pendingTransactions.length);
+  console.log('Chain length:', purechain.blockchain.chain.length);
+  
+  // Mine the block
+  const minerAddress = 'miner1';
+  await purechain.blockchain.minePendingTransactions(minerAddress);
+  
+  console.log('\\nAfter mining:');
+  console.log('Pending transactions:', purechain.blockchain.pendingTransactions.length);
+  console.log('Chain length:', purechain.blockchain.chain.length);
+  console.log('Miner reward:', purechain.blockchain.getBalance(minerAddress));
+  
+  // Get the latest block
+  const latestBlock = purechain.blockchain.getLatestBlock();
+  console.log('\\nLatest block:');
+  console.log('Index:', latestBlock.index);
+  console.log('Hash:', latestBlock.hash);
+  console.log('Transactions:', latestBlock.transactions.length);
+  console.log('Timestamp:', new Date(latestBlock.timestamp).toISOString());
+  
+  await purechain.stop();
+}
+
+mineBlocks();</code></pre>
+
+    <h3>Automatic Mining</h3>
+    
+    <pre><code>async function autoMining() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  let blocksMined = 0;
+  const minerAddress = 'autoMiner';
+  
+  // Set up automatic mining every 10 seconds
+  const miningInterval = setInterval(async () => {
+    if (purechain.blockchain.pendingTransactions.length > 0) {
+      console.log(`Mining block #${blocksMined + 1}...`);
+      await purechain.blockchain.minePendingTransactions(minerAddress);
+      blocksMined++;
+      console.log(`Block mined! Total blocks: ${blocksMined}`);
+    }
+  }, 10000); // 10 seconds
+  
+  // Simulate transactions
+  const users = ['alice', 'bob', 'charlie', 'david', 'eve'];
+  
+  const txInterval = setInterval(() => {
+    const from = users[Math.floor(Math.random() * users.length)];
+    const to = users[Math.floor(Math.random() * users.length)];
+    if (from !== to) {
+      purechain.blockchain.createTransaction({
+        from,
+        to,
+        amount: Math.floor(Math.random() * 100) + 1,
+        timestamp: Date.now()
+      });
+      console.log(`Transaction: ${from} -> ${to}`);
+    }
+  }, 3000); // Every 3 seconds
+  
+  // Run for 1 minute
+  setTimeout(async () => {
+    clearInterval(miningInterval);
+    clearInterval(txInterval);
+    
+    console.log('\\nMining Summary:');
+    console.log('Total blocks mined:', blocksMined);
+    console.log('Miner balance:', purechain.blockchain.getBalance(minerAddress));
+    console.log('Chain valid:', purechain.blockchain.isChainValid());
+    
+    await purechain.stop();
+  }, 60000);
+}
+
+autoMining();</code></pre>
+
+    <h2 id="2.4">2.4 Checking Balances</h2>
+    
+    <h3>Individual Balance Check</h3>
+    
+    <pre><code>async function checkBalance() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Create some transactions
+  purechain.blockchain.createTransaction({
+    from: 'genesis',
+    to: 'alice',
+    amount: 1000,
+    timestamp: Date.now()
+  });
+  
+  purechain.blockchain.createTransaction({
+    from: 'genesis',
+    to: 'bob',
+    amount: 500,
+    timestamp: Date.now()
+  });
+  
+  // Mine the transactions
+  await purechain.blockchain.minePendingTransactions('miner');
+  
+  // Check balances
+  const aliceBalance = purechain.blockchain.getBalance('alice');
+  const bobBalance = purechain.blockchain.getBalance('bob');
+  const minerBalance = purechain.blockchain.getBalance('miner');
+  
+  console.log('Balances:');
+  console.log('Alice:', aliceBalance);
+  console.log('Bob:', bobBalance);
+  console.log('Miner:', minerBalance);
+  
+  await purechain.stop();
+}
+
+checkBalance();</code></pre>
+
+    <h3>Balance History</h3>
+    
+    <pre><code>async function balanceHistory() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  const address = 'alice';
+  const history = [];
+  
+  // Transaction 1
+  purechain.blockchain.createTransaction({
+    from: 'genesis',
+    to: address,
+    amount: 1000,
+    timestamp: Date.now()
+  });
+  await purechain.blockchain.minePendingTransactions('miner');
+  history.push({
+    block: purechain.blockchain.chain.length - 1,
+    balance: purechain.blockchain.getBalance(address)
+  });
+  
+  // Transaction 2
+  purechain.blockchain.createTransaction({
+    from: address,
+    to: 'bob',
+    amount: 300,
+    timestamp: Date.now()
+  });
+  await purechain.blockchain.minePendingTransactions('miner');
+  history.push({
+    block: purechain.blockchain.chain.length - 1,
+    balance: purechain.blockchain.getBalance(address)
+  });
+  
+  // Transaction 3
+  purechain.blockchain.createTransaction({
+    from: 'charlie',
+    to: address,
+    amount: 150,
+    timestamp: Date.now()
+  });
+  await purechain.blockchain.minePendingTransactions('miner');
+  history.push({
+    block: purechain.blockchain.chain.length - 1,
+    balance: purechain.blockchain.getBalance(address)
+  });
+  
+  console.log(`Balance history for ${address}:`);
+  history.forEach(entry => {
+    console.log(`Block #${entry.block}: ${entry.balance}`);
+  });
+  
+  await purechain.stop();
+}
+
+balanceHistory();</code></pre>
+
+    <h3>Multiple Address Balances</h3>
+    
+    <pre><code>async function multipleBalances() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Setup initial distribution
+  const initialDistribution = [
+    { to: 'alice', amount: 1000 },
+    { to: 'bob', amount: 750 },
+    { to: 'charlie', amount: 500 },
+    { to: 'david', amount: 250 },
+    { to: 'eve', amount: 100 }
+  ];
+  
+  // Create distribution transactions
+  initialDistribution.forEach(dist => {
+    purechain.blockchain.createTransaction({
+      from: 'genesis',
+      to: dist.to,
+      amount: dist.amount,
+      timestamp: Date.now()
+    });
+  });
+  
+  // Mine the distribution
+  await purechain.blockchain.minePendingTransactions('miner');
+  
+  // Check all balances
+  const addresses = ['alice', 'bob', 'charlie', 'david', 'eve', 'miner'];
+  const balances = {};
+  
+  addresses.forEach(addr => {
+    balances[addr] = purechain.blockchain.getBalance(addr);
+  });
+  
+  // Display as table
+  console.log('\\nAccount Balances:');
+  console.log('==================');
+  Object.entries(balances).forEach(([addr, balance]) => {
+    console.log(`${addr.padEnd(10)} : ${balance}`);
+  });
+  
+  // Calculate total supply
+  const totalSupply = Object.values(balances).reduce((sum, bal) => sum + bal, 0);
+  console.log('==================');
+  console.log(`Total      : ${totalSupply}`);
+  
+  await purechain.stop();
+}
+
+multipleBalances();</code></pre>
+
+    <h1 id="chapter3"><span class="section-number">3</span> Smart Contract Development</h1>
+
+    <h2 id="3.1">3.1 Contract Types Overview</h2>
+    
+    <p>PureChain provides five pre-built contract types and support for custom contracts:</p>
+    
+    <table>
+        <tr>
+            <th>Contract Type</th>
+            <th>Use Case</th>
+            <th>Key Features</th>
+        </tr>
+        <tr>
+            <td>TOKEN</td>
+            <td>Fungible tokens (like ERC-20)</td>
+            <td>Transfer, Approve, Mint, Burn</td>
+        </tr>
+        <tr>
+            <td>NFT</td>
+            <td>Non-fungible tokens</td>
+            <td>Mint, Transfer, Metadata, Collections</td>
+        </tr>
+        <tr>
+            <td>ESCROW</td>
+            <td>Secure payment holding</td>
+            <td>Create, Release, Refund, Dispute</td>
+        </tr>
+        <tr>
+            <td>VOTING</td>
+            <td>Governance and decisions</td>
+            <td>Proposals, Vote, Tally, Execute</td>
+        </tr>
+        <tr>
+            <td>STORAGE</td>
+            <td>On-chain data storage</td>
+            <td>Set, Get, Delete, Access Control</td>
+        </tr>
+        <tr>
+            <td>CUSTOM</td>
+            <td>User-defined logic</td>
+            <td>Fully customizable</td>
+        </tr>
+    </table>
+
+    <h2 id="3.2">3.2 Token Contracts</h2>
+    
+    <h3>Deploying a Token Contract</h3>
+    
+    <pre><code>const { PureChain, ContractType } = require('purechainlib');
+
+async function deployToken() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Token configuration
+  const tokenConfig = {
+    type: ContractType.TOKEN,
+    name: 'MyToken',
+    symbol: 'MTK',
+    initialSupply: 1000000,
+    decimals: 18,
+    metadata: {
+      description: 'My custom token on PureChain',
+      website: 'https://mytoken.com',
+      whitepaper: 'https://mytoken.com/whitepaper.pdf'
+    }
+  };
+  
+  // Deploy the token (FREE - no gas cost!)
+  const deployerAddress = 'tokenDeployer';
+  const deployerBalance = 0; // No balance needed for gas!
+  
+  const result = await purechain.contractEngine.deployContract(
+    tokenConfig,
+    deployerAddress,
+    deployerBalance
+  );
+  
+  if (result.success) {
+    console.log('Token deployed successfully!');
+    console.log('Contract address:', result.contractAddress);
+    console.log('Deployment cost:', result.deploymentCost); // Always 0
+    console.log('Transaction ID:', result.transactionId);
+    
+    // Store the contract for later use
+    const tokenContract = result.contract;
+    
+    // Check initial supply
+    const totalSupply = tokenContract.execute('totalSupply', [], deployerAddress);
+    console.log('Total supply:', totalSupply.result);
+    
+    const deployerTokenBalance = tokenContract.execute('balanceOf', [deployerAddress], 'anyone');
+    console.log('Deployer balance:', deployerTokenBalance.result);
+  } else {
+    console.log('Deployment failed:', result.error);
+  }
+  
+  await purechain.stop();
+}
+
+deployToken();</code></pre>
+
+    <h3>Token Operations</h3>
+    
+    <pre><code>async function tokenOperations() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy token first
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.TOKEN,
+    name: 'TestToken',
+    symbol: 'TEST',
+    initialSupply: 1000000,
+    decimals: 18
+  }, 'owner', 0);
+  
+  if (result.success) {
+    const token = result.contract;
+    
+    // 1. Transfer tokens
+    console.log('\\n--- Transfer Operation ---');
+    const transferResult = token.execute('transfer', ['alice', 1000], 'owner');
+    console.log('Transfer to Alice:', transferResult.success);
+    
+    // 2. Check balance
+    const aliceBalance = token.execute('balanceOf', ['alice'], 'anyone');
+    console.log('Alice balance:', aliceBalance.result);
+    
+    // 3. Approve spending
+    console.log('\\n--- Approval Operation ---');
+    const approveResult = token.execute('approve', ['bob', 500], 'alice');
+    console.log('Alice approved Bob:', approveResult.success);
+    
+    // 4. Check allowance
+    const allowance = token.execute('allowance', ['alice', 'bob'], 'anyone');
+    console.log('Bob allowance from Alice:', allowance.result);
+    
+    // 5. Transfer from (using allowance)
+    console.log('\\n--- TransferFrom Operation ---');
+    const transferFromResult = token.execute('transferFrom', ['alice', 'charlie', 200], 'bob');
+    console.log('Bob transferred from Alice to Charlie:', transferFromResult.success);
+    
+    // 6. Mint new tokens (if mintable)
+    console.log('\\n--- Minting Operation ---');
+    const mintResult = token.execute('mint', ['david', 5000], 'owner');
+    console.log('Minted to David:', mintResult.success);
+    
+    // 7. Burn tokens
+    console.log('\\n--- Burning Operation ---');
+    const burnResult = token.execute('burn', [100], 'alice');
+    console.log('Alice burned tokens:', burnResult.success);
+    
+    // Final balances
+    console.log('\\n--- Final Balances ---');
+    const addresses = ['owner', 'alice', 'bob', 'charlie', 'david'];
+    addresses.forEach(addr => {
+      const bal = token.execute('balanceOf', [addr], 'anyone');
+      console.log(`${addr}: ${bal.result}`);
+    });
+  }
+  
+  await purechain.stop();
+}
+
+tokenOperations();</code></pre>
+
+    <h3>Advanced Token Features</h3>
+    
+    <pre><code>async function advancedTokenFeatures() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy token with advanced features
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.TOKEN,
+    name: 'AdvancedToken',
+    symbol: 'ADV',
+    initialSupply: 10000000,
+    decimals: 18,
+    metadata: {
+      // Tokenomics
+      maxSupply: 100000000,
+      mintable: true,
+      burnable: true,
+      pausable: true,
+      
+      // Vesting schedule
+      vestingEnabled: true,
+      vestingSchedule: [
+        { recipient: 'team', amount: 1000000, releaseTime: Date.now() + 365 * 24 * 60 * 60 * 1000 },
+        { recipient: 'advisors', amount: 500000, releaseTime: Date.now() + 180 * 24 * 60 * 60 * 1000 }
+      ],
+      
+      // Tax/Fee structure
+      transferFee: 0, // No fees on PureChain!
+      
+      // Governance
+      governanceEnabled: true,
+      proposalThreshold: 100000,
+      votingPeriod: 7 * 24 * 60 * 60 * 1000 // 7 days
+    }
+  }, 'owner', 0);
+  
+  if (result.success) {
+    const token = result.contract;
+    
+    // Pause transfers
+    token.execute('pause', [], 'owner');
+    console.log('Token paused');
+    
+    // Try transfer while paused (should fail)
+    const pausedTransfer = token.execute('transfer', ['alice', 100], 'owner');
+    console.log('Transfer while paused:', pausedTransfer.success); // false
+    
+    // Unpause
+    token.execute('unpause', [], 'owner');
+    console.log('Token unpaused');
+    
+    // Now transfer works
+    const unpausedTransfer = token.execute('transfer', ['alice', 100], 'owner');
+    console.log('Transfer after unpause:', unpausedTransfer.success); // true
+    
+    // Check vesting
+    const vestingInfo = token.execute('getVestingInfo', ['team'], 'anyone');
+    console.log('Team vesting info:', vestingInfo.result);
+    
+    // Create governance proposal
+    const proposal = token.execute('createProposal', [
+      'Increase max supply to 200M',
+      'INCREASE_MAX_SUPPLY',
+      200000000
+    ], 'owner');
+    console.log('Proposal created:', proposal.result);
+  }
+  
+  await purechain.stop();
+}
+
+advancedTokenFeatures();</code></pre>
+
+    <h2 id="3.3">3.3 NFT Contracts</h2>
+    
+    <h3>Deploying NFT Collection</h3>
+    
+    <pre><code>async function deployNFTCollection() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  const nftConfig = {
+    type: ContractType.NFT,
+    name: 'CryptoArt Collection',
+    metadata: {
+      description: 'Unique digital art on PureChain',
+      maxSupply: 10000,
+      baseURI: 'https://api.cryptoart.com/metadata/',
+      royaltyPercentage: 5, // 5% royalty on secondary sales
+      artist: 'artistAddress',
+      
+      // Collection traits
+      traits: [
+        { name: 'Background', options: ['Blue', 'Red', 'Green', 'Purple'] },
+        { name: 'Style', options: ['Abstract', 'Realistic', 'Surreal'] },
+        { name: 'Rarity', options: ['Common', 'Rare', 'Epic', 'Legendary'] }
+      ]
+    }
+  };
+  
+  const result = await purechain.contractEngine.deployContract(
+    nftConfig,
+    'artistAddress',
+    0
+  );
+  
+  if (result.success) {
+    console.log('NFT Collection deployed:', result.contractAddress);
+    console.log('Gas cost:', result.deploymentCost); // 0
+  }
+  
+  await purechain.stop();
+}
+
+deployNFTCollection();</code></pre>
+
+    <h3>Minting NFTs</h3>
+    
+    <pre><code>async function mintNFTs() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy NFT collection
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.NFT,
+    name: 'Digital Collectibles'
+  }, 'creator', 0);
+  
+  if (result.success) {
+    const nftContract = result.contract;
+    
+    // Mint single NFT
+    const mintResult = nftContract.execute('mintNFT', [
+      'collector1', // recipient
+      {
+        tokenId: 1,
+        name: 'Genesis #1',
+        description: 'The first NFT in the collection',
+        image: 'ipfs://QmXxx...',
+        attributes: [
+          { trait_type: 'Generation', value: 1 },
+          { trait_type: 'Rarity', value: 'Legendary' },
+          { trait_type: 'Power', value: 100 }
+        ],
+        animation_url: 'ipfs://QmYyy...',
+        external_url: 'https://collection.com/token/1'
+      }
+    ], 'creator');
+    
+    console.log('NFT #1 minted:', mintResult.success);
+    
+    // Batch mint NFTs
+    console.log('\\nBatch minting NFTs...');
+    for (let i = 2; i <= 10; i++) {
+      const batchMint = nftContract.execute('mintNFT', [
+        'collector2',
+        {
+          tokenId: i,
+          name: `Collectible #${i}`,
+          description: `NFT number ${i} in the series`,
+          image: `ipfs://Qm${i}...`,
+          attributes: [
+            { trait_type: 'Generation', value: 1 },
+            { trait_type: 'Number', value: i },
+            { trait_type: 'Rarity', value: i <= 3 ? 'Rare' : 'Common' }
+          ]
+        }
+      ], 'creator');
+      
+      console.log(`NFT #${i} minted:`, batchMint.success);
+    }
+    
+    // Check ownership
+    const owner1 = nftContract.execute('ownerOf', [1], 'anyone');
+    console.log('\\nOwner of NFT #1:', owner1.result);
+    
+    const balance = nftContract.execute('balanceOf', ['collector2'], 'anyone');
+    console.log('Collector2 owns:', balance.result, 'NFTs');
+    
+    // Get NFT metadata
+    const metadata = nftContract.execute('tokenURI', [1], 'anyone');
+    console.log('\\nNFT #1 metadata:', metadata.result);
+  }
+  
+  await purechain.stop();
+}
+
+mintNFTs();</code></pre>
+
+    <h3>NFT Marketplace Operations</h3>
+    
+    <pre><code>async function nftMarketplace() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy NFT and marketplace contracts
+  const nftResult = await purechain.contractEngine.deployContract({
+    type: ContractType.NFT,
+    name: 'Marketplace NFTs'
+  }, 'marketplace', 0);
+  
+  if (nftResult.success) {
+    const nft = nftResult.contract;
+    
+    // Mint NFTs to different users
+    nft.execute('mintNFT', ['seller1', { tokenId: 1, name: 'Art #1' }], 'marketplace');
+    nft.execute('mintNFT', ['seller2', { tokenId: 2, name: 'Art #2' }], 'marketplace');
+    
+    // List NFT for sale
+    console.log('\\n--- Listing NFTs ---');
+    const listing1 = nft.execute('listForSale', [1, 1000], 'seller1');
+    console.log('NFT #1 listed for 1000:', listing1.success);
+    
+    const listing2 = nft.execute('listForSale', [2, 1500], 'seller2');
+    console.log('NFT #2 listed for 1500:', listing2.success);
+    
+    // View listings
+    const listings = nft.execute('getListings', [], 'anyone');
+    console.log('\\nActive listings:', listings.result);
+    
+    // Buy NFT (transfer happens automatically, no gas!)
+    console.log('\\n--- Purchasing NFT ---');
+    const purchase = nft.execute('buyNFT', [1], 'buyer1');
+    console.log('NFT #1 purchased:', purchase.success);
+    
+    // Check new ownership
+    const newOwner = nft.execute('ownerOf', [1], 'anyone');
+    console.log('New owner of NFT #1:', newOwner.result);
+    
+    // Transfer NFT
+    console.log('\\n--- Transfer NFT ---');
+    const transfer = nft.execute('transferFrom', ['buyer1', 'collector', 1], 'buyer1');
+    console.log('NFT transferred:', transfer.success);
+    
+    // Approve another user to transfer
+    console.log('\\n--- Approval ---');
+    const approve = nft.execute('approve', ['agent', 2], 'seller2');
+    console.log('Agent approved for NFT #2:', approve.success);
+    
+    // Agent transfers on behalf
+    const agentTransfer = nft.execute('transferFrom', ['seller2', 'finalOwner', 2], 'agent');
+    console.log('Agent transferred NFT #2:', agentTransfer.success);
+  }
+  
+  await purechain.stop();
+}
+
+nftMarketplace();</code></pre>
+
+    <h2 id="3.4">3.4 Escrow Contracts</h2>
+    
+    <h3>Creating Escrow Agreements</h3>
+    
+    <pre><code>async function createEscrow() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy escrow contract
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.ESCROW,
+    name: 'Secure Escrow Service',
+    metadata: {
+      description: 'Trustless escrow on PureChain',
+      arbitrator: 'arbitratorAddress',
+      fee: 0, // No fees on PureChain!
+      disputeWindow: 3 * 24 * 60 * 60 * 1000 // 3 days
+    }
+  }, 'escrowService', 0);
+  
+  if (result.success) {
+    const escrow = result.contract;
+    
+    // Create an escrow agreement
+    const createResult = escrow.execute('createEscrow', [
+      'buyer123',      // buyer
+      'seller456',     // seller
+      5000,           // amount
+      Date.now() + 7 * 24 * 60 * 60 * 1000, // deadline (7 days)
+      'Purchase of digital goods'  // description
+    ], 'escrowService');
+    
+    console.log('Escrow created:', createResult.success);
+    console.log('Escrow ID:', createResult.result);
+    
+    const escrowId = createResult.result;
+    
+    // Check escrow details
+    const details = escrow.execute('getEscrowDetails', [escrowId], 'anyone');
+    console.log('\\nEscrow Details:');
+    console.log('Buyer:', details.result.buyer);
+    console.log('Seller:', details.result.seller);
+    console.log('Amount:', details.result.amount);
+    console.log('Status:', details.result.status);
+    console.log('Deadline:', new Date(details.result.deadline).toISOString());
+  }
+  
+  await purechain.stop();
+}
+
+createEscrow();</code></pre>
+
+    <h3>Escrow Workflow</h3>
+    
+    <pre><code>async function escrowWorkflow() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy escrow
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.ESCROW,
+    name: 'Escrow Platform'
+  }, 'platform', 0);
+  
+  if (result.success) {
+    const escrow = result.contract;
+    
+    // Step 1: Create escrow
+    console.log('Step 1: Creating escrow...');
+    const create = escrow.execute('createEscrow', [
+      'buyer',
+      'seller',
+      1000,
+      Date.now() + 86400000,
+      'Service payment'
+    ], 'platform');
+    
+    const escrowId = create.result;
+    console.log('Escrow ID:', escrowId);
+    
+    // Step 2: Buyer deposits funds (in real implementation)
+    console.log('\\nStep 2: Buyer depositing funds...');
+    const deposit = escrow.execute('deposit', [escrowId, 1000], 'buyer');
+    console.log('Deposit successful:', deposit.success);
+    
+    // Step 3: Seller delivers service/product
+    console.log('\\nStep 3: Seller marking as delivered...');
+    const deliver = escrow.execute('markDelivered', [escrowId], 'seller');
+    console.log('Marked as delivered:', deliver.success);
+    
+    // Step 4: Buyer confirms receipt
+    console.log('\\nStep 4: Buyer confirming receipt...');
+    const confirm = escrow.execute('confirmReceipt', [escrowId], 'buyer');
+    console.log('Receipt confirmed:', confirm.success);
+    
+    // Step 5: Funds released to seller
+    console.log('\\nStep 5: Releasing funds...');
+    const release = escrow.execute('releaseFunds', [escrowId], 'platform');
+    console.log('Funds released:', release.success);
+    
+    // Check final status
+    const finalStatus = escrow.execute('getEscrowDetails', [escrowId], 'anyone');
+    console.log('\\nFinal status:', finalStatus.result.status);
+    console.log('Transaction completed with 0 gas fees!');
+  }
+  
+  await purechain.stop();
+}
+
+escrowWorkflow();</code></pre>
+
+    <h3>Dispute Resolution</h3>
+    
+    <pre><code>async function escrowDispute() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.ESCROW,
+    name: 'Dispute Resolution'
+  }, 'arbitrator', 0);
+  
+  if (result.success) {
+    const escrow = result.contract;
+    
+    // Create escrow
+    const create = escrow.execute('createEscrow', [
+      'buyer',
+      'seller',
+      2000,
+      Date.now() + 86400000,
+      'Disputed transaction'
+    ], 'arbitrator');
+    
+    const escrowId = create.result;
+    
+    // Simulate dispute scenario
+    console.log('Creating dispute scenario...');
+    
+    // Buyer deposits
+    escrow.execute('deposit', [escrowId, 2000], 'buyer');
+    
+    // Seller claims delivery
+    escrow.execute('markDelivered', [escrowId], 'seller');
+    
+    // Buyer raises dispute instead of confirming
+    console.log('\\nBuyer raising dispute...');
+    const dispute = escrow.execute('raiseDispute', [
+      escrowId,
+      'Product not as described'
+    ], 'buyer');
+    console.log('Dispute raised:', dispute.success);
+    
+    // Seller responds to dispute
+    console.log('\\nSeller responding to dispute...');
+    const response = escrow.execute('respondToDispute', [
+      escrowId,
+      'Product was delivered as agreed'
+    ], 'seller');
+    console.log('Response submitted:', response.success);
+    
+    // Arbitrator reviews and decides
+    console.log('\\nArbitrator making decision...');
+    
+    // Option 1: Rule in favor of buyer (refund)
+    const refund = escrow.execute('resolveDispute', [
+      escrowId,
+      'REFUND',
+      'Evidence supports buyer claim'
+    ], 'arbitrator');
+    console.log('Dispute resolved with refund:', refund.success);
+    
+    // Option 2: Rule in favor of seller (release)
+    // const release = escrow.execute('resolveDispute', [
+    //   escrowId,
+    //   'RELEASE',
+    //   'Seller fulfilled obligations'
+    // ], 'arbitrator');
+    
+    // Option 3: Split decision
+    // const split = escrow.execute('resolveDispute', [
+    //   escrowId,
+    //   'SPLIT',
+    //   'Partial fulfillment',
+    //   { buyerAmount: 1000, sellerAmount: 1000 }
+    // ], 'arbitrator');
+    
+    // Check final status
+    const status = escrow.execute('getEscrowDetails', [escrowId], 'anyone');
+    console.log('\\nFinal escrow status:', status.result.status);
+    console.log('Resolution:', status.result.resolution);
+  }
+  
+  await purechain.stop();
+}
+
+escrowDispute();</code></pre>
+
+    <h2 id="3.5">3.5 Voting Contracts</h2>
+    
+    <h3>Creating Proposals</h3>
+    
+    <pre><code>async function createVotingProposal() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy voting contract
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.VOTING,
+    name: 'DAO Governance',
+    metadata: {
+      description: 'Decentralized governance system',
+      quorum: 100, // Minimum votes needed
+      votingPeriod: 7 * 24 * 60 * 60 * 1000, // 7 days
+      proposalThreshold: 10, // Min tokens to create proposal
+      voteWeight: 'TOKEN_BASED' // or 'ONE_PERSON_ONE_VOTE'
+    }
+  }, 'daoAdmin', 0);
+  
+  if (result.success) {
+    const voting = result.contract;
+    
+    // Create proposal
+    const proposal = voting.execute('createProposal', [
+      'Should we implement feature X?',
+      'This proposal suggests implementing feature X which will improve...',
+      ['Yes', 'No', 'Abstain'], // Options
+      Date.now() + 7 * 24 * 60 * 60 * 1000 // End time
+    ], 'proposer');
+    
+    console.log('Proposal created!');
+    console.log('Proposal ID:', proposal.result);
+    
+    // Get proposal details
+    const details = voting.execute('getProposal', [proposal.result], 'anyone');
+    console.log('\\nProposal Details:');
+    console.log('Title:', details.result.title);
+    console.log('Options:', details.result.options);
+    console.log('End time:', new Date(details.result.endTime).toISOString());
+    console.log('Status:', details.result.status);
+  }
+  
+  await purechain.stop();
+}
+
+createVotingProposal();</code></pre>
+
+    <h3>Voting Process</h3>
+    
+    <pre><code>async function votingProcess() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy voting contract
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.VOTING,
+    name: 'Community Voting'
+  }, 'admin', 0);
+  
+  if (result.success) {
+    const voting = result.contract;
+    
+    // Create multiple proposals
+    console.log('Creating proposals...');
+    
+    const proposal1 = voting.execute('createProposal', [
+      'Increase rewards by 20%?',
+      'Should we increase staking rewards?',
+      ['Yes', 'No'],
+      Date.now() + 3600000 // 1 hour
+    ], 'admin');
+    
+    const proposal2 = voting.execute('createProposal', [
+      'Add new feature?',
+      'Should we add feature Y?',
+      ['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'],
+      Date.now() + 7200000 // 2 hours
+    ], 'admin');
+    
+    console.log('Proposal 1 ID:', proposal1.result);
+    console.log('Proposal 2 ID:', proposal2.result);
+    
+    // Simulate voting
+    console.log('\\nSimulating votes...');
+    
+    const voters = ['alice', 'bob', 'charlie', 'david', 'eve'];
+    
+    // Vote on proposal 1
+    voters.forEach((voter, index) => {
+      const vote = voting.execute('vote', [
+        proposal1.result,
+        index % 2 === 0 ? 0 : 1 // Alternate Yes/No
+      ], voter);
+      console.log(`${voter} voted:`, vote.success);
+    });
+    
+    // Vote on proposal 2
+    voters.forEach((voter, index) => {
+      const vote = voting.execute('vote', [
+        proposal2.result,
+        index // Different option for each
+      ], voter);
+      console.log(`${voter} voted on P2:`, vote.success);
+    });
+    
+    // Check current results
+    console.log('\\nCurrent Results:');
+    
+    const results1 = voting.execute('getResults', [proposal1.result], 'anyone');
+    console.log('Proposal 1 results:', results1.result);
+    
+    const results2 = voting.execute('getResults', [proposal2.result], 'anyone');
+    console.log('Proposal 2 results:', results2.result);
+    
+    // Check if user has voted
+    const hasVoted = voting.execute('hasVoted', [proposal1.result, 'alice'], 'anyone');
+    console.log('\\nAlice has voted on P1:', hasVoted.result);
+    
+    // Get all active proposals
+    const activeProposals = voting.execute('getActiveProposals', [], 'anyone');
+    console.log('\\nActive proposals:', activeProposals.result.length);
+  }
+  
+  await purechain.stop();
+}
+
+votingProcess();</code></pre>
+
+    <h2 id="3.6">3.6 Storage Contracts</h2>
+    
+    <h3>Key-Value Storage</h3>
+    
+    <pre><code>async function keyValueStorage() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy storage contract
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.STORAGE,
+    name: 'Data Vault',
+    metadata: {
+      description: 'Decentralized storage on PureChain',
+      maxSize: 1000000, // Max storage size in bytes
+      accessControl: true,
+      encryption: false // Handle encryption client-side
+    }
+  }, 'storageOwner', 0);
+  
+  if (result.success) {
+    const storage = result.contract;
+    
+    // Store different data types
+    console.log('Storing data...');
+    
+    // String data
+    storage.execute('set', ['username', 'alice123'], 'user1');
+    
+    // Number data
+    storage.execute('set', ['score', 9500], 'user1');
+    
+    // Object data
+    storage.execute('set', ['profile', {
+      name: 'Alice',
+      age: 28,
+      email: 'alice@example.com',
+      preferences: {
+        theme: 'dark',
+        notifications: true
+      }
+    }], 'user1');
+    
+    // Array data
+    storage.execute('set', ['achievements', [
+      'First Login',
+      'Profile Complete',
+      '100 Transactions'
+    ]], 'user1');
+    
+    // Retrieve data
+    console.log('\\nRetrieving data...');
+    
+    const username = storage.execute('get', ['username'], 'anyone');
+    console.log('Username:', username.result);
+    
+    const profile = storage.execute('get', ['profile'], 'anyone');
+    console.log('Profile:', profile.result);
+    
+    const achievements = storage.execute('get', ['achievements'], 'anyone');
+    console.log('Achievements:', achievements.result);
+    
+    // Update data
+    console.log('\\nUpdating data...');
+    storage.execute('set', ['score', 10000], 'user1');
+    const newScore = storage.execute('get', ['score'], 'anyone');
+    console.log('Updated score:', newScore.result);
+    
+    // Delete data
+    console.log('\\nDeleting data...');
+    storage.execute('delete', ['username'], 'user1');
+    const deleted = storage.execute('get', ['username'], 'anyone');
+    console.log('After deletion:', deleted.result); // null or undefined
+    
+    // List all keys
+    const keys = storage.execute('listKeys', [], 'user1');
+    console.log('\\nAll keys:', keys.result);
+  }
+  
+  await purechain.stop();
+}
+
+keyValueStorage();</code></pre>
+
+    <h3>Access Control</h3>
+    
+    <pre><code>async function storageAccessControl() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  const result = await purechain.contractEngine.deployContract({
+    type: ContractType.STORAGE,
+    name: 'Private Storage'
+  }, 'admin', 0);
+  
+  if (result.success) {
+    const storage = result.contract;
+    
+    // Set private data
+    console.log('Setting private data...');
+    storage.execute('setPrivate', ['secret', 'my-secret-data'], 'owner');
+    
+    // Try to read as different user (should fail)
+    const unauthorized = storage.execute('get', ['secret'], 'hacker');
+    console.log('Unauthorized access:', unauthorized.success); // false
+    
+    // Grant access to specific user
+    console.log('\\nGranting access...');
+    storage.execute('grantAccess', ['secret', 'trustedUser'], 'owner');
+    
+    // Now trusted user can read
+    const authorized = storage.execute('get', ['secret'], 'trustedUser');
+    console.log('Authorized access:', authorized.result);
+    
+    // Revoke access
+    console.log('\\nRevoking access...');
+    storage.execute('revokeAccess', ['secret', 'trustedUser'], 'owner');
+    
+    // Access revoked
+    const revoked = storage.execute('get', ['secret'], 'trustedUser');
+    console.log('After revocation:', revoked.success); // false
+    
+    // Set public data
+    console.log('\\nSetting public data...');
+    storage.execute('setPublic', ['announcement', 'Hello World!'], 'owner');
+    
+    // Anyone can read public data
+    const publicData = storage.execute('get', ['announcement'], 'anyone');
+    console.log('Public data:', publicData.result);
+  }
+  
+  await purechain.stop();
+}
+
+storageAccessControl();</code></pre>
+
+    <h2 id="3.7">3.7 Custom Contracts</h2>
+    
+    <h3>Creating Custom Logic</h3>
+    
+    <pre><code>async function customContract() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Define custom contract
+  const customConfig = {
+    type: ContractType.CUSTOM,
+    name: 'GameContract',
+    metadata: {
+      description: 'Custom game logic contract',
+      version: '1.0.0'
+    },
+    customMethods: {
+      // Initialize game
+      initGame: (params, state, caller) => {
+        const [gameName, maxPlayers] = params;
+        state.games = state.games || {};
+        state.games[gameName] = {
+          creator: caller,
+          maxPlayers,
+          players: [],
+          status: 'WAITING',
+          createdAt: Date.now()
+        };
+        return { success: true, gameId: gameName };
+      },
+      
+      // Join game
+      joinGame: (params, state, caller) => {
+        const [gameId] = params;
+        const game = state.games?.[gameId];
+        
+        if (!game) return { success: false, error: 'Game not found' };
+        if (game.players.includes(caller)) return { success: false, error: 'Already joined' };
+        if (game.players.length >= game.maxPlayers) return { success: false, error: 'Game full' };
+        
+        game.players.push(caller);
+        if (game.players.length === game.maxPlayers) {
+          game.status = 'IN_PROGRESS';
+        }
+        
+        return { success: true, players: game.players.length };
+      },
+      
+      // Make move
+      makeMove: (params, state, caller) => {
+        const [gameId, move] = params;
+        const game = state.games?.[gameId];
+        
+        if (!game) return { success: false, error: 'Game not found' };
+        if (!game.players.includes(caller)) return { success: false, error: 'Not a player' };
+        if (game.status !== 'IN_PROGRESS') return { success: false, error: 'Game not active' };
+        
+        state.moves = state.moves || {};
+        state.moves[gameId] = state.moves[gameId] || [];
+        state.moves[gameId].push({
+          player: caller,
+          move,
+          timestamp: Date.now()
+        });
+        
+        return { success: true, moveCount: state.moves[gameId].length };
+      },
+      
+      // End game
+      endGame: (params, state, caller) => {
+        const [gameId, winner] = params;
+        const game = state.games?.[gameId];
+        
+        if (!game) return { success: false, error: 'Game not found' };
+        if (game.creator !== caller) return { success: false, error: 'Only creator can end' };
+        
+        game.status = 'COMPLETED';
+        game.winner = winner;
+        game.endedAt = Date.now();
+        
+        return { success: true, winner };
+      },
+      
+      // Get game status
+      getGameStatus: (params, state) => {
+        const [gameId] = params;
+        return state.games?.[gameId] || null;
+      },
+      
+      // List active games
+      listActiveGames: (params, state) => {
+        const games = state.games || {};
+        return Object.entries(games)
+          .filter(([_, game]) => game.status === 'WAITING' || game.status === 'IN_PROGRESS')
+          .map(([id, game]) => ({
+            id,
+            players: game.players.length,
+            maxPlayers: game.maxPlayers,
+            status: game.status
+          }));
+      }
+    }
+  };
+  
+  // Deploy custom contract
+  const result = await purechain.contractEngine.deployContract(
+    customConfig,
+    'gameOwner',
+    0
+  );
+  
+  if (result.success) {
+    const game = result.contract;
+    
+    // Create a game
+    console.log('Creating game...');
+    const create = game.execute('initGame', ['Chess Match 1', 2], 'alice');
+    console.log('Game created:', create.result);
+    
+    // Players join
+    console.log('\\nPlayers joining...');
+    game.execute('joinGame', ['Chess Match 1'], 'alice');
+    game.execute('joinGame', ['Chess Match 1'], 'bob');
+    
+    // Make moves
+    console.log('\\nMaking moves...');
+    game.execute('makeMove', ['Chess Match 1', 'e2-e4'], 'alice');
+    game.execute('makeMove', ['Chess Match 1', 'e7-e5'], 'bob');
+    
+    // Check status
+    const status = game.execute('getGameStatus', ['Chess Match 1'], 'anyone');
+    console.log('\\nGame status:', status.result);
+    
+    // End game
+    game.execute('endGame', ['Chess Match 1', 'alice'], 'alice');
+    console.log('\\nGame ended!');
+    
+    // List games
+    const activeGames = game.execute('listActiveGames', [], 'anyone');
+    console.log('Active games:', activeGames.result);
+  }
+  
+  await purechain.stop();
+}
+
+customContract();</code></pre>
+
+    <h1 id="chapter4"><span class="section-number">4</span> Network Configuration</h1>
+
+    <h2 id="4.1">4.1 Network Types</h2>
+    
+    <table>
+        <tr>
+            <th>Network</th>
+            <th>Chain ID</th>
+            <th>RPC URL</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Testnet</td>
+            <td>900520900520</td>
+            <td>https://purechainnode.com:8547</td>
+            <td>Active</td>
+        </tr>
+        <tr>
+            <td>Mainnet</td>
+            <td>900520900520</td>
+            <td>Coming Soon</td>
+            <td>Not Launched</td>
+        </tr>
+        <tr>
+            <td>Local</td>
+            <td>1337</td>
+            <td>http://localhost:8545</td>
+            <td>Development</td>
+        </tr>
+    </table>
+
+    <h3>Connecting to Different Networks</h3>
+    
+    <pre><code>const { PureChain } = require('purechainlib');
+
+// Testnet (default)
+const testnet = new PureChain();
+
+// Explicit testnet
+const testnetExplicit = new PureChain({
+  networkConfig: 'testnet'
+});
+
+// Local development
+const local = new PureChain({
+  networkConfig: 'local'
+});
+
+// Mainnet (when available)
+const mainnet = new PureChain({
+  networkConfig: 'mainnet'
+});</code></pre>
+
+    <h2 id="4.2">4.2 Custom Networks</h2>
+    
+    <pre><code>const customNetwork = new PureChain({
+  networkConfig: {
+    name: 'Custom PureChain Network',
+    chainId: 999999,
+    rpcUrl: 'https://custom.purechain.com:8547',
+    explorerUrl: 'https://explorer.custom.purechain.com/api/v1',
+    nativeCurrency: {
+      name: 'Custom Token',
+      symbol: 'CTK',
+      decimals: 18
+    },
+    isTestnet: true,
+    blockTime: 5000, // 5 seconds
+    consensus: 'PoS'
+  }
+});
+
+await customNetwork.start();
+console.log('Connected to:', customNetwork.networkConfig.name);</code></pre>
+
+    <h2 id="4.3">4.3 Switching Networks</h2>
+    
+    <pre><code>async function networkSwitching() {
+  const purechain = new PureChain();
+  
+  // Start with testnet
+  await purechain.start();
+  console.log('Initial network:', purechain.networkConfig.name);
+  
+  // Switch to local
+  await purechain.switchNetwork('local');
+  console.log('Switched to:', purechain.networkConfig.name);
+  
+  // Switch to custom network
+  await purechain.switchNetwork({
+    name: 'Private Network',
+    chainId: 12345,
+    rpcUrl: 'http://192.168.1.100:8545',
+    explorerUrl: null,
+    nativeCurrency: {
+      name: 'Private Token',
+      symbol: 'PVT',
+      decimals: 18
+    },
+    isTestnet: false
+  });
+  console.log('Switched to:', purechain.networkConfig.name);
+  
+  await purechain.stop();
+}
+
+networkSwitching();</code></pre>
+
+    <h1 id="chapter5"><span class="section-number">5</span> Explorer Integration</h1>
+
+    <h2 id="5.1">5.1 Transaction Queries</h2>
+    
+    <pre><code>async function queryTransactions() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Get transaction by hash
+  const txHash = '0x9734d1e5...';
+  const tx = await purechain.explorer.getTransaction(txHash);
+  
+  if (tx.success) {
+    console.log('Transaction Details:');
+    console.log('From:', tx.data.from);
+    console.log('To:', tx.data.to);
+    console.log('Amount:', tx.data.amount);
+    console.log('Status:', tx.data.status);
+    console.log('Block:', tx.data.blockNumber);
+    console.log('Gas Cost:', 0); // Always 0 on PureChain
+  }
+  
+  // Get transaction receipt
+  const receipt = await purechain.explorer.getTransactionReceipt(txHash);
+  console.log('Receipt:', receipt.data);
+  
+  // Get printable receipt
+  const htmlReceipt = await purechain.explorer.getPrintableReceipt(txHash);
+  // Can be saved as HTML file for printing
+  
+  await purechain.stop();
+}
+
+queryTransactions();</code></pre>
+
+    <h2 id="5.2">5.2 Block Exploration</h2>
+    
+    <pre><code>async function exploreBlocks() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Get latest block
+  const latest = await purechain.explorer.getLatestBlock();
+  console.log('Latest Block:', latest.data.number);
+  
+  // Get specific block
+  const blockNumber = 12345;
+  const block = await purechain.explorer.getBlock(blockNumber);
+  
+  if (block.success) {
+    console.log('Block Details:');
+    console.log('Number:', block.data.number);
+    console.log('Hash:', block.data.hash);
+    console.log('Transactions:', block.data.transactions.length);
+    console.log('Timestamp:', new Date(block.data.timestamp).toISOString());
+    console.log('Miner:', block.data.miner);
+  }
+  
+  await purechain.stop();
+}
+
+exploreBlocks();</code></pre>
+
+    <h2 id="5.3">5.3 Account Information</h2>
+    
+    <pre><code>async function accountInfo() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  const address = '0x44A393FA...';
+  const account = await purechain.explorer.getAccount(address);
+  
+  if (account.success) {
+    console.log('Account Information:');
+    console.log('Address:', address);
+    console.log('Balance:', account.data.balance);
+    console.log('Transaction Count:', account.data.transactionCount);
+    console.log('Contract:', account.data.isContract);
+    
+    // Get transaction history
+    if (account.data.transactions) {
+      console.log('\\nRecent Transactions:');
+      account.data.transactions.slice(0, 5).forEach(tx => {
+        console.log(`- ${tx.hash}: ${tx.from} -> ${tx.to} (${tx.amount})`);
+      });
+    }
+  }
+  
+  await purechain.stop();
+}
+
+accountInfo();</code></pre>
+
+    <h1 id="chapter6"><span class="section-number">6</span> API Development</h1>
+
+    <h2 id="6.1">6.1 REST API Setup</h2>
+    
+    <pre><code>const { PureChain } = require('purechainlib');
+const express = require('express');
+
+async function setupAPI() {
+  const purechain = new PureChain({
+    api: {
+      port: 3000,
+      cors: true,
+      rateLimit: {
+        windowMs: 15 * 60 * 1000,
+        max: 100
+      }
+    }
+  });
+  
+  await purechain.start();
+  
+  // API is now running on port 3000
+  console.log('API running on http://localhost:3000');
+  
+  // Available endpoints:
+  // GET  /api/v1/blocks
+  // GET  /api/v1/blocks/latest
+  // GET  /api/v1/blocks/:number
+  // POST /api/v1/transactions
+  // GET  /api/v1/transactions/:hash
+  // GET  /api/v1/balance/:address
+  // GET  /api/v1/contracts
+  // POST /api/v1/contracts/deploy
+  // POST /api/v1/contracts/:address/execute
+}
+
+setupAPI();</code></pre>
+
+    <h3>Custom API Endpoints</h3>
+    
+    <pre><code>async function customEndpoints() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Access the Express app
+  const app = purechain.api.app;
+  
+  // Add custom endpoints
+  app.get('/api/v1/stats', (req, res) => {
+    const stats = {
+      chainLength: purechain.blockchain.chain.length,
+      pendingTransactions: purechain.blockchain.pendingTransactions.length,
+      totalContracts: purechain.contractEngine.getAllContracts().length,
+      gasCost: 0,
+      networkName: purechain.networkConfig.name
+    };
+    res.json(stats);
+  });
+  
+  app.get('/api/v1/richlist', (req, res) => {
+    // Get all unique addresses and their balances
+    const addresses = new Set();
+    purechain.blockchain.chain.forEach(block => {
+      block.transactions.forEach(tx => {
+        addresses.add(tx.from);
+        addresses.add(tx.to);
+      });
+    });
+    
+    const balances = Array.from(addresses)
+      .map(addr => ({
+        address: addr,
+        balance: purechain.blockchain.getBalance(addr)
+      }))
+      .sort((a, b) => b.balance - a.balance)
+      .slice(0, 10);
+    
+    res.json(balances);
+  });
+  
+  console.log('Custom endpoints added');
+}
+
+customEndpoints();</code></pre>
+
+    <h2 id="6.2">6.2 WebSocket Events</h2>
+    
+    <pre><code>const WebSocket = require('ws');
+
+async function websocketEvents() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Connect to WebSocket
+  const ws = new WebSocket('ws://localhost:3000');
+  
+  ws.on('open', () => {
+    console.log('WebSocket connected');
+    
+    // Subscribe to events
+    ws.send(JSON.stringify({
+      type: 'subscribe',
+      events: ['newBlock', 'newTransaction', 'contractDeployed']
+    }));
+  });
+  
+  ws.on('message', (data) => {
+    const message = JSON.parse(data);
+    
+    switch(message.type) {
+      case 'newBlock':
+        console.log('New block mined:', message.data.index);
+        break;
+      
+      case 'newTransaction':
+        console.log('New transaction:', message.data.id);
+        break;
+      
+      case 'contractDeployed':
+        console.log('Contract deployed:', message.data.address);
+        break;
+    }
+  });
+  
+  // Simulate activity
+  setTimeout(() => {
+    purechain.blockchain.createTransaction({
+      from: 'alice',
+      to: 'bob',
+      amount: 100,
+      timestamp: Date.now()
+    });
+  }, 2000);
+  
+  setTimeout(async () => {
+    await purechain.blockchain.minePendingTransactions('miner');
+  }, 5000);
+}
+
+websocketEvents();</code></pre>
+
+    <h2 id="6.3">6.3 Custom Endpoints</h2>
+    
+    <pre><code>async function advancedAPI() {
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  const app = purechain.api.app;
+  
+  // Token faucet endpoint
+  app.post('/api/v1/faucet', async (req, res) => {
+    const { address } = req.body;
+    
+    if (!address) {
+      return res.status(400).json({ error: 'Address required' });
+    }
+    
+    // Create faucet transaction
+    purechain.blockchain.createTransaction({
+      from: 'faucet',
+      to: address,
+      amount: 100,
+      timestamp: Date.now()
+    });
+    
+    // Mine immediately
+    await purechain.blockchain.minePendingTransactions('faucet');
+    
+    const balance = purechain.blockchain.getBalance(address);
+    
+    res.json({
+      success: true,
+      amount: 100,
+      newBalance: balance,
+      gasCost: 0
+    });
+  });
+  
+  // Batch transaction endpoint
+  app.post('/api/v1/batch-transfer', async (req, res) => {
+    const { transfers } = req.body;
+    
+    if (!Array.isArray(transfers)) {
+      return res.status(400).json({ error: 'Transfers array required' });
+    }
+    
+    const results = [];
+    
+    transfers.forEach(transfer => {
+      purechain.blockchain.createTransaction({
+        from: transfer.from,
+        to: transfer.to,
+        amount: transfer.amount,
+        timestamp: Date.now()
+      });
+      results.push({
+        from: transfer.from,
+        to: transfer.to,
+        amount: transfer.amount,
+        status: 'pending'
+      });
+    });
+    
+    // Mine all transactions
+    await purechain.blockchain.minePendingTransactions('batcher');
+    
+    res.json({
+      success: true,
+      transactions: results.length,
+      totalGasCost: 0,
+      results
+    });
+  });
+  
+  // Smart contract interaction endpoint
+  app.post('/api/v1/contract-call', async (req, res) => {
+    const { contractAddress, method, params, caller } = req.body;
+    
+    const contract = purechain.contractEngine.getContract(contractAddress);
+    
+    if (!contract) {
+      return res.status(404).json({ error: 'Contract not found' });
+    }
+    
+    const result = contract.execute(method, params, caller);
+    
+    res.json({
+      success: result.success,
+      result: result.result,
+      gasCost: 0,
+      error: result.error
+    });
+  });
+  
+  console.log('Advanced API endpoints configured');
+}
+
+advancedAPI();</code></pre>
+
+    <h1 id="chapter7"><span class="section-number">7</span> Advanced Features</h1>
+
+    <h2 id="7.1">7.1 Consensus Mechanisms</h2>
+    
+    <h3>Proof of Work (PoW)</h3>
+    
+    <pre><code>const { PureChain, ConsensusType } = require('purechainlib');
+
+async function proofOfWork() {
+  const purechain = new PureChain({
+    blockchain: {
+      consensus: ConsensusType.POW,
+      difficulty: 4, // Number of leading zeros required
+      miningReward: 100
+    }
+  });
+  
+  await purechain.start();
+  
+  // Mining with PoW
+  console.log('Mining with Proof of Work...');
+  console.time('Mining time');
+  
+  await purechain.blockchain.minePendingTransactions('miner');
+  
+  console.timeEnd('Mining time');
+  
+  const latestBlock = purechain.blockchain.getLatestBlock();
+  console.log('Block hash:', latestBlock.hash);
+  console.log('Nonce:', latestBlock.nonce);
+  console.log('Difficulty:', purechain.blockchain.difficulty);
+  
+  await purechain.stop();
+}
+
+proofOfWork();</code></pre>
+
+    <h3>Proof of Stake (PoS)</h3>
+    
+    <pre><code>async function proofOfStake() {
+  const purechain = new PureChain({
+    blockchain: {
+      consensus: ConsensusType.POS,
+      minStake: 1000
+    }
+  });
+  
+  await purechain.start();
+  
+  // Register validators
+  const validators = [
+    { address: 'validator1', stake: 5000 },
+    { address: 'validator2', stake: 3000 },
+    { address: 'validator3', stake: 2000 }
+  ];
+  
+  validators.forEach(v => {
+    purechain.blockchain.consensus.addValidator(v.address, v.stake);
+  });
+  
+  // Select validator based on stake
+  const selectedValidator = purechain.blockchain.consensus.selectValidator();
+  console.log('Selected validator:', selectedValidator);
+  
+  // Mine block with selected validator
+  await purechain.blockchain.minePendingTransactions(selectedValidator);
+  
+  console.log('Block mined by:', selectedValidator);
+  console.log('Validator reward:', purechain.blockchain.getBalance(selectedValidator));
+  
+  await purechain.stop();
+}
+
+proofOfStake();</code></pre>
+
+    <h2 id="7.2">7.2 P2P Networking</h2>
+    
+    <pre><code>async function p2pNetwork() {
+  const purechain = new PureChain({
+    network: {
+      port: 6001,
+      peers: [
+        'ws://localhost:6002',
+        'ws://localhost:6003'
+      ]
+    }
+  });
+  
+  await purechain.start();
+  
+  // Add new peer
+  purechain.network.addPeer('ws://localhost:6004');
+  
+  // Broadcast transaction to peers
+  const tx = {
+    from: 'alice',
+    to: 'bob',
+    amount: 100,
+    timestamp: Date.now()
+  };
+  
+  purechain.network.broadcastTransaction(tx);
+  
+  // Handle incoming messages
+  purechain.network.on('transaction', (tx) => {
+    console.log('Received transaction from peer:', tx);
+  });
+  
+  purechain.network.on('block', (block) => {
+    console.log('Received block from peer:', block);
+  });
+  
+  // Get connected peers
+  const peers = purechain.network.getPeers();
+  console.log('Connected peers:', peers.length);
+  
+  await purechain.stop();
+}
+
+p2pNetwork();</code></pre>
+
+    <h2 id="7.3">7.3 Database Storage</h2>
+    
+    <pre><code>async function databaseStorage() {
+  const purechain = new PureChain({
+    storage: {
+      type: 'persistent',
+      path: './blockchain-data'
+    }
+  });
+  
+  await purechain.start();
+  
+  // Save blockchain to database
+  await purechain.database.saveBlockchain(purechain.blockchain);
+  console.log('Blockchain saved to database');
+  
+  // Load blockchain from database
+  const loadedBlockchain = await purechain.database.loadBlockchain();
+  console.log('Loaded chain length:', loadedBlockchain.chain.length);
+  
+  // Save contracts
+  const contracts = purechain.contractEngine.getAllContracts();
+  await purechain.database.saveContracts(contracts);
+  
+  // Query specific data
+  const block = await purechain.database.getBlock(5);
+  const tx = await purechain.database.getTransaction('txHash');
+  
+  await purechain.stop();
+}
+
+databaseStorage();</code></pre>
+
+    <h1 id="chapter8"><span class="section-number">8</span> Complete Examples</h1>
+
+    <h2 id="8.1">8.1 Building a DApp</h2>
+    
+    <pre><code>const { PureChain, ContractType } = require('purechainlib');
+
+async function buildCompleteDApp() {
+  console.log('Building Complete DApp on PureChain...');
+  console.log('=====================================\\n');
+  
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Step 1: Deploy Core Contracts
+  console.log('Step 1: Deploying Core Contracts');
+  console.log('---------------------------------');
+  
+  // Deploy governance token
+  const tokenResult = await purechain.contractEngine.deployContract({
+    type: ContractType.TOKEN,
+    name: 'DAppToken',
+    symbol: 'DAPP',
+    initialSupply: 100000000,
+    decimals: 18,
+    metadata: {
+      description: 'Governance token for our DApp',
+      mintable: true,
+      burnable: true
+    }
+  }, 'dappFoundation', 0);
+  
+  console.log('✓ Token deployed:', tokenResult.contractAddress);
+  
+  // Deploy voting contract
+  const votingResult = await purechain.contractEngine.deployContract({
+    type: ContractType.VOTING,
+    name: 'DAppGovernance',
+    metadata: {
+      quorum: 1000,
+      votingPeriod: 7 * 24 * 60 * 60 * 1000
+    }
+  }, 'dappFoundation', 0);
+  
+  console.log('✓ Voting deployed:', votingResult.contractAddress);
+  
+  // Deploy NFT rewards
+  const nftResult = await purechain.contractEngine.deployContract({
+    type: ContractType.NFT,
+    name: 'DAppRewards',
+    metadata: {
+      description: 'Achievement NFTs for active users'
+    }
+  }, 'dappFoundation', 0);
+  
+  console.log('✓ NFT Rewards deployed:', nftResult.contractAddress);
+  
+  // Deploy storage for user data
+  const storageResult = await purechain.contractEngine.deployContract({
+    type: ContractType.STORAGE,
+    name: 'UserProfiles'
+  }, 'dappFoundation', 0);
+  
+  console.log('✓ Storage deployed:', storageResult.contractAddress);
+  
+  // Step 2: Initialize DApp
+  console.log('\\nStep 2: Initializing DApp');
+  console.log('-------------------------');
+  
+  const token = tokenResult.contract;
+  const voting = votingResult.contract;
+  const nft = nftResult.contract;
+  const storage = storageResult.contract;
+  
+  // Distribute tokens to initial users
+  const initialUsers = [
+    { address: 'alice', amount: 10000, role: 'developer' },
+    { address: 'bob', amount: 5000, role: 'designer' },
+    { address: 'charlie', amount: 5000, role: 'marketer' },
+    { address: 'david', amount: 2000, role: 'tester' },
+    { address: 'eve', amount: 2000, role: 'community' }
+  ];
+  
+  initialUsers.forEach(user => {
+    token.execute('transfer', [user.address, user.amount], 'dappFoundation');
+    storage.execute('set', [`profile_${user.address}`, {
+      address: user.address,
+      role: user.role,
+      joinedAt: Date.now(),
+      reputation: 0
+    }], 'dappFoundation');
+    console.log(`✓ ${user.address}: ${user.amount} tokens, role: ${user.role}`);
+  });
+  
+  // Step 3: Create First Proposal
+  console.log('\\nStep 3: Creating Governance Proposal');
+  console.log('------------------------------------');
+  
+  const proposalResult = voting.execute('createProposal', [
+    'Should we add staking features?',
+    'Proposal to add staking mechanism to earn rewards',
+    ['Yes', 'No', 'Abstain'],
+    Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+  ], 'alice');
+  
+  const proposalId = proposalResult.result;
+  console.log('✓ Proposal created:', proposalId);
+  
+  // Step 4: Voting Process
+  console.log('\\nStep 4: Voting on Proposal');
+  console.log('--------------------------');
+  
+  voting.execute('vote', [proposalId, 0], 'alice'); // Yes
+  voting.execute('vote', [proposalId, 0], 'bob'); // Yes
+  voting.execute('vote', [proposalId, 1], 'charlie'); // No
+  voting.execute('vote', [proposalId, 0], 'david'); // Yes
+  voting.execute('vote', [proposalId, 2], 'eve'); // Abstain
+  
+  const results = voting.execute('getResults', [proposalId], 'anyone');
+  console.log('Voting results:', results.result);
+  
+  // Step 5: Reward Active Participants
+  console.log('\\nStep 5: Distributing NFT Rewards');
+  console.log('--------------------------------');
+  
+  const voters = ['alice', 'bob', 'charlie', 'david', 'eve'];
+  voters.forEach((voter, index) => {
+    nft.execute('mintNFT', [
+      voter,
+      {
+        tokenId: index + 1,
+        name: `Governance Badge #${index + 1}`,
+        description: 'Awarded for participating in governance',
+        image: `ipfs://badge${index + 1}`,
+        attributes: [
+          { trait_type: 'Type', value: 'Governance' },
+          { trait_type: 'Proposal', value: proposalId },
+          { trait_type: 'Date', value: new Date().toISOString() }
+        ]
+      }
+    ], 'dappFoundation');
+    console.log(`✓ NFT badge awarded to ${voter}`);
+  });
+  
+  // Step 6: Update User Reputation
+  console.log('\\nStep 6: Updating User Reputation');
+  console.log('--------------------------------');
+  
+  voters.forEach(voter => {
+    const profile = storage.execute('get', [`profile_${voter}`], 'anyone').result;
+    profile.reputation += 10;
+    profile.participationCount = (profile.participationCount || 0) + 1;
+    storage.execute('set', [`profile_${voter}`, profile], 'dappFoundation');
+    console.log(`✓ ${voter} reputation: ${profile.reputation}`);
+  });
+  
+  // Step 7: DApp Statistics
+  console.log('\\nStep 7: DApp Statistics');
+  console.log('-----------------------');
+  
+  const stats = {
+    totalUsers: initialUsers.length,
+    totalTokenSupply: token.execute('totalSupply', [], 'anyone').result,
+    activeProposals: 1,
+    totalVotes: 5,
+    nftsDistributed: voters.length,
+    totalGasCost: 0
+  };
+  
+  console.log('DApp Statistics:', stats);
+  
+  // Step 8: Create Dashboard Data
+  console.log('\\nStep 8: Dashboard Summary');
+  console.log('-------------------------');
+  
+  storage.execute('set', ['dashboard', {
+    stats,
+    latestProposal: proposalId,
+    topHolders: initialUsers.slice(0, 3).map(u => u.address),
+    recentActivity: [
+      { type: 'proposal_created', user: 'alice', timestamp: Date.now() },
+      { type: 'votes_cast', count: 5, timestamp: Date.now() },
+      { type: 'nfts_minted', count: 5, timestamp: Date.now() }
+    ]
+  }], 'dappFoundation');
+  
+  const dashboard = storage.execute('get', ['dashboard'], 'anyone').result;
+  console.log('Dashboard data stored');
+  
+  console.log('\\n=====================================');
+  console.log('DApp Successfully Deployed!');
+  console.log('Total Gas Cost: 0 (Free on PureChain)');
+  console.log('=====================================');
+  
+  await purechain.stop();
+}
+
+buildCompleteDApp();</code></pre>
+
+    <h2 id="8.2">8.2 Token Economy</h2>
+    
+    <pre><code>async function createTokenEconomy() {
+  console.log('Creating Complete Token Economy');
+  console.log('================================\\n');
+  
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy main token
+  const mainToken = await purechain.contractEngine.deployContract({
+    type: ContractType.TOKEN,
+    name: 'EconomyToken',
+    symbol: 'ECO',
+    initialSupply: 1000000000,
+    decimals: 18
+  }, 'treasury', 0);
+  
+  // Deploy staking token
+  const stakingToken = await purechain.contractEngine.deployContract({
+    type: ContractType.TOKEN,
+    name: 'StakedECO',
+    symbol: 'sECO',
+    initialSupply: 0,
+    decimals: 18
+  }, 'treasury', 0);
+  
+  // Deploy liquidity pool token
+  const lpToken = await purechain.contractEngine.deployContract({
+    type: ContractType.TOKEN,
+    name: 'ECO-LP',
+    symbol: 'ECO-LP',
+    initialSupply: 0,
+    decimals: 18
+  }, 'treasury', 0);
+  
+  console.log('Tokens deployed:');
+  console.log('Main token:', mainToken.contractAddress);
+  console.log('Staking token:', stakingToken.contractAddress);
+  console.log('LP token:', lpToken.contractAddress);
+  
+  // Token distribution
+  const distribution = [
+    { category: 'Public Sale', amount: 400000000, address: 'publicSale' },
+    { category: 'Team', amount: 150000000, address: 'team' },
+    { category: 'Advisors', amount: 50000000, address: 'advisors' },
+    { category: 'Marketing', amount: 100000000, address: 'marketing' },
+    { category: 'Development', amount: 100000000, address: 'development' },
+    { category: 'Liquidity', amount: 100000000, address: 'liquidity' },
+    { category: 'Staking Rewards', amount: 100000000, address: 'stakingRewards' }
+  ];
+  
+  console.log('\\nToken Distribution:');
+  distribution.forEach(d => {
+    mainToken.contract.execute('transfer', [d.address, d.amount], 'treasury');
+    console.log(`${d.category}: ${d.amount / 1000000}M ECO`);
+  });
+  
+  // Simulate economic activity
+  console.log('\\nSimulating Economic Activity:');
+  
+  // Users buy tokens
+  mainToken.contract.execute('transfer', ['user1', 1000000], 'publicSale');
+  mainToken.contract.execute('transfer', ['user2', 500000], 'publicSale');
+  mainToken.contract.execute('transfer', ['user3', 250000], 'publicSale');
+  
+  // Users stake tokens
+  console.log('Users staking tokens...');
+  stakingToken.contract.execute('mint', ['user1', 1000000], 'stakingRewards');
+  
+  // Create trading pairs
+  console.log('Creating liquidity pools...');
+  lpToken.contract.execute('mint', ['liquidityProvider', 1000000], 'liquidity');
+  
+  console.log('\\nEconomy Statistics:');
+  console.log('Total Supply:', mainToken.contract.execute('totalSupply', [], 'anyone').result);
+  console.log('Circulating Supply:', 1750000);
+  console.log('Staked:', 1000000);
+  console.log('Total Value Locked: $0 (No fees!)');
+  
+  await purechain.stop();
+}
+
+createTokenEconomy();</code></pre>
+
+    <h2 id="8.3">8.3 NFT Marketplace</h2>
+    
+    <pre><code>async function createNFTMarketplace() {
+  console.log('Building NFT Marketplace');
+  console.log('========================\\n');
+  
+  const purechain = new PureChain();
+  await purechain.start();
+  
+  // Deploy marketplace infrastructure
+  const nftCollection = await purechain.contractEngine.deployContract({
+    type: ContractType.NFT,
+    name: 'PureArt Gallery',
+    metadata: {
+      description: 'Premium digital art on PureChain',
+      maxSupply: 10000,
+      royaltyPercentage: 10
+    }
+  }, 'marketplace', 0);
+  
+  const escrow = await purechain.contractEngine.deployContract({
+    type: ContractType.ESCROW,
+    name: 'NFT Escrow'
+  }, 'marketplace', 0);
+  
+  const storage = await purechain.contractEngine.deployContract({
+    type: ContractType.STORAGE,
+    name: 'Marketplace Data'
+  }, 'marketplace', 0);
+  
+  console.log('Infrastructure deployed');
+  
+  // Create NFT collections
+  const collections = [
+    {
+      name: 'Genesis Collection',
+      artist: 'artist1',
+      pieces: 10,
+      basePrice: 1000
+    },
+    {
+      name: 'Abstract Series',
+      artist: 'artist2',
+      pieces: 5,
+      basePrice: 2000
+    },
+    {
+      name: 'Digital Dreams',
+      artist: 'artist3',
+      pieces: 8,
+      basePrice: 1500
+    }
+  ];
+  
+  let tokenId = 1;
+  
+  collections.forEach(collection => {
+    console.log(`\\nMinting ${collection.name}:`);
+    
+    for (let i = 0; i < collection.pieces; i++) {
+      const nftData = {
+        tokenId: tokenId++,
+        name: `${collection.name} #${i + 1}`,
+        description: `Piece ${i + 1} from ${collection.name}`,
+        image: `ipfs://collection${tokenId}`,
+        attributes: [
+          { trait_type: 'Collection', value: collection.name },
+          { trait_type: 'Artist', value: collection.artist },
+          { trait_type: 'Edition', value: i + 1 },
+          { trait_type: 'Rarity', value: i < 2 ? 'Rare' : 'Common' }
+        ]
+      };
+      
+      nftCollection.contract.execute('mintNFT', [collection.artist, nftData], 'marketplace');
+      
+      // List for sale
+      storage.contract.execute('set', [`listing_${nftData.tokenId}`, {
+        tokenId: nftData.tokenId,
+        seller: collection.artist,
+        price: collection.basePrice * (i < 2 ? 2 : 1),
+        listed: true,
+        createdAt: Date.now()
+      }], 'marketplace');
+      
+      console.log(`  Minted and listed NFT #${nftData.tokenId}`);
+    }
+  });
+  
+  // Simulate marketplace activity
+  console.log('\\nMarketplace Activity:');
+  
+  // Purchase NFT
+  const purchase1 = {
+    buyer: 'collector1',
+    tokenId: 1,
+    price: 2000
+  };
+  
+  console.log(`Collector1 purchasing NFT #${purchase1.tokenId}...`);
+  nftCollection.contract.execute('transferFrom', ['artist1', purchase1.buyer, purchase1.tokenId], 'marketplace');
+  storage.contract.execute('set', [`sale_${Date.now()}`, purchase1], 'marketplace');
+  
+  // Secondary sale
+  console.log('Secondary market sale...');
+  nftCollection.contract.execute('transferFrom', ['collector1', 'collector2', 1], 'marketplace');
+  
+  // Auction simulation
+  console.log('\\nStarting auction for NFT #5:');
+  const auction = {
+    tokenId: 5,
+    startPrice: 3000,
+    endTime: Date.now() + 86400000,
+    bids: []
+  };
+  
+  // Place bids
+  const bids = [
+    { bidder: 'bidder1', amount: 3500 },
+    { bidder: 'bidder2', amount: 4000 },
+    { bidder: 'bidder3', amount: 4500 }
+  ];
+  
+  bids.forEach(bid => {
+    auction.bids.push(bid);
+    console.log(`  ${bid.bidder} bids ${bid.amount}`);
+  });
+  
+  storage.contract.execute('set', ['auction_5', auction], 'marketplace');
+  
+  // Marketplace statistics
+  console.log('\\nMarketplace Statistics:');
+  console.log('Total NFTs:', tokenId - 1);
+  console.log('Total Sales:', 2);
+  console.log('Active Listings:', tokenId - 3);
+  console.log('Active Auctions:', 1);
+  console.log('Total Volume:', 6500);
+  console.log('Gas Fees Collected:', 0);
+  
+  await purechain.stop();
+}
+
+createNFTMarketplace();</code></pre>
+
+    <h1 id="chapter9"><span class="section-number">9</span> Troubleshooting</h1>
+
+    <h2 id="9.1">9.1 Common Issues</h2>
+    
+    <div class="note">
+        <strong>Issue:</strong> Cannot connect to PureChain network<br>
+        <strong>Solution:</strong> Check your internet connection and ensure the RPC URL is correct (https://purechainnode.com:8547)
+    </div>
+    
+    <div class="note">
+        <strong>Issue:</strong> Transaction not being mined<br>
+        <strong>Solution:</strong> Ensure you call <code>minePendingTransactions()</code> after creating transactions
+    </div>
+    
+    <div class="note">
+        <strong>Issue:</strong> Contract deployment fails<br>
+        <strong>Solution:</strong> Check that all required parameters are provided in the contract configuration
+    </div>
+
+    <h2 id="9.2">9.2 Error Messages</h2>
+    
+    <table>
+        <tr>
+            <th>Error Message</th>
+            <th>Cause</th>
+            <th>Solution</th>
+        </tr>
+        <tr>
+            <td>Network not found</td>
+            <td>Invalid network name</td>
+            <td>Use 'testnet', 'mainnet', or 'local'</td>
+        </tr>
+        <tr>
+            <td>Contract not found</td>
+            <td>Invalid contract address</td>
+            <td>Verify the contract address from deployment result</td>
+        </tr>
+        <tr>
+            <td>Invalid transaction</td>
+            <td>Missing required fields</td>
+            <td>Ensure from, to, amount, and timestamp are provided</td>
+        </tr>
+        <tr>
+            <td>Method not found</td>
+            <td>Calling non-existent contract method</td>
+            <td>Check available methods for the contract type</td>
+        </tr>
+    </table>
+
+    <h2 id="9.3">9.3 Performance Optimization</h2>
+    
+    <h3>Best Practices</h3>
+    
+    <ul>
+        <li>Batch transactions before mining to reduce block creation overhead</li>
+        <li>Use memory storage for testing and development</li>
+        <li>Implement caching for frequently accessed data</li>
+        <li>Limit block size for faster propagation in P2P networks</li>
+        <li>Use WebSocket connections for real-time updates instead of polling</li>
+    </ul>
+
+    <h3>Configuration Optimization</h3>
+    
+    <pre><code>const optimizedConfig = {
+  blockchain: {
+    maxTransactionsPerBlock: 100,
+    blockTime: 5000,
+    pruneAfterBlocks: 1000
+  },
+  api: {
+    cache: true,
+    cacheTime: 60000,
+    compression: true
+  },
+  storage: {
+    type: 'indexed',
+    indexFields: ['from', 'to', 'contractAddress']
+  },
+  network: {
+    maxPeers: 50,
+    messageTimeout: 5000
+  }
+};
+
+const purechain = new PureChain(optimizedConfig);</code></pre>
+
+    <h1 id="chapter10"><span class="section-number">10</span> API Reference</h1>
+
+    <h2 id="10.1">10.1 PureChain Class</h2>
+    
+    <h3>Constructor</h3>
+    
+    <pre><code>new PureChain(config?: IPureChainConfig)</code></pre>
+    
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>config</td>
+            <td>IPureChainConfig</td>
+            <td>Optional configuration object</td>
+        </tr>
+    </table>
+
+    <h3>Methods</h3>
+    
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Returns</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>start()</td>
+            <td>Promise&lt;void&gt;</td>
+            <td>Initialize and connect to network</td>
+        </tr>
+        <tr>
+            <td>stop()</td>
+            <td>Promise&lt;void&gt;</td>
+            <td>Disconnect and cleanup</td>
+        </tr>
+        <tr>
+            <td>switchNetwork(network)</td>
+            <td>Promise&lt;void&gt;</td>
+            <td>Switch to different network</td>
+        </tr>
+    </table>
+
+    <h3>Properties</h3>
+    
+    <table>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>blockchain</td>
+            <td>Blockchain</td>
+            <td>Blockchain instance</td>
+        </tr>
+        <tr>
+            <td>contractEngine</td>
+            <td>ContractEngine</td>
+            <td>Smart contract engine</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>BlockchainAPI</td>
+            <td>REST API server</td>
+        </tr>
+        <tr>
+            <td>network</td>
+            <td>PeerDiscovery</td>
+            <td>P2P network manager</td>
+        </tr>
+        <tr>
+            <td>database</td>
+            <td>Database</td>
+            <td>Storage interface</td>
+        </tr>
+        <tr>
+            <td>provider</td>
+            <td>NetworkProvider</td>
+            <td>Network connection provider</td>
+        </tr>
+        <tr>
+            <td>explorer</td>
+            <td>PureChainExplorer</td>
+            <td>Blockchain explorer API</td>
+        </tr>
+        <tr>
+            <td>networkConfig</td>
+            <td>INetworkConfig</td>
+            <td>Current network configuration</td>
+        </tr>
+    </table>
+
+    <h2 id="10.2">10.2 Blockchain Methods</h2>
+    
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Parameters</th>
+            <th>Returns</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>createTransaction</td>
+            <td>transaction: ITransaction</td>
+            <td>void</td>
+            <td>Add transaction to pending pool</td>
+        </tr>
+        <tr>
+            <td>minePendingTransactions</td>
+            <td>minerAddress: string</td>
+            <td>Promise&lt;void&gt;</td>
+            <td>Mine all pending transactions</td>
+        </tr>
+        <tr>
+            <td>getBalance</td>
+            <td>address: string</td>
+            <td>number</td>
+            <td>Get address balance</td>
+        </tr>
+        <tr>
+            <td>getLatestBlock</td>
+            <td>-</td>
+            <td>Block</td>
+            <td>Get most recent block</td>
+        </tr>
+        <tr>
+            <td>isChainValid</td>
+            <td>-</td>
+            <td>boolean</td>
+            <td>Validate entire blockchain</td>
+        </tr>
+    </table>
+
+    <h2 id="10.3">10.3 Contract Engine</h2>
+    
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Parameters</th>
+            <th>Returns</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>deployContract</td>
+            <td>config, deployer, balance</td>
+            <td>IDeployResult</td>
+            <td>Deploy new smart contract</td>
+        </tr>
+        <tr>
+            <td>getContract</td>
+            <td>address: string</td>
+            <td>SmartContract</td>
+            <td>Get contract by address</td>
+        </tr>
+        <tr>
+            <td>getAllContracts</td>
+            <td>-</td>
+            <td>SmartContract[]</td>
+            <td>Get all deployed contracts</td>
+        </tr>
+        <tr>
+            <td>executeContract</td>
+            <td>address, method, params, caller</td>
+            <td>IExecuteResult</td>
+            <td>Execute contract method</td>
+        </tr>
+    </table>
+
+    <h2 id="10.4">10.4 Network Provider</h2>
+    
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Parameters</th>
+            <th>Returns</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>connect</td>
+            <td>-</td>
+            <td>Promise&lt;void&gt;</td>
+            <td>Connect to network</td>
+        </tr>
+        <tr>
+            <td>disconnect</td>
+            <td>-</td>
+            <td>void</td>
+            <td>Disconnect from network</td>
+        </tr>
+        <tr>
+            <td>getBlockNumber</td>
+            <td>-</td>
+            <td>Promise&lt;number&gt;</td>
+            <td>Get current block number</td>
+        </tr>
+        <tr>
+            <td>sendTransaction</td>
+            <td>tx: ITransaction</td>
+            <td>Promise&lt;string&gt;</td>
+            <td>Send transaction to network</td>
+        </tr>
+        <tr>
+            <td>call</td>
+            <td>method, params</td>
+            <td>Promise&lt;any&gt;</td>
+            <td>Make RPC call</td>
+        </tr>
+    </table>
+
+    <div class="note">
+        <strong>Note:</strong> This manual covers PureChainLib version 1.0.5. For the latest updates and additional features, please refer to the official documentation at https://github.com/islarpee000/purechainlib
+    </div>
+
+</body>
+</html>
