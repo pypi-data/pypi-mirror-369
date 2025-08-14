@@ -1,0 +1,60 @@
+[project]
+name = "hectofinancial-mcp-server"
+version = "0.1.11"
+description = "헥토파이낸셜 결제 서비스 연동 문서를 검색하고 조회할 수 있는 MCP 서버입니다. 공식 가이드를 AI와 함께 빠르게 탐색하여 정확한 결제 시스템 구축을 지원합니다."
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+ "mcp>=1.0.0",
+ "fastmcp>=0.1.0",
+ "mistune>=3.0.0",
+ "ruff>=0.12.0",
+]
+[[project.authors]]
+name = "hectofinancial"
+email = "pg_dev@hecto.co.kr"
+
+[build-system]
+requires = [ "setuptools", "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project.license]
+text = "MIT"
+
+[project.scripts]
+hectofinancial-mcp-server = "hectofinancial_mcp_server.server:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.uv]
+dev-dependencies = [ "pytest>=7.0.0", "ruff>=0.1.0", "toml", "requests",]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+
+[tool.setuptools.package-data]
+hectofinancial_mcp_server = [ "resource/**/*",]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.ruff.lint]
+select = [ "E", "F", "I", "N", "W", "B", "C4", "UP",]
+ignore = [ "E501",]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = [ "tests",]
+python_files = [ "test_*.py",]
+
+[tool.setuptools.packages.find]
+where = [ "src",]
