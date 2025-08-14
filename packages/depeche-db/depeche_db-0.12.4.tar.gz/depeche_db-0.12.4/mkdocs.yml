@@ -1,0 +1,84 @@
+strict: true
+site_name: Depeche DB
+repo_name: depeche-py/depeche-db
+repo_url: https://github.com/depeche-py/depeche-db
+copyright: Copyright &copy; 2023 Martin Vielsmaier
+extra:
+  analytics:
+    provider: custom
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/depeche-py/depeche-db/
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/depeche-db/
+nav:
+  - Home: index.md
+  - Walk through:
+      - Installation: getting-started/installation.md
+      - Writing & reading messages: generated/output/getting-started-write-read.md
+      - Aggregated streams: generated/output/getting-started-aggregated-stream.md
+      - Subscription: generated/output/getting-started-subscription.md
+      - Executor: getting-started/executor.md
+      - Exactly once Delivery: getting-started/ack_in_client_transaction.md
+  - Concepts:
+    - Data model: concepts/data-model.md
+    - Subscriptions: concepts/subscriptions.md
+  - API Docs:
+    - MessageStore: api/message_store.md
+    - AggregatedStream: api/aggregated_stream.md
+    - Subscription: api/subscription.md
+    - Executor: api/executor.md
+    - Message handlers: api/message_handlers.md
+    - Data structures: api/datastructures.md
+    - Exceptions: api/exceptions.md
+    - Event Sourcing: api/event_sourcing.md
+    - Tools: api/tools.md
+  - Examples:
+    - Bank (event sourced): examples/bank-eventsourced.md
+  - Changelog: CHANGELOG.md
+plugins:
+  - mermaid2:
+      version: 9.3.0
+  - search
+  - diagrams
+  - alias
+  - macros
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_docstring_attributes: true
+            show_root_heading: true
+            show_source: false
+            docstring_options:
+              ignore_init_summary: false
+            merge_init_into_class: true
+            show_signature: true
+            show_signature_annotations: false
+theme:
+  name: material
+  favicon: assets/logo-bg256.png
+  custom_dir: .mkdocs-overrides
+  logo: assets/logo512.png
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    primary: light green
+  features:
+    - navigation.expand
+    - navigation.footer
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      use_pygments: true
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid

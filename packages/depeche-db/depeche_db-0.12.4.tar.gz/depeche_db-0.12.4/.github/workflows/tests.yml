@@ -1,0 +1,111 @@
+name: "Tests"
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  tests-python-versions:
+    strategy:
+      matrix:
+        python: ["3.9", "3.10", "3.11", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run dependencies
+        run: |
+          docker compose -f docker-compose.yml up -d
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: |
+          pipx install uv
+          uv venv --python ${{ matrix.python }}
+          uv sync --group dev
+          uv add psycopg2-binary
+          uv pip list
+      - name: Run tests
+        run: uv run pytest -vv
+  tests-psycopg-version:
+    strategy:
+      matrix:
+        psycopg:
+          [
+            "psycopg2-binary",
+            "psycopg2-binary==2.9.3",
+            "psycopg[binary]",
+            "psycopg[binary]==3.2.1",
+          ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run dependencies
+        run: |
+          docker compose -f docker-compose.yml up -d
+      - name: Install
+        run: |
+          pipx install uv
+          uv sync --group dev
+          uv add '${{ matrix.psycopg }}'
+          uv pip list
+      - name: Run tests
+        run: uv run pytest -vv
+  tests-sqlalchemy-versions:
+    strategy:
+      matrix:
+        sqlalchemy: [">=1.4,<2.0", ">=2.0,<3.0"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run dependencies
+        run: |
+          docker compose -f docker-compose.yml up -d
+      - name: Install
+        run: |
+          pipx install uv
+          uv sync --group dev
+          uv add psycopg2-binary
+          uv add 'sqlalchemy${{ matrix.sqlalchemy }}'
+          uv pip list
+      - name: Run tests
+        run: uv run pytest -vv
+  tests-postgresql-versions:
+    strategy:
+      matrix:
+        postgres: ["12", "13", "14", "15", "16", "17"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run dependencies
+        run: |
+          POSTGRES_VERSION=${{ matrix.postgres }} docker compose -f docker-compose.yml up -d
+      - name: Install
+        run: |
+          pipx install uv
+          uv sync --group dev
+          uv add psycopg2-binary
+          uv pip list
+      - name: Run tests
+        run: uv run pytest -vv
+  tests-pydantic:
+    strategy:
+      matrix:
+        pydantic: [">=1.10,<2.0", ">=2.4,<3.0"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run dependencies
+        run: |
+          docker compose -f docker-compose.yml up -d
+      - name: Install
+        run: |
+          pipx install uv
+          uv sync --group dev
+          uv add psycopg2-binary
+          uv add --group dev 'pydantic${{ matrix.pydantic }}'
+          uv pip list
+      - name: Run tests
+        run: uv run pytest -vv tests/tools/test_pydantic_serializer.py
