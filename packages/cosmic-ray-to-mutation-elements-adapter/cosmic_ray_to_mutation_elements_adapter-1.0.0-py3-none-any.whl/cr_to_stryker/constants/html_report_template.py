@@ -1,0 +1,31 @@
+from cr_to_stryker.constants.mutation_testing_element import JS_STRING
+
+
+HTML_PAGE_TEMPLATE = (
+    "<!DOCTYPE html>\n"
+    "<html lang=\"en\">\n"
+    "<head>\n"
+    "  <meta charset=\"UTF-8\">\n"
+    "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+    "  <script>\n"
+    " "+JS_STRING+"\n"
+    "  </script>\n"
+    "</head>\n"
+    "<body>\n"
+    "  <mutation-test-report-app title-postfix=\"Cosmic Ray Mutation Report\">\n"
+    "    Your browser doesn't support <a href=\"https://caniuse.com/#search=custom%20elements\">custom elements</a>.\n"
+    "    Please use a latest version of an evergreen browser (Firefox, Chrome, Safari, Opera, etc).\n"
+    "  </mutation-test-report-app>\n"
+    "  <script>\n"
+    "    const app = document.getElementsByTagName('mutation-test-report-app').item(0);\n"
+    "    app.report = %JSON_REPORT% ; \n"
+    "    function updateTheme() {\n"
+    "    document.body.style.backgroundColor = app.themeBackgroundColor;\n"
+    "    }\n"
+    "    app.addEventListener('theme-changed', updateTheme);\n"
+    "    updateTheme();\n"
+    "  </script>\n"
+    "  <script src=\"report.js\"></script>\n"
+    "</body>\n"
+    "</html>"
+)
