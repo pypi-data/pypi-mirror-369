@@ -1,0 +1,177 @@
+## Dapropy
+
+A lightweight Python library for automated preprocessing of datasets containing mixed numeric, categorical, and text features. It cleans text, handles missing values, encodes categories, scales numerics, and persists transformers for consistent training and inference.
+
+---
+
+### ✨ Features
+
+- **Mixed-type handling**: numeric, categorical, and text columns in one pipeline
+- **Missing values**: simple fill strategies or mixed-type KNN imputation
+- **Categorical encoding**: Label encoding or One-Hot encoding
+- **Scaling**: standardization for numeric features
+- **Text processing**: clean HTML/URLs/emojis, lowercase, spell-correct, remove stopwords, stem, then Bag-of-Words
+- **Optional data cleanup**: basic inconsistency fixes, partial outlier capping, partial noise reduction
+- **Persistence**: saves encoders, vectorizer, scalers, imputer, and feature order for inference reproducibility
+
+---
+
+### 📦 Installation
+
+```bash
+pip install git+https://github.com/BlackIIIWhite/Dapropy
+```
+
+Python 3.8+ is required.
+
+Note: On first use, NLTK resources are downloaded automatically (e.g., `punkt`, `stopwords`).
+
+---
+
+### 🚀 Quickstart
+
+```python
+import pandas as pd
+from Dapropy.Dapropy import Dapropy
+
+# Example data
+train_df = pd.DataFrame({
+    "age": [25, 30, None, 40],
+    "city": ["NY", "LA", "LA", None],
+    "review": [
+        "Loved it! 😊 <b>Great</b> service",
+        "Okay visit, would return",
+        None,
+        "Terrible... won't go again http://example.com"
+    ],
+    "label": [1, 0, 1, 0]
+})
+
+# Fit-time processing (saves transformers into ./transformers by default)
+p = Dapropy(
+    target="label",
+    strategyED="Label",           # or "One-Hot"
+    imputer_strategy="KNN",       # or fill/remove strategies
+    enable_text_processing=True,
+    strategyNLP="bag_of_words",
+    fix_datainconsistencies=False,
+    partialnoisereduction=False,
+    partialcap_outliersiqr=False,
+    folder_name="transformers"
+)
+X_train = p.full_process(train_df)
+
+# Inference-time processing (reuses saved transformers)
+new_df = pd.DataFrame({
+    "age": [28],
+    "city": ["LA"],
+    "review": ["Service was fine, nothing special"],
+})
+X_infer = p.pipeline(new_df)
+```
+
+---
+
+### ⚙️ Configuration
+
+- **target**: name of the target column (kept unscaled in output)
+- **strategyED**: categorical encoding strategy
+  - `"Label"` (default)
+  - `"One-Hot"`
+- **imputer_strategy**: missing value handling
+  - `"KNN"` (default) – mixed-type KNN with safe label encoding/decoding
+  - `"remove"`, `"fillna_mean"`, `"fillna_median"`, `"fillna_mode"`
+- **cap_ratio**: fraction of detected outliers to cap (0–1)
+- **smooth_ratio**: fraction of detected noise to smooth (0–1)
+- **window_size**: rolling window for smoothing
+- **enable_text_processing**: enable/disable text cleaning and vectorization
+- **strategyNLP**: text representation, currently `"bag_of_words"`
+- **fix_datainconsistencies**: normalize common string representations, convert dates, drop duplicates
+- **partialnoisereduction**: apply optional smoothing to noisy numeric series
+- **partialcap_outliersiqr**: optionally cap a portion of IQR outliers
+- **folder_name**: directory to store transformers and metadata
+
+---
+
+### 🧠 What happens under the hood
+
+Fit-time (`full_process`):
+1. Optional basic cleanup (`fix_data_inconsistencies`)
+2. Missing values (`handle_missing_values`, default `KNN`)
+3. Text preprocessing + Bag-of-Words (`text_processing`)
+4. Categorical encoding (`encodingcategorical`)
+5. Optional noise/outlier handling
+6. Scaling (`scaling`) for numerics
+7. Persist artifacts: `encoders.pkl`, `vectorizer.pkl`, `scalers.pkl`, `imputer.pkl`, `feature_order.pkl`
+
+Inference-time (`pipeline`):
+1. Load persisted artifacts
+2. Same transformations as fit-time (without refitting)
+3. Align columns to saved `feature_order` (missing columns filled with 0)
+
+---
+
+### 📚 API Reference
+
+- `class Dapropy(target=None, strategyED='Label', imputer_strategy='KNN', cap_ratio=0.9, smooth_ratio=0.9, window_size=3, enable_text_processing=True, strategyNLP='bag_of_words', fix_datainconsistencies=False, partialnoisereduction=False, partialcap_outliersiqr=False, folder_name='transformers')`
+  - Creates a preprocessing pipeline instance.
+
+- `full_process(data: pd.DataFrame) -> pd.DataFrame`
+  - Runs the full fit-time pipeline and saves transformers/metadata.
+
+- `pipeline(data: Union[dict, pd.Series, pd.DataFrame]) -> pd.DataFrame`
+  - Transforms new data for inference using saved artifacts.
+
+- `handle_missing_values(data, strategy=None, n_neighbors=5)`
+  - Strategies: `KNN`, `remove`, `fillna_mean`, `fillna_median`, `fillna_mode`.
+
+- `encodingcategorical(data, strategyED=None, fit_mode=True)`
+  - Encodes object/category columns via Label or One-Hot.
+
+- `scaling(data, target=None, fit_mode=True)`
+  - Standardizes numeric columns; preserves `target` column values.
+
+- `text_processing(data, column, fit_mode=True)`
+  - Cleans and vectorizes one text column; called internally for all text columns when enabled.
+
+- `partial_cap_outliers_iqr(data, cap_ratio=None, random_state=42)`
+  - Caps a portion of IQR-defined outliers.
+
+- `partial_noise_reduction(data, target=None, smooth_ratio=None, window_size=None, random_state=0)`
+  - Smooths a portion of detected noisy points in numeric series.
+
+---
+
+### 📁 Persistence details
+
+Artifacts are saved to `folder_name` (default: `transformers`):
+- `encoders.pkl`, `vectorizer.pkl`, `scalers.pkl`, `imputer.pkl`, `feature_order.pkl`
+
+You may delete this folder to reset the pipeline or change `folder_name` to maintain multiple versions.
+
+---
+
+### ✅ Tips
+
+- Ensure all columns besides `target` that contain free text are of dtype `object` so they are cleaned/vectorized when `enable_text_processing=True`.
+- For stable inference, keep the same preprocessing configuration and `folder_name` between training and serving.
+- If you pass a `dict` or `pd.Series` to `pipeline`, it will be converted to a one-row `DataFrame`.
+
+---
+
+### 🔧 Development
+
+- Python: 3.8+
+- Key dependencies: `pandas`, `numpy`, `scikit-learn`, `emoji`, `nltk`, `textblob`, `joblib`
+- Install locally for development:
+
+```bash
+pip install -e .
+```
+
+---
+
+### 📝 License
+
+MIT License. See `LICENSE.txt` for details.
+
