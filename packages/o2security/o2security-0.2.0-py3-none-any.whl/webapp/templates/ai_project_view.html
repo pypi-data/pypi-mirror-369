@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Project: {{ project_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        .chat-bubble { max-width: 80%; }
+        .chat-bubble-user { background-color: #0e7490; /* cyan-700 */ }
+        .chat-bubble-ai { background-color: #374151; /* gray-700 */ }
+        #chat-box { height: 60vh; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto p-8">
+        <a href="{{ url_for('ai_dashboard') }}" class="text-teal-400 hover:text-teal-300 mb-8 inline-block"><i class="fas fa-arrow-left mr-2"></i> Back to AI Projects</a>
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-white">AI Project: <span class="text-teal-400">{{ project_name }}</span></h1>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="p-4 mb-4 text-sm rounded-lg {{ 'bg-green-800 text-green-300' if category == 'success' else 'bg-red-800 text-red-300' }}" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Settings -->
+            <div class="lg:col-span-1 bg-gray-800 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4 text-teal-300">AI Configuration</h2>
+                <form action="{{ url_for('ai_project_view', project_name=project_name) }}" method="POST" class="space-y-4">
+                    <div>
+                        <label for="api_key" class="block mb-2 text-sm font-medium text-gray-300">API Key</label>
+                        <input type="password" name="config_key" value="API_KEY" hidden>
+                        <input type="password" name="config_value" placeholder="Enter your secret API Key" class="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                     <div>
+                        <label for="base_url" class="block mb-2 text-sm font-medium text-gray-300">Base URL (Optional)</label>
+                        <input type="password" name="config_key" value="BASE_URL" hidden>
+                        <input type="text" name="config_value" value="{{ configs.get('BASE_URL', '') }}" placeholder="https://api.example.com/v1" class="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                    <div>
+                        <label for="system_prompt" class="block mb-2 text-sm font-medium text-gray-300">System Prompt</label>
+                        <input type="password" name="config_key" value="SYSTEM_PROMPT" hidden>
+                        <textarea name="config_value" placeholder="You are a helpful assistant." class="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500" rows="4">{{ configs.get('SYSTEM_PROMPT', '') }}</textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i> Save Configuration
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Column: Chat -->
+            <div class="lg:col-span-2 bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                <h2 class="text-2xl font-semibold mb-4 text-teal-300">Chat</h2>
+                <div id="chat-box" class="flex-grow bg-gray-900/50 rounded-lg p-4 overflow-y-auto flex flex-col gap-4 mb-4">
+                    <!-- Chat messages will be appended here -->
+                    <div class="flex justify-start">
+                        <div class="chat-bubble chat-bubble-ai rounded-lg p-3">
+                           <p class="text-sm">Hello! How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+                <form id="chat-form" class="flex items-center gap-4">
+                    <input type="text" id="message-input" placeholder="Type your message..." class="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500" required>
+                    <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatBox = document.getElementById('chat-box');
+            const chatForm = document.getElementById('chat-form');
+            const messageInput = document.getElementById('message-input');
+            const projectName = '{{ project_name }}';
+
+            // Function to add a message to the chat box
+            function addMessage(sender, text) {
+                const messageWrapper = document.createElement('div');
+                const messageBubble = document.createElement('div');
+                const messageText = document.createElement('p');
+
+                messageWrapper.classList.add('flex');
+                messageBubble.classList.add('chat-bubble', 'rounded-lg', 'p-3');
+                messageText.classList.add('text-sm');
+                messageText.textContent = text;
+                
+                if (sender === 'user') {
+                    messageWrapper.classList.add('justify-end');
+                    messageBubble.classList.add('chat-bubble-user');
+                } else {
+                    messageWrapper.classList.add('justify-start');
+                    messageBubble.classList.add('chat-bubble-ai');
+                }
+
+                messageBubble.appendChild(messageText);
+                messageWrapper.appendChild(messageBubble);
+                chatBox.appendChild(messageWrapper);
+                chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to bottom
+            }
+
+            // Handle chat form submission
+            chatForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const userMessage = messageInput.value.trim();
+                if (!userMessage) return;
+
+                addMessage('user', userMessage);
+                messageInput.value = '';
+                
+                try {
+                    const response = await fetch(`/api/ai/${projectName}/chat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: userMessage }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'An unknown error occurred.');
+                    }
+
+                    const data = await response.json();
+                    addMessage('ai', data.reply);
+
+                } catch (error) {
+                    addMessage('ai', `Error: ${error.message}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
