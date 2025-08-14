@@ -1,0 +1,67 @@
+Metadata-Version: 2.3
+Name: benpay_merchant_api_sdk
+Version: 1.0.2
+Summary: python sdk for benpay merchant
+Author: yangbo
+Author-email: yangbovin@gmail.com
+Requires-Python: >=3.8.0,<4.0.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: pycryptodome (==3.21.0)
+Requires-Dist: requests (>=2.31.0,<3.0.0)
+Description-Content-Type: text/markdown
+
+# Python SDK for Benpay merchant API
+
+# API Documentation
+- [Official documentation](https://docs.benpay.org/zh-Hans/BenPay/Doc/api_doc/)
+
+# Installation
+
+```bash
+pip install benpay_merchant_api_sdk
+```
+
+# Usage
+> Consider `/v1/payment/create` as a reference, the full code can be located in the demo directory.
+* Get api key info
+
+https://www.benpay.org/paymvp/business
+
+* create order
+```python
+import config
+import sys
+import uuid
+
+sys.path.append("../../")
+from benpay_merchant_api_sdk.client import BenpayMerchantClient
+import benpay_merchant_api_sdk.param.benpay_merchant_param as benpay_param
+
+
+client = BenpayMerchantClient(
+    api_key=config.API_KEY,
+    server=config.SERVER,
+    merchant_private_key_string=config.MERCHANT_PRIVATE_KEY_STRING,
+    platform_public_key_string=config.PLATFORM_PUBLIC_KEY_STRING
+)
+
+param = benpay_param.CreatePayOrderParam()
+param.coin = "BUSD"
+param.amount = "0.1"
+param.merchant_order_no = uuid.uuid4().hex
+param.merchant_note = "22222"
+
+resp = client.create_pay_order(param)
+
+if resp.status_code == 200:
+    print(resp.json())
+else:
+    print(resp.text)
+```%
+
