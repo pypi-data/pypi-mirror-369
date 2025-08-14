@@ -1,0 +1,131 @@
+Metadata-Version: 2.4
+Name: motile-tracker
+Version: 3.2.1.dev0
+Summary: Application for interactive tracking with global optimization
+Author-email: Caroline Malin-Mayor <malinmayorc@janelia.hhmi.org>
+License: BSD 3-Clause License
+Project-URL: Bug Tracker, https://github.com/funkelab/motile_tracker/issues
+Project-URL: Documentation, https://funkelab.github.io/motile_tracker/
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Image Processing
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: finn-viewer>=0.2
+Requires-Dist: funtracks
+Requires-Dist: appdirs
+Requires-Dist: numpy<2.1,>=1.26
+Requires-Dist: magicgui
+Requires-Dist: qtpy
+Requires-Dist: scikit-image
+Requires-Dist: motile>=0.3
+Requires-Dist: motile_toolbox==0.4.0
+Requires-Dist: pydantic
+Requires-Dist: tifffile[all]
+Requires-Dist: tqdm
+Requires-Dist: dask[array]>=2021.10.0
+Requires-Dist: fonticon-fontawesome6
+Requires-Dist: PyQt5
+Requires-Dist: pyqtgraph
+Provides-Extra: testing
+Requires-Dist: pyqt5; extra == "testing"
+Requires-Dist: pytest; extra == "testing"
+Requires-Dist: pytest-cov; extra == "testing"
+Requires-Dist: pytest-qt; extra == "testing"
+Provides-Extra: docs
+Requires-Dist: myst-parser; extra == "docs"
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinx-autoapi; extra == "docs"
+Requires-Dist: sphinx_rtd_theme; extra == "docs"
+Requires-Dist: sphinxcontrib-video; extra == "docs"
+Provides-Extra: dev
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Provides-Extra: all
+Requires-Dist: motile-tracker[dev,docs,testing]; extra == "all"
+Dynamic: license-file
+
+# Motile Tracker
+
+[![tests](https://github.com/funkelab/motile_tracker/workflows/tests/badge.svg)](https://github.com/funkelab/motile_tracker/actions)
+[![codecov](https://codecov.io/gh/funkelab/motile_tracker/branch/main/graph/badge.svg)](https://codecov.io/gh/funkelab/motile_tracker)
+
+The full documentation of the plugin can be found [here](https://funkelab.github.io/motile_tracker/).
+
+An application for interactive tracking with [motile](https://github.com/funkelab/motile)
+Motile is a library that makes it easy to solve tracking problems using optimization
+by framing the task as an Integer Linear Program (ILP).
+See the motile [documentation](https://funkelab.github.io/motile)
+for more details on the concepts and method.
+
+----------------------------------
+
+## Installation
+
+This application depends on [motile](https://github.com/funkelab/motile), which in
+turn depends on gurobi and ilpy. These dependencies must be installed with
+conda before installing the plugin with pip.
+
+    conda create -n motile-tracker python=3.10
+    conda activate motile-tracker
+    conda install -c conda-forge -c funkelab -c gurobi ilpy
+    pip install motile-tracker
+
+The conda environment can also be created from the provided conda_config.yml:
+
+    conda env create -f conda_config.yml
+    conda activate motile-tracker
+
+Alternatively one can use [pixi](https://pixi.sh/).
+
+## Running Motile Tracker
+
+To run the application:
+* activate the conda environment created in the [Installation Step](#installation)
+
+    conda activate motile-tracker
+
+* Run:
+
+    python -m motile_tracker
+
+or
+
+    motile_tracker
+
+If [pixi](https://pixi.sh/) is available, you can run motile-tracker using:
+
+    pixi run start
+
+## Package the application into an executable and create the installer
+
+To create the executab run
+
+    pixi run create-app
+
+This command will create an application (.app) on OSX, an EXE on Windows and an
+ELF executable on Linux.
+
+On Windows in order to be able to package the application the ilpy library must be
+properly installed and compiled. This will require [download](https://aka.ms/vs/17/release/vs_BuildTools.exe) and install [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/). This comes with a script to set all required environment variables located typically at `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"` so before you setup the app you need to run this bat file. For powershell run `scripts\scripts/set-vs-buildTools-env.ps1 <fullpathto vcvars64>`.
+
+Further to create an installer for the app you will need:
+* InnoSetup on Windows (`scoop install inno-setup` or `winget install "Inno Setup"`)
+* create-dmg on OSX (`brew install create-dmg`)
+* makeself on Linux (`apt install makeself`)
+
+## Issues
+
+If you encounter any problems, please
+[file an issue](https://github.com/funkelab/motile_tracker/issues)
+along with a detailed description.
