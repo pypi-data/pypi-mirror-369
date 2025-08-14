@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling >=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "deepqlearn"
+version = "0.1.1"
+description = "A simple Deep Q-Network implementation in PyTorch"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Prathamesh Jadhav" }]
+keywords = ["reinforcement learning", "deep q network", "dqn"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/deepqlearn"
+Issues = "https://github.com/yourusername/deepqlearn/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/deepqlearn"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/deepqlearn",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
