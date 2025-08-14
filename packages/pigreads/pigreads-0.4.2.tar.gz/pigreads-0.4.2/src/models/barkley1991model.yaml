@@ -1,0 +1,25 @@
+name: Barkley 1991
+description: |
+  This early phenomenological model of excitable media is one of the
+  simplest models describing both excitation and recovery enabling
+  spiral waves.
+dois:
+  - https://doi.org/10.1016/0167-2789(91)90194-E
+keywords:
+  - excitable media
+  - phenomenological
+variables:
+  u: 0.
+  v: 0.
+diffusivity:
+  u: 1.
+  v: 0.
+parameters:
+  a: 0.75
+  b: 0.02
+  eps: 0.02
+code: |
+  const Real _react_u = u*(1 - u)*(u - (v + b)/a)/eps;
+  const Real _react_v = u - v;
+  *_new_u = u + dt * (_react_u + _diffuse_u);
+  *_new_v = v + dt * (_react_v + _diffuse_v);

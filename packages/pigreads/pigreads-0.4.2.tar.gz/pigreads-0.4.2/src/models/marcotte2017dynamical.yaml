@@ -1,0 +1,32 @@
+name: Marcotte & Grigoriev 2017
+description: |
+  Smoothed version of the Karma model as published by Marcotte & Grigoriev in 2017.
+  In it, a single spiral wave breaks up into spiral wave chaos due to amplification
+  of the alternans instability. It can be used as a model of the transition from
+  tachycardia to fibrillation.
+dois:
+  - https://doi.org/10.1063/1.5003259
+  - https://doi.org/10.1063/1.4915143
+  - https://doi.org/10.1103/PhysRevLett.71.1103
+  - https://doi.org/10.1063/1.166024
+keywords:
+  - excitable media
+  - electrophysiology
+  - heart
+  - phenomenological
+variables:
+  u: 0.
+  v: 0.
+diffusivity:
+  u: 1.
+  v: 0.05
+parameters:
+  beta: 1.389
+  eps: 0.01
+  ustar: 1.5415
+code: |
+  const Real e = exp(2. * (1.2571 * (u - 1.)));
+  const Real V = eps * (beta * ((1. + (e - 1.) / (e + 1.)) / 2.) + (1. + (exp(2. * (1.2571 * (v - 1.))) - 1.) / (exp(2. * (1.2571 * (v - 1.))) + 1.)) / 2. * (v - 1.) - v);
+  const Real U = (ustar - v * v * v * v) * (1. - (exp(2. * (u - 3.)) - 1.) / (exp(2. * (u - 3.)) + 1.)) * u * u / 2. - u;
+  *_new_u = u + dt * (U + _diffuse_u);
+  *_new_v = v + dt * (V + _diffuse_v);

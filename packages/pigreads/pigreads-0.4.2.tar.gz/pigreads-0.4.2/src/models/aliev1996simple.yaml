@@ -1,0 +1,31 @@
+name: Aliev & Panfilov 1996
+description: |
+  This simple two-variable model was created by modifying the model by FitzHugh
+  & Nagumo to describe cardiac excitation waves. It models restitution of
+  action potential duration, i.e., its dependence on cycle length. It was
+  originally designed for canine ventricles, but is considered a
+  phenomenological model.
+dois:
+  - https://doi.org/10.1016/0960-0779(95)00089-5
+keywords:
+  - excitable media
+  - electrophysiology
+  - heart
+  - phenomenological
+variables:
+  u: 0.
+  v: 0.
+diffusivity:
+  u: 1.
+parameters:
+  eps0: 0.002
+  mu1: 0.2
+  mu2: 0.3
+  a: 0.15
+  k: 8.
+code: |
+  const Real eps = eps0 + mu1 * v / (u + mu2);
+  const Real _react_u = -k * u * (u - a) * (u - 1.0) - u * v;
+  const Real _react_v = eps * (-v - k * u * (u - a - 1.0));
+  *_new_u = u + dt * (_react_u + _diffuse_u);
+  *_new_v = v + dt * _react_v;

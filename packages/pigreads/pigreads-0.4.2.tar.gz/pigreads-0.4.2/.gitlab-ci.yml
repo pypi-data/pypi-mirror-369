@@ -1,0 +1,148 @@
+stages:
+  - autoupdate
+  - check
+  - test
+  - build
+  - deploy
+
+variables:
+  GIT_DEPTH: 1000
+  # see https://docs.gitlab.com/ee/ci/caching/#cache-python-dependencies
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+    - .venv/
+
+image: archlinux
+before_script:
+  # install dependencies
+  - pacman -Sy --noconfirm clinfo opencl-headers pocl python python-pip make git
+    docker ffmpeg wget
+  - clinfo
+  - ls /usr/include/CL/
+
+  # set up a virtualenv to cache
+  - python -V
+  - python -m venv .venv
+  - source .venv/bin/activate
+  - python -m pip install -U pip pipx
+  - python -m pipx ensurepath
+  - python -m pip freeze
+
+  # install myokit and compile source code files
+  - python -m pip install myokit pyyaml
+  - make
+
+pre-commit:
+  stage: check
+  variables:
+    PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  script:
+    - python -m pip install pre-commit
+    - pre-commit run --hook-stage manual --all-files
+  cache:
+    key:
+      files:
+        - .pre-commit-config.yaml
+    paths:
+      - .cache/pre-commit
+
+lint:
+  stage: check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  script:
+    - pipx run nox -s pylint
+
+tests:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  script:
+    - python -V
+    - python -m pip install .[test]
+    - python -m pytest -ra --cov=pigreads
+  coverage: '/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+
+make_sdist:
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  script:
+    - pipx run build --sdist
+    - pipx run twine check dist/*
+  artifacts:
+    paths:
+      - dist/*.tar.gz
+    expire_in: 1 day
+
+make_wheels:
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  # make a docker daemon available for cibuildwheel to use
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  parallel:
+    matrix:
+      - CIBW_BUILD:
+          [
+            "cp39-manylinux_x86_64",
+            "cp310-manylinux_x86_64",
+            "cp311-manylinux_x86_64",
+            "cp312-manylinux_x86_64",
+            "cp313-manylinux_x86_64",
+          ]
+        CIBW_PLATFORM: ["linux"]
+        # CIBW_PLATFORM: ["linux", "windows"] # 'macos' not supported by CIBW on GitLab CI
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    # See https://github.com/docker-library/docker/pull/166
+    DOCKER_TLS_CERTDIR: ""
+    CIBW_ARCHS_LINUX: x86_64
+    CIBW_ARCHS_MACOS: x86_64
+    CIBW_ALLOW_PRERELEASES: "1"
+    CIBW_BEFORE_ALL: >
+      set -ex && yum -y install clinfo opencl-headers ocl-icd ocl-icd-devel &&
+      clinfo && ls /usr/include/CL/
+  script:
+    - python -m pip install cibuildwheel
+    - cibuildwheel --output-dir dist
+  artifacts:
+    paths:
+      - dist/*.whl
+    expire_in: 1 day
+
+.deploy:
+  stage: deploy
+  dependencies:
+    - make_sdist
+    - make_wheels
+  script:
+    - pipx run twine upload --verbose dist/*whl dist/*gz
+
+deploy_staging:
+  extends: .deploy
+  rules:
+    - if:
+        $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
+  variables:
+    TWINE_REPOSITORY: testpypi
+    TWINE_USERNAME: __token__
+    TWINE_PASSWORD: $TESTPYPI_TOKEN
+
+deploy_production:
+  extends: .deploy
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    TWINE_REPOSITORY: pypi
+    TWINE_USERNAME: __token__
+    TWINE_PASSWORD: $PYPI_TOKEN

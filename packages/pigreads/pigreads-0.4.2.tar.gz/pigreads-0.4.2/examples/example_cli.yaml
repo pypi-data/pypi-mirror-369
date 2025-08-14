@@ -1,0 +1,59 @@
+# Example YAML Simulation configuration. Execute with the CLI:
+#
+# $ pigreads run example_cli.yaml example_cli.npy
+# $ pigreads movie example_cli.yaml example_cli.npy example_cli.mp4
+
+pigreads: 1
+Nfr: 100
+Nt: 200
+Nz: 1
+Ny: 200
+Nx: 200
+dt: 0.025
+dz: 1
+dy: 0.1
+dx: 0.1
+inhom:
+  - slice:
+      value: 2
+      slices:
+        - axis: -1
+          start: 100
+          end: -1
+  - slices:
+      value: 0
+      axis: -1
+      start: -1
+  - slices:
+      value: 0
+      axis: -2
+      start: -1
+diffusivity: 0.03
+models:
+  - aliev1996simple
+  - aliev1996simple:
+      k: 2
+init:
+  u:
+    slices:
+      value: 1
+      axis: -1
+      end: 10
+  v:
+    slices:
+      value: 2
+      start: 100
+      axis: -2
+stim:
+  - shape:
+      spherical:
+        inside: 1
+        radius: 2
+        center:
+          x: 2
+          y: 12
+    signal:
+      - start: 170 # ms
+        duration: 50 # ms
+        variables:
+          u: 1

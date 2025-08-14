@@ -1,0 +1,30 @@
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+version: 2
+
+build:
+  os: ubuntu-lts-latest
+  apt_packages:
+    - make
+    - opencl-headers
+    - ocl-icd-dev
+    - libpocl-dev
+    - pocl-opencl-icd
+    - clinfo
+  tools:
+    python: latest
+
+  jobs:
+    install:
+      - clinfo
+      - ls /usr/include/CL/
+      - pip install myokit pyyaml
+      - make
+      - CMAKE_ARGS="-DOpenCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libOpenCL.so.1"
+        pip install .[docs]
+
+    build:
+      html:
+        - python -m sphinx -T -b html -d docs/_build/doctrees -D language=en
+          docs $READTHEDOCS_OUTPUT/html
