@@ -1,0 +1,39 @@
+[build-system]
+requires = ["maturin>=1.9,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "repo-mapper-rs"
+version = "0.3.0"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+license = { text = "MIT" }
+dependencies = []
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "repo_mapper_py"
+python-source = "python"
+python-packages = ["repo_mapper"]
+strip = true
+
+[tool.uv]
+# Rebuild package when any rust files change
+cache-keys = [{file = "pyproject.toml"}, {file = "rust/Cargo.toml"}, {file = "**/*.rs"}]
+
+[tool.uv.sources]
+repo-mapper-rs = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "repo-mapper-rs>=0.1.0",
+    "ruff>=0.12.5",
+]
+# Uncomment to build rust code in development mode
+# config-settings = { build-args = '--profile=dev' }
