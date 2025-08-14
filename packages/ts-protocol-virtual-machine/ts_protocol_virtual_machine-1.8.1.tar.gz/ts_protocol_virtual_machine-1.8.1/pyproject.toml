@@ -1,0 +1,39 @@
+[build-system]
+requires = ["poetry-core", "setuptools", "wheel"]
+backend-path = ["."]
+build-backend = "build_backend"
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+addopts = "-v"
+testpaths = [
+  "__test__"
+]
+
+[tool.poetry]
+name = "ts-protocol-virtual-machine"
+version = "1.8.1"
+description = "tetrascience protocol compiler"
+authors = ["tetrascience"]
+readme = "README.md"
+packages = [{include = "ts_protocol_virtual_machine"}]
+license = "Apache License 2.0"
+homepage = "https://developers.tetrascience.com"
+include = [{ path = "ts_protocol_virtual_machine/resources/compiler.js", format = ["sdist", "wheel"] }]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4"
+pythonmonkey = "^1.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-describe = "*"
+pyyaml = "^6.0.1"
+black = "~24"
+isort = "*"
+
+[project]
+name="ts-protocol-virtual-machine"
+requires-python= ">=3.9,<4"
