@@ -1,0 +1,103 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",  # Needed for setuptools-scm support
+    "setuptools-scm>8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "configurable-http-proxy"
+dynamic = ["version"]
+description = "A python implementation of configurable-http-proxy"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    {name = "Corridor Platforms", email = "postmaster@corridorplatforms.com"}
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: Proxy Servers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "tornado",
+    "click",
+    "python-dateutil",
+]
+
+[project.optional-dependencies]
+sql = ["dataset"]
+
+[project.urls]
+Homepage = "https://github.com/corridor/configurable-http-proxy"
+Repository = "https://github.com/corridor/configurable-http-proxy"
+
+[project.scripts]
+configurable-http-proxy = "configurable_http_proxy.cli:main"
+
+[tool.setuptools]
+packages = ["configurable_http_proxy"]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.package-data]
+configurable_http_proxy = ["*"]
+
+[tool.setuptools_scm]
+
+[tool.ruff]
+line-length = 110
+output-format = "grouped"
+target-version = "py37"
+
+[tool.ruff.lint]
+select = [
+    "A",  # flake8-builtins
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "E",  # pycodestyle - errors
+    "EXE",  # flake8-executable
+    "F",  # pyflakes
+    "FA",  # flake8-future-annotations
+    "FLY",  # flynt
+    "I",  # isort
+    "ICN",  # flake8-import-conventions
+    "ISC",  # flake8-implicit-str-concat
+    "LOG",  # flake8-logging
+    "N",  # pep8-naming
+    "NPY",  # numpy-specific rules
+    "PD",  # pandas-vet
+    "PERF",  # perflint
+    "PIE",  # flake8-pie
+    "PGH",  # pygrep-hooks
+    "PLC",  # pylint-convention
+    "PLE",  # pylint-error
+    "PYI024",  # flake8-pyi
+    "Q",  # flake8-quotes
+    "RSE",  # flake8-raise
+    "RUF",  # ruff specific rules
+    "SLOT",  # flake8-slots
+    "T10",  # flake8-debugger
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+    "W",  # pycodestyle - warnings
+    "YTT",  # flake8-2020
+]
+
+[tool.pytest.ini_options]
+testpaths = ["configurable_http_proxy_test"]
+
+[tool.coverage.run]
+branch = true
+cover_pylib = false
+source = ["."]
+include = ["configurable_http_proxy/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+sort = "Miss"
+include = ["configurable_http_proxy/*"]
