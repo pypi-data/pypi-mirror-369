@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crdb-zoho-converter"
+version = "0.2.4"
+description = "Convert CRDB bank statements (XLS/XLSX) into CSV for Zoho Books"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Leon Kasdorf", email = "lkasdorf@users.noreply.github.com" }]
+dependencies = [
+  "pandas>=2.2.2,<3",
+  "xlrd==2.0.1",
+  "openpyxl>=3.1.0",
+]
+
+[project.scripts]
+crdb-convert = "convert_crdb_to_zoho:main"
+crdb-inspect = "_inspect_xls:main"
+
+[tool.setuptools]
+py-modules = ["convert_crdb_to_zoho", "_inspect_xls"]
+
+
