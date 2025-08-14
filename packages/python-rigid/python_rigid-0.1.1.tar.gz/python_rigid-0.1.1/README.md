@@ -1,0 +1,246 @@
+# RigID
+
+**Cryptographically secured ULIDs with built-in integrity verification**
+
+Rigid generates universally unique lexicographically sortable identifiers (ULIDs) enhanced with HMAC signatures for tamper detection. Perfect for applications that expose database IDs publicly while maintaining security and preventing enumeration attacks.
+
+## Features
+
+- 🔒 **HMAC-signed ULIDs** - Every ID includes a cryptographic signature for integrity verification
+- 🛡️ **Tamper detection** - Instantly detect if an ID has been modified or forged
+- 📊 **Tamper-proof metadata** - Optionally bind additional context (user ID, resource type) protected by the same HMAC signature
+- ⏰ **Timestamp extraction** - Extract creation timestamps from verified IDs
+- 🚀 **Minimal dependencies** - Only requires `python-ulid`
+- 🔐 **Timing-attack resistant** - Uses constant-time comparison for security
+- 📈 **Sortable & time-based** - Maintains all ULID benefits (lexicographic ordering)
+
+## Use Cases
+
+- **Public API endpoints** - Safely expose database IDs without enumeration risks
+- **URL parameters** - Secure resource identifiers in web applications
+- **Distributed systems** - Tamper-evident IDs across service boundaries
+- **Audit trails** - Verify ID authenticity in logs and records
+- **Multi-tenant applications** - Bind tenant context to prevent cross-tenant access
+
+## Quick Start
+
+```python
+from rigid import Rigid
+
+# Initialize with a secret key
+rigid = Rigid(secret_key=b"your-secret-key")
+
+# Generate a secure ULID
+secure_id = rigid.generate()
+print(secure_id)
+# Output: 01HQZX9T4R8K2M3N7P5Q6S8V9W-A7B3F8K1
+
+# Verify the ID integrity
+is_valid, ulid_str, metadata = rigid.verify(secure_id)
+print(f"Valid: {is_valid}, ULID: {ulid_str}")
+# Output: Valid: True, ULID: 01HQZX9T4R8K2M3N7P5Q6S8V9W
+```
+
+## Usage Examples
+
+### Basic ID Generation and Verification
+
+```python
+from rigid import Rigid
+
+# Initialize Rigid with your secret key
+rigid = Rigid(secret_key=b"my-application-secret-key")
+
+# Generate a secure ULID
+secure_ulid = rigid.generate()
+print(f"Generated: {secure_ulid}")
+
+# Verify the integrity
+is_valid, original_ulid, metadata = rigid.verify(secure_ulid)
+if is_valid:
+    print(f"✅ Valid ID: {original_ulid}")
+else:
+    print("❌ Invalid or tampered ID")
+```
+
+### Binding Metadata to IDs
+
+Bind additional context like user IDs, resource types, or tenant information. The metadata is cryptographically protected by the same HMAC signature, making it tamper-proof:
+
+```python
+# Generate IDs with metadata
+user_id = rigid.generate(metadata="user_12345")
+order_id = rigid.generate(metadata="order:premium")
+tenant_resource = rigid.generate(metadata="tenant_abc:document")
+
+print(f"User ID: {user_id}")
+# Output: 01HQZX9T4R8K2M3N7P5Q6S8V9W-A7B3F8K1-user_12345
+
+# Verify and extract metadata
+is_valid, ulid_str, extracted_metadata = rigid.verify(user_id)
+if is_valid:
+    print(f"ULID: {ulid_str}")
+    print(f"Metadata: {extracted_metadata}")
+    # Output: ULID: 01HQZX9T4R8K2M3N7P5Q6S8V9W
+    #         Metadata: user_12345
+```
+
+### Timestamp Extraction
+
+```python
+import time
+
+# Generate an ID
+secure_id = rigid.generate()
+
+# Extract timestamp (Unix timestamp in seconds)
+timestamp = rigid.extract_timestamp(secure_id)
+if timestamp:
+    creation_time = time.ctime(timestamp)
+    print(f"ID created at: {creation_time}")
+
+# Extract full ULID object
+ulid_obj = rigid.extract_ulid(secure_id)
+if ulid_obj:
+    print(f"ULID object: {ulid_obj}")
+    print(f"Timestamp: {ulid_obj.timestamp}")
+    print(f"Randomness: {ulid_obj.randomness}")
+```
+
+### Custom Signature Length
+
+```python
+# Use shorter signatures for space efficiency (less secure)
+compact_rigid = Rigid(secret_key=b"secret", signature_length=4)
+
+# Use longer signatures for higher security
+secure_rigid = Rigid(secret_key=b"secret", signature_length=16)
+
+compact_id = compact_rigid.generate()
+secure_id = secure_rigid.generate()
+
+print(f"Compact: {compact_id}")   # Shorter signature
+print(f"Secure:  {secure_id}")    # Longer signature
+```
+
+### Web Application Example
+
+```python
+from rigid import Rigid
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+rigid = Rigid(secret_key=b"your-web-app-secret")
+
+@app.route('/users/<user_id>')
+def get_user(user_id):
+    # Verify the user ID integrity
+    is_valid, ulid_str, metadata = rigid.verify(user_id)
+    
+    if not is_valid:
+        return jsonify({"error": "Invalid user ID"}), 400
+    
+    # Safe to use the verified ULID for database lookup
+    user = database.get_user_by_ulid(ulid_str)
+    return jsonify(user.to_dict())
+
+@app.route('/users', methods=['POST'])
+def create_user():
+    # Create user in database
+    user = create_new_user(request.json)
+    
+    # Generate secure public ID
+    public_id = rigid.generate(metadata=f"user_{user.internal_id}")
+    
+    return jsonify({
+        "public_id": public_id,
+        "user": user.to_dict()
+    })
+```
+
+### Multi-Instance Compatibility
+
+```python
+# Same secret key = compatible instances
+rigid1 = Rigid(secret_key=b"shared-secret")
+rigid2 = Rigid(secret_key=b"shared-secret")
+
+# Generate with first instance
+secure_id = rigid1.generate(metadata="shared_resource")
+
+# Verify with second instance
+is_valid, ulid_str, metadata = rigid2.verify(secure_id)
+print(f"Cross-instance verification: {is_valid}")
+# Output: Cross-instance verification: True
+```
+
+### Error Handling
+
+```python
+# Handle various error cases
+test_cases = [
+    "invalid-format",                    # Malformed
+    "01HQZX9T4R8K2M3N7P5Q6S8V9W-WRONG", # Wrong signature
+    "INVALID_ULID-A7B3F8K1",            # Invalid ULID
+    "01HQZX9T4R-TOO-MANY-PARTS-HERE",   # Too many parts
+]
+
+for test_id in test_cases:
+    is_valid, ulid_str, metadata = rigid.verify(test_id)
+    print(f"ID: {test_id[:20]}... → Valid: {is_valid}")
+    # All outputs: Valid: False
+```
+
+## Security Considerations
+
+- **Secret Key Management**: Use a strong, unique secret key per application
+- **Key Rotation**: Consider implementing key rotation for long-lived applications  
+- **Signature Length**: Balance between security (longer) and efficiency (shorter)
+- **Timing Attacks**: Built-in constant-time verification prevents timing-based attacks
+- **Metadata Privacy**: Be cautious about sensitive information in metadata
+
+## API Reference
+
+### `Rigid(secret_key, signature_length=8)`
+
+Initialize a Rigid instance.
+
+- `secret_key` (bytes): Secret key for HMAC generation
+- `signature_length` (int): Number of signature bytes (default: 8)
+
+### `generate(metadata=None) -> str`
+
+Generate a secure ULID with HMAC signature.
+
+- `metadata` (str, optional): Additional data to bind to the ID
+- Returns: Secure ULID string in format `ULID-SIGNATURE` or `ULID-SIGNATURE-METADATA`
+
+### `verify(secure_ulid) -> tuple[bool, str | None, str | None]`
+
+Verify the integrity of a secure ULID.
+
+- `secure_ulid` (str): The secure ULID to verify
+- Returns: Tuple of (is_valid, ulid_str, metadata)
+
+### `extract_ulid(secure_ulid) -> ULID | None`
+
+Extract the ULID object if valid.
+
+- `secure_ulid` (str): The secure ULID string
+- Returns: ULID object if valid, None otherwise
+
+### `extract_timestamp(secure_ulid) -> float | None`
+
+Extract the timestamp from a secure ULID.
+
+- `secure_ulid` (str): The secure ULID string  
+- Returns: Unix timestamp if valid, None otherwise
+
+## Requirements
+
+- Python 3.11+
+- `python-ulid` >= 3.0.0
+
+## License
+
+This project is licensed under the MIT License.
