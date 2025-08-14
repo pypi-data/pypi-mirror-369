@@ -1,0 +1,149 @@
+POSTICO
+Postico is a GUI used to visualize the screentest database. To download and setup Postico on your machine, please see the README.
+
+In general, Postico is navigated via viewable tables. Tables are listed on the left and clicking on any table will allow you to see its content, structure the DDL (the SQL command to create and define the table).
+If you need to add or alter any data please see the tips below.
+
+Structure, tables should aim to contain one type of data and use foreign keys to relate similar data (i.e. Canvases have nested collections, but they exist in separate tables and are linked in one column of the database)
+When adding new tables, especially ones that will have relations, it's best to work your way outward. You cannot relate things in tables together that haven't been inserted yet.
+
+Please see the Quip Document for a more how-tos and setup : https://quip-apple.com/9zKpApQTsDAn
+
+*** Adding Columns ***
+To add additional columns, go to the Structure tab within the table you want to alter, click " + Column" button.
+Enter the column name, the type, any defaults and any constraints for the col (this includes primary keys, foreign keys, checks, unique restrictions or not Null).
+Some useful default values are:
+ -Constant (to add a constant when there is no information available, like Null, "" or [])
+ -Expression to run a one-time expression like uuid_generate_v4() which auto populates a uuid int he column if it is blank
+Then click "save changes" - if you get a pop up with an error message it is telling you your changes cannot be saved because it violates some SQL command.
+Clicking "Discard Changes" with undo all unsaved changes
+
+*** Altering Columns ***
+To alter the rules of a column go to the Structure tab within the table you want to alter, click the column  information you want to alter (name, type, default or constraints)
+Then click "save changes" - if you get a pop up with an error message it is telling you your changes cannot be saved because it violates some SQL command.
+    Common issues include:
+        Trying to change the type of an existing column
+        Constraining as a Foreign Key to a Table that is missing one of the content values in your column
+        Constraining to Not Null when your existing content values are null
+
+NOTE: Adding a default/constant value will not populate all the currently blank rows in your table with the constant.
+To do this click "SQL Query" on the top left and enter:
+UPDATE "Table_Name"
+SET column_name = new_value;
+
+Don't forget ' single quotes ' around strings or arrays/dictionaries if that is your constant and add a WHERE column_name = value;
+if you want to replace only columns with a certain value ( i.e. WHERE column_name  = NULL) so you don't accidentally overwrite all the data in the column
+
+Click "Execute Statement" when you're ready to run the SQL command.
+NOTE: YOU CANNOT UNDO A SQL COMMAND AFTER IT IS RUN, but you can use the history table within the database to identify and manually revert changes to data
+
+*** ADDING ROWS ***
+To add new data to a table manually:
+1. Click the table you want to add data to
+2. Click "+ Row" on the bottom
+3. Fill out all columns you have information for - Don't forget the environment column!
+4. Click "save changes"
+Any empty columns will be filled out with default data and UUIDs are generated automatically
+
+Don't forget to fill out any related data in related tables i.e. Displays within Collections, Direct Access Content vs
+individual Content (Movie, Episode, Sporting Event)
+- There are functions in screen-test to make this easier, you would need the data object, environment and the type of
+data (enum)
+
+*** ALTERING ROWS ***
+To alter data within a row:
+1.Click the table you want to alter data in
+2. Locate the data row you want to changes (Be careful on the environment!)
+    You can sort the tables by clicking on the column name, but a license is required to filter, so you can't filter
+    tables.
+    An easy way to find what you need is to filter by the column you are going to change and find the old data row,
+    double check the other data is correct and make your update.
+3. Alter any data and click "save changes" to apply changes
+
+
+*** SPECIAL CASES ***
+The Canvas/Collection/Display combination is very interconnected.
+Updating via Postico is very manual. Functions have been written in the database_insertion.py file
+to insert new rows. They require the Enum Type and the Object of the Canvas/Collection/Display you wish to add and
+can be run via the Main by calling their specific "insert_..." functions.
+
+
+*** UPDATING CANVAS/COLLECTIONS/DISPLAYS ***
+DISPLAY
+1. Check for an existing instance of the Display using this query:
+SELECT * from "display"
+WHERE --- ADD display matches info here ---
+2. If no matches, add a new row to the display table and fill in all the information - don't forget the environment
+(prod or itms11 or staging)
+    NOTE: If there is a match, you may need the display_uuid and display_name for the collection_table if the
+    display was match of a collection, but running this SQL query will easily get you this info again
+3. Save any changes
+
+COLLECTION
+1. Check for an existing collection that matches your data using this query:
+SELECT * from "collection"
+WHERE --- ADD collection matches info here ---
+2. If no matches, add a new row to the collection table and fill in all the information - don't forget the environment
+(prod or itms11 or staging)
+    NOTE: If there is a match, you may need the collection_uuid and collection_name for the collection_table if the
+    display was match of a collection, but running this SQL query will easily get you this info again
+3. For the context_ids, it is a dictionary of the display_type_name and the display_uuid. You can either come back
+    and add the information, or find/add each display as you go and enter the information in the dictionary in the style
+    {"display_type_name": "display_uuid"}
+4. Save any changes
+
+CANVAS
+1. Check for an existing canvas that matches your data using this query:
+SELECT * from "canvas"
+WHERE --- ADD canvas matches info here ---
+2. If no matches, add a new row to the canvas table and fill in all the information - don't forget the environment
+(prod or itms11 or staging)
+3. For the collection_ids, it is a dictionary of the collection_type_name and the collection_uuid. You can either come back
+    and add the information, or find/add each collection as you go and enter the information in the dictionary in the style
+    {"collection_type_name": "collection_id"}
+4. Save any changes
+
+***USEFUL SQL COMMANDS***
+HOW TO CHECK FOR DUPLICATES IN A TABLE AND REMOVE THEM:
+If you think there may be duplicates in the table, use a SQL statement to check by
+running the SQL Query within Postico.
+1. Under SELECT list out all the columns you would like to see.
+2. Within GROUP BY list out all the columns that must be equivalent to make the entries duplicate.
+
+TIP: Dont forget different environments could have the same values but need copies for each environments.
+TIP: Use the query below  as a template to get a table of the count of duplicate rows.
+It's safest to manually delete duplicate data entry by entry, clicking on a row and hitting delete
+will delete the row only after you hit "save changes".
+
+Example to find all rows in "Collection" with more than one entry:
+    SELECT
+        collection_id,
+        collection_type,
+        items,
+        environment,
+        conductor_published_id,
+        COUNT(*) AS duplicate_count
+    FROM
+        "Collection"
+    GROUP BY
+        collection_id,
+        collection_type,
+        items,
+        environment,
+        conductor_published_id
+    HAVING
+        COUNT(*) > 1;
+
+
+HOW TO SELECT AND VIEW FROM A TABLE
+SELECT * from "table_name";
+-- selects all columns from a table
+
+SELECT name, id from "table_name";
+-- selects only the name and id columns from table
+
+TIPS:
+1.Adding more complex SQL commands using WHERE, JOIN, GROUP BY, HAVING, DISTINCT etc will give you more specific data.
+2.Interlinked is effective at writing SQL commands described in Natural Language.
+3.Don't forget to put the "table_name" in quotes, interlinked struggles to remember to do this.
+

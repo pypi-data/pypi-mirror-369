@@ -1,0 +1,46 @@
+# Test Data Access Guide
+
+This document provides guidance on how to access, use, and contribute to the test data stored in the `screentest` database. It covers both data insertion patterns and how to retrieve existing test data.
+
+## 1. Data Organization & Environments
+
+All test data is organized by `environment` (e.g., `itms11`, `prod`). This allows for isolation and management of data specific to different test setups. When interacting with data, you will always need to specify the target environment.
+
+## 2. Test Data Model Overview
+
+The `screentest` database stores various types of test entities, which collectively form a test data model. These entities are represented by Python dataclasses (defined in `data_structures/test_data_classes.py`) and categorized by enums (defined in `data_structures/test_data_keys.py`).
+
+A typical test data model for a specific environment might look like:
+
+# Example of a constructed data model for 'itms11'
+itms11_data_model = Data(
+    ACCOUNTS=ACCOUNTS,
+    CANVASES=CANVASES,
+    COLLECTIONS=COLLECTIONS,
+    CONTENT_DATAS=CONTENT_DATAS,
+    DIRECT_ACCESS=direct_access,
+    UTS_OFFERS=UTS_OFFERS,
+)
+For detailed definitions of the underlying data structures, refer to the Python dataclass definitions and their associated enums. Overall, each element in the data model is a dictionary of an EnumType: Object key, value pair.
+i.e. ACCOUNTS = {AccountType.TV_PLUS_SUBSCRIBED : Account(dsid: "172632", cid: "472348724387", email: "tester@apple.com", password: "password", protected: False), AccountsType.MLS_ANNUAL: ... }
+
+3. Inserting Test Data
+
+Test data is inserted into the database using dedicated Python functions located in database_insertions.py. Each function is responsible for populating a specific table with data corresponding to its Python dataclass representation.
+
+
+General Pattern:
+Each insert_[entity_name] function typically takes a DatabaseManager instance, an enum, an object, and an environment string. It returns the primary key of the newly inserted record, which is usually the uuid of the Object or the unique ID.
+
+Referenced Data: Most insertion functions rely on data objects (like Account) that are derived from the hardcoded dictionaries in data_structures/test_data_keys.py.
+
+
+4. Reading Data from Tables
+
+Data can be read directly via SQL queries or through dedicated Python fetching functions located in database_fetches.py.
+
+
+Database Connection: Ensure you have a DatabaseManager instance connected to the screentest database. Login Information for accessing the database is stored in Whisper Secrets.
+
+
+Schema Reference: For detailed information on table structures, column names, data types, and relationships, refer to the Database Schema Documentation.

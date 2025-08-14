@@ -1,0 +1,421 @@
+# Database Schema Documentation
+
+## Overview
+This database contains tables that store all the data needed for UTS QA testing. Below is a breakdown of each table and their relationships.
+
+IMPORTANT NOTE: Data is often marked by it's environment which should be chosen based on the type of tests you are running (prod, itms11)
+- When inputing new data, please make sure you are entering the correct environment for your data
+
+MIRO Board for Visual UML of Table Structure and Relations: https://miro.com/app/board/uXjVIperXsw=/?share_link_id=887261815132
+Password = password
+---
+
+## Tables
+
+### 1. `Environments`
+- **Description**: Stores types of environments where test data is applicable (e.g. prod, itms11).
+- **Primary Key**: `environment_type`
+- **Columns**:
+  - `environment_type` (VARCHAR, PK): Unique environment identifier.
+
+### 2. `Account_Types`
+- **Description**: Stores different predefined categories of accounts used for testing (e.g., ADULT_SIMPLE_PROFILE, COLD_START, MLS_MONTHLY).
+- **Primary Key**: `account_type`
+- **Columns**:
+  - `account_type` (VARCHAR, PK): The unique identifier for an account type, typically derived from an enum name.
+
+### 3. `Account`
+- **Description**: Stores information about individual accounts, representing various user states and subscription types for testing purposes.
+- **Primary Key**: `account_id` - A unique identifier for each account record.
+- **Foreign Keys**:
+    - `account_type` references `Account_Types.account_type`: Links to the predefined categories of accounts.
+    - `environment` references `Environments.environment_type`: Indicates the environment this account record is associated with (e.g., "prod", "itms11").
+- **Columns**:
+  - `account_id` (UUID, PK): Unique identifier for the account record.
+  - `account_type` (VARCHAR, FK): The type of account, corresponding to the `AccountTypes` enum name (e.g., "COLD_START", "MLS_TV_PLUS_SUBSCRIBED").
+  - `dsid` (VARCHAR): The ID (DSID) associated with the account. Can be empty for certain account types like `COLD_START`.
+  - `cid` (VARCHAR): The ID (CID) associated with the account. Can be empty for certain account types like `COLD_START`.
+  - `email` (VARCHAR): The email address registered to the account. Optional for some account types.
+  - `encrypted_password` (BYTEA/VARCHAR): The encrypted password for the account. Used for authentication in test scenarios. Optional.
+  - `protected` (BOOLEAN): A flag indicating if the account is protected. If not explicitly provided in the source `Account` object, its value will default based on the `Account` dataclass definition (e.g., `False`).
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this account data is applicable.
+
+ ### 4. `Canvas_Types`
+- **Description**: Stores information about predefined canvas types (e.g., CANVAS, CHANNEL, GENRE).
+- **Primary Key**: `canvas_type`
+- **Columns**:
+  - `canvas_type` (VARCHAR, PK): The unique identifier for a canvas type.
+
+### 5. `Canvas`
+- **Description**: Stores information about individual "canvases," which represent top-level content groupings or channels within the application's UI. Canvases serve as containers for various media content and collections.
+- **Primary Key**: `canvas_uuid` - A unique identifier for each canvas record.
+- **Foreign Keys**:
+    - `canvas_type` references `Canvas_Types.canvas_type`: Links to the predefined category of canvas.
+    - `environment` references `Environments.environment_type`: Indicates the environment this canvas record is associated with.
+- **Columns**:
+  - `canvas_uuid` (UUID, PK): Unique identifier for the canvas record.
+  - `id` (VARCHAR): An external or internal identifier for the canvas, often used in the hardcoded data (e.g., `tvs.sbd.7000`).
+  - `name` (VARCHAR): The human-readable name of the canvas (e.g., "MLS Season Pass", "Chapman League Pass").
+  - `canvas_name` (VARCHAR): The name of the `Canvases` enum member (e.g., "MLS", "CHAPMAN"), used for internal lookup.
+  - `canvas_type` (VARCHAR, FK): The specific type of canvas (e.g., "CHANNEL", "CANVAS"), derived from the `CanvasTypes` enum.
+  - `is_first_party` (BOOLEAN): Indicates if the content on this canvas is first-party.
+  - `bundle_id` (VARCHAR): An identifier related to content bundles.
+  - `vod_service` (VARCHAR): Identifier for the Video-On-Demand service associated with the canvas.
+  - `external_service_id` (VARCHAR): An external identifier for the service.
+  - `salable_adam_id` (VARCHAR): Adam ID for general salability.
+  - `salable_adam_id_out_market` (VARCHAR): Adam ID for out-of-market salability.
+  - `salable_adam_id_in_market` (VARCHAR): Adam ID for in-market salability.
+  - `parent_id` (VARCHAR): The id of a parent canvas, ideally also in the db.
+  - `child_ids` (JSONB): A JSON array or object containing identifiers for child elements or content within the canvas.
+  - `external_id` (VARCHAR): Another external identifier for the canvas.
+  - `is_sports_dynamic` (BOOLEAN): Flag indicating if the canvas content is dynamically generated for sports.
+  - `brand_equivalence_id` (VARCHAR): An identifier for brand equivalence.
+  - `is_enabled_for_editorial_featuring` (BOOLEAN): Flag indicating if the canvas is enabled for editorial featuring.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this canvas data is applicable.
+  - `media_content` (JSONB): A JSON object containing mappings of content keys to UMC IDs for media content associated with this canvas.
+  - `collection_items` (JSONB): A JSON object containing mappings of collection keys (from `Collections` enum names) to `collection_uuid`s for collections nested within this canvas. This captures relationship between `Canvas` and `Collection` entities.
+  - `up_next_fallback` (JSONB): A JSON object containing details from up_next_fallback populated with collection ids and category name.
+
+  ### 6. `Collection_Types`
+- **Description**: Stores information about predefined collection types (e.g., BRICK, CHANNEL_UPSELL, EPIC_STAGE).
+- **Primary Key**: `collection_type`
+- **Columns**:
+  - `collection_type` (VARCHAR, PK): The unique identifier for a collection type.
+
+### 7. `Collection`
+- **Description**: Stores information about collections of content or UI elements. Collections often group related items and define how they are presented within the application's UI. They can contain nested `Display` configurations.
+- **Primary Key**: `collection_id + environment` - A compound primary key to identify a unique collection.
+- **Foreign Keys**:
+    - `collection_type` references `Collection_Types.collection_type`: Links to the predefined category of collection.
+    - `environment` references `Environments.environment_type`: Indicates the environment this collection record is associated with.
+- **Columns**:
+  - `collection_uuid` (UUID): Unique identifier for the collection record.
+  - `collection_id` (VARCHAR, PPK): An identifier for the collection (e.g., `edt.col.651cdff1-5a6b-4796-b32a-7527dd5acb84`). This is the primary identifier used in the hardcoded data.
+  - `collection_type` (VARCHAR, FK): The specific category or enum name of the collection (e.g., "EPIC_INLINE_C_COLLECTION_WITH_BOX_SETS"), derived from the `Collections` enum.
+  - `context_ids` (JSONB): A JSON object mapping `DisplayType` names (e.g., "EPIC_INLINE") to `display_uuid`s (e.g., `"a6882390-..."`). This links the collection to specific display configurations and populates `collection_obj.context_ids`.
+  - `items` (JSONB): A JSON array containing identifiers for the content items or other entities included in this collection.
+  - `environment` (VARCHAR, FK, PPK): The environment tag (e.g., "prod", "itms11") where this collection data is applicable.
+
+ ### 8. `Competitors`
+- **Description**: Stores information about predefined competitors (e.g., ARSENAL, GALAXY, HOUSTON). This is primarily a lookup table.
+- **Primary Key**: `competitor_name`
+- **Columns**:
+  - `competitor_name` (VARCHAR, PK): The unique name of the competitor.
+
+ ### 9. `Content_Data_Types`
+- **Description**: Stores information about various content data types or categories used across the system (e.g., AB_TESTING, LEAGUES, PERSONS). This is primarily a lookup table.
+- **Primary Key**: `content_data_type`
+- **Columns**:
+  - `content_data_type` (VARCHAR, PK): The unique identifier for a content data type.
+
+ ### 10. `Content_Types`
+- **Description**: Stores information about generic content types (e.g., BONUS, MOVIE, KEY_PLAY). This is primarily a lookup table.
+- **Primary Key**: `content_type`
+- **Columns**:
+  - `content_type` (VARCHAR, PK): The unique identifier for a content type.
+  - `content_type_name` (VARCHAR): A string name version of the content type.
+
+ ### 11. `Display_Types`
+- **Description**: Stores information about predefined display types (e.g., CONTENT_UPSELL, ENHANCED_LOOKUP, SWOOSH). This is primarily a lookup table.
+- **Primary Key**: `display_type`
+- **Columns**:
+  - `display_type` (VARCHAR, PK): The unique identifier for a display type.
+  - `display_type_name` (VARCHAR): A string name version of the display type.
+
+ ### 12. `Display`
+- **Description**: Stores configuration data for various Displays (e.g., how a specific content type is presented on a screen). These records are often part of larger `Collection` objects.
+- **Primary Key**: `display_uuid` - A unique identifier for each display configuration record.
+- **Foreign Keys**:
+    - `display_type` references `Display_Types.display_type`: Links to the predefined category of display.
+    - `environment` references `Environments.environment_type`: Indicates the environment this display record is associated with.
+- **Columns**:
+  - `display_uuid` (UUID, PK): Unique identifier for the display configuration.
+  - `root` (VARCHAR): An identifier for a root UI element, often a Canvas UUID. Can be an empty string if not applicable.
+  - `canvas` (VARCHAR): An identifier for a specific Canvas,  (e.g., `edt.cvs.6515ff9c-8e2a-40b4-94af-bf25533e140b`).
+  - `shelf` (VARCHAR): An identifier for a specific Shelf,(e.g., `umc.cmr.its.se.4cf590tp3hr41d6gx6z41x8km`).
+  - `display_type` (VARCHAR, FK): The specific type of display (e.g., "EPIC_INLINE_C", "GAME_SCHEDULE_LOCKUP"), derived from the `DisplayTypes` enum.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this display data is applicable.
+
+### 13. `Leagues`
+- **Description**: Stores information about sports leagues (e.g., MLB, MLS, NBA) and their associated content for testing sports-related features.
+- **Primary Key**: `league_uuid` - A unique identifier for each league record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this league record is associated with.
+- **Columns**:
+  - `league_uuid` (UUID, PK): Unique identifier for the league record.
+  - `league_initials` (VARCHAR): The short name or initials of the league, derived from the `Leagues` enum (e.g., "MLB", "NFL").
+  - `league_full_name` (VARCHAR): The full, human-readable name of the league (e.g., "Major League Baseball", "National Football League").
+  - `umc_id` (VARCHAR): The UMC ID for the league, used for external system integration.
+  - `competitors` (JSONB): A JSON array containing the names of competitors (e.g., teams) associated with this league. This is derived from the `name` attribute of `UMCContent` objects.
+  - `related_content` (JSONB): A JSON object containing miscellaneous related content or metadata for the league. This is derived from the `related_content` attribute of the `League` Object`.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this league data is applicable.
+
+### 14. `Persons`
+- **Description**: Stores information about individuals (e.g., actors, athletes) relevant to content.
+- **Primary Key**: `name` - The unique name of the person, used as the primary key.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this person record is associated with.
+- **Columns**:
+  - `name` (VARCHAR, PK): The unique name of the person (e.g., "BRAD_BIRD", "LIONEL_MESSI"), derived from the `Persons` enum.
+  - `umc_id` (VARCHAR): The UMC ID for the person, derived from `id` attribute.
+  - `full_name` (VARCHAR): The full, human-readable name of the person (e.g., "Brad Bird", "Lionel Messi"), derived from the `name` attribute.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this person data is applicable.
+
+### 15. `Roles`
+- **Description**: Stores information about predefined roles (e.g., ACTOR, GUESTSTAR, WRITER). This is primarily a lookup table.
+- **Primary Key**: `role_type`
+- **Columns**:
+  - `role_type` (VARCHAR, PK): The unique identifier for a role type.
+  - `role_name` (VARCHAR): The full name of the role.
+
+### 16. `Shelf`
+- **Description**: Stores information about Shelves components (e.g., "Up Next", "Top Shelf").
+- **Primary Key**: `shelf_uuid` - A unique identifier for each shelf record.
+- **Foreign Keys**:
+    - `display_type` references `Display_Types.display_type`: Links to the type of display associated with this shelf.
+    - `environment` references `Environments.environment_type`: Indicates the environment this shelf record is associated with.
+- **Columns**:
+  - `shelf_uuid` (UUID, PK): Unique identifier for the shelf record.
+  - `shelf_id` (VARCHAR): An internal or external identifier for the shelf's content (e.g., `uts.col.UpNextWidget`). This can sometimes be an empty string if not applicable.
+  - `display_type` (VARCHAR, FK): The display type associated with the shelf (e.g., "lockup", "upNext"). This corresponds to a `display_type` in the `Display_Types` table.
+  - `shelf_type` (VARCHAR): The specific category or enum name of the shelf (e.g., "LOCKUP", "UP_NEXT"), derived from the `Shelves` enum.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this shelf data is applicable.
+
+### 17. `Sports`
+- **Description**: Stores information about individual sports (e.g., Football, Basketball).
+- **Primary Key**: `sport_uuid` - A unique identifier for each sport record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this sport record is associated with.
+    - `content_type` references `Content_Types.content_type` : Indicates what type of content this is associated with (i.e. SPORTS)
+- **Columns**:
+  - `sport_uuid` (UUID, PK): Unique identifier for the sport record.
+  - `umc_id` (VARCHAR): The UMC ID for the sport, derived from the `id` attribute.
+  - `name` (VARCHAR): The human-readable name of the sport (e.g., "Major League Baseball").
+  - `related_content` (JSONB): A JSON object containing miscellaneous related content or metadata for the sport.
+  - `umc_tag` (VARCHAR): A UMC-specific tag for the sport.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this sport data is applicable.
+  - `sport_type` (VARCHAR): The specific category or enum name of the sport (e.g., "MLB", "NFL"), derived from the `Sports` enum.
+  - `content_type` (VARCHAR, FK): Hardcoded to "SPORTS" for this table.
+
+### 18. `Campaign`
+- **Description**: Stores information about marketing campaigns.
+- **Primary Key**: `id` - The campaign ID, which is an external identifier provided by the `Campaign` object.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this sport record is associated with.
+- **Columns**:
+  - `campaign_type` (VARCHAR): The type of campaign, derived from the `Campaigns` enum.
+  - `id` (VARCHAR, PK): The unique identifier for the campaign, sourced from `campaign_obj.id`.
+  - `user_id` (VARCHAR): An identifier for the user associated with the campaign.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this campaign data is applicable.
+
+### 20. `UMC_Content_Type`
+- **Description**: Defines generic types of UMC Content Types used across the system. This is primarily a lookup table.
+- **Primary Key**: `umc_content_type`
+- **Columns**:
+  - `umc_content_type` (VARCHAR, PK): The unique identifier for the UMC content type (e.g., "MOVIE", "TV_SHOW").
+  - `name` (VARCHAR): The human-readable name of the UMC content type.
+  - `uts_content_type` (VARCHAR): A specific UTS content type identifier.
+  - `product_api_path` (VARCHAR): The API path for product data related to this content type.
+  - `metadata_api_path` (VARCHAR): The API path for metadata related to this content type.
+
+### 21. `Episode`
+- **Description**: Stores details about individual episodes of TV shows or other episodic content.
+- **Primary Key**: `episode_uuid` - A unique identifier for each episode record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this episode data is applicable.
+    - `umc_content_type` references `UMC_Content_Type.umc_content_type`: Indicates the type of UMC content this data relates to (i.e. EPISODES)
+- **Columns**:
+  - `episode_uuid` (UUID, PK): Unique identifier for the episode record.
+  - `show_id` (VARCHAR): An identifier for the show this episode belongs to.
+  - `umc_content_type` (VARCHAR, FK): Hardcoded to "EPISODE" content type.
+  - `name` (VARCHAR): The human-readable name of the episode.
+  - `id` (VARCHAR): The UMC ID for the episode.
+  - `required_entitlement` (JSONB): A JSON array of required entitlements usually Canvases that need this episode(e.g., "TV_PLUS_SUBSCRIBED")
+  - `content_name` (VARCHAR): A unique key name for the episode, used for internal lookup (e.g., `episode_key_name`).
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this episode data is applicable.
+
+### 22. `League_Availability`
+- **Description**: Stores information about the availability of specific league offers.
+- **Primary Key**: `league_availability_uuid` - A unique identifier for each availability record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this availability record is applicable.
+    - `offer_value` references `Offer_Season.offer_type`: Indicates the offer value for this league (Monthly, Season or None)
+- **Columns**:
+  - `league_availability_uuid` (UUID, PK): Unique identifier for the league availability record.
+  - `offer_name` (VARCHAR): The name of the offer associated with this availability.
+  - `league` (VARCHAR): The name of the league (e.g., "MLS", "NFL").
+  - `offer_value` (VARCHAR): The value type associated with the offer (i.e. Season, Monthly or None).
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this availability data is applicable.
+
+### 23. `Sporting_Event`
+- **Description**: Stores details about individual sporting events.
+- **Primary Key**: `sporting_event_uuid` - A unique identifier for each sporting event record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this sporting event data is applicable.
+    - `umc_content_type` references `UMC_Content_Type.umc_content_type`: Indicates the type of UMC content this data relates to (i.e. MLS, MLB etc)
+- **Columns**:
+  - `sporting_event_uuid` (UUID, PK): Unique identifier for the sporting event record.
+  - `event_name` (VARCHAR): A unique key name for the event, used for internal lookup (e.g., `sporting_event_key_name`).
+  - `name` (VARCHAR): The human-readable name of the sporting event.
+  - `id` (VARCHAR): The UMC ID for the sporting event.
+  - `required_entitlement` (JSONB): A JSON array of required entitlements to access this event.
+  - `league_name` (VARCHAR): The name of the league the event belongs to.
+  - `umc_content_type` (VARCHAR, FK): The type of sporting event within UMC Content Types (e.g., "PAST SPORTING EVENT, LIVE SPORTING EVENT).
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this sporting event data is applicable.
+
+### 24. `Movie`
+- **Description**: Stores details about individual movie content.
+- **Primary Key**: `movie_uuid` - A unique identifier for each movie record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this movie data is applicable.
+    - `umc_content_type` references `UMC_Content_Type.umc_content_type`: Indicates the type of UMC content this data relates to (i.e. MOVIE)
+- **Columns**:
+  - `movie_uuid` (UUID, PK): Unique identifier for the movie record.
+  - `movie_element_name` (VARCHAR): A unique key name for the movie, used for internal lookup (e.g., `movie_key_name`).
+  - `id` (VARCHAR): The UMC ID for the movie.
+  - `name` (VARCHAR): The human-readable name of the movie.
+  - `umc_content_type` (VARCHAR, FK): Hardcoded to "MOVIE".
+  - `required_entitlement` (JSONB): A JSON array of required entitlements to access this movie.
+  - `adam_id` (VARCHAR): The Adam ID for the movie.
+  - `description` (TEXT): A description of the movie.
+  - `related_content` (JSONB): A JSON object containing miscellaneous related content or metadata for the movie.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this movie data is applicable.
+
+### 25. `TV_Show`
+- **Description**: Stores details about individual TV show content.
+- **Primary Key**: `tv_show_uuid` - A unique identifier for each TV show record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this TV show data is applicable.
+    - `umc_content_type` references `UMC_Content_Type.umc_content_type`: Indicates the type of UMC content this data relates to (i.e. TV_SHOW)
+- **Columns**:
+  - `tv_show_uuid` (UUID, PK): Unique identifier for the TV show record.
+  - `tv_show_element_name` (VARCHAR): A unique key name for the TV show, used for internal lookup (e.g., `tv_show_key_name`).
+  - `id` (VARCHAR): The UMC ID for the TV show.
+  - `name` (VARCHAR): The human-readable name of the TV show.
+  - `umc_content_type` (VARCHAR, FK): Hardcoded to "TV_SHOW".
+  - `required_entitlement` (JSONB): A JSON array of required entitlements to access this TV show.
+  - `adam_id` (VARCHAR): The Adam ID for the TV show.
+  - `description` (TEXT): A description of the TV show.
+  - `related_content` (JSONB): A JSON object containing miscellaneous related content or metadata for the TV show.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this TV show data is applicable.
+
+### 26. `Season`
+- **Description**: Stores details about individual seasons of TV shows.
+- **Primary Key**: `season_uuid` - A unique identifier for each season record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this season data is applicable.
+    - `umc_content_type` references `UMC_Content_Type.umc_content_type`: Indicates the type of UMC content this data relates to (i.e. SEASON)
+- **Columns**:
+  - `season_uuid` (UUID, PK): Unique identifier for the season record.
+  - `season_element_name` (VARCHAR): A unique key name for the season, used for internal lookup (e.g., `season_key_name`).
+  - `id` (VARCHAR): The UMC ID for the season.
+  - `name` (VARCHAR): The human-readable name of the season.
+  - `umc_content_type` (VARCHAR, FK): Hardcoded to "SEASON".
+  - `required_entitlement` (JSONB): A JSON array of required entitlements to access this season.
+  - `adam_id` (VARCHAR): The Adam ID for the season.
+  - `description` (TEXT): A description of the season.
+  - `related_content` (JSONB): A JSON object containing miscellaneous related content or metadata for the season.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this season data is applicable.
+
+### 27. `Other`
+- **Description**: A generic table for various UMC content types that do not have their own dedicated tables (e.g., specific bonus content, box sets, etc.).
+- **Primary Key**: `other_uuid` - A unique identifier for each "other" content record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this content data is applicable.
+- **Columns**:
+  - `other_uuid` (UUID, PK): Unique identifier for the content record.
+  - `other_element_name` (VARCHAR): A unique key name for the content, used for internal lookup.
+  - `id` (VARCHAR): The UMC ID for the content.
+  - `name` (VARCHAR): The human-readable name of the content.
+  - `content_type` (VARCHAR): The specific type of content (e.g., "BOX_SET" or other `UMCContent` types OR UTS Content Type i.e. "BONUS"  ).
+  - `adam_id` (VARCHAR): The Adam ID for the content.
+  - `secondary_id` (VARCHAR): An optional secondary identifier for the content, used by `insert_other_umc_content`.
+  - `show_id` (VARCHAR): An optional identifier for the show this content belongs to, used by `insert_box_set`.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this content data is applicable.
+
+### 28. `UTS_Offer`
+- **Description**: Stores details about offers from the UTS.
+- **Primary Key**: `uts_offer_uuid` - A unique identifier for each UTS offer record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this offer data is applicable.
+- **Columns**:
+  - `uts_offer_uuid` (UUID, PK): Unique identifier for the UTS offer record.
+  - `uts_offer_name` (VARCHAR): The name of the UTS offer, derived from the `UTSOffers` enum.
+  - `ad_hoc_offer_id` (VARCHAR): An ad-hoc offer ID.
+  - `free_duration_period` (VARCHAR): The duration of a free period in days, if applicable.
+  - `offer_intent` (VARCHAR): The intent of the offer (e.g., "purchase", "subscribe").
+  - `device_purchased` (VARCHAR): Information about the device on which the offer was purchased.
+  - `provider_name` (VARCHAR): The name of the offer provider.
+  - `eligibility_type` (VARCHAR): The type of eligibility for the offer (i.e. HARD_BUNDLE, INTRO etc).
+  - `carrier_name` (VARCHAR): The carrier name associated with the offer (i.e. T-Mobile etc).
+  - `account_types` (JSONB): The account types applicable to this offer.
+  - `product_code` (VARCHAR): The product code for the offer.
+  - `adam_id` (VARCHAR): The Adam ID for the offer.
+  - `subscription_bundle_id` (VARCHAR): The subscription bundle ID for the offer.
+  - `general_offer_type` (VARCHAR): The general type of offer, derived from `offer_type` attribute.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this offer data is applicable.
+
+### 29. `Offer`
+- **Description**: Stores details about general QA automation offers.
+- **Primary Key**: `offer_uuid` - A unique identifier for each offer record.
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this offer data is applicable.
+- **Columns**:
+  - `offer_uuid` (UUID, PK): Unique identifier for the offer record.
+  - `id` (VARCHAR): An external identifier for the offer, sourced from `offer_obj.id`.
+  - `name` (VARCHAR): The human-readable name of the offer.
+  - `entity_id` (VARCHAR): The entity ID associated with the offer.
+  - `primary_intents` (JSONB): A JSON array of primary intents for the offer.
+  - `secondary_intents` (JSONB): A JSON array of secondary intents for the offer.
+  - `editorial_events` (JSONB): A JSON array of editorial events related to the offer.
+  - `experiment` (JSONB): A JSON object containing experiment details related to the offer.
+  - `entity_type` (VARCHAR): The type of entity associated with the offer.
+  - `status` (VARCHAR): The status of the offer.
+  - `deleted` (BOOLEAN): Flag indicating if the offer is marked as deleted.
+  - `created_by_id` (VARCHAR): Identifier of the user who created the offer.
+  - `version` (INT): The version number of the offer.
+  - `published` (BOOLEAN): Flag indicating if the offer is published.
+  - `latest` (BOOLEAN): Flag indicating if this is the latest version of the offer.
+  - `environment` (VARCHAR, FK): The environment tag (e.g., "prod", "itms11") where this offer data is applicable.
+  - `offer_type` (VARCHAR): The specific type of offer, derived from the `Offers` enum name.
+
+### 30. `Offer_Season`
+- **Description**: A table containing the season/length for a particular offer (i.e. MONTHLY)
+- **Primary Key**: `offer_season` - The name of the offer season
+- **Foreign Keys**:
+    - `environment` references `Environments.environment_type`: Indicates the environment this content data is applicable.
+- **Columns**:
+  - `offer_season` (UUID, PK): Unique identifier for the offer season.
+
+---
+
+## Relationships
+
+- `Account.account_type` (FK) -> `Account_Types.account_type`
+- `Account.environment` (FK) -> `Environments.environment_type`
+- `Canvas.canvas_type` (FK) -> `Canvas_Types.canvas_type`
+- `Canvas.environment` (FK) -> `Environments.environment_type`
+- `Collection.collection_type` (FK) -> `Collection_Types.collection_type`
+- `Collection.environment` (FK) -> `Environments.environment_type`
+- `Display.environment` (FK) -> `Environments.environment_type`
+- `Display.display_type` (FK) -> `Display_Types.display_type`
+- `Leagues.environment` (FK) -> `Environments.environment_type`
+- `League_Availability.environment` (FK) -> `Environments.environment_type`
+- `Movie.environment` (FK) -> `Environments.environment_type`
+- `Other.environment` (FK) -> `Environments.environment_type`
+- `Offer.environment` (FK) -> `Environments.environment_type`
+- `Season.environment` (FK) -> `Environments.environment_type`
+- `Shelf.environment` (FK) -> `Environments.environment_type`
+- `Sporting_Event.environment` (FK) -> `Environments.environment_type`
+- `Sports.environment` (FK) -> `Environments.environment_type`
+- `TV_Show.environment` (FK) -> `Environments.environment_type`
+- `UTS_Offer.environment` (FK) -> `Environments.environment_type`
+- `Campaign.environment` (FK) -> `Environments.environment_type`
+- `Episode.environment` (FK) -> `Environments.environment_type`
+
+
+- **Conceptual Relationships (via JSONB fields and UUIDs):**
+    - `Canvas.collection_items` (JSONB) conceptually links `Canvas` records to `Collection.collection_uuid` from the
+    Collections Table.
+    - `Collection.context_ids` (JSONB) conceptually links `Collection` records to `Display.display_uuid` from the
+     Display Table.
