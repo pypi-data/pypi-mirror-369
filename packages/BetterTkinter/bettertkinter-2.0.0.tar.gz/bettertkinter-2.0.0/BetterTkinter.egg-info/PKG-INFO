@@ -1,0 +1,122 @@
+Metadata-Version: 2.4
+Name: BetterTkinter
+Version: 2.0.0
+Summary: The ultimate modern UI toolkit for Python - beautiful, customizable widgets with advanced features
+Home-page: https://github.com/Velyzo/BetterTkinter
+Download-URL: https://github.com/Velyzo/BetterTkinter/archive/refs/tags/v2.0.0.tar.gz
+Author: BetterTkinter Team
+Author-email: contact@bettertkinter.dev
+License: MIT
+Project-URL: Bug Tracker, https://github.com/Velyzo/BetterTkinter/issues
+Project-URL: Documentation, https://Velyzo.github.io/BetterTkinterDocs/
+Project-URL: Source Code, https://github.com/Velyzo/BetterTkinter
+Project-URL: Changelog, https://github.com/Velyzo/BetterTkinter/blob/main/CHANGELOG.md
+Project-URL: Demo, https://github.com/Velyzo/BetterTkinter/blob/main/bettertkinter/BTkDemo.py
+Keywords: tkinter gui ui custom-widgets modern design beautiful python desktop
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: User Interfaces
+Classifier: Topic :: Software Development :: Widget Sets
+Classifier: Environment :: X11 Applications
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Environment :: MacOS X
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Pillow>=8.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Provides-Extra: full
+Requires-Dist: Pillow>=8.0.0; extra == "full"
+Requires-Dist: colorsys; extra == "full"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# BetterTkinter
+
+[![License](https://img.shields.io/badge/License-MIT-blue)](https://github.com/Velyzo/BetterTkinter#license)  [![PyPi](https://img.shields.io/badge/PyPi%20Link-FFFF00)](https://pypi.org/project/BetterTkinter/)  [![Downloads](https://static.pepy.tech/badge/bettertkinter)](https://pepy.tech/project/BetterTkinter)
+
+**BetterTkinter** is a modern, feature-rich UI toolkit for Python, built on top of Tkinter. It provides beautiful, customizable widgets, advanced utilities, and easy theming for rapid desktop app development.
+
+## Installation
+
+```bash
+pip install BetterTkinter
+```
+
+## Features
+- Modern window class (`BTk`)
+- Beautiful rounded buttons (`BTkButton`)
+- Custom frames with rounded corners (`BTkFrame`)
+- Stylish labels (`BTkLabel`)
+- Enhanced entry fields (`BTkEntry`)
+- Dialog utilities (`BTkDialog`)
+- Tooltips (`BTkTooltip`)
+- Theme manager (`BTkTheme`)
+- Demo app (`BTkDemo`)
+- Extensible and easy to use
+
+## Quick Start
+
+```python
+from bettertkinter import BTk, BTkButton, BTkFrame, BTkLabel, BTkEntry, BTkDialog, BTkTooltip, BTkTheme
+
+app = BTk(title="My App")
+BTkTheme.apply(app, "light")
+
+frame = BTkFrame(app, radius=20, width=300, height=150, color="#e0e0e0", border=True, border_color="#0078D7", border_thick=3)
+frame.pack(pady=20)
+
+label = BTkLabel(frame, text="Hello, BetterTkinter!", font=("Helvetica", 14, "bold"), fg="#0078D7")
+label.pack(pady=10)
+
+entry = BTkEntry(frame)
+entry.pack(pady=10)
+BTkTooltip(entry, "Type here!")
+
+button = BTkButton(frame, text="Show Dialog", command=lambda: BTkDialog.info("Info", f"You typed: {entry.get()}"))
+button.pack(pady=10)
+
+app.geometry("400x300")
+app.mainloop()
+```
+
+## Demo
+Run the demo app:
+```bash
+python -m bettertkinter.BTkDemo
+```
+
+## Documentation
+Full docs: [https://Velyzo.github.io/BetterTkinterDocs/](https://Velyzo.github.io/BetterTkinterDocs/)
+
+## Contributing
+Pull requests and suggestions are welcome! See [CONTRIBUTING.md](https://github.com/Velyzo/BetterTkinter/blob/master/CONTRIBUTING.md).
+
+## License
+MIT
