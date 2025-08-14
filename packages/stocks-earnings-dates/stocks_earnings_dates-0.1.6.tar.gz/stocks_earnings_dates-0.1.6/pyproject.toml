@@ -1,0 +1,29 @@
+[project]
+name = "stocks-earnings-dates"
+version = "0.1.6"
+description = "Access 10 years of historical earnings dates for S&P 500 and Nasdaq stocks."
+authors = [
+    { name = "AlbertPerez7", email = "albertperez2004@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pandas>=2.3.1,<3.0.0",
+    "yfinance>=0.2.65,<0.3.0"
+]
+
+[tool.setuptools.packages.find]
+include = ["stocks_earnings_dates*"]
+exclude = ["tests*", "scripts*", "examples*", "edgar_earnings_pipeline*"]
+
+# Si vols incloure fitxers de dades dins del paquet
+[tool.setuptools.package-data]
+"stocks_earnings_dates" = ["data/earnings.db"]
+
+# (opcional però útil)
+[tool.setuptools]
+include-package-data = true
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
