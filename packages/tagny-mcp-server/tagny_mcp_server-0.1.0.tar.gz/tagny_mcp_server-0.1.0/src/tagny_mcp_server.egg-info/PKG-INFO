@@ -1,0 +1,97 @@
+Metadata-Version: 2.4
+Name: tagny-mcp-server
+Version: 0.1.0
+Summary: An MCP server with web search, URL text fetching, and more tools to enhance locally served LLMs
+Author-email: tagny ngompe <tagny@ymail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/tagny/tagny-mcp-server
+Project-URL: Repository, https://github.com/tagny/tagny-mcp-server
+Project-URL: Bug Tracker, https://github.com/tagny/tagny-mcp-server/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: <3.12,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: beautifulsoup4>=4.13.4
+Requires-Dist: fastmcp>=2.11.3
+Requires-Dist: requests>=2.32.4
+Requires-Dist: typer>=0.16.0
+Dynamic: license-file
+
+# tagny-mcp-server
+An MCP server with web search, URL text fetching, and more tools to enhance locally served LLMs.
+
+## Features
+
+- Fetch plain text content from URLs
+- Extract all links from a webpage
+- Designed to work with locally served LLMs via MCP protocol
+
+## Installation
+
+* from source
+```bash
+uv pip install -e .
+uv pip install -e ".[dev]"
+```
+* from PyPI repository
+```sh
+pip install tagny-mcp-server
+```
+## Usage
+
+Start the MCP server:
+
+* from source code:
+```sh
+uv run -m tagny_mcp_server
+```
+* after proper installation:
+  - as described in the pyproject.toml at `project.scripts`, you can run the with the default arguments :
+```sh
+tagny-mcp-server
+```
+  - customize the arguments by running like this for example:
+```sh
+# see the help
+python -m tagny_mcp_server --help
+
+# change the default port
+python -m tagny_mcp_server --port 5002
+```
+
+The server will run using Server-Sent Events (SSE) transport.
+
+## Tools
+
+### `fetch_url_text`
+Downloads and parses HTML content from a URL, returning only the visible text.
+
+### `fetch_page_links`
+Returns a list of all hyperlinks found on a webpage.
+
+## Project Structure
+
+- `main.py` - Entry point that launches the MCP server
+- `config.py` - MCP server configuration
+- `web_access/` - Contains web access tools:
+  - `url_text_fetcher.py` - Implements URL text fetching and link extraction
+- `pyproject.toml` - Project metadata and dependencies
+- `scripts/client.py` - Example client script for testing the server
+
+## Dependencies
+
+- `beautifulsoup4` - HTML parsing
+- `fastmcp` - MCP server framework
+- `requests` - HTTP requests
+
+## Testing
+
+Tests are located in `tests/` and can be run with pytest:
+
+```bash
+pytest
+```
+
+Example client usage is shown in `scripts/client.py`.

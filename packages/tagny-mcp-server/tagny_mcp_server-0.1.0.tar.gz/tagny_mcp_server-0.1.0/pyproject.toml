@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tagny-mcp-server"
+version = "0.1.0"
+description = "An MCP server with web search, URL text fetching, and more tools to enhance locally served LLMs"
+readme = "README.md"
+authors = [{name = "tagny ngompe", email = "tagny@ymail.com"}]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = "<3.12,>=3.10"
+dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "fastmcp>=2.11.3",
+    "requests>=2.32.4",
+    "typer>=0.16.0",
+]
+
+[project.scripts]
+tagny-mcp-server = "tagny_mcp_server.__main__:main"
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "flake8>=7.3.0",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/tagny/tagny-mcp-server"
+Repository = "https://github.com/tagny/tagny-mcp-server"
+"Bug Tracker" = "https://github.com/tagny/tagny-mcp-server/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.flake8]
+max-line-length = 88
+ignore = ["E203", "W503"]
