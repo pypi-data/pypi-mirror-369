@@ -1,0 +1,303 @@
+Metadata-Version: 2.4
+Name: swe-ai-agent
+Version: 2.0.6
+Summary: Headless Agentic IDE with reasoning mode and in built Browser
+Home-page: https://github.com/sweagent/swe-agent
+Author: SWE Agent Team
+Author-email: SWE Agent Team <contact@sweagent.dev>
+Maintainer-email: SWE Agent Team <contact@sweagent.dev>
+License: MIT
+Project-URL: Homepage, https://sweagent.dev
+Project-URL: Repository, https://github.com/sweagent/swe-agent
+Project-URL: Documentation, https://docs.sweagent.dev
+Project-URL: Bug Tracker, https://github.com/sweagent/swe-agent/issues
+Keywords: ai,agent,code,software-engineering,reinforcement-learning,o1-reasoning,iterative-improvement,langraph,claude,anthropic,ide,headless,automation,development,programming-assistant
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Code Generators
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Utilities
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: anthropic>=0.40.0
+Requires-Dist: langgraph>=0.2.35
+Requires-Dist: langchain>=0.3.7
+Requires-Dist: langchain-anthropic>=0.2.4
+Requires-Dist: langchain-core>=0.3.15
+Requires-Dist: langchain-mcp-adapters>=0.1.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: psutil>=5.9.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: aiohttp>=3.9.0
+Requires-Dist: beautifulsoup4>=4.12.0
+Requires-Dist: trafilatura>=1.12.0
+Requires-Dist: tavily-python>=0.5.0
+Requires-Dist: detect-secrets>=1.5.0
+Requires-Dist: setuptools>=65.0.0
+Requires-Dist: typing-extensions>=4.8.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinx-rtd-theme; extra == "docs"
+Requires-Dist: myst-parser; extra == "docs"
+Provides-Extra: gaming
+Requires-Dist: pygame>=2.5.0; extra == "gaming"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# SWE Agent - AI Coding Assistant with Built-in Browser
+
+An AI Coding Agent that helps you write, analyze, and improve code in any programming language. Features its own integrated web browser powered by Julia Browser for complete web interaction capabilities.
+
+## Why Use SWE Agent?
+
+**Save time writing code** - Tell it what you want to build, and it writes the code for you. No more staring at blank files or wrestling with syntax.
+
+**Fix bugs faster** - It reads your code, finds problems, and suggests fixes. Like having an experienced developer review your work instantly.
+
+**Analyze website designs** - Upload screenshots and get detailed component breakdowns, color palettes, and layout structures for accurate recreation.
+
+**Learn while you code** - Watch how it solves problems step by step. You'll pick up new techniques and best practices naturally.
+
+**Work in any language** - Python, JavaScript, Go, Rust, C++ - it understands them all. Switch between projects without missing a beat.
+
+**Stay secure** - Automatically scans your code for security issues before you deploy. Catch vulnerabilities early.
+
+**Browse the web** - Built-in browser can navigate websites, click buttons, fill forms, and extract data automatically.
+
+**Deploy to production** - Create HTML/CSS/JS applications and deploy them to Netlify with a single command for instant live websites.
+
+**Advanced Reasoning Mode** - Iterative code improvement with quality targets (8.0/10.0), confidence thresholds (0.85), and reward-based learning over multiple attempts.
+
+## Installation
+
+```bash
+pip install swe-ai-agent
+```
+
+## Getting Started
+
+### Required environment variables:
+
+```bash
+# Required: For AI functionality
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+# Optional: For web deployment (only needed if deploying to Netlify)
+export NETLIFY_ACCESS_TOKEN="your-netlify-token-here"
+```
+
+### Usage Options
+
+```bash
+# Chat with your AI coding partner
+swe-agent --pair
+
+# Run one-time tasks
+swe-agent --task "create a todo app with React"
+
+# Work interactively on multiple tasks
+swe-agent --interactive
+
+# Use the modern terminal interface
+swe-agent --warp
+
+# Enable advanced features with external services
+swe-agent --enable-mcp --interactive
+
+# Advanced Reasoning mode with iterative improvement
+swe-agent --reasoning --task "create a web scraper" --no-shell-approval
+```
+
+## New: Web App Deployment ✨
+
+Create and deploy HTML/CSS/JS applications directly to Netlify:
+
+```bash
+# Create a web application
+swe-agent --task "create a portfolio website with HTML and CSS"
+
+# Create AND deploy to Netlify (requires NETLIFY_ACCESS_TOKEN)
+swe-agent --task "create a todo app and deploy it to Netlify"
+```
+
+**Deployment Features:**
+- 🌐 Instant live URLs with SSL certificates
+- 🚀 One-command deployment from creation to production
+- 📱 Mobile-responsive applications by default
+- 🔒 Secure hosting on Netlify's global CDN
+- 🛠️ Smart deployment detection - only deploys when you ask
+
+## Advanced Reasoning Mode
+
+The Reasoning Mode implements genuine iterative improvement with:
+
+- **Quality Target**: 8.0/10.0 code quality score
+- **Confidence Target**: 0.85 confidence threshold
+- **Max Iterations**: 8 improvement attempts
+- **Real-Time UI**: Live progress with reward scores and confidence levels
+- **Adaptive Learning**: Each iteration learns from previous attempts
+
+```bash
+# Enable reasoning mode
+swe-agent --reasoning --task "optimize this algorithm"
+```
+
+This activates iterative code refinement through multiple attempts, quality assessment, and adaptive improvement until quality targets are met.
+
+## Visual Diff Display
+
+See exactly what changes SWE Agent makes to your code with beautiful diff visualization:
+
+```bash
+# Enable visual diffs (default: enabled)
+swe-agent --task "refactor my code" --show-diffs
+
+# Debug mode for detailed operation logs
+swe-agent --task "fix the bug" --debug-mode
+```
+
+**Visual Features:**
+- 🟢 Green borders for file creation
+- 🔵 Blue borders for file edits
+- 🟡 Yellow borders for content replacement
+- 🔴 Red borders for file rewrites
+- 👁️ Vision analysis for website screenshot recreation
+- Line-by-line diffs with syntax highlighting
+- Before/after comparisons for all file operations
+
+## What It Can Do
+
+### Write Code for You
+- Build complete applications from a simple description
+- Generate functions and classes that actually work
+- Create tests for your existing code
+- Write documentation that makes sense
+
+### Deploy Web Applications
+- Create modern HTML/CSS/JS applications instantly
+- Deploy to Netlify with professional live URLs
+- Smart deployment detection (only deploys when explicitly requested)
+- Mobile-responsive designs with modern web standards
+
+### Improve Existing Code
+- Find and fix bugs before they cause problems
+- Refactor messy code into clean, readable functions
+- Add features to existing projects without breaking things
+- Optimize performance bottlenecks
+
+### Keep You Secure
+- Scan for vulnerabilities in real-time
+- Suggest security fixes with clear explanations
+- Check dependencies for known issues
+- Follow security best practices automatically
+
+### Speed Up Your Workflow
+- Search through large codebases instantly
+- Navigate complex projects with ease
+- Track changes and see what was modified
+- Integrate with git seamlessly
+
+### Built-in Web Browser
+- Navigate websites and click buttons automatically
+- Fill forms and submit data programmatically
+- Extract information from web pages
+- Test web applications interactively
+- Powered by Julia Browser with 13 browser tools
+
+## How It Works
+
+You have four ways to work with SWE Agent:
+
+**Pair Programming (--pair)** - Like having a coding buddy next to you. Chat naturally about what you want to build, and watch as it writes code, explains decisions, and helps you learn.
+
+**Quick Tasks (--task)** - Perfect for one-off jobs. "Create a REST API for user management" or "Add authentication to my app" - just describe what you need.
+
+**Interactive Sessions (--interactive)** - Work on multiple tasks in one session. Great for exploring ideas, iterating on features, and building complex projects step by step.
+
+**Terminal Interface (--warp)** - A modern coding environment that feels like using advanced developer tools. See your project status, git changes, and AI suggestions all in one place.
+
+## Advanced Features
+
+### MCP Integration (--enable-mcp)
+Enable Model Context Protocol for enhanced capabilities:
+- Advanced security scanning with Semgrep integration
+- AI-powered documentation search with DeepWiki
+- Extended tool ecosystem for specialized tasks
+- Real-time vulnerability detection and remediation
+
+### Reasoning Mode (--reasoning)
+- Iterative code improvement with quality targets
+- Confidence-driven decision making
+- Multi-dimensional reward system
+- Real-time progress tracking
+- Adaptive learning and strategy adjustment
+
+## Real Benefits
+
+**For Beginners**: Learn by watching an expert work. See how real applications are built, from planning to deployment.
+
+**For Experienced Developers**: Focus on architecture and business logic while the AI handles boilerplate, documentation, and testing.
+
+**For Teams**: Maintain consistent code quality and catch issues before they reach production.
+
+**For Everyone**: Spend less time debugging and more time building features that matter.
+
+## Languages Supported
+
+Works with any programming language - Python, JavaScript, TypeScript, Go, Rust, C++, Java, C#, PHP, Ruby, and more. It adapts to your project's style and conventions automatically.
+
+## Safety Features
+
+- **Secure by default** - Scans every change for security issues
+- **Ask before running** - Requests permission for potentially dangerous operations
+- **Complete audit trail** - Logs everything for transparency
+- **Sandboxed execution** - Runs code safely without affecting your system
+
+## Getting Help
+
+```bash
+# See all options
+swe-agent --help
+
+# Check if everything is working
+swe-agent --status
+```
+
+Start with `swe-agent --pair` for the best experience. It's like having a senior developer helping you code.
+
+## License
+
+MIT License
+
+---
+
+**Stop fighting with code. Start building what you actually want to create.**
+
+Built with ❤️ by Harish Santhanalakshmi Ganesan and his Coding AI agents
+
+**Browser Integration**: Powered by Julia Browser - 43 total tools (30 coding + 13 browser)
+
+**Thanks and Credits**: Terminal interfaces inspired by Aider and Warp
