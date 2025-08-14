@@ -1,0 +1,46 @@
+akpub
+=================
+
+A generic ROS2 publisher that can publish numbers, strings, images, or video frames with minimal setup.
+
+Installation
+------------
+First, make sure you have a working ROS2 environment with `rclpy` and `cv_bridge` installed.
+
+Then clone this repository and install:
+
+    git clone https://github.com/yourname/akpub.git
+    cd akpub
+    pip install .
+
+Usage
+-----
+Example Python usage:
+
+    import akpub
+
+    akpub.metadata(
+        mode=None,           # Auto-detect from datatype
+        datatype="Float64",  # e.g., "String", "Int32", "Image"
+        node_name="num_publisher",
+        topic_name="number",
+        value=42.5,          # Can be number, string, or image frame
+        queue=10,
+        delay=1.0
+        # video_source=0     # Only needed for video mode
+    )
+
+Supported Datatypes
+-------------------
+- String (std_msgs.msg.String)
+- Int32 (std_msgs.msg.Int32)
+- Float32 (std_msgs.msg.Float32)
+- Float64 (std_msgs.msg.Float64)
+- Bool (std_msgs.msg.Bool)
+- Image (sensor_msgs.msg.Image)
+
+Notes
+-----
+- `mode` can be "number", "string", "image", "video", or None for auto-detect.
+- For video mode, set `video_source` to a camera index (e.g., 0) or a video file path.
+- Requires `rclpy` and `cv_bridge` to be installed in your ROS2 Python environment.
