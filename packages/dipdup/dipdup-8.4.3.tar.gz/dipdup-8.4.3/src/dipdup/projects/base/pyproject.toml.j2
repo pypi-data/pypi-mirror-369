@@ -1,0 +1,68 @@
+{{ header }}
+{%- if project.package_manager != 'poetry' %}
+[project]
+name = "{{ project.package }}"
+version = "{{ project.version }}"
+description = "{{ project.description }}"
+license = { text = "{{ project.license }}" }
+authors = [
+    { name = "{{ project.name }}", email = "{{ project.email }}" },
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "dipdup>={{ project.dipdup_version }},<{{ project.dipdup_version | int + 1 }}",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.2",
+    "mypy>=1.14.1",
+]
+{% else %}
+[tool.poetry]
+name = "{{ project.package }}"
+version = "{{ project.version }}"
+description = "{{ project.description }}"
+license = "{{ project.license }}"
+authors = [
+    "{{ project.name }} <{{ project.email }}>",
+]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+dipdup = ">={{ project.dipdup_version }},<{{ project.dipdup_version | int + 1 }}"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+mypy = "*"
+{% endif %}
+[tool.ruff]
+line-length = {{ project.line_length }}
+target-version = 'py312'
+
+[tool.ruff.lint]
+extend-select = ["B", "C4", "FA", "G", "I", "PTH", "RET", "RUF", "TCH", "UP"]
+isort = { force-single-line = true}
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+explicit_package_bases = true
+strict = false
+exclude = "{{ project.package }}"
+
+[[tool.mypy.overrides]]
+module = "ruamel"
+ignore_missing_imports = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["{{ project.package }}"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
