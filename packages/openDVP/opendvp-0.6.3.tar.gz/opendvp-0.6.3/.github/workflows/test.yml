@@ -1,0 +1,50 @@
+name: Test
+
+on:
+    push:
+        branches: [main]
+        tags:
+            - "v*"
+    pull_request:
+        branches: "*"
+
+jobs:
+    test:
+        runs-on: ${{ matrix.os }}
+        defaults:
+            run:
+                shell: bash -e {0} # -e to fail on error
+
+        strategy:
+            fail-fast: false
+            matrix:
+              os: [ubuntu-latest, windows-latest, macos-latest]
+              python: ["3.11", "3.12"]
+        env:
+            OS: ${{ matrix.os }}
+            PYTHON: ${{ matrix.python }}
+
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v5
+              id: setup-uv
+              with:
+                  version: "latest"
+                  python-version: ${{ matrix.python }}
+            - name: Install dependencies
+              run: "uv sync --extra dev"
+
+            - name: Test
+              env:
+                  MPLBACKEND: agg
+                  PLATFORM: ${{ matrix.os }}
+                  DISPLAY: :42
+              run: |
+                  uv run pytest --cov --color=yes --cov-report=xml
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@v5
+              with:
+                  name: coverage
+                  verbose: true
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
