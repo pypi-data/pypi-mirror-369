@@ -1,0 +1,237 @@
+Metadata-Version: 2.4
+Name: ml-assistant-cli
+Version: 0.2.0
+Summary: End-to-end ML workflow CLI - from dataset to deployed API
+Project-URL: Homepage, https://github.com/mlcli/mlcli
+Project-URL: Documentation, https://mlcli.readthedocs.io
+Project-URL: Repository, https://github.com/mlcli/mlcli
+Project-URL: Issues, https://github.com/mlcli/mlcli/issues
+Author: ML Assistant CLI Team
+License-Expression: MIT
+License-File: LICENSE
+Keywords: bentoml,cli,deployment,machine-learning,mlops
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Requires-Dist: bentoml>=1.2.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: pathlib-mate>=1.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: scikit-learn>=1.3.0
+Requires-Dist: seaborn>=0.11.0
+Requires-Dist: typer[all]>=0.9.0
+Requires-Dist: xgboost>=1.7.0
+Provides-Extra: cloud
+Requires-Dist: azure-ai-ml>=1.12.0; extra == 'cloud'
+Requires-Dist: azure-identity>=1.15.0; extra == 'cloud'
+Requires-Dist: boto3>=1.34.0; extra == 'cloud'
+Requires-Dist: sagemaker>=2.200.0; extra == 'cloud'
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: isort>=5.12.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.0.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# ML Assistant CLI 🚀
+
+**From dataset to deployed API in minutes**
+
+ML Assistant CLI is a developer-first command-line tool that unifies the entire ML lifecycle - from data preprocessing to cloud deployment - with AI-guided suggestions and one-click deployments.
+
+## ✨ Features
+
+- **End-to-end ML workflow** in a single CLI
+- **AI-guided suggestions** for data quality and model improvements
+- **BentoML integration** for reproducible model packaging
+- **Multi-cloud deployment** (BentoCloud, Azure ML, AWS SageMaker HyperPod)
+- **Production-ready** with monitoring, rollbacks, and traffic management
+- **Beginner-friendly** with sensible defaults and clear guidance
+
+## 🚀 Quick Start
+
+### Installation Options
+
+#### Option 1: PyPI (Recommended)
+
+```bash
+# Install from PyPI
+pip install ml-assistant-cli
+
+# Or install with cloud support
+pip install ml-assistant-cli[cloud]
+
+# Verify installation
+mlcli --help
+```
+
+#### Option 2: Docker (No Installation Required)
+
+```bash
+# Run directly with Docker
+docker run -it --rm -v $(pwd):/home/mlcli/workspace santhoshkumar0918/ml-assistant-cli:latest
+
+# Or create convenient alias
+alias mlcli="docker run -it --rm -v $(pwd):/home/mlcli/workspace santhoshkumar0918/ml-assistant-cli:latest"
+
+# Then use normally
+mlcli --help
+```
+
+#### Option 3: pipx (Isolated Installation)
+
+```bash
+# Install with pipx for isolated environment
+pipx install ml-assistant-cli
+mlcli --help
+```
+
+#### Option 4: From Source
+
+```bash
+# Clone and install
+git clone https://github.com/mlcli/mlcli.git
+cd mlcli
+pip install -e .
+```
+
+### Initialize a new ML project
+
+```bash
+mlcli init --name my-ml-project
+cd my-ml-project
+```
+
+### Process your data
+
+```bash
+# Add your dataset to data/raw/
+mlcli preprocess --input data/raw/your_data.csv --target target_column
+```
+
+### Train models
+
+```bash
+mlcli train
+```
+
+### Evaluate and get suggestions
+
+```bash
+mlcli evaluate
+mlcli suggest
+```
+
+### Make predictions
+
+```bash
+mlcli predict --input new_data.csv --output predictions.csv
+```
+
+### Deploy to cloud (coming soon)
+
+```bash
+mlcli package
+mlcli deploy --provider bentocloud
+mlcli monitor
+```
+
+## 📁 Project Structure
+
+```
+my-ml-project/
+├── data/
+│   ├── raw/          # Original datasets
+│   ├── processed/    # Cleaned data
+│   └── external/     # External datasets
+├── models/           # Trained models
+├── reports/          # Analysis reports
+├── deployments/      # Deployment configs
+├── mlcli.yaml       # Configuration
+└── README.md
+```
+
+## ⚙️ Configuration
+
+Customize your ML pipeline in `mlcli.yaml`:
+
+```yaml
+project_name: my-ml-project
+description: My awesome ML project
+
+data:
+  target_column: target
+  test_size: 0.2
+  missing_value_strategy: auto
+  scaling_strategy: standard
+
+model:
+  algorithms: [logistic_regression, random_forest, xgboost]
+  hyperparameter_tuning: true
+  cv_folds: 5
+
+deployment:
+  provider: bentocloud
+  scaling_min: 1
+  scaling_max: 3
+  instance_type: cpu.2
+```
+
+## 🎯 Roadmap
+
+### Phase 1: Local MVP ✅
+
+- [x] Project initialization
+- [x] Data preprocessing and analysis
+- [ ] Model training with hyperparameter optimization
+- [ ] Model evaluation and metrics
+- [ ] AI-guided suggestions
+- [ ] Batch predictions
+- [ ] BentoML packaging
+
+### Phase 2: Cloud MVP
+
+- [ ] BentoCloud deployment
+- [ ] Model monitoring
+- [ ] Deployment rollbacks
+
+### Phase 3: Multi-Cloud
+
+- [ ] Azure ML integration
+- [ ] AWS SageMaker HyperPod support
+- [ ] Advanced deployment strategies
+- [ ] CI/CD integration
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🆘 Support
+
+- 📖 [Documentation](https://mlcli.readthedocs.io)
+- 🐛 [Issue Tracker](https://github.com/mlcli/mlcli/issues)
+- 💬 [Discussions](https://github.com/mlcli/mlcli/discussions)
+
+---
+
+**Built with ❤️ for the ML community**
