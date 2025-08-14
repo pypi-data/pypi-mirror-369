@@ -1,0 +1,111 @@
+[project]
+name = "mvn-tree-visualizer"
+version = "1.8.0"
+authors = [
+    { name = "Iraklis Konsoulas", email = "dyka3773@gmail.com" },
+]
+description = "A simple command line tool to visualize the dependency tree of a Maven project in a graphical format."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = [
+    "maven",
+    "dependency",
+    "visualization",
+    "tree",
+    "cli",
+    "command-line",
+    "tool",
+    "graph",
+    "mermaid",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Build Tools",
+    "Typing :: Typed",
+]
+dependencies = [
+    "jinja2>=3.1.6",
+    "watchdog>=6.0.0",
+]
+
+[project.urls]
+source = "https://github.com/dyka3773/mvn-tree-visualizer"
+
+[project.scripts]
+mvn-tree-visualizer = "mvn_tree_visualizer.cli:cli"
+
+[dependency-groups]
+dev = [
+    "twine>=6.1.0",
+    "python-semantic-release>=10.3.0",
+    "build>=1.3.0",
+    "git-changelog>=2.5.3",
+    "tox>=4.28.4",
+    "pytest>=8.4.1",
+]
+
+[build-system]
+build-backend  = 'hatchling.build'
+requires = ['hatchling']
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+build_command = "pip install build && python -m build"
+dist_path = "dist/"
+upload_to_pypi = true
+upload_to_release = true
+remove_dist = false
+
+[tool.semantic_release.branches.master]
+match = "master"
+prerelease = false
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["build", "chore", "deps", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+
+[tool.git-changelog]
+convention = "conventional"
+template = "keepachangelog"
+sections = [
+    {type = "feat", section = "Features", scopes = []},
+    {type = "fix", section = "Bug Fixes", scopes = []},
+    {type = "refactor", section = "Code Refactoring", scopes = []},
+    {type = "perf", section = "Performance Improvements", scopes = []},
+    {type = "docs", section = "Documentation", scopes = []},
+    {type = "chore", section = "Miscellaneous Chores", scopes = []},
+    {type = "ci", section = "Continuous Integration", scopes = []},
+    {type = "build", section = "Build System", scopes = []},
+    {type = "test", section = "Tests", scopes = []},
+    {type = "style", section = "Style", scopes = []},
+    {type = "deps", section = "Dependencies", scopes = []},
+]
+
+[tool.tox]
+env_list = ["lint", "3.10", "3.11", "3.12", "3.13"]
+
+[tool.tox.env_run_base]
+description = "Run tests with the current Python version"
+deps = [
+    "pytest>=8.3.2",
+]
+commands = [[ "pytest", "-v" ]]
+
+[tool.tox.env.lint]
+description = "Lint the codebase with ruff"
+deps = [
+    "ruff>=0.12.3",
+]
+skip_install = true
+commands = [[ "ruff", "check", "src/", "tests/" ]]
