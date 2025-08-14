@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "weac"
+version = "2.6.4"
+authors = [
+    {name = "2phi GbR", email = "mail@2phi.de"},
+]
+description = "Weak layer anticrack nucleation model"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Proprietary"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "matplotlib>=3.9.1",
+    "numpy>=2.0.1",
+    "scipy>=1.14.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/2phi/weac"
+Demo = "https://github.com/2phi/weac/blob/main/demo/demo.ipynb"
+Documentation = "https://2phi.github.io/weac"
+"Issues and feature requests" = "https://github.com/2phi/weac/issues"
+
+[project.optional-dependencies]
+interactive = [
+    "jupyter",
+    "ipython>=8.12.3",
+    "notebook>=7.0.0",
+    "ipywidgets>=8.0.0"
+]
+docs = ["sphinx", "sphinxawesome-theme"]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0"
+]
+dev = [
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0"
+]
+
+[tool.setuptools]
+packages = ["weac"]
+package-data = {"*" = ["CITATION.cff"], "img" = ["*.png"]}
+
+[tool.ruff]
+line-length = 89
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = ["E741"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/*.ipynb" = ["F403", "F405", "F401"]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.pylint.typecheck]
+generated-members = "matplotlib.cm.*"
+
+[tool.pylint.main]
+# Ignore notebook files for pylint to avoid false positives and unused-import in exploratory cells
+ignore-patterns = [".*\\.ipynb$"]
+
+[tool.pycodestyle]
+ignore = ["E121", "E123", "E126", "E211", "E226", "E24", "E704", "W503", "W504", "E741"]
+
+[tool.bumpversion]
+current_version = "2.6.4"
+tag = true
+commit = true
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+
+[[tool.bumpversion.files]]
+filename = "CITATION.cff"
+
+[[tool.bumpversion.files]]
+filename = "weac/__init__.py"
+search = "__version__ = \"{current_version}\""
+replace = "__version__ = \"{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = "demo/demo.ipynb"
+
+[[tool.bumpversion.files]]
+filename = "docs/sphinx/conf.py"
+search = "release = \"{current_version}\""
+replace = "release = \"{new_version}\""
