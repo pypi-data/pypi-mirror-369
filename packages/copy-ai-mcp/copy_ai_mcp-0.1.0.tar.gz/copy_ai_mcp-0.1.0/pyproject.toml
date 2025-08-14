@@ -1,0 +1,26 @@
+[project]
+name = "copy-ai-mcp"
+version = "0.1.0"
+description = "A MCP server for Copy.ai."
+authors = [
+    {name = "yanrujing", email = "rujing.yan@protagonist-ai.com"}
+]
+repository = "https://github.com/protagolabs/Netmind-review-MCP"
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "fastmcp (>=2.11.3,<3.0.0)"
+]
+
+packages = [{ include = "src/copy_ai_mcp" }]
+
+
+[tool.poetry.scripts]
+copy-ai-mcp = "copy_ai_mcp:main"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
