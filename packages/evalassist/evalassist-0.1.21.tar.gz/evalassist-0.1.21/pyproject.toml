@@ -1,0 +1,169 @@
+
+[project]
+name = "evalassist"
+dynamic = []
+description = "EvalAssist is an open-source project that simplifies using large language models as evaluators (LLM-as-a-Judge) of the output of other large language models by supporting users in iteratively refining evaluation criteria in a web-based user experience."
+license = "Apache-2.0"                                                                                                                                                                                                                                                       # set your license here
+# readme = "README.md"
+requires-python = ">=3.10,<3.14"
+authors = [
+    { name = "Martín Santillán Cooper", email = "martinsantillancooper@gmail.com" },
+]
+keywords = ["LLM", "evaluation", "LLM-as-a-Judge", "AI-evaluation"]
+classifiers = [
+    # Project maturity
+    "Development Status :: 4 - Beta", # Assuming the project is in beta stage
+
+    # Intended audience
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop",
+
+    # License
+    "License :: OSI Approved :: Apache Software License", # Assuming MIT License
+
+    # Supported Python versions
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+
+    # Supported operating systems
+    "Operating System :: OS Independent",
+
+    # Project topics
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+
+    # Frameworks and tools
+    "Framework :: FastAPI",
+    "Framework :: Jupyter",
+]
+
+dependencies = [
+    "fastapi",
+    "pydantic",
+    "uvicorn",
+    "nest_asyncio",
+    "python-dotenv",
+    "nbformat",
+    "litellm",
+    "tenacity",
+    "diskcache",
+    "langchain",
+    "openai",
+    "pandas",
+    "ibm_watsonx_ai",
+    "unitxt>=1.26.6",
+    "nbconvert",
+    "boto3",
+    "ollama",
+    "click",
+    "setuptools",
+    "sqlmodel",
+    "alembic",
+]
+version = "0.1.21"
+
+[tool.poetry]
+packages = [{ include = "evalassist", from = "src" }]
+include = [
+    { path = "evalassist/static/**/*", format = "sdist" },
+    { path = "evalassist/static/**/*", format = "wheel" },
+    { path = "evalassist/alembic.ini", format = "sdist" },
+    { path = "evalassist/alembic.ini", format = "wheel" },
+]
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pre_commit = "*"
+bandit = { version = "*", extras = ["standard", "toml"] }
+flake8-pytest-style = "^2.1.0"
+flake8 = "^7.3.0"
+GitPython = "*"
+
+[tool.poetry.group.testing]
+optional = true
+
+[tool.poetry.group.testing.dependencies]
+pytest = "*"
+httpx = "*"
+tox = "*"
+pytest-cov = "*"
+
+[tool.pytest.ini_options]
+addopts = "--cov=evalassist"
+
+
+
+
+
+
+
+
+
+[tool.poetry.group.local-inference]
+optional = true
+
+[tool.poetry.group.local-inference.dependencies]
+torch = "*"
+accelerate = "*"
+transformers = "*"
+
+
+
+
+
+
+
+
+
+[tool.poetry.group.postgresql]
+optional = true
+
+[tool.poetry.group.postgresql.dependencies]
+psycopg2-binary = "*"
+
+
+
+
+
+
+
+
+
+[tool.poetry.group.benchmarks]
+optional = true
+
+[tool.poetry.group.benchmarks.dependencies]
+scikit-learn = "*"
+
+[project.scripts]
+eval-assist = "evalassist.cli:main"
+
+[project.urls]
+homepage = "https://ibm.github.io/eval-assist/"
+repository = "https://github.com/IBM/eval-assist"
+documentation = "https://github.com/IBM/eval-assist/wiki"
+"Bug Tracker" = "https://github.com/IBM/eval-assist/issues"
+
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+poetry-plugin-export = ">=1.8"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry-dynamic-versioning]
+enable = false
+vcs = "git"
+metadata = false
+
+[tool.bandit]
+exclude_dirs = [".venv", "venv", ".poetry", "dist", "tests"]
