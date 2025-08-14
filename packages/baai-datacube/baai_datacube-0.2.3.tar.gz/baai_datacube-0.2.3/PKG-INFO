@@ -1,0 +1,53 @@
+Metadata-Version: 2.3
+Name: baai-datacube
+Version: 0.2.3
+Summary: 
+Author: hgshi
+Author-email: hgshi@baai.ac.cn
+Requires-Python: >=3.9
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: psutil (>=7.0.0,<8.0.0)
+Requires-Dist: pydantic (>=2.11.7,<3.0.0)
+Requires-Dist: pyjwt (>=2.10.1,<3.0.0)
+Requires-Dist: requests (>=2.32.4,<3.0.0)
+Requires-Dist: speedtest (>=0.0.1,<0.0.2)
+Requires-Dist: tqdm (>=4.67.1,<5.0.0)
+Description-Content-Type: text/markdown
+
+# baai-datacube
+
+## 数据魔方数据集下载工具
+
+### cli
+```shell
+pip install baai-datacube
+
+# 查看帮助
+baai_datacube -h
+
+# 环境信息
+baai_datacube show
+
+# 登录
+baai_datacube login
+
+# 下载
+baai_datacube down --dataset=<dataset_id>
+```
+
+### python-sdk
+```
+# pip install baai-datacube
+# baai_datacube login
+
+from baai_datacube.downloader import dataset_download
+
+if __name__ == "__main__":
+
+    dataset_download(dataset_id="<dataset_id>", save_path=".")
+```
