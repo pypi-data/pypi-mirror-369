@@ -1,0 +1,366 @@
+{% load i18n %}
+{% load humanize %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+{% comment %}
+Some translations used in the HTML and JavaScript code below.
+We define them here so that they can be used in the JavaScript code as well with
+the escapejs filter without having to redefine them later.
+{% endcomment %}
+{% translate "second" as l10nSecondSingular %}
+{% translate "seconds" as l10nSecondPlural %}
+{% translate "minute" as l10nMinuteSingular %}
+{% translate "minutes" as l10nMinutePlural %}
+{% translate "hour" as l10nHourSingular %}
+{% translate "hours" as l10nHourPlural %}
+{% translate "N/A" as l10nNA %}
+{% translate "ERROR" as l10nError %}
+{% translate "running" as l10nRunning %}
+{% translate "queued" as l10nQueued %}
+{% translate "succeeded" as l10nSucceeded %}
+{% translate "retried" as l10nRetried %}
+{% translate "failed" as l10nFailed %}
+
+{% if debug %}
+    <div id="aa-dashboard-panel-debug" class="col-12 mb-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                {% translate "Debug mode" as widget_title %}
+                {% include "framework/dashboard/widget-title.html" with title=widget_title %}
+
+                <div>
+                    <p class="text-center">
+                        {% translate "Debug mode is currently turned on!<br>Make sure to turn it off as soon as you are finished testing." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% if notifications %}
+    <div id="aa-dashboard-panel-admin-notifications" class="col-12 mb-3">
+        <div class="card">
+            <div class="card-body">
+                {% translate "Alliance Auth Notifications" as widget_title %}
+                {% include "framework/dashboard/widget-title.html" with title=widget_title %}
+
+                <div>
+                    <ul class="list-group">
+                        {% for notif in notifications %}
+                            <li class="list-group-item">
+                                <span class="badge text-bg-success me-2">{% translate "Open" %}</span>
+                                <a href="{{ notif.web_url }}" target="_blank">#{{ notif.iid }} {{ notif.title }}</a>
+                            </li>
+                        {% empty %}
+                            <div class="alert alert-primary" role="alert">
+                                {% translate "No notifications at this time" %}
+                            </div>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="text-end pt-3">
+                        <a href="https://gitlab.com/allianceauth/allianceauth/issues" target="_blank" class="me-1 text-decoration-none">
+                            <span class="badge text-bg-danger">
+                                <i class="fab fa-gitlab" aria-hidden="true"></i>
+                                {% translate 'Powered by GitLab' %}
+                            </span>
+                        </a>
+                        <a href="https://discord.com/invite/fjnHAmk" target="_blank" class="text-decoration-none">
+                            <span class="badge text-bg-info">
+                                <i class="fab fa-discord" aria-hidden="true"></i>
+                                {% translate 'Support Discord' %}
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="col-12 mb-3">
+    <div class="card">
+        <div class="card-body row">
+            <div id="aa-dashboard-panel-software-version" class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                {% translate "Software Version" as widget_title %}
+                {% include "framework/dashboard/widget-title.html" with title=widget_title %}
+
+                <div>
+                    <ul class="list-group list-group-horizontal w-100" role="group" aria-label="{% translate 'Software Version' %}">
+                        <li class="list-group-item w-100">
+                            <div class="btn h-100 w-100 cursor-default">
+                                <h5 class="list-group-item-heading">{% translate "Current" %}</h5>
+                                <p class="list-group-item-text">{{ current_version }}</p>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item text-bg-{% if latest_patch %}success{% elif latest_minor %}warning{% else %}danger{% endif %} w-100">
+                            <a class="btn h-100 w-100" href="https://gitlab.com/allianceauth/allianceauth/-/releases/v{{ latest_patch_version }}">
+                                <h5 class="list-group-item-heading">{% translate "Latest Stable" %}</h5>
+
+                                <p class="list-group-item-text">
+                                    <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
+                                    {{ latest_patch_version }}
+                                    {% if not latest_patch %}<br>{% translate "Update available" %}{% endif %}
+                                </p>
+                            </a>
+                        </li>
+
+                        {% if latest_beta %}
+                            <li class="list-group-item text-bg-info w-100">
+                                <a class="btn h-100 w-100" href="https://gitlab.com/allianceauth/allianceauth/-/releases/v{{ latest_beta_version }}">
+                                    <h5 class="list-group-item-heading">{% translate "Latest Pre-Release" %}</h5>
+
+                                    <p class="list-group-item-text">
+                                        <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
+                                        {{ latest_beta_version }}
+                                        <br>{% translate "Pre-Release available" %}
+                                    </p>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div id="aa-dashboard-panel-task-queue" class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                {% translate "Task Queue" as widget_title %}
+                {% include "framework/dashboard/widget-title.html" with title=widget_title %}
+
+                <div>
+                    <p>
+                        {% blocktranslate with total=tasks_total|intcomma latest=earliest_task|timesince|default:"?" %}
+                            Status of <span id="total-task-count">?</span> processed tasks • last <span id="celery-uptime">?</span>
+                        {% endblocktranslate %}
+                    </p>
+
+                    <div
+                        id="celery-tasks-progress-bar"
+                        class="progress mb-2"
+                        style="height: 21px;"
+                        title="? {{ l10nSucceeded }}, ? {{ l10nRetried }}, ? {{ l10nFailed }}"
+                    >
+                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="succeeded" level="success" tasks_count=0 %}
+                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="retried" level="info" tasks_count=0 %}
+                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=0 %}
+                    </div>
+
+                    <p>
+                        <span id="running-task-count">?</span> {{ l10nRunning }} |
+                        <span id="queued-tasks-count">?</span> {{ l10nQueued }} |
+                        <span id="succeeded-tasks-count">?</span> {{ l10nSucceeded }} |
+                        <span id="retried-tasks-count">?</span> {{ l10nRetried }} |
+                        <span id="failed-tasks-count">?</span> {{ l10nFailed }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const elements = {
+        total: document.getElementById('total-task-count'),
+        uptime: document.getElementById('celery-uptime'),
+        running: document.getElementById('running-task-count'),
+        queued: document.getElementById('queued-tasks-count'),
+        succeeded: document.getElementById('succeeded-tasks-count'),
+        retried: document.getElementById('retried-tasks-count'),
+        failed: document.getElementById('failed-tasks-count')
+    };
+
+    /**
+     * Fetches the task queue status and updates the UI elements accordingly.
+     * It retrieves the total number of tasks, running tasks, queued tasks,
+     * succeeded tasks, retried tasks, and failed tasks, and updates the
+     * corresponding HTML elements with the fetched data.
+     * It also updates the progress bars for succeeded, retried, and failed tasks.
+     * The function is called immediately and then every 30 seconds to keep the
+     * task queue status up to date.
+     */
+    const updateTaskCount = () => {
+        fetchGet({url: '{% url "tnnt_templates:ajax_get_task_queue_status" %}'})
+            .then((data) => {
+                const numberL10nFormat = new Intl.NumberFormat('{{ LANGUAGE_CODE }}');
+                const elemProgressBar = document.getElementById('celery-tasks-progress-bar');
+                const progressElements = {
+                    succeeded: {
+                        bar: document.getElementById('celery-progress-bar-succeeded'),
+                        text: document.getElementById('celery-progress-bar-succeeded-progress')
+                    },
+                    retried: {
+                        bar: document.getElementById('celery-progress-bar-retried'),
+                        text: document.getElementById('celery-progress-bar-retried-progress')
+                    },
+                    failed: {
+                        bar: document.getElementById('celery-progress-bar-failed'),
+                        text: document.getElementById('celery-progress-bar-failed-progress')
+                    }
+                };
+
+                // Assign progress data from the fetched data to variables
+                const {
+                    earliest_task: earliestTask,
+                    tasks_total: tasksTotal,
+                    tasks_running: tasksRunning,
+                    tasks_queued: tasksQueued,
+                    tasks_succeeded: tasksSucceeded,
+                    tasks_retried: tasksRetried,
+                    tasks_failed: tasksFailed
+                } = data;
+
+                /**
+                 * Updates the text content of the specified HTML element with the given value.
+                 * If the value is null, it sets the text to 'N/A'.
+                 * Otherwise, it formats the number using the locale-specific format.
+                 *
+                 * @param {HTMLElement} element The HTML element to update.
+                 * @param {number|null} value The value to set in the element.
+                 */
+                const updateTaskCount = (element, value) => {
+                    element.textContent = value == null ? '{{ l10nNA|escapejs }}' : numberL10nFormat.format(value);
+                };
+
+                /**
+                 * Calculates the time since the given timestamp and returns a formatted string.
+                 * If the timestamp is null or undefined, it returns 'N/A'.
+                 * The returned string is in the format of "X hours, Y minutes" or "X minutes, Y seconds".
+                 *
+                 * @param {string|null} timestamp The timestamp to calculate the time since.
+                 * @returns {string} A formatted string representing the time since the timestamp.
+                 */
+                const timeSince = (timestamp) => {
+                    if (!timestamp) {
+                        return '{{ l10nNA|escapejs }}';
+                    }
+
+                    const diffSecs = Math.floor((Date.now() - new Date(timestamp)) / 1000);
+
+                    if (diffSecs >= 3600) {
+                        const hours = Math.floor(diffSecs / 3600);
+                        const minutes = Math.floor((diffSecs % 3600) / 60);
+
+                        if (minutes > 0) {
+                            const hourText = hours === 1 ? '{{ l10nHourSingular|escapejs }}' : '{{ l10nHourPlural|escapejs }}';
+                            const minuteText = minutes === 1 ? '{{ l10nMinuteSingular|escapejs }}' : '{{ l10nMinutePlural|escapejs }}';
+
+                            return `${hours} ${hourText}, ${minutes} ${minuteText}`;
+                        }
+
+                        const hourText = hours === 1 ? '{{ l10nHourSingular|escapejs }}' : '{{ l10nHourPlural|escapejs }}';
+
+                        return `${hours} ${hourText}`;
+                    }
+
+                    const units = [
+                        [
+                            60,
+                            '{{ l10nMinuteSingular|escapejs }}',
+                            '{{ l10nMinutePlural|escapejs }}'
+                        ],
+                        [
+                            1,
+                            '{{ l10nSecondSingular|escapejs }}',
+                            '{{ l10nSecondPlural|escapejs }}'
+                        ]
+                    ];
+
+                    for (const [seconds, singular, plural] of units) {
+                        const value = Math.floor(diffSecs / seconds);
+
+                        if (value > 0) {
+                            return `${value} ${value > 1 ? plural : singular}`;
+                        }
+                    }
+
+                    return '0 {{ l10nSecondPlural|escapejs }}';
+                };
+
+                /**
+                 * Updates the progress bar element and its text content based on the given value and total.
+                 * It calculates the percentage of completion and updates the aria attributes and styles accordingly.
+                 *
+                 * @param {HTMLElement} element The progress bar element to update.
+                 * @param {HTMLElement} textElement The text element to update with the percentage.
+                 * @param {number} value The current value to set in the progress bar.
+                 * @param {number} total The total value for calculating the percentage.
+                 */
+                const updateProgressBar = (element, textElement, value, total) => {
+                    const percentage = total ? (value / total) * 100 : 0;
+
+                    element.setAttribute('aria-valuenow', percentage.toString());
+                    textElement.textContent = `${numberL10nFormat.format(percentage.toFixed(0))}%`;
+                    element.style.width = `${percentage}%`;
+                };
+
+                // Update task counts
+                [
+                    [elements.total, tasksTotal],
+                    [elements.running, tasksRunning],
+                    [elements.queued, tasksQueued],
+                    [elements.succeeded, tasksSucceeded],
+                    [elements.retried, tasksRetried],
+                    [elements.failed, tasksFailed]
+                ].forEach(([element, value]) => {
+                    updateTaskCount(element, value);
+                });
+
+                // Update uptime
+                elements.uptime.textContent = timeSince(earliestTask);
+
+                // Update progress bar title
+                const [
+                    titleTextSucceeded,
+                    titleTextRetried,
+                    titleTextFailed
+                ] = [
+                    [tasksSucceeded, '{{ l10nSucceeded|escapejs }}'],
+                    [tasksRetried, '{{ l10nRetried|escapejs }}'],
+                    [tasksFailed, '{{ l10nFailed|escapejs }}']
+                ].map(([count, label]) => {
+                    return `${numberL10nFormat.format(count)} ${label}`;
+                });
+
+                // Set the title attribute for the progress bar
+                elemProgressBar.setAttribute(
+                    'title',
+                    `${titleTextSucceeded}, ${titleTextRetried}, ${titleTextFailed}`
+                );
+
+                // Update progress bars
+                [
+                    tasksSucceeded,
+                    tasksRetried,
+                    tasksFailed
+                ].forEach((count, index) => {
+                    const type = ['succeeded', 'retried', 'failed'][index];
+
+                    updateProgressBar(
+                        progressElements[type].bar,
+                        progressElements[type].text,
+                        count,
+                        tasksTotal
+                    );
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching task queue:', error);
+
+                // If there is an error fetching the task queue, set all elements to 'ERROR'
+                [
+                    elements.running,
+                    elements.queued,
+                    elements.succeeded,
+                    elements.retried,
+                    elements.failed
+                ].forEach((elem) => {
+                    elem.textContent = '{{ l10nError|escapejs }}';
+                });
+            });
+    };
+
+    updateTaskCount();
+    setInterval(updateTaskCount, 30000);
+</script>
