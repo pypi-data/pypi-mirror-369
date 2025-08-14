@@ -1,0 +1,42 @@
+[project]
+name = "cochleogram"
+description = "Module for creating cochleograms from confocal images"
+readme = "readme.rst"
+requires-python = ">=3.7"
+license = {file = "LICENSE.txt"}
+authors = [
+    {name = "Brad Buran", email="buran@ohsu.edu"},
+]
+maintainers = [
+    {name = "Brad Buran", email="buran@ohsu.edu"},
+]
+dependencies = [
+    "atom",
+    "enaml[qt6-pyside]",
+	"pyside6 < 6.7.0", # bug in 6.7.0
+    "matplotlib",
+	"ndimage-enaml >= 0.0.8",
+    "numpy",
+    "raster_geometry",
+    "pandas",
+    "scipy",
+    "scikit-image",
+    "psiaudio",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+czi = ["aicspylibczi"]
+lif = ["readlif"]
+dev = ["docutils"]
+
+[project.scripts]
+cochleogram = "cochleogram.main:main"
+cochleogram-prepare-lif = "cochleogram.main:main_prepare_lif"
+
+[build-system]
+requires = ["setuptools>=61.2", "wheel", "setuptools_scm[toml]>=3.4.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "cochleogram/version.py"
