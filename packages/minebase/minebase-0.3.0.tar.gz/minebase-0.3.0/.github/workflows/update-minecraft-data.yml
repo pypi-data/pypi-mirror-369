@@ -1,0 +1,136 @@
+name: Update minecraft-data
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 15 * * *" # every day at 3 PM UTC
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  update-mcdata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.PYMINE_BOT_APP_ID }}
+          private-key: ${{ secrets.PYMINE_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          submodules: "recursive"
+
+      # Make the github application be the committer
+      # (see: https://stackoverflow.com/a/74071223 on how to obtain the committer email)
+      - name: Setup git config
+        run: |
+          git config --global user.name "py-mine-ci-bot"
+          git config --global user.email "121461646+py-mine-ci-bot[bot]@users.noreply.github.com"
+
+      # By default, we do a shallow submodule clone, so we'll need to fetch
+      # to obtain any new tags. (This might take a while, minecraft-data repo
+      # is quite big.)
+      - name: Fetch minecraft-data git tags
+        run: |
+          cd minebase/data
+          git fetch --tags
+
+      - name: Get current and latest commit
+        id: version_check
+        run: |
+          current_commit="$(git ls-tree HEAD minebase/data | awk '{print $3}')"
+          cd minebase/data
+          latest_tag="$(git tag --sort=-v:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)"
+          latest_commit="$(git rev-list -n 1 "$latest_tag")"
+
+          echo "Current commit: $current_commit"
+          echo "Latest tag: $latest_tag"
+          echo "Latest commit: $latest_commit"
+
+          echo "current_commit=$current_commit" >> "$GITHUB_OUTPUT"
+          echo "latest_commit=$latest_commit" >> "$GITHUB_OUTPUT"
+          echo "latest_tag=$latest_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Update submodule and push
+        id: update
+        run: |
+          # Check if the step above identified an update
+          if [ "${{ steps.version_check.outputs.current_commit }}" = "${{ steps.version_check.outputs.latest_commit }}" ]; then
+            echo "Submodule is already up to date. Skipping update."
+            echo "should_continue=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          update_branch="update-mcdata-${{ steps.version_check.outputs.latest_tag }}"
+
+          # Check if the branch already exists on the remote
+          if git ls-remote --exit-code --heads origin "$update_branch" >/dev/null; then
+            echo "Branch $update_branch already exists. Skipping update."
+            echo "should_continue=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Updating minecraft-data to tag ${{ steps.version_check.outputs.latest_tag }}"
+
+          # Update the submodule
+          cd minebase/data
+          git checkout "${{ steps.version_check.outputs.latest_commit }}"
+          cd ../..
+
+          # Commit the changes and push
+          git checkout -b "$update_branch"
+          git add minebase/data
+          git commit -m "Update submodule to minecraft-data ${{ steps.version_check.outputs.latest_tag }}"
+          git push --set-upstream origin "$update_branch"
+
+          echo "should_continue=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create pull request
+        id: create_pr
+        if: steps.update.outputs.should_continue == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          LATEST_TAG: ${{ steps.version_check.outputs.latest_tag }}
+        run: |
+          link="[$LATEST_TAG](https://github.com/PrismarineJS/minecraft-data/releases/tag/$LATEST_TAG)"
+          echo "Bumps minecraft-data repository to the latest release: $link" > pr-body.txt
+          echo "" >> pr-body.txt
+          echo "Once the pull request is merged, it might be a good idea to consider making a new release, to make this minecraft-data repository accessible to the users." >> pr-body.txt
+
+          gh pr create \
+            --title "Update submodule to minecraft-data $LATEST_TAG" \
+            --body-file pr-body.txt \
+            --label "a: dependencies" \
+            --label "t: project" \
+            --label "p: 2 - normal" \
+
+          PR_NUMBER="$(gh pr view --json number -q .number)"
+          echo "PR #$PR_NUMBER opened"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Setup uv
+        if: steps.update.outputs.should_continue == 'true'
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          python-version: ${{ env.PYTHON_VERSION }}
+          activate-environment: true
+          enable-cache: true
+          cache-suffix: "mcdata-update"
+
+      - name: Install dependencies
+        if: steps.update.outputs.should_continue == 'true'
+        run: |
+          uv sync --no-default-groups --no-install-project --group release
+
+      - name: Add changelog fragment
+        if: steps.update.outputs.should_continue == 'true'
+        run: |
+          towncrier create ${{ steps.create_pr.outputs.pr_number }}.feature.md -c "Update minecraft-data to ${{ steps.version_check.outputs.latest_tag }}"
+          git add changes
+          git commit --amend --no-edit
+          git push --force

@@ -1,0 +1,49 @@
+---
+name: Changelog Fragment present
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, opened, reopened, synchronize]
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  check-fragment-added:
+    if: github.event.pull_request.user.type != 'Bot' && !contains(github.event.pull_request.labels.*.name, 'skip-fragment-check')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # `towncrier check` runs `git diff --name-only origin/main...`, which
+          # needs a non-shallow clone.
+          fetch-depth: 0
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          python-version: ${{ env.PYTHON_VERSION }}
+          activate-environment: true
+          enable-cache: true
+          cache-suffix: "changelog"
+
+      - name: Install dependencies
+        run: |
+          uv sync --no-default-groups --no-install-project --group release
+
+      - name: Check if changelog fragment was added
+        run: |
+          if ! towncrier check --compare-with origin/${{ github.base_ref }}; then
+            echo "----------------------------------------------------"
+            echo "Please refer to CONTRIBUTING.md/#Changelog and changes/README.md for more information"
+            exit 1
+          fi

@@ -1,0 +1,34 @@
+name: Mark stale issues and pull requests
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+
+jobs:
+  stale:
+    # Don't run in forks, they probably don't have the same labels set up
+    if: github.repository_owner == 'py-mine'
+
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.PYMINE_BOT_APP_ID }}
+          private-key: ${{ secrets.PYMINE_BOT_PRIVATE_KEY }}
+
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ steps.generate_token.outputs.token }}
+          stale-issue-label: "s: stale"
+          stale-pr-label: "s: stale"
+          exempt-issue-labels: "s: deferred,s: stalled"
+          exempt-pr-labels: "s: deferred,s: stalled"
+          days-before-stale: 60
+          days-before-close: -1

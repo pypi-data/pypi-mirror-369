@@ -1,0 +1,55 @@
+---
+name: Unit-Tests
+
+on:
+  workflow_call:
+
+jobs:
+  unit-tests:
+    runs-on: ${{ matrix.platform }}
+
+    strategy:
+      fail-fast: false # Allows for matrix sub-jobs to fail without cancelling the rest
+      matrix:
+        platform: [ubuntu-latest, windows-latest]
+        python-version: ["3.9", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # We will need the minecraft-data submodule to run tests
+          submodules: "recursive"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          python-version: ${{ matrix.python-version }}
+          activate-environment: true
+          enable-cache: true
+          cache-suffix: "tests"
+
+      - name: Install dependencies
+        run: |
+          uv sync --no-default-groups --group test
+
+      - name: Run pytest
+        shell: bash
+        run: pytest -vvv
+
+  tests-done:
+    needs: [unit-tests]
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set status based on required jobs
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then
+              exit 1
+            fi
+          done
