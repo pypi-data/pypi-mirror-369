@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthatdelays"
+version = "1.0.2"
+authors = [
+  { name="Massimiliano Zanin", email="massimiliano.zanin@gmail.com" },
+  { name = "Carlson Büth" },
+]
+license = "AGPL-3.0-only"
+license-files = ["LICENSE"]
+description = "A library with a minimal model of operations between airports, designed to synthesise realistic time series of delays and operations."
+readme = "README.md"
+requires-python = ">=3.11" # Minimum Python version required
+keywords = ["air transport", "flight delays", "simulation", "synthetic data", "aviation research"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+]
+dependencies = [
+    "numpy>=2.0.0",
+    "statsmodels",
+]
+
+[tool.setuptools.packages.find]
+include = ["synthatdelays*"]
+exclude = ["tutorials*", "tests*"]
+
+[tool.setuptools.package-data]
+"synthatdelays" = ["data/*.npz"]
+
+[project.urls]
+Homepage = "https://gitlab.com/MZanin/synth-at-delays"
+Issues = "https://gitlab.com/MZanin/synth-at-delays/issues"
+Documentation = "https://gitlab.com/MZanin/synth-at-delays/-/wikis/home"
+Repository = "https://gitlab.com/MZanin/synth-at-delays"
+Changelog = "https://gitlab.com/MZanin/synth-at-delays/-/wikis/Home/Version-History"
+
+[project.optional-dependencies]
+lint = ["ruff"]
+test = ["pytest", "pytest-cov", "coverage"]
+tutorials = ["matplotlib"]
+all = ["synthatdelays[test,lint,tutorials]"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["synthatdelays"]
+relative_files = true
