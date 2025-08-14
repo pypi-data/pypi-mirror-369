@@ -1,0 +1,284 @@
+# CodeSlice
+
+A Python tool for tracing variable dependencies in Python code using AST analysis. CodeSlice helps you understand how variables flow through your code by analyzing their dependencies and relationships.
+
+## Features
+
+- 🔍 **Single-file analysis**: Trace dependencies within a single Python file
+- 🌐 **Multi-file analysis**: Trace dependencies across multiple files in a directory
+- 🌳 **Tree visualization**: View dependencies as a nested tree structure
+- 📊 **Multiple output formats**: YAML (default) and JSON
+- 🎯 **Interactive mode**: Select variables interactively
+- 🔧 **Function scoping**: Analyze variables within specific functions
+- 📚 **Library and CLI usage**: Use as a Python library or command-line tool
+
+## Installation
+
+```bash
+pip install codeslice
+```
+
+Or for development:
+
+```bash
+git clone https://github.com/your-repo/codeslice.git
+cd codeslice
+pip install -e .[dev]
+```
+
+## CLI Usage
+
+### Basic Usage
+
+```bash
+# List all variables in a file
+codeslice list-vars myfile.py
+
+# Trace dependencies for a specific variable
+codeslice trace myfile.py --var my_variable
+
+# Interactive mode - select variable from a menu
+codeslice trace myfile.py --interactive
+```
+
+### Multi-file Analysis
+
+```bash
+# Analyze dependencies across all files in a directory
+codeslice trace myfile.py --scope ./src --var my_variable
+
+# List variables across all files in a directory
+codeslice list-vars ./src
+```
+
+### Output Formats
+
+```bash
+# Default YAML output
+codeslice trace myfile.py --var my_variable
+
+# JSON output
+codeslice trace myfile.py --var my_variable --json
+
+# Tree structure (works with both YAML and JSON)
+codeslice trace myfile.py --var my_variable --tree
+codeslice trace myfile.py --var my_variable --json --tree
+```
+
+### Advanced Options
+
+```bash
+# Analyze variable within a specific function
+codeslice trace myfile.py --var my_variable --function my_function
+
+# Set maximum recursion depth
+codeslice trace myfile.py --var my_variable --max-depth 5
+
+# Exclude patterns from multi-file analysis
+codeslice trace myfile.py --scope ./src --var my_variable --exclude "test_,__pycache__"
+```
+
+## Library Usage
+
+### Single File Analysis
+
+```python
+from codeslice import DependencyTracer
+
+# Initialize tracer with a Python file
+tracer = DependencyTracer("path/to/your/file.py")
+
+# Get all variables in the file
+all_variables = tracer.get_all_variables()
+print("Variables found:", list(all_variables.keys()))
+
+# Trace dependencies for a specific variable
+dependencies = tracer.trace_dependencies("my_variable")
+
+# Print dependency information
+for dep in dependencies:
+    print(f"Variable: {dep['variable']} at line {dep['line_number']}")
+    print(f"Source: {dep['source_code']}")
+    print(f"Dependencies: {dep['dependencies']}")
+    print("---")
+```
+
+### Multi-file Analysis
+
+```python
+from codeslice import MultiFileDependencyTracer
+
+# Initialize multi-file tracer
+tracer = MultiFileDependencyTracer(
+    directory_path="./src",
+    exclude_patterns=["test_", "__pycache__"]
+)
+
+# Get all files being analyzed
+files = tracer.get_all_files()
+print("Analyzing files:", files)
+
+# Trace dependencies across files
+dependencies = tracer.trace_dependencies_multi_file(
+    variable="my_variable",
+    file_path="./src/main.py"
+)
+
+# Print cross-file dependencies
+for dep in dependencies:
+    file_path = dep.get('file_path', 'unknown')
+    print(f"Variable: {dep['variable']} in {file_path}:{dep['line_number']}")
+```
+
+### Working with Output Formats
+
+```python
+from codeslice import DependencyTracer, make_json_serializable, dependencies_to_tree, format_dependencies_as_yaml
+
+tracer = DependencyTracer("myfile.py")
+dependencies = tracer.trace_dependencies("my_variable")
+
+# Convert to JSON-serializable format
+json_data = make_json_serializable(dependencies)
+
+# Convert to tree structure
+tree_data = dependencies_to_tree(dependencies, "my_variable", tracer, "myfile.py")
+
+# Format as YAML
+yaml_output = format_dependencies_as_yaml(
+    dependencies,
+    variable="my_variable",
+    source_file="myfile.py"
+)
+print(yaml_output)
+```
+
+### Function-scoped Analysis
+
+```python
+from codeslice import DependencyTracer
+
+tracer = DependencyTracer("myfile.py")
+
+# Get all functions in the file
+functions = tracer.get_all_functions()
+print("Functions:", list(functions.keys()))
+
+# Get variables within a specific function
+func_variables = tracer.get_all_variables(function_name="my_function")
+print("Variables in my_function:", list(func_variables.keys()))
+
+# Trace dependencies within a function
+dependencies = tracer.trace_dependencies("my_var", function_name="my_function")
+```
+
+## Output Examples
+
+### YAML Output (Default)
+
+```yaml
+dependencies:
+  - variable: result
+    source: result = process_data(filtered_data, config)
+    file: myfile.py:45
+  - variable: filtered_data
+    source: filtered_data = [x for x in raw_data if x > threshold]
+    file: myfile.py:42
+  - variable: raw_data
+    source: raw_data = load_data("data.csv")
+    file: myfile.py:38
+
+analysis:
+  variable: result
+  source_file: myfile.py
+  scope: myfile.py
+  type: single_file
+```
+
+### JSON Output
+
+```json
+{
+  "variable": "result",
+  "source_file": "myfile.py",
+  "scope": "myfile.py",
+  "analysis_type": "single_file",
+  "format": "flat",
+  "dependencies": [
+    {
+      "variable": "result",
+      "line_number": 45,
+      "source_code": "result = process_data(filtered_data, config)",
+      "dependencies": ["process_data", "filtered_data", "config"],
+      "file_path": "myfile.py"
+    }
+  ]
+}
+```
+
+### Tree Output
+
+```yaml
+dependency_tree:
+  variable: result
+  source: result = process_data(filtered_data, config)
+  file: myfile.py:45
+  dependencies:
+    - variable: filtered_data
+      source: filtered_data = [x for x in raw_data if x > threshold]
+      file: myfile.py:42
+      dependencies:
+        - variable: raw_data
+          source: raw_data = load_data("data.csv")
+          file: myfile.py:38
+```
+
+## API Reference
+
+### DependencyTracer
+
+The main class for single-file dependency analysis.
+
+#### Methods
+
+- `__init__(file_path: str)` - Initialize with a Python file path
+- `get_all_variables(function_name: Optional[str] = None) -> Dict` - Get all variables, optionally scoped to a function
+- `get_all_functions() -> Dict` - Get all function definitions
+- `trace_dependencies(variable: str, max_depth: int = 10, function_name: Optional[str] = None) -> List[Dict]` - Trace dependencies for a variable
+- `find_variable_assignment(variable: str, before_line: Optional[int] = None) -> Optional[Dict]` - Find a specific variable assignment
+
+### MultiFileDependencyTracer
+
+The main class for multi-file dependency analysis.
+
+#### Methods
+
+- `__init__(directory_path: str, exclude_patterns: Optional[List[str]] = None)` - Initialize with a directory
+- `get_all_files() -> List[str]` - Get all Python files being analyzed
+- `get_file_tracer(file_path: str) -> Optional[DependencyTracer]` - Get tracer for a specific file
+- `trace_dependencies_multi_file(variable: str, file_path: str, max_depth: int = 10) -> List[Dict]` - Trace dependencies across files
+
+### Utility Functions
+
+- `make_json_serializable(data: Any) -> Any` - Convert data to JSON-serializable format
+- `dependencies_to_tree(dependencies: List[Dict], root_variable: str, tracer, file_path: str) -> Dict` - Convert flat dependencies to tree structure
+- `format_dependencies_as_yaml(dependencies: List[Dict], variable: str, source_file: str, ...) -> str` - Format as YAML
+- `format_tree_as_yaml(tree_data: Dict, variable: str, source_file: str, ...) -> str` - Format tree as YAML
+
+## Use Cases
+
+- **Code review**: Understand variable flows and dependencies
+- **Refactoring**: Identify what variables depend on code you're changing
+- **Debugging**: Trace how values flow through your code
+- **Documentation**: Generate dependency diagrams
+- **Code analysis**: Understand complex codebases
+- **Testing**: Identify variables that need mocking/stubbing
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+MIT License - see LICENSE file for details.
+
