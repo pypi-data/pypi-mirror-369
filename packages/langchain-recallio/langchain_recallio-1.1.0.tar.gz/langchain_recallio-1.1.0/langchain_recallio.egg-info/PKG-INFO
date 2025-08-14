@@ -1,0 +1,105 @@
+Metadata-Version: 2.4
+Name: langchain-recallio
+Version: 1.1.0
+Summary: Drop-in RecallIO Memory for LangChain
+Author: RecallIO
+Author-email: Recallio Team <support@recallio.com>
+Project-URL: Homepage, https://recallio.ai
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31
+Dynamic: author
+Dynamic: requires-python
+
+# Recallio Memory for LangChain
+
+This repository provides an implementation of `RecallioMemory`, a drop-in replacement for `BaseMemory` from [LangChain](https://python.langchain.com/). It stores conversation history in the [Recallio](https://app.recallio.ai) cloud service using the official `recallio` client.
+
+## Features
+
+- **Scoped writes** – memories can be associated with a specific `session_id` or `user_id`.
+- **TTL support** – pass a time-to+live in seconds and it will be converted to an expiration timestamp stored alongside each memory.
+- **Vector recall** – previous messages are retrieved from Recallio using semantic search. Memories can also be filtered by custom tags.
+
+## Installation
+
+```bash
+pip install recallio langchain langchain-recallio openai
+```
+
+## Usage
+
+```python
+#Setup: API Keys & Imports
+from langchain_recallio.memory import RecallioMemory
+from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
+import os
+
+# Set your keys here or use environment variables
+RECALLIO_API_KEY = os.getenv("RECALLIO_API_KEY", "YOUR_RECALLIO_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY")
+
+#Initialize RecallioMemory
+memory = RecallioMemory(
+    project_id="project_abc",
+    api_key=RECALLIO_API_KEY,
+    session_id="demo-session-001",
+    user_id="demo-user-42",
+    default_tags=["test", "langchain"],
+    return_messages=True,
+)
+
+#Build a LangChain ConversationChain with RecallioMemory
+# You can swap in any supported LLM here
+llm = ChatOpenAI(api_key=OPENAI_API_KEY, temperature=0)
+prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "The following is a friendly conversation between a human and an AI. "
+            "The AI is talkative and provides lots of specific details from its context. "
+            "If the AI does not know the answer to a question, it truthfully says it does not know.",
+        ),
+        ("placeholder", "{history}"),  # RecallioMemory will fill this slot
+        ("human", "{input}"),
+    ]
+)
+
+# LCEL chain that returns an AIMessage
+base_chain = prompt | llm
+
+
+# Create a stateful chain using RecallioMemory
+def chat_with_memory(user_input: str):
+    # Load conversation history from memory
+    memory_vars = memory.load_memory_variables({"input": user_input})
+
+    # Run the chain with history and user input
+    response = base_chain.invoke(
+        {"input": user_input, "history": memory_vars.get("history", "")}
+    )
+
+    # Save the conversation to memory
+    memory.save_context({"input": user_input}, {"output": response.content})
+
+    return response
+```
+
+## Example: Chat with Memory
+
+```python
+# First user message – note the AI remembers the name
+resp1 = chat_with_memory("Hi! My name is Guillaume. Remember that.")
+print("Bot:", resp1.content)
+
+# Second user message – AI should recall the name from memory
+resp2 = chat_with_memory("What is my name?")
+print("Bot:", resp2.content)
+```
+
+The tests use mocks and do not require a valid Recallio API key.
+
+## License
+
+This project is distributed under the MIT license.
