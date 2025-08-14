@@ -1,0 +1,104 @@
+Metadata-Version: 2.4
+Name: dupla
+Version: 0.1.2
+Summary: A python API for making requests to DUPLA (Dataudvekslingsplatformen)
+Author-email: Valentin Rosenberg Larsen <valentin.rosenberg@gmail.com>, Alexander Tygesen <atygesen@hotmail.com>
+License: Apache License 2.0
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: requests_pkcs12
+Requires-Dist: python-dotenv
+Requires-Dist: pyyaml
+Requires-Dist: backoff
+Requires-Dist: packaging
+Requires-Dist: pydantic>=2.1
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-mock; extra == "test"
+Requires-Dist: Faker; extra == "test"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"
+Requires-Dist: Faker; extra == "dev"
+Requires-Dist: black==23.7.0; extra == "dev"
+Requires-Dist: ruff==0.1.5; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: pyclean>=2.0.0; extra == "dev"
+Dynamic: license-file
+
+# Project description
+A Python API for [DUPLA](https://dataudveksling.skat.dk/) (Dataudvekslingsplatformen)
+
+A list of the services available can be found [here](https://dataudveksling.skat.dk/#/servicekatalog)
+
+## Setup
+
+For development
+`python -m venv .venv`
+
+`source .venv/bin/activate`
+
+`pip install ".[test]"`
+
+Run tests:
+`pytest tests/`
+
+## Getting Started
+
+### Using pre-defined API endpoints
+
+This package defines some endpoints which has some (limited) knowledge
+of the API schema used by SKAT. The classes are:
+
+* `dupla.payload.KtrPayload`
+* `dupla.payload.LigPayload`
+* `dupla.payload.MomsPayload`
+* `dupla.payload.KtrObsPayload`
+* `dupla.payload.LonsumPayload`
+* `dupla.payload.SelskabSambeskatningPayload`
+* `dupla.payload.SelskabSelvangivelsePayload`
+
+Please c.f. the docs of the respective classes for more information
+on what each endpoint is for. Each payload model is a Pydantic model, so inputs
+are validated.
+
+
+### Using the base API
+
+The base api access class can be used as following.
+In this example, we access the VAT (Moms in Danish) endpoint.
+
+```python
+from datetime import date, timedelta
+from uuid import uuid4
+import dupla
+from dupla import DuplaApiKeys
+
+api = dupla.DuplaAccess(
+    transaction_id=str(uuid4()),
+    agreement_id="your-aftale-id-goes-here",
+    pkcs12_filename="path-to-cert-file",
+    pkcs12_password="goodpassword",
+    billetautomat_url="https://bat.skat.dk/realms/oces/protocol/openid-connect/token",
+    jwt_token_expiration_overlap=5
+)
+
+# lets see if this company (se_number 98765432) has done any VAT the last year
+kwargs = {DuplaApiKeys.SE: ["98765432"],
+          DuplaApiKeys.AFREGNING_START: date.today() - timedelta(days=365),
+          DuplaApiKeys.AFREGNING_SLUT: date.today()}
+payload = dupla.payload.MomsPayload(**kwargs)
+
+data = api.get_data(payload)
+
+print(data)
+```
+
+© ERST 2023
