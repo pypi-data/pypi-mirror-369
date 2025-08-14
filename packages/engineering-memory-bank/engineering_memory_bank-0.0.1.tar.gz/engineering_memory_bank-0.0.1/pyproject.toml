@@ -1,0 +1,139 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "engineering-memory-bank"
+version = "0.0.1"
+description = "AI-powered engineering decision documentation system with automatic git integration"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Circuit-Synth", email = "info@circuit-synth.com"}
+]
+maintainers = [
+    {name = "Circuit-Synth", email = "info@circuit-synth.com"}
+]
+keywords = [
+    "engineering", "documentation", "ai", "git", "decisions", 
+    "knowledge-management", "automation", "mcp", "claude"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Text Processing :: Markup :: Markdown",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "GitPython>=3.1.0",
+    "click>=8.0.0",
+    "pydantic>=2.0.0",
+    "jinja2>=3.0.0",
+    "python-dateutil>=2.8.0",
+    "typing-extensions>=4.0.0; python_version<'3.11'",
+]
+
+[project.optional-dependencies]
+ai = [
+    "anthropic>=0.25.0",
+    "openai>=1.0.0",
+]
+mcp = [
+    "mcp>=0.1.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "isort>=5.0.0",
+    "flake8>=4.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+docs = [
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "myst-parser>=0.18.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/circuit-synth/engineering-memory-bank"
+Documentation = "https://circuit-synth.github.io/engineering-memory-bank/"
+Repository = "https://github.com/circuit-synth/engineering-memory-bank.git"
+"Bug Reports" = "https://github.com/circuit-synth/engineering-memory-bank/issues"
+Changelog = "https://github.com/circuit-synth/engineering-memory-bank/blob/main/CHANGELOG.md"
+
+[project.scripts]
+memory-bank = "memory_bank.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "python"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["python"]
+include = ["memory_bank*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+memory_bank = ["py.typed", "templates/*.md", "templates/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--tb=short",
+    "--strict-markers",
+    "--cov=memory_bank",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-fail-under=70",
+]
+markers = [
+    "unit: Unit tests for individual components",
+    "integration: Integration tests with git repositories",
+    "ai: AI integration tests",
+    "git: Git integration tests",
+    "cli: Command line interface tests",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line-length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+src_paths = ["python/memory_bank", "python/tests"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "git.*",
+    "anthropic.*",
+    "openai.*",
+]
+ignore_missing_imports = true
