@@ -1,0 +1,48 @@
+[build-system]
+requires = [
+    "setuptools>=64.0.0",
+#    "setuptools_scm>=8",
+    "oldest-supported-numpy; python_version<='3.8'",
+    "numpy>=2.0.0; python_version>'3.8'",
+    "Cython>=3.0.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eigency"
+#dynamic = ["version"]
+version = "3.4.0.4"
+description = "Cython interface between the numpy arrays and the Matrix/Array classes of the Eigen C++ library"
+
+readme  = "README.md"
+
+requires-python = ">=3.9"
+license-files = ["LICENSE"]
+
+dependencies = [
+    "numpy>=1.23.5",
+]
+
+authors = [
+  {name = "Wouter Boomsma", email = "wb@di.ku.dk"},
+  {name = "Felipe Bordeu", email = "felipebordeu@gmail.com"}
+]
+maintainers = [
+  {name = "Felipe Bordeu", email = "felipebordeu@gmail.com"},
+  {name = "Wouter Boomsma", email = "wb@di.ku.dk"}
+]
+
+classifiers = [
+        "Intended Audience :: Developers",
+        "Programming Language :: C++",
+        "Programming Language :: Cython",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+    ]
+[project.urls]
+Homepage = "https://github.com/eigency-org/eigency"
+
+[tool.setuptools_scm]
