@@ -1,0 +1,126 @@
+# ACO-TSP
+**Ant Colony Optimization for the Traveling Salesman Problem** (TSP) implemented in Python.
+
+This library provides a clean and configurable implementation of the **Ant Colony Optimization (ACO)** algorithm to solve the TSP.  
+It includes robust error handling, parameter customization, convergence tracking, and easy integration into Python projects.
+
+---
+## Usage
+
+### Basic Example
+```python
+from aco_tsp import ACO_TSP
+
+# Define your distance matrix (5x5 example)
+distance_matrix = [
+    [0, 10, 12, 11, 14],
+    [10, 0, 13, 15, 8],
+    [12, 13, 0, 9, 14],
+    [11, 15, 9, 0, 16],
+    [14, 8, 14, 16, 0]
+]
+
+# Initialize and run ACO
+aco = ACO_TSP(
+    distance_matrix,
+    labels=['A', 'B', 'C', 'D', 'E'],
+    num_ants=15,
+    num_iterations=100,
+    beta=3
+)
+path, length = aco.solve()
+
+print(f"Optimal Path: {' → '.join(path)}")
+print(f"Total Distance: {length:.2f}")
+```
+
+---
+
+### Advanced Usage
+```python
+# Get full solution details
+solution = aco.get_solution()
+
+print(f"Best tour indices: {solution['tour']}")
+print(f"Convergence history: {solution['convergence']}")
+
+# Access algorithm parameters
+print(f"Parameters used: {solution['parameters']}")
+
+# Visualize pheromone matrix
+import matplotlib.pyplot as plt
+plt.imshow(solution['pheromones'], cmap='hot', interpolation='nearest')
+plt.title("Pheromone Matrix")
+plt.colorbar()
+plt.show()
+```
+
+---
+
+## Parameters
+All parameters are configurable when initializing the `ACO_TSP` class:
+
+| Parameter         | Type      | Default | Description |
+|-------------------|----------|---------|-------------|
+| `distance_matrix` | 2D list  | Required | Distance matrix between nodes (square matrix) |
+| `labels`          | list     | None     | Node labels (default: numerical indices) |
+| `num_ants`        | int      | 10       | Number of ants in the colony (>0) |
+| `evap_rate`       | float    | 0.5      | Pheromone evaporation rate (0-1) |
+| `Q`               | float    | 100      | Pheromone deposit constant (>0) |
+| `alpha`           | float    | 1        | Pheromone influence exponent (≥0) |
+| `beta`            | float    | 2        | Heuristic (visibility) influence exponent (≥0) |
+| `num_iterations`  | int      | 50       | Number of optimization iterations (>0) |
+| `start_node`      | int      | 0        | Starting node index (0-based) |
+
+---
+
+## Error Handling
+The library provides comprehensive error checking with meaningful messages:
+```python
+try:
+    aco = ACO_TSP(
+        [[0, 10], [10, 0]],  # Invalid matrix size
+        labels=['A', 'B', 'C'],
+        evap_rate=1.5,
+        num_ants=0
+    )
+except ValueError as e:
+    print(f"Configuration error: {e}")
+```
+
+Common error scenarios:
+- Non-square distance matrix
+- Label size mismatch
+- Parameter out of valid range
+- Invalid start node index
+- Calling `get_solution()` before `solve()`
+
+---
+
+## Theory Overview
+Ant Colony Optimization mimics how real ants find shortest paths:
+
+1. **Pheromone Initialization**  
+   Equal pheromone on all paths.
+2. **Solution Construction**  
+   Ants probabilistically choose paths based on:
+   - **Pheromone intensity** (`α`)
+   - **Heuristic visibility** (`1 / distance`, `β`)
+3. **Pheromone Update**  
+   - **Evaporation:** All paths lose pheromone.  
+   - **Deposition:** Ants reinforce paths used in their solution.
+4. **Convergence**  
+   Over iterations, better paths accumulate more pheromone.
+
+---
+
+## Output
+After running `solve()`, you can get:
+- **Best path (labels & indices)**
+- **Total path length**
+- **Convergence history**
+- **Final pheromone matrix**
+- **Parameters used**
+
+---
+
