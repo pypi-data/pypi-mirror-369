@@ -1,0 +1,75 @@
+[project]
+name = "exasol-script-languages-container-ci"
+version = "4.0.1"
+description = "Implements CI builds for script-language-container."
+
+requires-python = ">=3.10, <4.0"
+
+license = "MIT"
+
+authors = [
+    { name="Thomas Uebensee", email="Thomas Uebensee <ext.thomas.uebensee@exasol.com>" }
+]
+
+dependencies = [
+"click (>=8.1.7, <9.0.0)",
+"GitPython (>=3.1.0, <4.0.0)",
+"exasol-script-languages-container-tool (>=3.2.0, <4.0.0)",
+"PyGithub (>=2.3.0, <3.0.0)",
+"setuptools (>=80.0.0)",
+]
+
+[project.scripts]
+exaslc-ci = 'exasol.slc_ci.cli.main:main'
+
+[tool.poetry]
+requires-poetry = ">=2.1.0"
+packages = [
+    {include = "README.md"},
+    {include = "LICENSE"},
+    {include = "exasol"},
+]
+
+
+[build-system]
+requires = ["poetry_core>=2.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.group.dev.dependencies]
+toml = ">=0.10.2"
+pytest = "^7.1.1"
+pytest-mock = "^3.7.0"
+exasol-toolbox = ">=1.0.0"
+
+[tool.black]
+line-length = 88
+verbose = false
+include = "\\.pyi?$"
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--ignore=test/integration/resources"
+
+testpaths = [
+    "test"
+]
+
+[[tool.mypy.overrides]]
+module = ["docker.*", "toml"]
+ignore_missing_imports = true
+
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 120
+disable = """
+    W,R,C,
+"""
+[tool.sonar]
+projectKey = "com.exasol:script-languages-container-ci"
+hostUrl = "https://sonarcloud.io"
+organization = "exasol"
+
