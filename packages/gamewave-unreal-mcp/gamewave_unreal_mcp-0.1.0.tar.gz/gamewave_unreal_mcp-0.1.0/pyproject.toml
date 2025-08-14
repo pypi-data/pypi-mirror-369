@@ -1,0 +1,46 @@
+[project]
+name = "gamewave-unreal-mcp"
+version = "0.1.0"
+description = "Unreal MCP Server: The most advanced and powerful server for Unreal Engine integration via the Model Context Protocol (MCP)."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "GameWave", email = "fridayue5@gmail.com"}
+]
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Games/Entertainment",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
+]
+keywords = ["unreal", "engine", "ue5", "mcp", "model", "context", "protocol", "blueprint", "umg", "automation"]
+dependencies = [
+  "mcp[cli]>=1.4.1",
+  "fastmcp>=0.2.0",
+  "uvicorn",
+  "fastapi",
+  "pydantic>=2.6.1",
+  "requests"
+]
+
+[project.scripts]
+unreal-mcp = "unreal_mcp_server:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["editor_tools", "blueprint_tools", "node_tools", "project_tools", "umg_tools", "datatable_tools", "blueprint_action_tools", "python_executor_tools", "utils"]
+
+[project.urls]
+"Homepage" = "https://gamewave.dev"
+"Support" = "https://discord.gg/3q88TDTUTS" 
