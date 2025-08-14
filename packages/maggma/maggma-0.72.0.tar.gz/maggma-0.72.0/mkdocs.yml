@@ -1,0 +1,55 @@
+site_name: Maggma Documentation
+site_description: Documentation for Maggma, a files-to-API data pipeline for scientific applications
+copyright: Built by The Materials Project
+
+theme:
+  name: 'material'
+
+nav:
+  - Home: index.md
+  - Core Concepts: concepts.md
+  - Quickstart: quickstart.md
+  - User Guide:
+    - Understanding Queries: getting_started/query_101.md
+    - Using Stores: getting_started/stores.md
+    - Working with FileStore: getting_started/using_file_store.md
+    - Writing a Builder: getting_started/simple_builder.md
+    - Running a Builder Pipeline: getting_started/running_builders.md
+    - Advanced Builders: getting_started/advanced_builder.md
+    - Working with MapBuilder: getting_started/map_builder.md
+    - Working with GroupBuilder: getting_started/group_builder.md
+    - Setting up MongoDB: getting_started/mongodb.md
+    - Using SSHTunnel: getting_started/using_ssh_tunnel.md
+  - Reference:
+      Core:
+        Store: reference/core_store.md
+        Builder: reference/core_builder.md
+        Validator: reference/core_validator.md
+      Stores: reference/stores.md
+      Builders: reference/builders.md
+  - Changelog: CHANGELOG.md
+
+site_url: https://materialsproject.github.io/maggma/
+repo_url: https://github.com/materialsproject/maggma/
+markdown_extensions:
+  - pymdownx.tabbed
+  - admonition
+  - codehilite
+  - attr_list
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.inlinehilite
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - minify
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
