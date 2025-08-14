@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# This script is a variant from fandango.scripts.DynamicDS
+# srubio@cells.es, 2016
+
+DS=PyAlarm
+INSTANCE=$1
+
+VPYTHON=$(fandango get_device_property dserver/$DS/$INSTANCE python)
+echo "dserver/$DS/$INSTANCE.VPYTHON = $VPYTHON"
+if [ "$VPYTHON" = "2" ] || [ "$VPYTHON" = "python2" ] ; then
+  VPYTHON=python2
+else
+  VPYTHON=python3
+fi
+
+if [ ! "$(echo "$1 $2 $3 $4" | grep "attach\|?")" ] && \
+   [ $(which screen 2>/dev/null) ] ; then
+  echo "run detached"
+  CMD="screen -dm -S $DS-$INSTANCE "
+else
+  CMD=""
+fi
+
+CMD="${CMD} ${VPYTHON} -m panic.ds.PyAlarm $INSTANCE $2"
+echo $CMD
+$CMD
