@@ -1,0 +1,92 @@
+# Refer to PEP 621, 518 and 517
+[build-system]
+requires = [
+    "setuptools",
+    "Cython>=0.29.0,<3.0.0",
+    "versioneer[toml]",
+    #"numpy==1.16.4; python_version=='3.6'",
+    #"numpy==1.21.5; python_version=='3.7'",
+	#"numpy==1.21.5; python_version=='3.9'",
+    "numpy>=1.21.5,<2.0.0; python_version>='3.8' and python_version<'3.11'",
+    "numpy>=1.26.0,<2.0.0; python_version>='3.11' and python_version<'3.13'",
+	"numpy>=2.0.0; python_version>='3.13'", # not supported yet
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pydsstools"
+#version = "2.3.1"
+dynamic = [
+    "version"
+]
+description = "Python library to read-write HEC-DSS database file"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+authors = [{name = "Gyan Basyal", email = "gyanBasyalz@gmail.com"}]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering",
+]
+
+dependencies = [
+    #"numpy>=1.16.4; python_version=='3.6'",
+    #"numpy>=1.21.5; python_version=='3.7'",
+    "numpy>=1.21.5,<2.0.0; python_version>='3.8' and python_version<'3.11'",
+    "numpy>=1.26.0,<2.0.0; python_version>='3.11' and python_version<'3.13'",
+	"numpy>=2.0.0; python_version>='3.13'", # not supported yet
+    "pandas",
+    "affine",
+    "pyproj"
+]
+
+[project.optional-dependencies]
+test = [
+    "gdal >= 3.2.2",
+    "rasterio >= 1.2.1",
+    "matplotlib"
+]
+
+[project.urls]
+repository = "https://github.com/gyanz/pydsstools"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+include = [
+    'pydsstools',
+    'pydsstools._lib',
+    'pydsstools._lib.x64',
+    'pydsstools._lib.x86',
+    'pydsstools.core',
+    'pydsstools.heclib',
+    'pydsstools.heclib.dss',
+    'pydsstools.utils',
+]
+namespaces = false
+
+
+[tool.setuptools.package-data]
+pydsstools = ['examples/*.py','examples/*.ds[cs]',
+              'src/*.pyx','src/*.pxd' 
+]
+
+[tool.distutils.build_ext]
+inplace = false
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "pydsstools/_version.py"
+versionfile_build = "pydsstools/_version.py"
+tag_prefix = ""
+#parentdir_prefix = 
+
