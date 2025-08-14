@@ -1,0 +1,36 @@
+
+[project]
+name = "cli-chatbot"
+version = "0.1.1"
+description = "A Python project for generating and using S3 presigned URLs with a chat interface."
+authors = [
+    { name = "Puspak Rout", email = "thepuspak@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp",
+    "boto3",
+    "requests",
+    "python-dotenv",
+    "litellm",
+    "build>=1.3.0",
+    "twine>=6.1.0",
+]
+
+# Expose all scripts as console scripts
+[project.scripts]
+chat = "chat:main"
+client = "client:main"
+presigned_url = "presigned_url:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "chat.py",
+    "client.py",
+    "presigned_url.py"
+]
