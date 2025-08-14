@@ -1,0 +1,255 @@
+#count: &aa 20
+count: &aa 1000
+#count: &aa 4800
+#count: &aa  160000
+detector:
+  ip: 0.0.0.0
+  port: '6667'
+  scan:
+  #type: "flyscan"
+    type: stepscan
+    count: *aa
+    #count: &dd 160000
+#  files: [{datasetname: "/entry/data/data", shape: "(1,7)", dtype: "float64"}]
+    #batch: 10
+    batch: 1
+    files:
+    #- {docname: name,datasetname: /entry/data/data, shape: [*aa,1,7], dtype: float64}
+    #- {docname: data,datasetname: /entry/data/data, shape: [*aa,4,4096], dtype: uint32}
+    #- {docname: xintu,datasetname: /entry/data/data, shape: [*aa,4,4096], dtype: uint32}
+    - {docname: adTUCSEN_image,datasetname: /entry/data/data, shape: [*aa,4,4096], dtype: uint32}
+
+gui:
+  ip: 0.0.0.0
+  port: "6668"
+
+storage:
+  enable: true
+  count: *aa
+  #ip: 0.0.0.0
+  #ip: 10.5.181.8
+  #ip: 192.168.1.100
+  #ip: 10.8.54.253
+  ip: 10.5.247.13
+  #ip: 192.168.180.48
+  #ip: 192.168.60.202
+  port: 6700
+  #fileservice: 192.168.180.48:6800
+  #fileservice: 0.0.0.0:6800
+  #fileservice: 10.5.181.8:6800
+  #fileservice: 192.168.1.100:6800
+  #fileservice: 10.8.54.253:6800
+  fileservice: 10.5.247.13:6800
+  clients: [192.168.1.1,192.168.1.2]
+  files:
+    file1:
+      filename: result.h5
+      directorypath: /home/mamba/mdw_result
+      time_suffix: false
+      #time_suffix: True
+      #init: /home/mamba/.mdw/4w1A_scan_RunID.json
+      init: /home/mamba/.mdw/be_hdf5_init.json
+      #init: 
+      #stepscan:
+      Tomography:
+        start:
+          scan_id: {datasetname: /entry/scan_id}
+          time: {datasetname: /entry/start_time}
+          proposalcode: {datasetname: /entry/proposalID}
+          beamtimeId: {datasetname: /entry/beamtimeID}
+        collect:
+          M_CD_x: {datasetname: /entry/instrument/positioners/capillary_x}
+          M_CD_y: {datasetname: /entry/instrument/positioners/capillary_y}
+          M_CD_z: {datasetname: /entry/instrument/positioners/capillary_z}
+          M_CD_pitch: {datasetname: /entry/instrument/positioners/capillary_pitch}
+          M_CD_yaw: {datasetname: /entry/instrument/positioners/capillary_yaw}
+          M_Jena_X: {datasetname: /entry/instrument/positioners/agitator_x }
+          M_Jena_Z: {datasetname: /entry/instrument/positioners/agitator_y}
+          M_BS_x: {datasetname: /entry/instrument/positioners/beamstop_x}
+          M_BS_y: {datasetname: /entry/instrument/positioners/beamstop_y}
+          M_BS_z: {datasetname: /entry/instrument/positioners/beamstop_z}
+          M_BSC_x: {datasetname: /entry/instrument/positioners/Beamshaper_x}
+          M_BSC_y: {datasetname: /entry/instrument/positioners/Beamshaper_y}
+          M_BSC_z: {datasetname: /entry/instrument/positioners/Beamshaper_z}
+          M_BSC_pitch: {datasetname: /entry/instrument/positioners/Beamshaper_pitch}
+          M_BSC_yaw: {datasetname: /entry/instrument/positioners/Beamshaper_yaw}
+          M_PH_x: {datasetname: /entry/instrument/positioners/pinhole_x}
+          M_PH_y: {datasetname: /entry/instrument/positioners/pinhole_y}
+          M_PH_z: {datasetname: /entry/instrument/positioners/pinhole_z}
+          M_Sample1_x: {datasetname: /entry/instrument/positioners/sample1_x}
+          M_Sample1_y: {datasetname: /entry/instrument/positioners/sample1_y}
+          M_Sample1_z: {datasetname: /entry/instrument/positioners/sample1_z}
+          M_VLM_X: {datasetname: /entry/instrument/positioners/vlm_x}
+          M_VLM_Y: {datasetname: /entry/instrument/positioners/vlm_y}
+          M_VLM_Z: {datasetname: /entry/instrument/positioners/vlm_z}
+          M_ZP_x: {datasetname: /entry/instrument/positioners/zoneplate_x}
+          M_ZP_y: {datasetname: /entry/instrument/positioners/zoneplate_y}
+          M_ZP_z: {datasetname: /entry/instrument/positioners/zoneplate_z}
+          M_ZP_pitch: {datasetname: /entry/instrument/positioners/zoneplate_pitch}
+          M_ZP_yaw: {datasetname: /entry/instrument/positioners/zoneplate_yaw}
+          M_ZP_base_z: {datasetname: /entry/instrument/positioners/zoneplate_base_z}
+          M_PR_x: {datasetname: /entry/instrument/positioners/phasering_x}
+          M_PR_y: {datasetname: /entry/instrument/positioners/phasering_y}
+          M_PR_z: {datasetname: /entry/instrument/positioners/phasering_z}
+          M_PR_base_z: {datasetname: /entry/instrument/positioners/phasering_base_z}
+          M_BL_x: {datasetname: /entry/instrument/positioners/bertland_lens_x}
+          M_BL_y: {datasetname: /entry/instrument/positioners/bertland_lens_y}
+          M_BL_z: {datasetname: /entry/instrument/positioners/bertland_lens_z}
+          M_BL_base_z: {datasetname: /entry/instrument/positioners/bertland_lens_base_z}
+          M_Det1_X: {datasetname: /entry/instrument/positioners/detector_0order_x}
+          M_Det1_Y: {datasetname: /entry/instrument/positioners/detector_0order _y}
+          M_Det2_X: {datasetname: /entry/instrument/positioners/detector_nano_x}
+          M_Det2_Y: {datasetname: /entry/instrument/positioners/detector_nano _y}
+          M_Det2_Z: {datasetname: /entry/instrument/positioners/detector_nano _z}
+          #HAMA: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          #M_Sample2_Theta: {datasetname: /entry/data/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_HAMA_image: {datasetname: /entry/data/D_HAMA_image, miss: hold,default: 123,split: False,splitSize: 2}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+
+      Single:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          name: {datasetname: /entry/instrument/pandabox, miss: hold,default: 123,split: False,splitSize: 2}
+          HAMA: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          NCDT: {datasetname: /entry/data/NCDT, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          #M_Sample2_Theta: {datasetname: /entry/data/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_HAMA_image: {datasetname: /entry/data/D_HAMA_image, miss: hold,default: 123,split: False,splitSize: 2}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+
+      Focal Series:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          name: {datasetname: /entry/instrument/pandabox, miss: hold,default: 123,split: False,splitSize: 2}
+          HAMA: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          NCDT: {datasetname: /entry/data/NCDT, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          #M_Sample2_Theta: {datasetname: /entry/data/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_HAMA_image: {datasetname: /entry/data/D_HAMA_image, miss: hold,default: 123,split: False,splitSize: 2}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+      Background:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          name: {datasetname: /entry/instrument/pandabox, miss: hold,default: 123,split: False,splitSize: 2}
+          HAMA: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          NCDT: {datasetname: /entry/data/NCDT, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          #M_Sample2_Theta: {datasetname: /entry/data/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_HAMA_image: {datasetname: /entry/data/D_HAMA_image, miss: hold,default: 123,split: False,splitSize: 2}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+      Averaging:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          name: {datasetname: /entry/instrument/pandabox, miss: hold,default: 123,split: False,splitSize: 2}
+          HAMA: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          NCDT: {datasetname: /entry/data/NCDT, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          #M_Sample2_Theta: {datasetname: /entry/data/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_HAMA_image: {datasetname: /entry/data/D_HAMA_image, miss: hold,default: 123,split: False,splitSize: 2}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+
+
+      Mosaic:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          name: {datasetname: /entry/instrument/pandabox, miss: hold,default: 123,split: False,splitSize: 2}
+          HAMA: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          NCDT: {datasetname: /entry/data/NCDT, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          #M_Sample2_Theta: {datasetname: /entry/data/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_HAMA_image: {datasetname: /entry/data/D_HAMA_image, miss: hold,default: 123,split: False,splitSize: 2}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+
+      Tomo+bg:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          name: {datasetname: /entry/instrument/pandabox, miss: hold,default: 123,split: False,splitSize: 2}
+          HAMA: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          NCDT: {datasetname: /entry/data/NCDT, miss: hold,default: 123,split: False,splitSize: 2,batch: False}
+          #M_Sample2_Theta: {datasetname: /entry/data/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_HAMA_image: {datasetname: /entry/data/D_HAMA_image, miss: hold,default: 123,split: False,splitSize: 2}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+    #file2:
+    #  filename: result_master.h5
+    #  directorypath: /home/zcl/mdw_result
+    #  time_suffix: false
+    #  init: /home/zcl/.mdw/ID21_scan_Dhyana_RunID_master.json
+    #  stepscan:
+    #    start:
+    #      time: {datasetname: /entry/instrument/starttime}
+    #    collect:
+    #      data: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+    #      #data: {datasetname: /entry/data/data, miss: hold,default: 123,split: True,splitSize: 2}
+    #      #data: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 5000}
+    #    stop:
+    #      time: {datasetname: /entry/instrument/stoptime}
+
+function: /home/mamba/.mdw
+buffer:
+ #ip: 192.168.60.198
+ #ip: 0.0.0.0
+ ip: 10.5.133.129
+ port: 6379
+ db: 0
+ bufferWorker:
+  #ip: 0.0.0.0
+  ip: 10.5.133.129
+  port: 6378
+
+recast3d:
+ #Ti+w
+ #shaft: 1058
+ #bone
+ #shaft: 934
+ #97dactyl
+ #shaft: 1127
+ skip: 1 
+ #skip:  0
+ resize: False
+ row: [2,3]
+ 
+computerCenter:
+ enable: True
+ #enable: False
+ ip: 10.5.32.150
+ port: 9092
+ topic: hepsbe
+ #mod: 0o444
+ mod: 0o744
+
+

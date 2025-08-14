@@ -1,0 +1,151 @@
+#count: &aa 20
+count: &aa 1000
+#count: &aa 4800
+#count: &aa  160000
+detector:
+  ip: 0.0.0.0
+  port: '6667'
+  scan:
+  #type: "flyscan"
+    type: stepscan
+    count: *aa
+    #count: &dd 160000
+#  files: [{datasetname: "/entry/data/data", shape: "(1,7)", dtype: "float64"}]
+    batch: 10
+    files:
+    - {datasetname: /entry/data/data, shape: [*aa,1,7], dtype: float64}
+    - {datasetname: /entry/data/data, shape: [*aa,4,4096], dtype: uint32}
+
+gui:
+  ip: 0.0.0.0
+  port: "6668"
+
+storage:
+  enable: true
+  count: *aa
+  #ip: 192.168.180.48
+  #ip: 192.168.60.202
+  ip: 0.0.0.0
+  port: 6700
+  #fileservice: 192.168.180.48:6800
+  fileservice: 0.0.0.0:6800
+  clients: [192.168.1.1,192.168.1.2]
+  files:
+    file1:
+      filename: result_head.h5
+      directorypath: /home/mdw/mdw_result
+      time_suffix: false
+      #init: /home/lthpc/.mdw/ID21_scan_RunID.json
+      init: 
+      #stepscan:
+      step:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          #index: {datasetname: /entry/experiment/scan_cmd/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #M_mSampRot: {datasetname: /entry/instrument/M_mSampRot,miss:hold,default:-1}
+          #M_mSamp0: {datasetname: /entry/instrument/M_mSamp0,miss:hold,default:-1}
+          #M_mSamp90: {datasetname: /entry/instrument/M_mSamp90,miss:hold,default:-1}
+          #M_mSampleXy: {datasetname: /entry/instrument/M_mSampleXy,miss:hold,default:-1}
+          #M_mSampleXx: {datasetname: /entry/instrument/M_mSampleXx,miss:hold,default:-1}
+          #M_mSampleY: {datasetname: /entry/instrument/M_mSampleY,miss:hold,default:-1}
+          #M_mSampleZ: {datasetname: /entry/instrument/M_mSampleZ,miss:hold,default:-1}
+          M_mSampRot: {datasetname: /entry/instrument/M_mSampRot}
+          M_mSamp0: {datasetname: /entry/instrument/M_mSamp0}
+          M_mSamp90: {datasetname: /entry/instrument/M_mSamp90}
+          M_mSampleXy: {datasetname: /entry/instrument/M_mSampleXy}
+          M_mSampleXx: {datasetname: /entry/instrument/M_mSampleXx}
+          M_mSampleY: {datasetname: /entry/instrument/M_mSampleY}
+          M_mSampleZ: {datasetname: /entry/instrument/M_mSampleZ}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+      sequence:
+        start:
+          #time: {datasetname: /entry/instrument/starttime}
+          time: {datasetname: /entry/start_time}
+        collect:
+          #index: {datasetname: /entry/experiment/scan_cmd/proj_angle,miss:hold,default:123}
+          #name: {datasetname: /entry/instrument/pandabox,miss:hold,default:123}
+          #M_mSampRot: {datasetname: /entry/instrument/M_mSampRot,miss:hold,default:-1}
+          #M_mSamp0: {datasetname: /entry/instrument/M_mSamp0,miss:hold,default:-1}
+          #M_mSamp90: {datasetname: /entry/instrument/M_mSamp90,miss:hold,default:-1}
+          #M_mSampleXy: {datasetname: /entry/instrument/M_mSampleXy,miss:hold,default:-1}
+          #M_mSampleXx: {datasetname: /entry/instrument/M_mSampleXx,miss:hold,default:-1}
+          #M_mSampleY: {datasetname: /entry/instrument/M_mSampleY,miss:hold,default:-1}
+          #M_mSampleZ: {datasetname: /entry/instrument/M_mSampleZ,miss:hold,default:-1}
+          M_mSampRot: {datasetname: /entry/instrument/M_mSampRot}
+          M_mSamp0: {datasetname: /entry/instrument/M_mSamp0}
+          M_mSamp90: {datasetname: /entry/instrument/M_mSamp90}
+          M_mSampleXy: {datasetname: /entry/instrument/M_mSampleXy}
+          M_mSampleXx: {datasetname: /entry/instrument/M_mSampleXx}
+          M_mSampleY: {datasetname: /entry/instrument/M_mSampleY}
+          M_mSampleZ: {datasetname: /entry/instrument/M_mSampleZ}
+        stop:
+          #time: {datasetname: /entry/instrument/stoptime}
+          time: {datasetname: /entry/end_time}
+    file2:
+      filename: result_master.h5
+      directorypath: /home/mdw/mdw_result
+      time_suffix: false
+      #init: /home/lthpc/.mdw/ID21_scan_Dhyana_RunID_master.json
+      init: 
+      #stepscan:
+      step:
+        start:
+          time: {datasetname: /entry/instrument/starttime}
+        collect:
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_ad_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 2}
+          #adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #D_adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #xintu: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #data: {datasetname: /entry/data/data, miss: hold,default: 123,split: True,splitSize: 2}
+          #data: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 5000}
+        stop:
+          time: {datasetname: /entry/instrument/stoptime}
+      sequence:
+        start:
+          time: {datasetname: /entry/instrument/starttime}
+        collect:
+          #D_ad_image: {datasetname: /entry/data/data, miss: hold,default: 123,split: False,splitSize: 2}
+          #D_ad_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 2}
+          #adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #D_adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          adTUCSEN_image: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #xintu: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 100}
+          #data: {datasetname: /entry/data/data, miss: hold,default: 123,split: True,splitSize: 2}
+          #data: {datasetname: /entry/data, miss: hold,default: 123,split: True,splitSize: 5000}
+        stop:
+          time: {datasetname: /entry/instrument/stoptime}
+
+function: /home/mdw/.mdw
+
+recast3d:
+ #Ti+w
+ #shaft: 1058
+ #bone
+ #shaft: 934
+ #97dactyl
+ #shaft: 1127
+ skip: 1 
+ #skip:  0
+ resize: False
+ row: [2,3]
+ 
+computerCenter:
+ enable: True
+ #enable: False
+ #ip: 192.168.23.56
+ ip: 10.5.32.150
+ port: 9092
+ topic: hepsb7
+ #mod: 0o444
+ mod: 0o744
+
+
