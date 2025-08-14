@@ -1,0 +1,180 @@
+import pytest
+
+from dify_client._clientx import AsyncDifyClient, DifyClient
+
+
+@pytest.mark.parametrize(
+    "client_class,api_base,api_version,endpoint,kwargs,expected",
+    [
+        # DifyClient and AsyncDifyClient, api_base contains version
+        (
+            DifyClient,
+            "https://api.example.com/v1/",
+            "/v2/",
+            "/resource",
+            {},
+            "https://api.example.com/v1/resource",
+        ),
+        (
+            DifyClient,
+            "https://api.example.com/v2",
+            "/v3/",
+            "resource",
+            {},
+            "https://api.example.com/v2/resource",
+        ),
+        (
+            DifyClient,
+            "https://api.example.com/v1",
+            "/v2/",
+            "/resource/{id}",
+            {"id": 42},
+            "https://api.example.com/v1/resource/42",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com/v1/",
+            "/v2/",
+            "/resource",
+            {},
+            "https://api.example.com/v1/resource",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com/v2",
+            "/v3/",
+            "resource",
+            {},
+            "https://api.example.com/v2/resource",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com/v1",
+            "/v2/",
+            "/resource/{id}",
+            {"id": 42},
+            "https://api.example.com/v1/resource/42",
+        ),
+        # api_base does not contain version
+        (
+            DifyClient,
+            "https://api.example.com/",
+            "/v1/",
+            "/resource",
+            {},
+            "https://api.example.com/v1/resource",
+        ),
+        (
+            DifyClient,
+            "https://api.example.com",
+            "v2",
+            "resource",
+            {},
+            "https://api.example.com/v2/resource",
+        ),
+        (
+            DifyClient,
+            "https://api.example.com",
+            "v3",
+            "/resource/{id}",
+            {"id": "abc"},
+            "https://api.example.com/v3/resource/abc",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com/",
+            "/v1/",
+            "/resource",
+            {},
+            "https://api.example.com/v1/resource",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com",
+            "v2",
+            "resource",
+            {},
+            "https://api.example.com/v2/resource",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com",
+            "v3",
+            "/resource/{id}",
+            {"id": "abc"},
+            "https://api.example.com/v3/resource/abc",
+        ),
+        # edge cases
+        (
+            DifyClient,
+            "https://api.example.com/",
+            "/v1/",
+            "/",
+            {},
+            "https://api.example.com/v1/",
+        ),
+        (
+            DifyClient,
+            "https://api.example.com",
+            "v1",
+            "",
+            {},
+            "https://api.example.com/v1/",
+        ),
+        (
+            DifyClient,
+            "https://api.example.com/v1/",
+            "/v2/",
+            "",
+            {},
+            "https://api.example.com/v1/",
+        ),
+        (
+            DifyClient,
+            "https://api.example.com/v1/",
+            "/v2/",
+            "/",
+            {},
+            "https://api.example.com/v1/",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com/",
+            "/v1/",
+            "/",
+            {},
+            "https://api.example.com/v1/",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com",
+            "v1",
+            "",
+            {},
+            "https://api.example.com/v1/",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com/v1/",
+            "/v2/",
+            "",
+            {},
+            "https://api.example.com/v1/",
+        ),
+        (
+            AsyncDifyClient,
+            "https://api.example.com/v1/",
+            "/v2/",
+            "/",
+            {},
+            "https://api.example.com/v1/",
+        ),
+    ],
+)
+def test_prepare_url(
+    client_class, api_base, api_version, endpoint, kwargs, expected
+):
+    client = client_class(
+        api_key="dummy", api_base=api_base, api_version=api_version
+    )
+    assert client._prepare_url(endpoint, **kwargs) == expected
