@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "certx"
+version = "0.3.0"
+authors = [
+    { name = "dengshaolin" },
+]
+license = { text = "Apache-2.0" }
+description = "Generator Self-Signed Private CA and Certificate"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "cryptography>=45.0.5", # Apache-2.0 OR BSD-3-Clause
+    "Flask>=3.1.1", # BSD
+    "flask_restx>=1.3.0", # BSD
+    "marshmallow>=4.0.0",
+    "oslo.config>=10.0.0", # Apache-2.0
+    "oslo.db>=17.3.0", # Apache-2.0
+    "oslo.log>=7.2.0", # Apache-2.0
+    "pyOpenSSL>=25.1.0", # Apache-2.0
+    "SQLAlchemy>=2.0.42", # MIT
+]
+
+[project.optional-dependencies]
+test = ["oslotest>=5.0.1"]
+mysql = ["PyMySQL>=1.1.1"]
+
+[project.urls]
+"Homepage" = "https://gitee.com/dengshaolin/certx"
+"Bug Tracker" = "https://gitee.com/dengshaolin/certx/issues"
+
+[project.scripts]
+certx-server = "certx.server:start"
+certx-dbsync = "certx.cmd.dbsync:main"
+certx-crypto = "certx.cmd.crypto:main"
+
+[project.entry-points."oslo.config.opts"]
+certx = "certx.conf.opts:list_opts"
+
+[project.entry-points."certx.database.migration_backend"]
+sqlalchemy = "certx.db.sqlalchemy.migration"
+
+[project.entry-points."certx.provider.crl_point"]
+default = "certx.provider.crl_point.default:DefaultCrlDistributionPointProvider"

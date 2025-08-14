@@ -1,0 +1,13 @@
+[certx.database.migration_backend]
+sqlalchemy = certx.db.sqlalchemy.migration
+
+[certx.provider.crl_point]
+default = certx.provider.crl_point.default:DefaultCrlDistributionPointProvider
+
+[console_scripts]
+certx-crypto = certx.cmd.crypto:main
+certx-dbsync = certx.cmd.dbsync:main
+certx-server = certx.server:start
+
+[oslo.config.opts]
+certx = certx.conf.opts:list_opts
