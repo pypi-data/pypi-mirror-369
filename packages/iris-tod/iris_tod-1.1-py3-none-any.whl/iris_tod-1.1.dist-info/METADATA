@@ -1,0 +1,169 @@
+Metadata-Version: 2.4
+Name: iris-tod
+Version: 1.1
+Summary: A powerful Python-based security tool that analyzes HTTP security headers for websites and automatically generates clickjacking payloads when vulnerabilities are detected.
+Project-URL: Homepage, https://github.com/joelindra/Iris
+Project-URL: Issues, https://github.com/joelindra/Iris/issues
+Author-email: Joel Indra <anonre@anonre.com>
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.7
+Requires-Dist: numpy
+Requires-Dist: pandas
+Description-Content-Type: text/markdown
+
+# Iris
+
+<img width="640" height="620" alt="image" src="https://github.com/user-attachments/assets/99083959-8dfa-4355-bd79-ba2e296ddbcd" />
+
+A powerful Python-based security tool that analyzes HTTP security headers for websites and automatically generates clickjacking payloads when vulnerabilities are detected.
+
+![Demo](https://img.shields.io/badge/Python-3.7+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Security](https://img.shields.io/badge/Security-Headers-red.svg)
+
+## ✨ Features
+
+- **Real-time Progress Tracking** - Beautiful progress bars with percentage completion
+- **Comprehensive Header Analysis** - Checks 11 critical security headers
+- **Automatic Payload Generation** - Creates clickjacking test payloads when X-Frame-Options is missing
+- **Rich Terminal Interface** - Colorful, modern CLI with animated spinners and styled tables
+- **SSL Bypass Support** - Works with sites having SSL certificate issues
+- **Fast Performance** - Single HTTP request for all header checks
+
+## 📋 Supported Security Headers
+
+| Header | Description |
+|--------|-------------|
+| Content-Security-Policy | Prevents XSS and injection attacks |
+| X-Content-Type-Options | Prevents MIME type sniffing |
+| X-Frame-Options | Protects against clickjacking |
+| X-XSS-Protection | Enables XSS filtering |
+| Strict-Transport-Security | Enforces HTTPS connections |
+| Referrer-Policy | Controls referrer information |
+| Feature-Policy | Controls browser features |
+| Permissions-Policy | Modern replacement for Feature-Policy |
+| Expect-CT | Certificate transparency |
+| Cache-Control | Controls caching behavior |
+| Pragma | HTTP/1.0 cache control |
+
+## 🚀 Installation
+
+### Prerequisites
+- Python 3.7 or higher
+- pip package manager
+
+### Quick Install
+1. Install on using pip:
+```
+pip install iris-tod
+```
+
+## 💻 Usage
+
+### Basic Usage
+```
+
+iris <target_url>
+
+```
+
+### Examples
+```
+
+
+# Check a website with HTTPS
+
+iris https://example.com
+
+# Check a website without protocol (defaults to HTTP)
+
+iris example.com
+
+```
+
+## 📊 Sample Output
+
+```
+
+╭─────────── Iris ────────────╮
+│ 🔍 Security Headers Checker │
+╰─────────────────────────────╯
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Header                    ┃ Status  ┃ Value / Notes     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ Content-Security-Policy   │ Missing │                   │
+│ X-Content-Type-Options    │ Missing │                   │
+│ X-Frame-Options           │ Missing │                   │
+│ X-XSS-Protection          │ Missing │                   │
+│ Strict-Transport-Security │ Missing │                   │
+│ Referrer-Policy           │ Missing │                   │
+│ Feature-Policy            │ Missing │                   │
+│ Permissions-Policy        │ Missing │                   │
+│ Expect-CT                 │ Missing │                   │
+│ Cache-Control             │ Present │ public, max-age=0 │
+│ Pragma                    │ Missing │                   │
+└───────────────────────────┴─────────┴───────────────────┘
+
+╭──────────────────────── Payload Generated ────────────────────────╮
+│ Clickjacking payload automatically created                        │
+│ because <target> vulnerable: clickjack_testing.html │
+│                                                                   │
+│ Open it in a browser to test.                                     │
+╰───────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────╮
+│ Security headers check completed. │
+╰───────────────────────────────────╯
+```
+
+## 🔧 Configuration
+
+### SSL Certificate Issues
+The tool automatically bypasses SSL certificate verification to work with sites having certificate problems. This is intended for security testing purposes only.
+
+## 📁 Generated Files
+
+When X-Frame-Options header is missing, the tool automatically creates:
+- `clickjacking_payload.html` - HTML file for testing clickjacking vulnerabilities
+
+## ⚠️ Security Notice
+
+This tool is designed for:
+- **Authorized security testing** on your own websites
+- **Educational purposes** and learning about web security
+- **Compliance auditing** of web applications
+
+**Important:** Only use this tool on websites you own or have explicit permission to test.
+
+## 🛠️ Requirements
+
+See `requirements.txt` for the complete list of dependencies:
+- requests >= 2.28.0
+- rich >= 13.0.0
+- urllib3 >= 1.26.0
+- colorama >= 0.4.4
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## �� Related Projects
+
+- [OWASP Security Headers](https://owasp.org/www-project-secure-headers/)
+- [Mozilla Observatory](https://observatory.mozilla.org/)
+- [Security Headers Scanner](https://securityheaders.com/)
+
+---
+
+**⭐ If you found this tool helpful, please give it a star!**
