@@ -1,0 +1,94 @@
+[build-system]
+requires = ["hatchling>=1.21.0", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-querylizer"
+dynamic = ["version"]
+description = "Automatic Django query performance analyzer and logger"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Fuad Habib", email = "fuad@subcode.africa" },
+]
+dependencies = [
+    "Django>=3.2",
+]
+requires-python = ">= 3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Framework :: Django",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Database",
+    "Topic :: System :: Monitoring",
+    "Typing :: Typed",
+]
+keywords = ["django", "database", "query", "performance", "monitoring", "analyzer", "optimization", "orm"]
+
+[project.urls]
+Homepage = "https://github.com/AvicennaJr/django-querylizer"
+Repository = "https://github.com/AvicennaJr/django-querylizer"
+Documentation = "https://github.com/AvicennaJr/django-querylizer#readme"
+"Bug Tracker" = "https://github.com/AvicennaJr/django-querylizer/issues"
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "django-stubs>=4.2.0",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["querylizer"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/querylizer",
+    "/README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.ruff]
+target-version = "py38"
+line-length = 88
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "C4",
+    "UP",
+]
+ignore = [
+    "E501",
+    "B008",
+]
+
+[tool.mypy]
+python_version = "3.8"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
