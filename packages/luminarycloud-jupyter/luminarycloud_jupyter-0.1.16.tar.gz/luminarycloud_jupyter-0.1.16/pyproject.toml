@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "luminarycloud_jupyter"
+version = "0.1.16"
+description = "Luminary Cloud SDK Interactive Jupyter Widgets"
+readme = "DESCRIPTION.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Luminary Cloud Inc.", email = "support@luminarycloud.com" },
+]
+keywords = ["Luminary Cloud", "SDK", "Jupyter"]
+dynamic = ["dependencies"]
+
+[project.urls]
+Homepage = "https://www.luminarycloud.com/"
+Documentation = "https://app.luminarycloud.com/docs/api/"
+
+[tool.hatch.build]
+only-packages = true
+artifacts = ["luminarycloud_jupyter/static/*"]
+
+[tool.hatch.build.hooks.jupyter-builder]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["luminarycloud_jupyter/static/lcvis.js"]
+skip-if-exists = ["luminarycloud_jupyter/static/lcvis.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+npm = "pnpm"
+build_cmd = "build:widgets"
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
