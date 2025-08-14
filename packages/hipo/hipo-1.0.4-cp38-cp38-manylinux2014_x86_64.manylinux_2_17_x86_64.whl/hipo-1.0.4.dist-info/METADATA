@@ -1,0 +1,136 @@
+Metadata-Version: 2.1
+Name: hipo
+Version: 1.0.4
+Summary: Physics Informed Preconditioners and Solvers
+Author: MSCAX
+License: LGPL
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+# Physics Informed Preconditioners
+
+## Introduction
+
+HIPO, short for High Performance Precondition Operators, is a large-scale linear equation solver package. It supports distributed heterogeneous parallel computing (MPI+CPU/GPU/DCU/...) and provides physics-informed preconditioners for solvers, especially physics-informed AMG preconditioners. It is dedicated to stably and efficiently solving large-scale linear algebraic equations derived from the discretization of mathematical and physical models.
+
+## Install
+
+``` bash
+$ pip install hipo
+```
+
+## Usage
+use the following command to get the help message:
+```bash
+$ python -m hipo help
+```
+copy the example out
+```
+$ cp -r path_to_hipo/examples .
+```
+then run the example:
+```bash
+$ python solver.py thermal1.mtx thermal1_b.mtx solver.json
+```
+
+The following python script shows the above solver.py.
+read matrix A and vector b from MatrixMarket files,
+using CUDA to solve Ax=b.
+```python
+# solver.py
+import hipo
+import sys, re, os
+#import json
+import commentjson as json
+
+fnA = sys.argv[1]
+fnb = sys.argv[2]
+config = sys.argv[3]
+
+params = json.load(open(config))
+
+A = hipo.ParCSRMatrix()
+A.loadFromFile(fnA)
+b = hipo.ParMatrix()
+b.loadFromFile(fnb)
+if b.getSize() == 0:
+    b.resize(A.getRows(), 1)
+    b.fill(1)
+
+# transfer the matrix and vector to gpu 0.
+dev = hipo.Device("cuda:0")
+A = A.toDevice(dev)
+b = b.toDevice(dev)
+
+# use gpu 0 to finish the computation.
+precond = hipo.createPrecond(params["preconditioner"])
+precond.setup(A)
+solver = hipo.createSolver(params["solver"])
+solver.setup(A)
+
+out = solver.solve(precond, A, b)
+```
+
+## Solvers and Preconditioners
+use
+```bash
+$ python -m hipo info
+```
+to show the builtin solvers, preconditioners, smoothers, level_transfers.
+
+
+## Compatibility
+- ### OS version
+Now support Linux, Ubuntu/Federa/... will be OK. 
+Windows version will be available later.
+
+- ### PYTHON version
+the python version is >=3.8. 
+
+- ### GPU/CUDA version
+If you want to use CUDA, ensure that 
+CUDA Version >= 12.4. 
+
+- ### DCU version
+please contact us to compile the specified version.
+
+- ### DISTRIBUTED version
+hipo support MPI since hipo-1.0.4. 
+
+
+## License
+
+This software is free software distributed under the Lesser General Public 
+License or LGPL, version 3.0 or any later versions. This software distributed 
+in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even 
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License 
+along with HIPO. If not, see <http://www.gnu.org/licenses/>.
+
+This software depends on GLOG, AMGCL, their license files are located in the package.
