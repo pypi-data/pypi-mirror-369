@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rlbot"
+description = "A high performance Python interface for communicating with RLBot v5."
+dynamic = ["version"]
+requires-python = ">= 3.11"
+dependencies = [
+    "rlbot_flatbuffers~=0.17.0",
+    "psutil==7.*",
+]
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "RLBot Community", email = "rlbotofficial@gmail.com" }
+]
+keywords = ["rocket-league"]
+
+[project.urls]
+Repository = "https://github.com/RLBot/python-interface"
+
+[tool.setuptools.dynamic]
+version = {attr = "rlbot.version.__version__"}
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.5",
+    "toml>=0.10.2",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
