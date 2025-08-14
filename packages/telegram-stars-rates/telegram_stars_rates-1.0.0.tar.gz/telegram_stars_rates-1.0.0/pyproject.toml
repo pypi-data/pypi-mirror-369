@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telegram-stars-rates"
+version = "1.0.0"
+authors = [{name = "Telegram Stars Team", email = "dev@telegram-stars.com"}]
+maintainers = [{name = "Telegram Stars Team", email = "dev@telegram-stars.com"}]
+description = "Real-time Telegram Stars to USDT exchange rates via Fragment blockchain"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8", 
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+keywords = ["telegram", "stars", "ton", "fragment", "cryptocurrency", "exchange", "rates", "blockchain", "usdt", "converter"]
+dependencies = [
+    "requests>=2.25.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/telegram-stars/rates"
+Documentation = "https://github.com/telegram-stars/rates#readme" 
+Repository = "https://github.com/telegram-stars/rates.git"
+"Bug Tracker" = "https://github.com/telegram-stars/rates/issues"
+Changelog = "https://github.com/telegram-stars/rates/releases"
+"Web Converter" = "https://telegram-stars.github.io/rates"
+
+[project.scripts]
+telegram-stars-rates = "telegram_stars_rates.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["telegram_stars_rates*"]
