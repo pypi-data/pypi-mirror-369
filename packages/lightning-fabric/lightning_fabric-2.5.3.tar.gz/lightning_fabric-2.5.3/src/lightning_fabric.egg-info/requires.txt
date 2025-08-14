@@ -1,0 +1,67 @@
+torch>=2.1.0
+fsspec[http]>=2022.5.0
+packaging>=20.0
+typing-extensions>4.5.0
+lightning-utilities>=0.10.0
+
+[all]
+torchvision>=0.16.0
+torchmetrics>=0.10.0
+
+[all:platform_system != "Darwin"]
+bitsandbytes>=0.45.2
+
+[all:platform_system != "Windows" and platform_system != "Darwin"]
+deepspeed<=0.9.3,>=0.9.3
+
+[bitsandbytes]
+
+[bitsandbytes:platform_system != "Darwin"]
+bitsandbytes>=0.45.2
+
+[deepspeed]
+
+[deepspeed:platform_system != "Windows" and platform_system != "Darwin"]
+deepspeed<=0.9.3,>=0.9.3
+
+[dev]
+torchvision>=0.16.0
+torchmetrics>=0.10.0
+coverage==7.10.3
+numpy>=1.17.2
+pytest==8.4.1
+pytest-cov==6.2.1
+pytest-timeout==2.4.0
+pytest-rerunfailures==15.1
+pytest-random-order==1.2.0
+click==8.1.8
+tensorboardX>=2.2
+
+[dev:platform_system != "Darwin"]
+bitsandbytes>=0.45.2
+
+[dev:platform_system != "Windows" and platform_system != "Darwin"]
+deepspeed<=0.9.3,>=0.9.3
+
+[examples]
+torchvision>=0.16.0
+torchmetrics>=0.10.0
+
+[strategies]
+
+[strategies:platform_system != "Darwin"]
+bitsandbytes>=0.45.2
+
+[strategies:platform_system != "Windows" and platform_system != "Darwin"]
+deepspeed<=0.9.3,>=0.9.3
+
+[test]
+coverage==7.10.3
+numpy>=1.17.2
+pytest==8.4.1
+pytest-cov==6.2.1
+pytest-timeout==2.4.0
+pytest-rerunfailures==15.1
+pytest-random-order==1.2.0
+click==8.1.8
+tensorboardX>=2.2
