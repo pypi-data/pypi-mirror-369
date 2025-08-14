@@ -1,0 +1,57 @@
+[build-system]
+requires = ['setuptools>=64', 'setuptools-scm>=8']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'logikal-browser'
+description = 'Common browser automation utilities'
+readme = 'README.rst'
+requires-python = '~= 3.12'
+license = 'MIT'
+authors = [{name = 'Logikal GmbH', email = 'contact@logikal.io'}]
+keywords = ['selenium']
+classifiers = [
+  'Development Status :: 5 - Production/Stable',
+  'Intended Audience :: Developers',
+  'Operating System :: POSIX :: Linux',
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.12',
+  'Topic :: Software Development :: Libraries :: Python Modules',
+  'Typing :: Typed',
+]
+dynamic = ['version', 'dependencies', 'optional-dependencies']
+
+[project.urls]
+'Documentation' = 'https://docs.logikal.io/logikal-browser/'
+'Release notes' = 'https://github.com/logikal-io/logikal-browser/releases'
+'Issue tracker' = 'https://github.com/logikal-io/logikal-browser/issues'
+'Source code' = 'https://github.com/logikal-io/logikal-browser'
+
+[tool.setuptools.dynamic]
+dependencies = {file = 'requirements/core.txt'}
+
+[tool.setuptools.dynamic.optional-dependencies]
+django = {file = 'requirements/extras/django.txt'}
+
+[tool.setuptools]
+packages = ['logikal_browser']
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+addopts = '-p no:logikal_browser'
+DJANGO_SETTINGS_MODULE = 'tests.website.settings'
+
+[tool.browser.versions]
+chrome = '139.0.7258.68'
+edge = '139.0.3405.86'
+
+[tool.mypy]
+untyped_calls_exclude = ['factory']
+
+[tool.coverage.report]
+omit = ['browser.py']  # used for testing headed browser
+exclude_lines = [
+  'pragma: no cover',
+  '\.\.\.',  # exclude abstract methods
+]
