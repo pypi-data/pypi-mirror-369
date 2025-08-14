@@ -1,0 +1,40 @@
+language: python
+
+# Something in astropy/numpy breaks 3.5
+matrix:
+    include:
+      - python: 3.6
+        env:
+            - NUMPY_VERSION=stable
+            - ASTROPY_VERSION=stable
+            - CONDA_DEPENDENCIES='scipy matplotlib pyyaml stwcs'
+
+      - python: 3.6.12
+        env:
+            - NUMPY_VERSION=stable
+            - ASTROPY_VERSION=stable
+            - CONDA_DEPENDENCIES='scipy matplotlib pyyaml stwcs'
+      
+      # - python: 3.6
+      #   os: windows
+      #   env:
+      #       - NUMPY_VERSION=stable
+      #       - ASTROPY_VERSION=stable
+      #       - CONDA_DEPENDENCIES='scipy matplotlib pyyaml'
+        
+      - python: 3.7
+        os: linux
+        env:
+            - NUMPY_VERSION=stable
+            - ASTROPY_VERSION=stable
+            - CONDA_DEPENDENCIES='scipy matplotlib cython pyyaml stwcs'
+        
+# commands to install dependencies (astropy, conda)
+install: 
+    - git clone git://github.com/astropy/ci-helpers.git
+    - source ci-helpers/travis/setup_conda.sh
+    - pip install extinction
+    
+# command to run tests
+script: 
+    python setup.py test 
