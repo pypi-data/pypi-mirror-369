@@ -1,0 +1,116 @@
+Metadata-Version: 2.4
+Name: myrlkit
+Version: 0.1.1
+Summary: A tiny, teaching-focused reinforcement learning kit (Q-learning, SARSA, Bandits) with toy environments.
+Author-email: Your Name <you@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourname/myrlkit
+Project-URL: Issues, https://github.com/yourname/myrlkit/issues
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.22
+Requires-Dist: matplotlib>=3.5
+Dynamic: license-file
+
+# myrlkit
+
+**A minimal, lightweight reinforcement learning toolkit** — built for quick experimentation, small projects, and clear, dependency-light code.  
+Includes core RL algorithms and simple toy environments with ready-to-run examples and matplotlib visualizations.
+
+## ✨ Features
+- **Algorithms**: Q-learning, SARSA, and Epsilon-Greedy Bandit.
+- **Environments**: GridWorld and K-armed Bandit.
+- **Visualization**: Built-in learning curves and policy renderings.
+- **No heavy frameworks** — just Python + NumPy + Matplotlib.
+- **Readable & well-documented** — easy to extend and adapt.
+
+## Install
+
+```bash
+pip install myrlkit
+```
+
+> If installing from source:
+```bash
+pip install -e .
+```
+
+## Quickstart
+
+### Q-learning on GridWorld
+
+```python
+import numpy as np
+from myrlkit.agents import QLearningAgent
+from myrlkit.envs import GridWorld
+
+env = GridWorld(width=5, height=5, start=(0,0), goal=(4,4), obstacles=[(1,1), (1,2), (2,1)])
+agent = QLearningAgent(state_size=env.n_states, action_size=env.n_actions, alpha=0.5, gamma=0.99, epsilon=0.1)
+
+episodes = 300
+rewards = []
+for _ in range(episodes):
+    s = env.reset()
+    done = False
+    total = 0.0
+    while not done:
+        a = agent.choose_action(s)
+        ns, r, done, _ = env.step(a)
+        agent.update(s, a, r, ns, done)
+        s = ns
+        total += r
+    rewards.append(total)
+
+policy = env.render_policy(agent.q_table)
+print(policy)
+```
+
+### SARSA on GridWorld
+
+```python
+from myrlkit.agents import SARSAAgent
+from myrlkit.envs import GridWorld
+
+env = GridWorld(width=4, height=4, start=(0,0), goal=(3,3))
+agent = SARSAAgent(state_size=env.n_states, action_size=env.n_actions, alpha=0.5, gamma=0.99, epsilon=0.1)
+```
+
+### Epsilon-Greedy Bandit
+
+```python
+from myrlkit.agents import EpsilonGreedyBandit
+from myrlkit.envs import KArmedBandit
+
+env = KArmedBandit(k=10, means=[0.0]*10, std=1.0, seed=42)
+agent = EpsilonGreedyBandit(k=env.k, epsilon=0.1)
+
+rewards = []
+for t in range(1000):
+    a = agent.select_action()
+    r = env.pull(a)
+    agent.update(a, r)
+    rewards.append(r)
+```
+
+## API
+
+- `myrlkit.agents.QLearningAgent`
+- `myrlkit.agents.SARSAAgent`
+- `myrlkit.agents.EpsilonGreedyBandit`
+- `myrlkit.envs.GridWorld`
+- `myrlkit.envs.KArmedBandit`
+
+## Examples
+
+See `examples/` for runnable scripts (learning curves, policy printouts).
+
+## License
+
+MIT
