@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff.lint]
+# To see a linters execute `ruff linter`
+extend-select = [
+  "I", # isort
+  "UP", # pyupgrade
+  "E", # pycodestyle
+]
+ignore = [
+  "E402", # ignore because the test/test_*.py files contain a import hack
+  "I001", # ignore because it conflicts with the default isort formatting
+  "UP031", # ignore for now because there are so many percentage format specifiers used
+  "E501", # ignore because there are too many to long lines and finding a good max lenth is hard.
+]
+
+[project]
+name = "subpatch"
+dynamic = ["version"]
+dependencies = []
+
+# TODO set on correct python version
+requires-python = ">= 3.8"
+authors = [
+  {name = "Stefan Lengfeld", email = "stefan@lengfeld.xyz"}
+]
+maintainers = [
+  {name = "Stefan Lengfeld", email = "stefan@lengfeld.xyz"}
+]
+description = "fearless multi repository management - stay relaxed!"
+
+readme = "README.md"
+
+# It's the SPDX identifier. See https://spdx.org/licenses/GPL-2.0-only.html
+license = {text = "GPL-2.0-only"}
+
+# See https://pypi.org/classifiers/ for all classifiers
+classifiers = [
+    # TODO Update Status at some point
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+# TODO add keywords = ["egg", "bacon", "sausage", "tomatoes", "Lobster Thermidor"]
+Homepage = "https://subpatch.net"
+Repository = "https://github.com/lengfeld/subpatch"
+Issues = "https://github.com/lengfeld/subpatch/issues"
+# TODO Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+[project.scripts]
+subpatch = "subpatch:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "subpatch.__version__"}
+
+[tool.setuptools]
+py-modules = ["subpatch"]
