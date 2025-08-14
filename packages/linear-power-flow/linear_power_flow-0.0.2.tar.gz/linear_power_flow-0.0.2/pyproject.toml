@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linear-power-flow"
+version = "0.0.2"
+authors = [
+    {name = "Tianqi Hong", email = "tianqi.hong@uga.edu"},
+]
+description = "A Python package for linear power flow analysis in electrical power systems"
+readme = "README.md"
+license = {text = "BSD 3-Clause License"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+keywords = ["power flow", "linear power flow", "power systems", "electrical engineering", "grid analysis"]
+dependencies = [
+    "numpy>=1.20.0",
+    "scipy>=1.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=3.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.900",
+    "build>=0.7.0",
+    "twine>=4.0.0",
+]
+examples = [
+    "pypower>=5.1.0",
+    "pandapower>=2.10.0",
+    "matplotlib>=3.3.0",
+    "plotly>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/th1275/linear_power_flow"
+"Bug Tracker" = "https://github.com/th1275/linear_power_flow/issues"
+Documentation = "https://github.com/th1275/linear_power_flow#readme"
+"Source Code" = "https://github.com/th1275/linear_power_flow"
+
+[tool.setuptools]
+packages = ["linear_power_flow", "linear_power_flow.common_interface", "linear_power_flow.rect_model", "linear_power_flow.examples"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-v --cov=linear_power_flow --cov-report=html --cov-report=term-missing"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_any_generics = false
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["linear_power_flow"]
+omit = ["*/tests/*", "*/examples/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]
