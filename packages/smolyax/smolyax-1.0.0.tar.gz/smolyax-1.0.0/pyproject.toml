@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smolyax"
+version = "1.0.0"
+description = "A high-performance JAX implementation of the Smolyak interpolation operator"
+authors = [
+    { name = "Josephine Westermann" },
+    { name = "Joshua Chen", email = "joshuawchen@icloud.com" }
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+dependencies = [
+    "jax >= 0.4.30",
+    "numba >= 0.60.0"
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+cuda = [
+    "jax[cuda] >= 0.6.2"
+]
+notebook = [
+    "ipykernel >= 6.29.5",
+    "matplotlib >= 3.10.3"
+]
+dev = [
+    "pytest >= 8.4.1",
+    "pytest-benchmark >= 5.1.0",
+    "pytype",
+    "black >= 25.1.0",
+    "flake8 >= 7.3.0",
+    "flake8-pyproject >= 1.2.3",
+    "pdoc >= 15.0.4",
+    "mypy >= 1.16.1",
+    "ipykernel >= 6.29.5",
+    "matplotlib >= 3.9.4"
+]
+
+[tool.black]
+line-length = 120
+target-version = ["py39"]
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = """E203"""
+
+[tool.pytype]
+python_version = "3.9"
+inputs = ["src/smolyax"]
+disable = ["import-error"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = false
+no_implicit_optional = false
