@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "antback"
+version = "0.0.3"
+authors = [
+  { name="Tomasz Sługocki", email="ts.kontakt@gmail.com" },
+]
+description = "Antback: Lightweight Backtesting with Heavyweight Insight"
+readme = "README.md"
+dependencies = [
+  "numpy", "pandas"
+]
+license = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/ts-kontakt/antback"
+Issues = "https://github.com/ts-kontakt/antback/issues"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+exclude = [
+  "/antback/*.html",
+  "/antback/*.xlsx",
+  "/antback/short*.py",
+   "/*.html",
+  "/tests/",
+  "/*.xlsx",
+  "/*.py",
+  "/*.txt",
+  "/*.png",
+  
+]
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["antback"]
+#only-include = ["antback"]
+
+
