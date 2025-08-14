@@ -1,0 +1,25 @@
+<html>
+<head>
+    <script type="text/javascript" language="javascript">
+        var submitForm = function() {
+          document.getElementById("garantipay-payment").submit();
+        };
+    </script>
+</head>
+
+<body style="display: none;" onload="submitForm();">
+
+<form id="garantipay-payment" action="{{ action_url }}" method="{{ action_method }}">
+    {% csrf_token %}
+    {{ hash_form.as_table() }}
+    {{ basket_items.management_form }}
+    {% for form in basket_items.forms %}
+    <fieldset>
+        <legend>Basket Item {{ forloop.counter }}</legend>
+        {{ form.as_table() }}
+    </fieldset>
+    {% endfor %}
+</form>
+
+</body>
+</html>
