@@ -1,0 +1,786 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "webhooks",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.copy.ai/api/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sec0": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-copy-ai-api-key",
+        "x-default": ""
+      }
+    }
+  },
+  "security": [
+    {
+      "sec0": []
+    }
+  ],
+  "paths": {
+    "/webhook": {
+      "post": {
+        "summary": "Register Webhook",
+        "description": "You can register webhook endpoints via the API to be notified about workflow events that happen in your workspace.",
+        "operationId": "register-webhook",
+        "parameters": [
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url",
+                  "eventType"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "The URL of the webhook endpoint.",
+                    "default": "<https://your_website.com/webhook>"
+                  },
+                  "eventType": {
+                    "type": "string",
+                    "description": "The event type you want to receive notifications for.",
+                    "default": "workflowRun.completed"
+                  },
+                  "workflowId": {
+                    "type": "string",
+                    "description": "(optional) The workflow id you want to receive events for."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"id\": \"<id of webhook>\",\n    \"url\": \"<https://mywebsite.com/webhook>\",\n    \"eventType\": \"workflowRun.completed\",\n    \"workflowId\": \"<my-workflow-id>\"\n  }\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "<id of webhook>"
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "<https://mywebsite.com/webhook>"
+                        },
+                        "eventType": {
+                          "type": "string",
+                          "example": "workflowRun.completed"
+                        },
+                        "workflowId": {
+                          "type": "string",
+                          "example": "<my-workflow-id>"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status: 'error', \n  errorCode: <error code>\n}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\tstatus\":\"error\",\n  errorCode:\"NOT_FOUND\"\n}"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status: \"error\",\n  errorCode: \"REQUEST_INVALID\",\n  details: {\n  \t<invalidFieldname>: [<reason>]\n  }\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "summary": "Get All Webhooks",
+        "description": "You can view the details of all webhook endpoints registered for your workspace via the API.",
+        "operationId": "get-all-webhooks",
+        "parameters": [
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Number of webhooks to include in pagination (up to 100, defaults to 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify further pages (starts at 0).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n    \"total\": 2,\n    \"data\":\n    [\n        {\n            \"id\": \"<webhook_id>\",\n            \"url\": \"<https://mywebsite.com/webhook>\",\n            \"eventType\": \"workflowRun.completed\",\n            \"workflowId\": \"<workflow_id>\"\n        },\n        {\n            \"id\": \"<webhook_id>\",\n            \"url\": \"<https://mywebsite.com/webhook>\",\n            \"eventType\": \"workflowRun.started\",\n            \"workflowId\": null\n        }\n    ]\n}\n"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "example": 2,
+                      "default": 0
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "<webhook_id>"
+                          },
+                          "url": {
+                            "type": "string",
+                            "example": "<https://mywebsite.com/webhook>"
+                          },
+                          "eventType": {
+                            "type": "string",
+                            "example": "workflowRun.completed"
+                          },
+                          "workflowId": {
+                            "type": "string",
+                            "example": "<workflow_id>"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status: \"error\",\n  errorCode: \"REQUEST_INVALID\",\n  details: {\n  \t<invalidFieldname>: [<reason>]\n  }\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/webhook/{webhook_id}": {
+      "get": {
+        "summary": "Get Webhook",
+        "description": "You can view the details of a webhook endpoint via the API.",
+        "operationId": "get-webhook",
+        "parameters": [
+          {
+            "name": "webhook_id",
+            "in": "path",
+            "description": "The ID of the webhook",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\tstatus: \"success\",\n  data: {\n\t\tid: \"<webhook_id>\",\n\t\turl: \"<https://mywebsite.com/webhook>\",\n\t\teventType: \"workflowRun.completed\",\n\t\tworkflowId: \"<workflow_id>\"\n\t}\n}"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status: 'error', \n  errorCode: \"<error code>\"\n}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n        \"status\": \"error\",\n        \"errorCode\": \"NOT_FOUND\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "example": "NOT_FOUND"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "summary": "Remove Webhook",
+        "description": "You can remove a webhook endpoint via the API.",
+        "operationId": "remote-webhook",
+        "parameters": [
+          {
+            "name": "webhook_id",
+            "in": "path",
+            "description": "The ID of the webhook",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "202",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n        \"status\": \"error\",\n        \"errorCode\": \"NOT_FOUND\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "example": "NOT_FOUND"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/workflow/{workflow_id}/run": {
+      "post": {
+        "summary": "Start a Workflow Run",
+        "description": "This page will help you get started with starting a Workflow Run.",
+        "operationId": "start-a-workflow-run",
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "description": "ID of the workflow",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "startVariables"
+                ],
+                "properties": {
+                  "startVariables": {
+                    "type": "string",
+                    "description": "A JSON object containing all start variables for your workflow.",
+                    "format": "json"
+                  },
+                  "metadata": {
+                    "type": "string",
+                    "description": "A JSON object containing metadata to store and return with the workflow run.",
+                    "default": "{ \"api\": true }",
+                    "format": "json"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status:\"success\",\n  data: {id:\"some-UUID-1234\"}\n}"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status: 'error', \n  errorCode: 'WORKFLOW_CREDIT_LIMIT_REACHED' \n}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\tstatus: \"error\",\n  errorCode:\"NOT_FOUND\"\n}"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status: \"error\",\n  errorCode: \"REQUEST_INVALID\",\n  details: {\n  \t<invalidFieldname>: [<reason>]\n  }\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/workflow/{workflow_id}/run/{run_id}": {
+      "get": {
+        "summary": "Get Workflow Run",
+        "description": "You can view the details of a workflow run via the API.",
+        "operationId": "get-workflow-run",
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "description": "ID of the workflow",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "ID of the workflow run",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n        \"status\": \"success\",\n        \"data\": {\n          \"output\": {\n            \"text\": \"workflow run output\"\n          },\n          \"metadata\": {\n            \"interestingValue\": \"doublelyInterestingValue\"\n          },\n          \"createdAt\": \"2023-09-27T18:34:13.091Z\",\n          \"id\": \"WRUN-dc46baf3-cb19-4424-be04-95ba630409bf\",\n          \"workflowRunId\": \"WRUN-dc46baf3-cb19-4424-be04-95ba630409bf\",\n          \"workflowId\": \"WCFG-84e56597-ebaf-4b49-a98c-75cacd4aecaa\",\n          \"credits\": 9001\n        }\n      }"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "output": {
+                          "type": "object",
+                          "properties": {
+                            "text": {
+                              "type": "string",
+                              "example": "workflow run output"
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "properties": {
+                            "interestingValue": {
+                              "type": "string",
+                              "example": "doublelyInterestingValue"
+                            }
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-09-27T18:34:13.091Z"
+                        },
+                        "id": {
+                          "type": "string",
+                          "example": "WRUN-dc46baf3-cb19-4424-be04-95ba630409bf"
+                        },
+                        "workflowRunId": {
+                          "type": "string",
+                          "example": "WRUN-dc46baf3-cb19-4424-be04-95ba630409bf"
+                        },
+                        "workflowId": {
+                          "type": "string",
+                          "example": "WCFG-84e56597-ebaf-4b49-a98c-75cacd4aecaa"
+                        },
+                        "credits": {
+                          "type": "integer",
+                          "example": 9001,
+                          "default": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  status: 'error', \n  errorCode: <error code>\n}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n        \"status\": \"error\",\n        \"errorCode\": \"NOT_FOUND\"\n}\n"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "example": "NOT_FOUND"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/workflow/{workflow_id}/run/": {
+      "get": {
+        "summary": "Get All Workflow Runs",
+        "description": "You can view the details of all workflow runs for a workflow via the API.",
+        "operationId": "get-all-workflow-runs",
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "description": "ID of the workflow",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Number of runs to include in pagination (up to 100, defaults to 10).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify further pages (starts at 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n        \"status\": \"success\",\n        \"data\": {\n          \"total\": 3,\n          \"data\": [\n            {\n              \"metadata\": {\n                \"interestingValue\": \"interestingValue\"\n              },\n              \"createdAt\": \"2023-09-27T18:24:47.000Z\",\n              \"id\": \"WRUN-6fe9e53c-945a-4aa3-a87e-d64c3cc0dcb0\",\n              \"workflowRunId\": \"WRUN-6fe9e53c-945a-4aa3-a87e-d64c3cc0dcb0\",\n              \"workflowId\": \"PKGW-d0f4f3eb-16b9-4973-8e1e-939af867ce56\",\n              \"credits\": 22\n            },\n            {\n              \"createdAt\": \"2023-09-27T18:24:46.998Z\",\n              \"id\": \"WRUN-137a0cd4-7dc3-412d-8d1c-854bddbdc230\",\n              \"workflowRunId\": \"WRUN-137a0cd4-7dc3-412d-8d1c-854bddbdc230\",\n              \"workflowId\": \"PKGW-d0f4f3eb-16b9-4973-8e1e-939af867ce56\",\n              \"credits\": 0\n            }\n          ]\n        }\n      }"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "example": 3,
+                          "default": 0
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "metadata": {
+                                "type": "object",
+                                "properties": {
+                                  "interestingValue": {
+                                    "type": "string",
+                                    "example": "interestingValue"
+                                  }
+                                }
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2023-09-27T18:24:47.000Z"
+                              },
+                              "id": {
+                                "type": "string",
+                                "example": "WRUN-6fe9e53c-945a-4aa3-a87e-d64c3cc0dcb0"
+                              },
+                              "workflowRunId": {
+                                "type": "string",
+                                "example": "WRUN-6fe9e53c-945a-4aa3-a87e-d64c3cc0dcb0"
+                              },
+                              "workflowId": {
+                                "type": "string",
+                                "example": "PKGW-d0f4f3eb-16b9-4973-8e1e-939af867ce56"
+                              },
+                              "credits": {
+                                "type": "integer",
+                                "example": 22,
+                                "default": 0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n   \"status\": \"error\",\n   \"errorCode\": \"NOT_FOUND\"\n}\n"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "example": "NOT_FOUND"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "x-readme": {
+    "headers": [
+      {
+        "key": "x-copy-ai-api-key",
+        "value": "key goes here"
+      }
+    ],
+    "explorer-enabled": true,
+    "proxy-enabled": true
+  },
+  "x-readme-fauxas": true
+}
