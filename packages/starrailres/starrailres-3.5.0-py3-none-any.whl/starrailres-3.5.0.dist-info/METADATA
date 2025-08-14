@@ -1,0 +1,62 @@
+Metadata-Version: 2.1
+Name: starrailres
+Version: 3.5.0
+Summary: StarRailRes parse package
+Home-page: https://github.com/Mar-7th/starrailres.py
+License: MIT
+Author: mobyw
+Author-email: mobyw66@gmail.com
+Requires-Python: >=3.9,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: msgspec (>=0.19.0,<0.20.0)
+Project-URL: Repository, https://github.com/Mar-7th/starrailres.py
+Description-Content-Type: text/markdown
+
+# StarRailRes-Python
+
+A python library for StarRailRes.
+
+## Installation
+
+```bash
+pip install starrailres
+```
+
+## Usage
+
+```python
+from pathlib import Path
+from starrailres import CharacterBasicInfo, Index, LevelInfo
+
+# replace with index folder
+index = Index(Path("index") / "en")
+
+basic = CharacterBasicInfo(
+    id="1102",
+    rank=0,
+    level=70,
+    promotion=5,
+    skill_tree_levels=[
+        LevelInfo(id="1102001", level=2),
+        LevelInfo(id="1102002", level=5),
+        LevelInfo(id="1102003", level=6),
+        LevelInfo(id="1102004", level=5),
+        LevelInfo(id="1102007", level=1),
+        LevelInfo(id="1102101", level=1),
+        LevelInfo(id="1102102", level=1),
+        LevelInfo(id="1102201", level=1),
+        LevelInfo(id="1102202", level=1),
+    ],
+)
+
+character = index.get_character_info(basic)
+print(character)
+```
+
+For more examples, see `examples`.
+
