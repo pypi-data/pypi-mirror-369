@@ -1,0 +1,1055 @@
+Metadata-Version: 2.1
+Name: bleuio
+Version: 1.6.1
+Summary: Library for using the bleuio dongle.
+Home-page: https://smart-sensor-devices-ab.github.io/ssd005-manual/
+Author: Smart Sensor Devices
+Author-email: smartzenzor@gmail.com
+License: MIT
+Platform: UNKNOWN
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+Requires-Dist: pyserial
+
+## Python library v1.6.1 for BleuIO
+
+### Supports BleuIO v.2.7.6 and BleuIO Pro 1.0.1
+
+> NOTE: Does not support BleuIO Standard (SSD005) fw version 2.2.0 or earlier.
+
+### Changes
+
+#### 1.6.1
+
+- Renamed misleading function parameter names. The parameter name 'uuid' has been changed to 'handle' in the following functions: *at_gattcread()*, *at_gattcwrite()*, *at_gattcwritewr()*, *at_gattcwritewrb()*, *at_get_service_details()*. The affected descriptions have also been updated, as well as the documentation, to reflect this.
+- Fixed typo. Changed name of function *at_divicename()* to *at_devicename()*.
+
+#### 1.6.0
+
+- Added functions for commands introduced up to BleuIO fw version 2.7.6 and BleuIO Pro fw 1.0.1.
+- Improved the auto-detect feature, when not specifying a COM port. It will now detect if a detected BleuIO COM port is in use and try to use the next unused BleuIO COM port it finds until no more BleuIO COM ports are detected.
+
+#### 1.5.0
+
+- Added functions for commands introduced up to BleuIO fw version 2.7.4.
+- Added support for BleuIO Pro
+- Added functions for commands exclusive to BleuIO Pro fw version 1.0.0.
+
+#### 1.4.0
+
+- Added functions for commands introduced in firmware 2.5.0 and up to BleuIO fw version 2.7.1.
+
+#### 1.3.1
+
+- Added support for SUOTA commands introduced in BleuIO fw version 2.4.0
+- Fixed a bug when running on MacOS where the serial responses sometimes are returned in two parts instead of just one. The library expected one but can now handle two or more.
+
+#### 1.3.0
+
+- Added support for commands introduced in BleuIO fw version 2.2.2 and 2.3.0
+- Fixed a bug where the BLE status variables for connection weren't updated properly.
+- Increased the time trying to connect to the selected Dongle COM port before aborting.
+
+#### 1.2.0
+
+- Supports and makes use of the new Verbose mode introduced in 2.2.1
+
+### Instructions
+
+- Install the library by running:
+
+```shell
+pip install bleuio
+```
+
+- In the python file import:
+
+```python
+ from bleuio_lib.bleuio_funcs import BleuIO
+```
+
+- Here is an example on how to get started:
+
+```python
+# (C) 2023 Smart Sensor Devices AB
+
+import time
+from datetime import datetime
+from bleuio_lib.bleuio_funcs import BleuIO
+
+# Description
+# This is an example script that showcase how to get started with the BleuIO library for Python.
+# It will show how to setup callback functions for scan results and events.
+# How to send a command and what responses you get and how you can handle them.
+# How to start and stop a scan.
+# How to start and stop advertising.
+# How to check the BLE Status of the dongle.
+
+
+# Creating a callback function for scan results. For this example we just prints out the result.
+# Here you can add your code to parse the data.
+def my_scan_callback(scan_input):
+    print("\n\nmy_evt_callback: " + str(scan_input))
+
+
+# Creating a callback function for events. For this example we add a timestamp and just prints out the event.
+# Here you can add your code to parse the data.
+def my_evt_callback(evt_input):
+    cbTime = datetime.now()
+    currentTime = cbTime.strftime("%H:%M:%S")
+    print("\n\n[" + str(currentTime) + "] my_evt_callback: " + str(evt_input))
+
+
+# Start
+
+# Initiates the dongle. If port param is left as 'auto' it will auto-detect if BleuIO dongle is connected.
+# :param port: str
+# :param baud: int
+# :param timeout: int
+# :param debug: bool
+# Auto-Detect dongle
+my_dongle = BleuIO()
+
+# Specific COM port (Win) 'COMX'
+# my_dongle = BleuIO(port='COM7')
+
+# Specific COM port (Linux) 'dev/tty.xxxxx...'
+# my_dongle = BleuIO(port='/dev/tty.123546877')
+
+# Specific COM port (Mac) 'dev/cu.xxxx...'
+# my_dongle = BleuIO(port='/dev/cu.123546877')
+
+
+# Registers the callback functions we created earlier.
+my_dongle.register_evt_cb(my_evt_callback)
+my_dongle.register_scan_cb(my_scan_callback)
+
+print("Welcome to Test BleuIO Python Library!\n\n")
+
+# Here we send a simple AT Command. All commands will return a BleuIORESP obj.
+# The object have 4 attributes:
+# Cmd: Contains the command data.
+# Ack: Contains the acknowledge data.
+# Rsp: Contains the response data.
+# End: Contains the end data.
+at_exemple = my_dongle.at()
+# The attributes are in JSON format. Here we we print the different attributes.
+print(at_exemple.Cmd)
+print(at_exemple.Ack)
+print(
+    at_exemple.Rsp
+)  # Not every ccommand has a Response message, AT for example doesn't so this will return an empty list
+print(at_exemple.End)
+
+print("\n--\n")
+
+# We can try with the ATI command, it has information in the Response message.
+# An AT command can have several response messages so it will return a list of JSON objects
+ati_exemple = my_dongle.ati()
+print(ati_exemple.Cmd)
+print(ati_exemple.Ack)
+print(ati_exemple.Rsp)
+print(ati_exemple.End)
+
+print("\n--\n")
+
+# If we only want to see if the was successful we can do like this:
+print("Err: " + str(ati_exemple.Ack["err"]))
+# or
+print("errMsg: " + str(ati_exemple.Ack["errMsg"]))
+
+# Here is an example on how to scan.
+# First we need to put the dongle in Central or Dual Gap Role
+my_dongle.at_dual()
+
+# Now we start scanning
+resp = my_dongle.at_gapscan()
+print(resp.Cmd)
+print(resp.Ack)
+print(resp.Rsp)
+print(resp.End)
+
+# We can either send in a timeout as a parameter for the at_gapscan() command or stop the scan when we're done.
+# Here we just set a three second sleep then stop scan.
+# Notice that all the scan data will be printed by our my_scan_callback() function.
+time.sleep(3)
+print("stop scan")
+my_dongle.stop_scan()
+
+print("\n--\n")
+
+# The BLEStatus class can help you keep track of if you are currently advertising for example.
+# """A class used to handle BLE Statuses
+
+# :attr isScanning: Keeps track on if dongle is currently scanning.
+# :attr isConnected: Keeps track on if dongle is currently connected.
+# :attr isAdvertising: Keeps track on if dongle is currently advertising.
+# :attr isSPSStreamOn: Keeps track on if dongle is currently in SPS stream mode.
+# :attr role: Keeps track of the dongle's current GAP Role.
+# """
+
+print("isScanning: " + str(my_dongle.status.isScanning))
+print("isConnected: " + str(my_dongle.status.isConnected))
+print("isAdvertising: " + str(my_dongle.status.isAdvertising))
+print("isSPSStreamOn: " + str(my_dongle.status.isSPSStreamOn))
+print("role: " + str(my_dongle.status.role))
+
+print("\n--\n")
+
+# If we start advertising and check isAdvertising we will see that is changes to True.
+resp = my_dongle.at_advstart()
+print(resp.Cmd)
+print(resp.Ack)
+print(resp.Rsp)
+print(resp.End)
+
+print("\nisAdvertising: " + str(my_dongle.status.isAdvertising))
+
+print("\n--\n")
+
+# Here we stop the advertising.
+resp = my_dongle.at_advstop()
+print(resp.Cmd)
+print(resp.Ack)
+print(resp.Rsp)
+print(resp.End)
+
+print("\nisAdvertising: " + str(my_dongle.status.isAdvertising))
+
+```
+
+## Functions
+
+```python
+class BleuIO(object):
+    def __init__(self, port='auto', baud=57600, timeout=1, debug=False):
+        """
+        Initiates the dongle. If port param is left as 'auto' it will auto-detect if bleuio dongle is connected.        
+        :param port: str
+        :param baud: int
+        :param timeout: int
+        :param debug: bool
+        """
+
+    def register_scan_cb(self, callback):
+        """Registers callback function for recieving scan results.
+
+        :param callback: Function with a data parameter. Function will be called for every scan result.
+        :type callback : hex str
+        :returns: Scan results.
+        :rtype: str
+        """
+
+    def register_evt_cb(self, callback):
+        """Registers callback function for recieving events.
+
+        :param callback: Function with a data parameter. Function will be called for every event.
+        :type callback : hex str
+        :returns: Event results.
+        :rtype: str
+        """
+
+    def unregister_scan_cb(self):
+        """Unregister the callback function for recieving scan results."""
+
+    def unregister_evt_cb(self):
+        """Unregister the callback function for recieving events."""
+
+    def exit_bootloader(self):
+        """[BleuIO Pro Only] Exits bootloader.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def stop_scan(self):
+        """Stops any type of scan.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def stop_sps(self):
+        """Stops SPS Stream-mode.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at(self):
+        """Basic AT-Command.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def ata(self, isOn):
+        """Shows/hides ascii values from notification/indication/read responses.
+
+        :param isOn: True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atb(self):
+        """[BleuIO Pro Only] Starts bootloader.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advextparam(
+        self,
+        handle="",
+        disc_mode="",
+        prop="",
+        min_intv="",
+        max_intv="",
+        chnl_map="",
+        local_addr_type="",
+        filt_pol="",
+        tx_pwr="",
+        pri_phy="",
+        sec_max_evt_skip="",
+        sec_phy="",
+        sid="",
+        scan_req_noti="",
+        peer_addr_type="",
+        peer_addr="",
+    ):
+        """[BleuIO Pro Only] Sets advertising parameters for extended advertising. Needs to be set before starting extended advertising.
+
+        :param handle: str
+        :param disc_mode: str
+        :param prop: str
+        :param min_intv: str
+        :param max_intv: str
+        :param chnl_map: str
+        :param local_addr_type: str
+        :param filt_pol: str
+        :param tx_pwr: str
+        :param pri_phy: str
+        :param sec_max_evt_skip: str
+        :param sec_phy: str
+        :param sid: str
+        :param scan_req_noti: bool
+        :param peer_addr_type: str
+        :param peer_addr: str
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advextstart(self, handle, advdata="", scan_rsp_data=""):
+        """[BleuIO Pro Only] Sets extended advertising data and/or scan response data and starts extended advertising.
+
+        :param handle: str
+        :param advdata: str
+        :param scan_rsp_data: str
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advextupd(self, handle, advdata="", scan_rsp_data=""):
+        """[BleuIO Pro Only] Sets extended advertising data and/or scan response data when advertising.
+
+        :param handle: str
+        :param advdata: str
+        :param scan_rsp_data: str
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def ates(self, isOn):
+        """[BleuIO Pro Only] Toggles showing extended scan results on/off. Off by default.
+
+        :param isOn: True=On, False=Off
+        :type isOn : bool
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_led(self, isOn="", toggle="", on_period="", off_period=""):
+        """[BleuIO Pro Only] Controls the LED.
+
+        :param isOn: bool
+        :param toggle: bool
+        :param on_period: str
+        :param off_period: str
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_txpwr(self, air_op="", tx_pwr=""):
+        """[BleuIO Pro Only] Sets the TX output effect for advertsing, scan and/or initiate air operation.
+
+        :param air_op: str
+        :param tx_pwr: str
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atasps(self, isOn):
+        """Toggle between ascii (Off) and hex responses (On) received from SPS.
+
+        :param isOn: True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atassm(self, isOn):
+        """Turns on/off showing Manufacturing Specific ID (Company ID), if present, in scan results from AT+GAPSCAN, AT+FINDSCANDATA and AT+SCANTARGET scans. (Off per default).
+
+        :param isOn: True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atassn(self, isOn):
+        """Turns on/off showing device names, if present, in scan results from AT+FINDSCANDATA and AT+SCANTARGET scans. (Off per default).
+
+        :param isOn: True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atds(self, isOn):
+        """Turns auto discovery of services when connecting on/off.
+
+        :param isOn: (boolean) True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def ate(self, isOn):
+        """Turns Echo on/off.
+
+        :param isOn: (boolean) True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def ati(self):
+        """Device information query.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atr(self):
+        """Trigger platform reset.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atsat(self, isOn):
+        """Turns on/off showing address types in scan results from AT+FINDSCANDATA and AT+SCANTARGET scans.
+        (Off per default).
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atsiv(self, isOn):
+        """Turns showing verbose scan result index on/off. (Off per default).
+
+        :param isOn: True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def atsra(self, isOn):
+        """Turns showing resolved addr in scan results on/off. (Off per default).
+
+        :param isOn: True=On, False=Off
+        :type isOn : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advdata(self, advdata=""):
+        """Sets or queries the advertising data.
+
+        :param: Sets advertising data. If left empty it will query what advdata is set. Format: xx:xx:xx:xx:xx.. (max 31 bytes)
+        :type advdata: hex str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advdatai(self, advdata):
+        """Sets advertising data in a way that lets it be used as an iBeacon.
+        Format = (UUID)(MAJOR)(MINOR)(TX)
+        Example: at_advdatai("5f2dd896-b886-4549-ae01-e41acd7a354a0203010400")
+
+        :param: Sets advertising data in iBeacon format. If left empty it will query what advdata is set
+        :type advdata: hex str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advstart(self, conn_type="", intv_min="", intv_max="", timer=""):
+        """Starts advertising with default settings if no params.
+        With params: Starts advertising with <conn_type><intv_min><intv_max><timer>.
+
+        :param: Starts advertising with default settings.
+        :type conn_type: str
+        :type intv_min: str
+        :type intv_max: str
+        :type timer: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advstop(self):
+        """Stops advertising.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_advresp(self, respData=""):
+        """Sets or queries scan response data. Data must be provided as hex string.
+
+        :param: Sets scan response data. If left empty it will query what advdata is set. Format: xx:xx:xx:xx:xx.. (max 31 bytes)
+        :type respData: hex str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_autoexec(self, cmds=""):
+        """Sets or displays up to 10 commands that will be run upon the BleuIO starting up. Max command lenght is currently set at 255 characters.
+
+        :param: Sets commands. If left empty it will query set commands.
+        :type cmds: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_cancel_connect(self):
+        """While in Central Mode, cancels any ongoing connection attempts.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_central(self):
+        """Sets the device Bluetooth role to central role.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_clearnoti(self, handle):
+        """Disables notification for selected characteristic.
+
+        :param handle: hex str format: XXXX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_clearindi(self, handle):
+        """Disables indication for selected characteristic.
+
+        :param handle: hex str format: XXXX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_client(self):
+        """Sets the device role towards the targeted connection to client. Only in dual role.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_clrautoexec(self):
+        """Clear any commands in the auto execute (AUTOEXEC) list.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_clruoi(self):
+        """Clear any set Unique Organization ID.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_connectbond(self, addr):
+        """Scan for and initiates a connection with a selected bonded device. Works even if the peer bonded device is advertising with a Private Random Resolvable Address.
+
+        :param addr: hex str format: XX:XX:XX:XX:XX:XX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_connparam(self, intv_min="", intv_max="", slave_latency="", sup_timeout=""):
+        """Sets or displays preferred connection parameters. When run while connected will update connection parameters on the current target connection.
+
+        :param intv_min: str
+        :param intv_max: str
+        :param slave_latency: str
+        :param sup_timeout: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_connscanparam(self, scan_intv="", scan_win=""):
+        """Set or queries the connection scan window and interval used.
+
+        :param scan_intv: str
+        :param scan_win: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_devicename(self, name=""):
+        """Gets or sets the device name.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_dis(self):
+        """Shows the DIS Service info and if the DIS info is locked in or can be changed.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_dual(self):
+        """Sets the device Bluetooth role to dual role.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_enter_passkey(self, passkey):
+        """Respond to Passkey request. When faced with this message: BLE_EVT_GAP_PASSKEY_REQUEST use this command to enter
+        the 6-digit passkey to continue the pairing request.
+
+        :param passkey: str: six-digit number string "XXXXXX"
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_findscandata(self, scandata="", timeout=0):
+        """Scans for all advertising/response data which contains the search params.
+
+        :param scandata: Hex string to filter the advertising/scan response data. Can be left blank to scan for everything. Format XXXX..
+        :type scandata: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_frssi(self, rssi):
+        """Filters scan results, showing only results with <max_rssi> value or lower.
+
+        :param rssi: RSSI value. Must be negative. eg. -67
+        :type rssi: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapaddrtype(self, addr_type=""):
+        """Change device Address Type or queries device Address Type.
+
+        :param addr_type: Range: 1-5. If left blank queries current Address Type.
+        :type addr_type: int
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapconnect(
+        self,
+        addr,
+        intv_min="",
+        intv_max="",
+        slave_latency="",
+        sup_timeout="",
+    ):
+        """Initiates a connection with a specific slave device. [<addr_type>]<address>=<intv_min>:<intv_max>:<slave_latency>:<sup_timeout>
+
+        :param addr: hex str format: [X]XX:XX:XX:XX:XX:XX
+        :param intv_min: str
+        :param intv_max: str
+        :param slave_latency: str
+        :param sup_timeout: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapdisconnect(self):
+        """Disconnects from a peer Bluetooth device.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapdisconnectall(self):
+        """Disconnects from all peer Bluetooth devices.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapiocap(self, io_cap=""):
+        """Sets or queries what input and output capabilities the device has. Parameter is number between 0 to 4.
+
+        :param io_cap: str: number
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gappair(self, bond=False):
+        """Starts a pairing (bond=False) or bonding procedure (bond=True).
+
+        :param bond: boolean
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapunpair(self, addr_to_unpair=""):
+        """Unpair paired devices if no parameters else unpair specific device. This will also remove the device bond data
+        from BLE storage.
+        Usable both when device is connected and when not.
+
+        :param addr_to_unpair: hex str format: [X]XX:XX:XX:XX:XX:XX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapscan(self, timeout=0):
+        """Starts a Bluetooth device scan with or without timer set in seconds.
+
+        :param: if left empty it will scan indefinitely
+        :param timeout: int (time in seconds)
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gapstatus(self):
+        """Reports the Bluetooth role.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gattcread(self, handle):
+        """Read attribute of remote GATT server.
+
+        :param handle: hex str format: XXXX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gattcwrite(self, handle, data):
+        """Write attribute to remote GATT server in ASCII.
+
+        :param handle: hex str format: XXXX
+        :param data: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gattcwriteb(self, handle, data):
+        """Write attribute to remote GATT server in Hex.
+
+        :param handle: hex str format: XXXX
+        :param data: hex str format: XXXXXXX..
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gattcwritewr(self, handle, data):
+        """Write, without response, attribute to remote GATT server in ASCII.
+
+        :param handle: hex str format: XXXX
+        :param data: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_gattcwritewrb(self, handle, data):
+        """Write, without response, attribute to remote GATT server in Hex.
+
+        :param handle: hex str format: XXXX
+        :param data: hex str format: XXXXXXX..
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_getbond(self):
+        """Displays all MAC address of bonded devices.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_get_conn(self):
+        """Gets a list of currently connected devices along with their mac addresses and conn_idx.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_get_mac(self):
+        """Returns MAC address of the BleuIO device.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_get_services(self):
+        """Discovers all services of a peripheral and their descriptors and characteristics.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_get_servicesonly(self):
+        """Discovers a peripherals services.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_get_service_details(self, handle):
+        """Discovers all characteristics and descriptors of a selected service.
+
+        :param handle: hex str format: XXXX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_indi(self):
+        """Show list of set indication handles.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_noti(self):
+        """Show list of set notification handles.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_numcompa(self, auto_accept="2"):
+        """Used for accepting a numeric comparison authentication request (no params) or enabling/disabling auto-accepting
+        numeric comparisons. auto_accept="0" = off, auto_accept="1" = on.
+
+        :param auto_accept: str format: "0" or "1"
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_peripheral(self):
+        """Sets the device Bluetooth role to peripheral.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_scantarget(self, addr):
+        """Scan a target device. Displaying it's advertising and response data as it updates.
+
+        :param addr: hex str format: "xx:xx:xx:xx:xx:xx"
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_sec_lvl(self, sec_lvl=""):
+        """Sets or queries (no params) what minimum security level will be used when connected to other devices.
+
+        :param sec_lvl:  str: string number between 0 and 4
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_server(self):
+        """Sets the device role towards the targeted connection to server. Only in dual role.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_setdis(self, manuf, model_num, serial_num, hw_rev, fw_rev, sw_rev):
+        """Sets the DIS Service info.
+
+        :param manuf: str
+        :param model_num: str
+        :param serial_num: str
+        :param hw_rev: str
+        :param fw_rev: str
+        :param sw_rev: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_set_noti(self, handle):
+        """Enable notification for selected characteristic.
+
+        :param handle: hex str format: XXXX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_set_indi(self, handle):
+        """Enable indication for selected characteristic.
+
+        :param handle: hex str format: XXXX
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_set_passkey(self, passkey=""):
+        """Setting or quering set passkey (no params) for passkey authentication.
+
+        :param passkey: hex str format: "xxxxxx"
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_set_uoi(self, uoi_str):
+        """Set Unique Organization ID. It will be stored in flash memory, and will persist through power cycles.
+        If set, the Unique Organization ID string will be displayed in the ATI command's response. Will clear any previous set Unique Organization ID when set.
+        Max length: 100 characters.
+
+        :param uoi_str: str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_show_rssi(self, show_rssi=True):
+        """Shows/hides RSSI in AT+FINDSCANDATA and AT+SCANTARGET scans.
+
+        :param show_rssi: bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_spssend(self, data=""):
+        """Send a message or data via the SPS profile.
+        Without parameters it opens a stream for continiously sending data.
+
+        :param: if left empty it will open Streaming mode
+        :type data: str or None
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_target_conn(self, conn_idx=""):
+        """Set or quering the connection index which is the targeted connection.
+
+        :param conn_idx: connection index, format: xxxx
+        :type conn_idx : hex str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_scanfilter(self, sftype: str = None, value: str = ""):
+        """Sets or queries the scanfilter. There are three types of scanfilter, filter by name, filter by uuid or by manufacturer specific ID.
+
+        :param sftype: scan filter parameter type
+        :type sftype : str
+        :param value: value
+        :type value : str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_scanparam(self, mode="", type="", scan_intv="", scan_win="", filt_dupl=""):
+        """Set or queries the scan parameters used.
+
+        :param mode: str
+        :param type: str
+        :param scan_intv: str
+        :param scan_win: str
+        :param filt_dupl: True=On, False=Off
+        :type filt_dupl : bool
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_customservice(self, idx: int = None, cstype: str = None, value: str = ""):
+        """Sets or queries Custom Service. Max 5 Characteristics can be added.
+            Several values cannot be changed while connected/connecting or advertising.
+
+        :param idx: service index
+        :type idx : number
+        :param cstype: custom service parameter type
+        :type cstype : str
+        :param value: value
+        :type value : str
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_customservice_start(self):
+        """Starts the Custom Service based on the settings set by AT+CUSTOMSERVICE= Command.
+            Cannot be started while connected/connecting or advertising
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_customservice_stop(self):
+        """Stops the Custom Service.
+            Cannot be changed while connected/connecting or advertising.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_customservice_reset(self):
+        """Stops the Custom Service and resets the Custom Service settings set by the AT+CUSTOMSERVICE= command to it's default values.
+            Cannot be changed while connected/connecting or advertising..
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_suota_start(self):
+        """Enables the SUOTA Service and start the SUOTA Advertising.
+           Cannot be started while connected/connecting or advertising.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def at_suota_stop(self):
+        """Disables the SUOTA Service and stops the SUOTA Advertising.
+           Cannot be used while connected/connecting.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype: obj BleuIORESP
+        """
+
+    def help(self):
+        """Shows all AT-Commands.
+
+        :returns: Object with 4 object properties: Cmd, Ack, Rsp and End. Each property contains a JSON object, except for Rsp which contains a list of JSON objects.
+        :rtype obj BleuIORESP
+        """
+
+```
+
+#Enjoy!
+
+
