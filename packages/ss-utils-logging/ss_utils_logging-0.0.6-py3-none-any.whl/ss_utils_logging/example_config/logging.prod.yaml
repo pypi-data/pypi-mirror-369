@@ -1,0 +1,48 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  json:
+    class: ss_utils_logging.formatters.ORJSONFormatter
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: json
+    stream: ext://sys.stdout
+    level: INFO
+
+loggers:
+  # Production: More aggressive suppression of external libraries
+  uvicorn.access:
+    level: ERROR
+    propagate: false
+
+  uvicorn.error:
+    level: WARNING
+    propagate: true
+
+  httpx:
+    level: ERROR
+    propagate: true
+
+  httpcore:
+    level: ERROR
+    propagate: true
+
+  urllib3.connectionpool:
+    level: ERROR
+    propagate: true
+
+  # Suppress other common noisy libraries
+  boto3:
+    level: WARNING
+    propagate: true
+
+  botocore:
+    level: WARNING
+    propagate: true
+
+root:
+  level: INFO
+  handlers: [console]
