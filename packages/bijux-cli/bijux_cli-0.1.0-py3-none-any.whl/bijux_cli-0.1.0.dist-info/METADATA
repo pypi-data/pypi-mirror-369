@@ -1,0 +1,297 @@
+Metadata-Version: 2.4
+Name: bijux-cli
+Version: 0.1.0
+Summary: Lean, plug-in-driven CLI kernel
+Project-URL: Homepage, https://github.com/bijux/bijux-cli
+Project-URL: Repository, https://github.com/bijux/bijux-cli.git
+Project-URL: Bug Tracker, https://github.com/bijux/bijux-cli/issues
+Project-URL: Documentation, https://bijux.github.io/bijux-cli/
+Project-URL: Changelog, https://github.com/bijux/bijux-cli/releases
+Author-email: Bijan Mousavi <mousavi.bijan@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Bijan Mousavi
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+        associated documentation files (the "Software"), to deal in the Software without restriction, including
+        without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+        following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all copies or substantial
+        portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+        LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+        EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+        IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+        USE OR OTHER DEALINGS IN THE SOFTWARE.
+Keywords: cli,developer-tools,plugins
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Framework :: FastAPI
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.11
+Requires-Dist: click>=8.1.7
+Requires-Dist: colorama>=0.4.6
+Requires-Dist: cookiecutter>=2.3.0
+Requires-Dist: cryptography>=44.0.1
+Requires-Dist: fastapi<1.0,>=0.110
+Requires-Dist: injector>=0.20.1
+Requires-Dist: orjson>=3.9.0
+Requires-Dist: packaging>=23.0
+Requires-Dist: pluggy>=1.0.0
+Requires-Dist: prompt-toolkit>=3.0.0
+Requires-Dist: psutil>=6.0.0
+Requires-Dist: pydantic-settings~=2.0
+Requires-Dist: pydantic<3.0,>=2.9.2
+Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: rapidfuzz>=3.0.0
+Requires-Dist: structlog>=24.4.0
+Requires-Dist: typer>=0.12.5
+Provides-Extra: dev
+Requires-Dist: anyio<5.0,>=4.4.0; extra == 'dev'
+Requires-Dist: bandit<2.0,>=1.7.10; extra == 'dev'
+Requires-Dist: black<26.0,>=25.1.0; extra == 'dev'
+Requires-Dist: build<2.0,>=1.0.3; extra == 'dev'
+Requires-Dist: codespell<3.0,>=2.3.0; extra == 'dev'
+Requires-Dist: commitizen<4.0,>=3.21.0; extra == 'dev'
+Requires-Dist: cosmic-ray>=4.0.0; extra == 'dev'
+Requires-Dist: deptry<1.0,>=0.10.0; extra == 'dev'
+Requires-Dist: hypothesis-jsonschema<1.0,>=0.23.0; extra == 'dev'
+Requires-Dist: hypothesis<7.0,>=6.103.0; extra == 'dev'
+Requires-Dist: interrogate<2.0,>=1.7.0; extra == 'dev'
+Requires-Dist: isort<6.0,>=5.11.0; extra == 'dev'
+Requires-Dist: mkdocs-gen-files; extra == 'dev'
+Requires-Dist: mkdocs-git-revision-date-localized-plugin<2.0,>=1.2.0; extra == 'dev'
+Requires-Dist: mkdocs-include-markdown-plugin; extra == 'dev'
+Requires-Dist: mkdocs-literate-nav; extra == 'dev'
+Requires-Dist: mkdocs-material<10.0,>=9.5.39; extra == 'dev'
+Requires-Dist: mkdocs-redirects<2.0,>=1.2; extra == 'dev'
+Requires-Dist: mkdocs<2.0,>=1.6.1; extra == 'dev'
+Requires-Dist: mkdocstrings[python]<1.0,>=0.26.1; extra == 'dev'
+Requires-Dist: mutmut<3.0,>=2.1.0; extra == 'dev'
+Requires-Dist: mypy<2.0,>=1.11.2; extra == 'dev'
+Requires-Dist: openapi-spec-validator<1.0,>=0.7.1; extra == 'dev'
+Requires-Dist: pexpect<5.0,>=4.8.0; extra == 'dev'
+Requires-Dist: pip-audit<3.0,>=2.7.3; extra == 'dev'
+Requires-Dist: prance<1.0,>=0.22.0; extra == 'dev'
+Requires-Dist: pre-commit<4.0,>=3.8.0; extra == 'dev'
+Requires-Dist: pydocstyle<7.0,>=6.2.1; extra == 'dev'
+Requires-Dist: pyright<2.0,>=1.1.320; extra == 'dev'
+Requires-Dist: pytest-asyncio<2.0,>=1.0.0; extra == 'dev'
+Requires-Dist: pytest-benchmark<5.0,>=4.0.0; extra == 'dev'
+Requires-Dist: pytest-cov<7.0,>=6.2.1; extra == 'dev'
+Requires-Dist: pytest-rerunfailures<14.0,>=13.0; extra == 'dev'
+Requires-Dist: pytest-timeout<3.0,>=2.4.0; extra == 'dev'
+Requires-Dist: pytest<9.0,>=8.4.1; extra == 'dev'
+Requires-Dist: pytype>=2024.10.11; extra == 'dev'
+Requires-Dist: radon<6.0,>=5.1.0; extra == 'dev'
+Requires-Dist: reuse<6.0.0,>=4.0.0; extra == 'dev'
+Requires-Dist: ruff<1.0,>=0.6.8; extra == 'dev'
+Requires-Dist: schemathesis<4.0,>=3.16.0; extra == 'dev'
+Requires-Dist: towncrier<25.0,>=23.0; extra == 'dev'
+Requires-Dist: twine<7.0,>=6.1.0; extra == 'dev'
+Requires-Dist: types-colorama<1.0,>=0.0.14; extra == 'dev'
+Requires-Dist: types-orjson<4.0,>=3.6.0; extra == 'dev'
+Requires-Dist: types-psutil<7.0,>=6.0.0; extra == 'dev'
+Requires-Dist: types-pyyaml<7.0,>=6.0.12; extra == 'dev'
+Requires-Dist: typing-extensions<5.0,>=4.5.0; extra == 'dev'
+Requires-Dist: uvicorn<1.0,>=0.30.1; extra == 'dev'
+Requires-Dist: vulture<3.0,>=2.7; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Bijux CLI
+
+**A modern, predictable, and extensible CLI framework** — with strict runtime contracts, a first-class plugin system, structured output, and built-in diagnostics.
+
+---
+
+## Features at a Glance
+
+* **Plugin-driven architecture** – add/override behavior without touching core.
+* **Deterministic global flags** – strict precedence for consistent behavior
+  *(see ADR: Global Flags Precedence)*.
+* **Dependency-Injection kernel** – decoupled services, easy to test.
+* **Interactive REPL** – persistent shell for exploration and debugging.
+* **Structured output** – JSON/YAML with pretty/compact controls.
+* **Diagnostics** – environment checks, DI graph inspection, plugin validation.
+
+---
+
+## Installation
+
+**Requires Python 3.11+**
+
+```bash
+# Recommended: isolated CLI install
+pipx install bijux-cli
+
+# Or via pip
+pip install bijux-cli
+```
+
+---
+
+## Quick Start
+
+```bash
+# See commands and global flags
+bijux --help
+
+# Run environment diagnostics
+bijux doctor
+
+# Start the interactive shell
+bijux
+bijux> help
+bijux> exit
+```
+
+---
+
+## Usage Examples
+
+### Structured Output (JSON/YAML)
+
+```bash
+# Compact JSON for scripting
+bijux status -f json --no-pretty
+
+# Pretty JSON for humans
+bijux status -f json --pretty
+
+# YAML
+bijux status -f yaml
+```
+
+### DI & Developer Introspection
+
+```bash
+# Inspect DI registrations
+bijux dev di -f json | jq
+
+# List loaded plugins
+bijux dev list-plugins
+```
+
+### Plugins
+
+```bash
+# Scaffold, install, and validate a plugin
+mkdir -p ./tmp_plugin && cd ./tmp_plugin
+bijux plugins scaffold my_plugin --template=../plugin_template --force
+cd ..
+bijux plugins install ./tmp_plugin/my_plugin --force
+bijux plugins check my_plugin
+bijux plugins list
+```
+
+---
+
+## Global Flags (Precedence)
+
+Higher priority wins and may short-circuit lower ones.
+
+| Priority | Flag(s)                     | Effect                                                                |
+|--------: |-----------------------------|-----------------------------------------------------------------------|
+| 1        | `-h`, `--help`              | Exit 0 immediately; ignore all other flags.                           |
+| 2        | `-q`, `--quiet`             | Suppress both stdout and stderr; exit code still reflects the result. |
+| 3        | `-d`, `--debug`             | Full diagnostics; implies `--verbose`, forces `--pretty`.             |
+| 4        | `-f, --format <json\|yaml>` | Choose structured output; invalid value → exit code `2`.              |
+| 5        | `--pretty`/`--no-pretty`    | Control indentation (default: `--pretty`).                            |
+| 6        | `-v`, `--verbose`           | Add runtime metadata; implied by `--debug`.                           |
+
+*Reference:* ADR-0002 Global Flags Precedence
+[https://bijux.github.io/bijux-cli/ADR/0002-global-flags-precedence/](https://bijux.github.io/bijux-cli/ADR/0002-global-flags-precedence/)
+
+---
+
+## Built-in Commands
+
+| Command   | Purpose                        | Example                           |
+|-----------|--------------------------------|-----------------------------------|
+| `doctor`  | Environment health check       | `bijux doctor`                    |
+| `status`  | Show CLI status                | `bijux status -f json`            |
+| `repl`    | Interactive shell              | `bijux repl`                      |
+| `plugins` | Manage plugins                 | `bijux plugins list`              |
+| `config`  | Manage key-value settings      | `bijux config set core_timeout=5` |
+| `history` | REPL history operations        | `bijux history --limit 10`        |
+| `audit`   | Security/compliance audit      | `bijux audit --dry-run`           |
+| `docs`    | Docs/spec generation utilities | `bijux docs --out spec.json`      |
+| `dev`     | Developer tools (DI, plugins)  | `bijux dev di`                    |
+| `sleep`   | Pause execution                | `bijux sleep -s 5`                |
+| `version` | Display version info           | `bijux version`                   |
+
+Plugins are surfaced as top-level commands once installed.
+
+---
+
+## Shell Completion
+
+Enable tab completion (no sudo required):
+
+```bash
+# Install completion (zsh saves to ~/.zfunc)
+bijux --install-completion
+
+# Or print the script if you manage completions manually
+bijux --show-completion
+```
+
+Restart your shell afterward. For zsh, ensure `compinit` runs and your `fpath` includes the completions' directory.
+
+---
+
+## Configuration & Paths
+
+**Defaults** (overridable via env vars):
+
+* Config: `~/.bijux/.env` → `BIJUXCLI_CONFIG`
+* History: `~/.bijux/.history` → `BIJUXCLI_HISTORY_FILE`
+* Plugins: `~/.bijux/.plugins` → `BIJUXCLI_PLUGINS_DIR`
+
+**Resolution order:** CLI flags → Environment → Config file → Defaults
+
+Example override:
+
+```bash
+export BIJUXCLI_PLUGINS_DIR=./.plugins
+export BIJUXCLI_CONFIG=./.env
+export BIJUXCLI_HISTORY_FILE=./.history
+```
+
+---
+
+## Documentation
+
+* **User Guide:** [https://bijux.github.io/bijux-cli/usage/](https://bijux.github.io/bijux-cli/usage/)
+* **Contributing:** [https://bijux.github.io/bijux-cli/contributing/](https://bijux.github.io/bijux-cli/contributing/)
+* **Security Policy:** [https://bijux.github.io/bijux-cli/security/](https://bijux.github.io/bijux-cli/security/)
+* **Code of Conduct:** [https://bijux.github.io/bijux-cli/code\_of\_conduct/](https://bijux.github.io/bijux-cli/code_of_conduct/)
+
+---
+
+## Support & Security
+
+* **Issues:** please include `--debug` output where feasible.
+* **Vulnerabilities:** report privately via GitHub Security Advisory.
+  [https://github.com/bijux/bijux-cli/security/advisories/new](https://github.com/bijux/bijux-cli/security/advisories/new)
+
+---
+
+## License
+
+Released under the **MIT License**.
+[https://bijux.github.io/bijux-cli/license/](https://bijux.github.io/bijux-cli/license/)
