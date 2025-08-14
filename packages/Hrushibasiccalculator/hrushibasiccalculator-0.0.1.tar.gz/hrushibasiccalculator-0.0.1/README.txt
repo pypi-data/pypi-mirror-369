@@ -1,0 +1,1 @@
+This is a simple python Calculator that adds, substracts, divides and multiply
