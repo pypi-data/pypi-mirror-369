@@ -1,0 +1,227 @@
+# Sophone 🇸🇴
+
+Professional Somali phone number validation, formatting & operator detection for Python. A comprehensive library with CLI tools, type hints, and beautiful error handling.
+
+## Features
+
+- ✅ **Validate** Somali mobile numbers (+252)
+- 🎨 **Format** numbers in multiple styles (local, international, E.164)
+- 🏢 **Detect operators** (Hormuud, Somtel, Telesom, etc.)
+- 🛡️ **Type-safe** with comprehensive type hints
+- 🚀 **CLI tools** for command-line usage
+- 📦 **Batch processing** for multiple numbers
+- 🎯 **Zero dependencies** - pure Python
+
+## Installation
+
+```bash
+pip install sophone
+```
+
+## Quick Start
+
+```python
+from sophone import validate, normalize_e164, get_operator
+
+# Validate a number
+result = validate("+252 61 123 4567")
+if result.ok:
+    print(f"Valid! Operator: {result.value['operator']}")
+else:
+    print(f"Invalid: {result.error['message']}")
+
+# Format to E.164
+e164 = normalize_e164("0611234567")  # "+252611234567"
+
+# Get operator
+operator = get_operator("+252771234567")  # "Hormuud"
+```
+
+## API Reference
+
+### Core Functions
+
+#### `validate(number: str) -> ValidationResult`
+
+Validates a phone number and returns detailed information.
+
+```python
+result = validate("+252 61 123 4567")
+# Returns ValidationResult with ok=True/False and value/error
+```
+
+#### `is_valid_somali_mobile(number: str) -> bool`
+
+Simple boolean validation.
+
+```python
+is_valid = is_valid_somali_mobile("0611234567")  # True
+```
+
+### Formatting Functions
+
+#### `normalize_e164(number: str) -> str`
+
+Convert to E.164 international format.
+
+```python
+e164 = normalize_e164("0611234567")  # "+252611234567"
+```
+
+#### `format_local(number: str) -> str`
+
+Format to local Somali format.
+
+```python
+local = format_local("+252611234567")  # "0611 234 567"
+```
+
+#### `format_international(number: str) -> str`
+
+Format to international display format.
+
+```python
+intl = format_international("0611234567")  # "+252 61 123 4567"
+```
+
+### Operator Detection
+
+#### `get_operator(number: str) -> str`
+
+Get the operator name.
+
+```python
+operator = get_operator("0611234567")  # "Hormuud"
+```
+
+#### `get_operator_info(number: str) -> dict`
+
+Get detailed operator information.
+
+```python
+info = get_operator_info("0611234567")
+# Returns: {
+#   "name": "Hormuud Telecom Somalia",
+#   "prefixes": ["61", "77"],
+#   "website": "https://hormuud.com",
+#   "type": "GSM"
+# }
+```
+
+### Safe Functions
+
+All functions have "safe" variants that return `None` instead of raising exceptions:
+
+```python
+from sophone import normalize_e164_safe, get_operator_safe
+
+# These return None for invalid numbers instead of raising exceptions
+e164 = normalize_e164_safe("invalid")  # None
+operator = get_operator_safe("invalid")  # None
+```
+
+### Batch Processing
+
+#### `validate_batch(numbers: List[str]) -> List[dict]`
+
+Validate multiple numbers at once.
+
+```python
+numbers = ["+252611234567", "0771234567", "invalid"]
+results = validate_batch(numbers)
+```
+
+#### `normalize_batch(numbers: List[str]) -> List[dict]`
+
+Normalize multiple numbers to E.164 format.
+
+```python
+numbers = ["0611234567", "0771234567"]
+results = normalize_batch(numbers)
+```
+
+### Utility Functions
+
+#### `get_all_operators() -> List[dict]`
+
+Get information about all supported operators.
+
+```python
+operators = get_all_operators()
+```
+
+#### `get_operator_by_prefix(prefix: str) -> str`
+
+Get operator by prefix code.
+
+```python
+operator = get_operator_by_prefix("61")  # "Hormuud"
+```
+
+## CLI Usage
+
+The package includes a powerful command-line interface:
+
+```bash
+# Validate a number
+sophone validate "+252 61 123 4567"
+
+# Format numbers
+sophone format "0611234567"           # Local format
+sophone e164 "0611234567"             # E.164 format
+sophone international "0611234567"    # International format
+
+# Get operator info
+sophone operator "0611234567"         # Get operator name
+sophone info "0611234567"             # Get detailed info
+sophone operators                     # List all operators
+
+# Batch processing
+sophone batch numbers.txt             # Process file with numbers
+```
+
+## Supported Operators
+
+| Operator                | Prefixes   | Website             |
+| ----------------------- | ---------- | ------------------- |
+| Hormuud Telecom Somalia | 61, 77     | https://hormuud.com |
+| Somtel Network          | 62, 65, 66 | https://somtel.com  |
+| Telesom                 | 63         | https://telesom.net |
+| SomLink                 | 64         | -                   |
+| SomNet                  | 68         | -                   |
+| NationLink Telecom      | 69         | -                   |
+| Amtel                   | 71         | -                   |
+
+## Error Handling
+
+The library provides detailed error information:
+
+```python
+from sophone import validate, SomaliPhoneError
+
+try:
+    result = normalize_e164("invalid")
+except SomaliPhoneError as e:
+    print(f"Error: {e}")
+    print(f"Code: {e.code}")
+    print(f"Details: {e.details}")
+```
+
+Error codes:
+
+- `INVALID_INPUT`: Invalid input type or empty
+- `INVALID_LENGTH`: Wrong number of digits
+- `INVALID_PREFIX`: Unsupported prefix code
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Related
+
+- [JavaScript/Node.js version](https://www.npmjs.com/package/sophone)
+- [GitHub Repository](https://github.com/omartood/sophone)
