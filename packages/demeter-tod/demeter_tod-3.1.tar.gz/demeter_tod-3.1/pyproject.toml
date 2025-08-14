@@ -1,0 +1,31 @@
+[project]
+name = "demeter-tod"
+version = "3.1"
+authors = [
+  { name="Joel Indra", email="anonre@anonre.com" },
+]
+description = "A simple but powerful Flask application for receiving, logging, and monitoring webhooks. Built for developers who need to debug and test webhook integrations."
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "Flask"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/joelindra/Demeter"
+Issues = "https://github.com/joelindra/Demeter/issues"
+
+[project.scripts]
+demeter = "demeter.app:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["demeter"]  # Cukup gunakan ini saja
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
