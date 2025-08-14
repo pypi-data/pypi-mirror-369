@@ -1,0 +1,203 @@
+# SEDQL Python SDK
+
+**Python SDK for SED (Semantic Entities Designs) - Full TypeScript CLI Integration**
+
+[![PyPI version](https://badge.fury.io/py/sedql.svg)](https://badge.fury.io/py/sedql)
+[![Python versions](https://img.shields.io/pypi/pyversions/sedql.svg)](https://pypi.org/project/sedql/)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-green.svg)](https://opensource.org/licenses/AGPL-3.0)
+
+**SED automatically converts your raw database into an AI-ready semantic layer with intelligent business rules.**
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Install the Python package
+pip install sedql
+
+# Install the SED CLI (required)
+npm install -g sed-cli
+```
+
+### Basic Usage
+
+```python
+from sedql import SEDClient
+
+# Initialize enhanced client (no database URL needed)
+sed = SEDClient()
+
+# Initialize SED with database connection
+sed.init()
+
+# Build semantic layer
+sed.build()
+
+# Query with natural language
+result = sed.query("Show me customers with high revenue")
+print(result)
+
+# Query with AI integration and full SED features
+ai_result = sed.query_with_ai({
+    "natural_language": "Forecast revenue for Q3 2024",
+    "ai_model": "gpt-4",
+    "business_context": "Revenue forecasting for Q3 planning"
+})
+
+# Access rich response with all features
+print(f"Data: {ai_result['query_result']}")
+print(f"Insights: {ai_result['insights']}")
+print(f"Risk Level: {ai_result['risk_assessment']['risk_level']}")
+print(f"Business Context: {ai_result['business_context']}")
+```
+
+## ✨ What You Get
+
+### **Full TypeScript CLI Integration**
+- ✅ **Business Rules Engine** - Query validation & governance
+- ✅ **Schema Change Detection** - Automatic change monitoring
+- ✅ **Security Validation** - Business rule enforcement
+- ✅ **Audit Trail** - Rule evaluation tracking
+- ✅ **Performance Optimization** - Query analysis
+- ✅ **Business Context** - Semantic layer with domain knowledge
+- ✅ **AI Integration Framework** - Hooks for your AI providers
+
+### **Rich Response Structure**
+```python
+response = {
+    'query_result': {...},      # Query execution results
+    'ai_enhancement': {...},    # AI processing results
+    'business_context': {...},  # Business domain knowledge
+    'insights': {...},          # Data insights and analysis
+    'risk_assessment': {...},   # Security risk analysis
+    'metadata': {...}           # Query metadata
+}
+```
+
+## 📋 Requirements
+
+- **Python**: 3.8+
+- **SED CLI**: `npm install -g sed-cli` (provides all the advanced features)
+- **Database**: PostgreSQL, MySQL, SQLite (handled by CLI config)
+
+## 🔧 Installation
+
+### 1. Install SED CLI (Required)
+```bash
+npm install -g sed-cli
+```
+
+### 2. Install Python Package
+```bash
+pip install sedql
+```
+
+## 📖 API Reference
+
+### SEDClient
+
+Main client class that provides full access to SED CLI capabilities.
+
+#### Core Methods
+- `init(force=False)` - Initialize SED with database connection
+- `build(output_file=None)` - Build or rebuild semantic layer
+- `query(natural_language_query, verbose=False)` - Query database using natural language
+- `query_with_ai(query_params)` - Query with AI integration and full SED features
+
+#### Advanced Features
+- `detect_changes(format="json")` - Detect schema changes with analysis
+- `get_status()` - Get current SED status with business rules
+- `export_config(format="json", output_file=None)` - Export configuration
+- `validate()` - Validate semantic layer and business rules
+- `get_semantic_mapping()` - Get business entities and relationships
+
+## 🎯 Use Cases
+
+- **Data Engineering**: Programmatically build semantic layers
+- **Data Science**: Query databases using natural language with AI
+- **Application Integration**: Embed SED functionality in Python apps
+- **Automation**: Script database discovery and mapping
+- **AI Development**: Provide semantic context to LLMs
+- **Data Governance**: Automatic PII protection and compliance
+
+## 🔍 Examples
+
+### Enhanced Query with AI
+```python
+from sedql import SEDClient
+
+# Create enhanced client
+sed = SEDClient()
+
+# Execute AI-enhanced query with full SED features
+response = sed.query_with_ai({
+    "natural_language": "Show me customer retention trends",
+    "ai_model": "gpt-4",
+    "business_context": "Customer analytics and retention analysis"
+})
+
+# Access all the rich features
+print("🎯 Query Results:")
+print(f"   Data: {response['query_result']}")
+
+print("🔒 Security & Compliance:")
+print(f"   Risk Level: {response['risk_assessment']['risk_level']}")
+print(f"   Validation: {response['validation']}")
+
+print("💼 Business Intelligence:")
+print(f"   Context: {response['business_context']}")
+print(f"   Insights: {response['insights']}")
+```
+
+### Business Rules and Validation
+```python
+# Get current status with business rules
+status = sed.get_status()
+print(f"Business Rules: {status.get('rules', {})}")
+
+# Validate semantic layer
+validation = sed.validate()
+print(f"Validation Status: {validation.get('summary', {}).get('status')}")
+
+# Detect schema changes
+changes = sed.detect_changes(format="json")
+print(f"Total Changes: {changes.get('analysis', {}).get('total_changes', 0)}")
+```
+
+## 🌟 Why SEDQL Python SDK?
+
+### **Full CLI Power in Python**
+- Access to all `sed-cli` features from Python
+- Business rules engine and validation
+- Schema change detection and analysis
+- Rich response processing and insights
+
+### **Enterprise Ready**
+- Local-first architecture (no data leaves your machine)
+- Automatic PII protection and compliance
+- Business rule generation and enforcement
+- Professional-grade security and audit trails
+
+### **AI Integration Ready**
+- Semantic layer for LLM context
+- Business terminology mapping
+- Risk assessment and validation
+- Custom AI client integration
+
+## 🔗 Related Projects
+
+- **[sed-cli](https://www.npmjs.com/package/sed-cli)** - Core TypeScript CLI (npm package)
+- **[GitHub Repository](https://github.com/holy182/sed-cli)** - Source code and documentation
+
+## 📄 License
+
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](https://github.com/holy182/sed-cli/blob/main/LICENSE) file for details.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](https://github.com/holy182/sed-cli/blob/main/CONTRIBUTING.md) for details.
+
+---
+
+**Built with ❤️ by the SED Team**
