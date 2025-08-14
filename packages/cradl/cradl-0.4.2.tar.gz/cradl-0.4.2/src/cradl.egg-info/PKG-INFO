@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: cradl
+Version: 0.4.2
+Summary: Python SDK for Cradl
+Author-email: Cradl <hello@cradl.ai>
+License: Apache 2.0
+Project-URL: Homepage, https://github.com/CradlAI/cradl-sdk-python
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: filetype>=1.2.0
+Requires-Dist: requests>=2.31.0
+Provides-Extra: dev
+Requires-Dist: flake8>=5.0.4; extra == "dev"
+Requires-Dist: mypy>=1.14.1; extra == "dev"
+Requires-Dist: pytest>=8.3.5; extra == "dev"
+Requires-Dist: pytest-env>=1.1.5; extra == "dev"
+Requires-Dist: requests-mock>=1.12.1; extra == "dev"
+Requires-Dist: tox>=4.25.0; extra == "dev"
+Dynamic: license-file
+
+# Python SDK for Cradl
+
+![Github Actions build status](https://github.com/CradlAI/cradl-sdk-python/workflows/main/badge.svg)
+
+## Installation
+
+```bash
+$ pip install cradl
+```
+
+## Usage
+
+Sign up for free [here](https://app.cradl.ai/signup) and download API credentials to use this SDK.
+Read more about authenticating to the API [here](https://docs.cradl.ai/overview/authentication)
+
+### Quick start
+
+```python
+import json
+from cradl import Client
+
+client = Client()
+models = client.list_models()['models'] # List all models available
+model_id = models[0]['modelId'] # Get ID of first model in list
+document = client.create_document('path/to/document.pdf')
+prediction = client.create_prediction(document['documentId'], model_id=model_id)
+print(json.dumps(prediction, indent=2))
+```
+
+## Contributing
+
+### Prerequisites
+
+```bash
+$ pip install -r requirements.txt
+$ pip install -r requirements.ci.txt
+```
+
+### Run tests
+
+```bash
+$ make prism-start
+$ python -m pytest
+```
