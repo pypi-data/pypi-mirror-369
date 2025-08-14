@@ -1,0 +1,29 @@
+from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
+from sqlalchemy import String
+import uuid
+
+
+class IdentifiableMixin(MappedAsDataclass):
+    """
+    Mixin for SQLAlchemy models to add a string 'id' primary key with optional user-specified prefix.
+    Usage:
+        class MyModel(IdentifiableMixin.with_prefix('user_'), Base):
+            ...
+    """
+
+    id: Mapped[str] = mapped_column(
+        String(32), primary_key=True, default=uuid.uuid4().hex, nullable=False, init=False
+    )
+
+    @classmethod
+    def with_prefix(cls, prefix: str):
+        class _IdentifiableMixin(cls):
+            id: Mapped[str] = mapped_column(
+                String(32),
+                primary_key=True,
+                default=lambda: f"{prefix}{uuid.uuid4().hex}",
+                nullable=False,
+                init=False,
+            )
+
+        return _IdentifiableMixin
