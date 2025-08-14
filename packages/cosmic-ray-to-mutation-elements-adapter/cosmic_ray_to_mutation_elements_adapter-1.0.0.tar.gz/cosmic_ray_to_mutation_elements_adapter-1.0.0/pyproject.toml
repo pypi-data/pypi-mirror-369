@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cosmic-ray-to-mutation-elements-adapter"
+dynamic = ["version"]
+description = "Adapter to show cosmic-ray python mutation report in stryker's mutation testing elements format"
+authors = [{name = "Kiran Kashyap", email = "kiran.kashyap.ds@gmail.com"}, {name = "Vivek Ganesan", email = "vivek@vivekganesan.com"}]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+cr-to-stryker-report = "cr_to_stryker.export_stryker_report:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"cr_to_stryker.resources" = ["mutation-testing-elements.js"]
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+tag_regex = "^v(?P<version>.*)$"
+write_to = "src/cr_to_stryker/_version.py"
