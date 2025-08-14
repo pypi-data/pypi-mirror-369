@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: unboil-sqlalchemy-types
+Version: 0.1.3
+Summary: A library to expand SQLAlchemy types.
+Project-URL: homepage, https://github.com/eyueldk/unboil-sqlalchemy-types
+Project-URL: repository, https://github.com/eyueldk/unboil-sqlalchemy-types
+Author: eyueldk
+License: MIT
+License-File: LICENSE
+Keywords: pydantic,sqlalchemy,types,unboil
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: sqlalchemy>=2.0.0
+Description-Content-Type: text/markdown
+
+
+# unboil-sqlalchemy-types
+
+
+## Installation
+```bash
+pip install unboil-sqlalchemy-types
+```
+
+## Usage Example
+```python
+from pydantic import BaseModel
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from unboil_sqlalchemy_types import PydanticJSON
+
+
+class Base(DeclarativeBase):
+    pass
+
+class Profile(BaseModel):
+    age: int
+    bio: str
+
+Meta = str | int | dict
+
+class User(Base):
+    __tablename__ = 'users'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    profile: Mapped[Profile] = mapped_column(PydanticJSON(Profile))
+    meta: Mapped[Meta] = mapped_column(PydanticJSON(Meta))
+```
