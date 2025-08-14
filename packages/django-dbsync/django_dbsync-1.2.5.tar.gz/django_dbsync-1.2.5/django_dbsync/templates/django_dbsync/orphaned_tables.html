@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orphaned Tables Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #c44569, #f8b500);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .warning-banner {
+            background: #f39c12;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #e74c3c;
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 0;
+            color: #c0392b;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            margin: 5px 0 0 0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .table-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        }
+        .table-card {
+            background: white;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .table-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .table-header {
+            background: #e74c3c;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .table-icon {
+            font-size: 1.2em;
+        }
+        .table-details {
+            padding: 20px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .detail-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .size-large { color: #e74c3c; }
+        .size-medium { color: #f39c12; }
+        .size-small { color: #27ae60; }
+        .actions {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #ecf0f1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-info {
+            background: #3498db;
+            color: white;
+        }
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #27ae60;
+        }
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            color: #27ae60;
+        }
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .cleanup-commands {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+        }
+        .cleanup-commands h4 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .command {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗑️ Orphaned Tables Report</h1>
+            <p>Database: <strong>{{ database_name }}</strong> | Generated: {{ timestamp }}</p>
+        </div>
+
+        {% if orphaned_tables %}
+        <div class="warning-banner">
+            ⚠️ Found {{ orphaned_tables|length }} orphaned table{{ orphaned_tables|length|pluralize }} that don't correspond to any Django models
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ orphaned_tables|length }}</div>
+                <div class="stat-label">Orphaned Tables</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_rows|default:"N/A" }}</div>
+                <div class="stat-label">Total Rows</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_size|default:"N/A" }}</div>
+                <div class="stat-label">Total Size</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="cleanup-commands">
+                <h4>🔧 Quick Cleanup Commands:</h4>
+                <div class="command">
+                    # Drop all orphaned tables (⚠️ DANGEROUS!)
+                    <br>python manage.py dbsync --cleanup-orphaned --auto-approve
+                </div>
+                <div class="command">
+                    # Backup before cleanup
+                    <br>python manage.py dbsync --cleanup-orphaned --backup
+                </div>
+                <div class="command">
+                    # Interactive cleanup (recommended)
+                    <br>python manage.py dbsync --cleanup-orphaned
+                </div>
+            </div>
+
+            <div class="table-grid">
+                {% for table in orphaned_tables %}
+                <div class="table-card">
+                    <div class="table-header">
+                        <span class="table-icon">🗃️</span>
+                        <span>{{ table.name }}</span>
+                    </div>
+                    <div class="table-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Rows:</span>
+                            <span class="detail-value">{{ table.row_count|default:"Unknown" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Size:</span>
+                            <span class="detail-value 
+                                {% if table.size_mb > 100 %}size-large
+                                {% elif table.size_mb > 10 %}size-medium
+                                {% else %}size-small{% endif %}">
+                                {{ table.size|default:"Unknown" }}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Columns:</span>
+                            <span class="detail-value">{{ table.column_count|default:"Unknown" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Last Modified:</span>
+                            <span class="detail-value">{{ table.last_modified|default:"Unknown" }}</span>
+                        </div>
+                        {% if table.estimated_origin %}
+                        <div class="detail-row">
+                            <span class="detail-label">Likely Origin:</span>
+                            <span class="detail-value">{{ table.estimated_origin }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="actions">
+                        <a href="#" class="btn btn-info" onclick="showTableStructure('{{ table.name }}')">
+                            📋 View Structure
+                        </a>
+                        <a href="#" class="btn btn-secondary" onclick="exportTableData('{{ table.name }}')">
+                            💾 Export Data
+                        </a>
+                        <a href="#" class="btn btn-danger" onclick="confirmDropTable('{{ table.name }}')">
+                            🗑️ Drop Table
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="content">
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <h3>🎉 No Orphaned Tables Found!</h3>
+                <p>Your database is clean - all tables correspond to Django models.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            <p>Generated by Django DB Sync v{{ version|default:'1.0.0' }} | 
+               <a href="https://github.com/yourusername/django-dbsync" style="color: #3498db;">View on GitHub</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function showTableStructure(tableName) {
+            alert(`Viewing structure for table: ${tableName}\n\nThis would open a detailed view of the table columns, indexes, and constraints.`);
+        }
+
+        function exportTableData(tableName) {
+            alert(`Exporting data from table: ${tableName}\n\nThis would generate a downloadable backup of the table data.`);
+        }
+
+        function confirmDropTable(tableName) {
+            if (confirm(`⚠️ WARNING: Are you sure you want to drop table "${tableName}"?\n\nThis action cannot be undone and will permanently delete all data in this table.`)) {
+                alert(`Table ${tableName} would be dropped.\n\nIn a real implementation, this would execute the DROP TABLE command.`);
+            }
+        }
+    </script>
+</body>
+</html>
