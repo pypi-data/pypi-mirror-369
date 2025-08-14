@@ -1,0 +1,29 @@
+[project]
+name = "pantronix_logging"
+version = "0.1.0"
+description = "Add your description here"
+
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "rich>=14.0.0",
+    "typer>=0.16.0",
+]
+[tool.uv]
+package = true
+
+[project.scripts]
+pantronix_logging = "pantronix_logging:main"
+
+[tool.uv.workspace]
+members = [
+    ".",
+]
+
+[tool.uv.sources]
+pantronix-logging = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pantronix-logging",
+]
