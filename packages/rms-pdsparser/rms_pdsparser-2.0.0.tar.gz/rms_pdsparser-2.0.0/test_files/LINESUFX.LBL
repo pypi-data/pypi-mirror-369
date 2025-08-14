@@ -1,0 +1,115 @@
+CCSD3ZF0000100000001NJPL3IF0PDS200000001 = SFDU_LABEL
+OBJECT               = LINE_SUFFIX_STRUCTURE
+FORMAT               = BINARY
+BYTES                = 36
+NOTE                 = "Voyager Image Line-suffix Structure.   This
+  label describes the structure of the 36-byte suffix at the end of
+  every 800-byte image line in the IMAGE object of every image file
+  on the Voyager CD-ROMs."
+
+  OBJECT           = FDS_MOD16_NUMBER
+    START_BYTE     = 1
+    TYPE           = VAX_UNSIGNED_INTEGER
+    BYTES          = 2
+    NOTE           = "Flight Data Subsystem (FDS) clock count, modulo
+    16-bit (65536) count, which comprises the first 5 digits (xxxxx)
+    of an image number xxxxx.yy."
+  END_OBJECT
+
+  OBJECT           = FDS_MOD60_NUMBER
+    START_BYTE     = 3
+    TYPE           = VAX_INTEGER
+    BYTES          = 2
+    NOTE           = "Flight Data Subsystem (FDS) clock count, modulo
+    60 count, which comprises the last two digits (yy) of an image
+    number xxxxx.yy."
+  END_OBJECT
+
+  OBJECT           = FDS_LINE_NUMBER
+    START_BYTE     = 5
+    TYPE           = VAX_INTEGER
+    BYTES          = 2
+    NOTE           = "Flight Data Subsystem line number, extracted
+    from the telemetry record header information."
+  END_OBJECT
+
+  OBJECT           = MTIS_LINE_NUMBER
+    START_BYTE     = 7
+    TYPE           = VAX_INTEGER
+    BYTES          = 2
+    NOTE           = "Sequential line number calculated by the Mission
+    and Test Imaging Subsystem during production of the Experiment
+    Data Record."
+  END_OBJECT
+
+  OBJECT           = MISSING_FRAMES
+    START_BYTE     = 9
+    TYPE           = VAX_INTEGER
+    BYTES          = 2
+    NOTE           = "Number of telemetry frames missing from this
+    line."
+  END_OBJECT
+
+  OBJECT           = RETAINED_FRAME_BITS
+    ITEMS          = 10
+    ITEM_TYPE      = VAX_INTEGER
+    START_BYTE     = 11
+    ITEM_BYTES     = 2
+    NOTE           = "An array of 10 values representing the number of
+    bits retained in each frame which was used to create the image line."
+  END_OBJECT
+
+
+  OBJECT           = INPUT_TYPE
+    TYPE           = UNSIGNED_INTEGER
+    START_BYTE     = 31
+    BITS           = 8
+    NOTE           = "Input data type.  Identify input type 
+    as follows:
+
+     00000000 - Voyager 2;                               \n
+     00000001 - Voyager 1;                               \n
+     00000010 - Proof Test Model data;                   \n
+     00000011 - Not Used;                                \n
+     00000100 - External Simulation (DSN spacecraft 41); \n
+     00000101 - External Simulation (DSN spacecraft 42); \n
+     00000110 - Voyager 2 test data;                     \n
+     00000111 - Voyager 1 test data;                     \n
+     00001000 - Internal Simulation.                     "
+  END_OBJECT
+
+  OBJECT           = INPUT_SOURCE
+    TYPE           = BIT_STRING
+    START_BYTE     = 32
+    BITS           = 8
+    NOTE           = "Input data source.  Bits 1-8 identify input
+    source as follows: (equal to 1 if present)
+
+     Bit 1 - Fill data;                                            \n
+     Bit 2 - Not Used;                                             \n
+     Bit 3 - Not Used;                                             \n
+     Bit 4 - Experiment Data Record (EDR) tape data (reprocessed); \n
+     Bit 5 - Intermediate Data Record (IDR) tape data;             \n
+     Bit 6 - System Data Record (SDR) tape data;                   \n
+     Bit 7 - Real Time data;                                       \n
+     Bit 8 - Not Used.                                             "
+  END_OBJECT
+
+  OBJECT           = FIRST_SAMPLE_NUMBER
+    START_BYTE     = 33
+    TYPE           = VAX_INTEGER
+    BYTES          = 2
+    NOTE           = "First sample value (pixel) not artificially
+                      zeroed (1-800)."
+  END_OBJECT
+
+  OBJECT           = LAST_SAMPLE_NUMBER
+    START_BYTE     = 35
+    TYPE           = VAX_INTEGER
+    BYTES          = 2
+    NOTE           = "Last sample value (pixel) not artificially
+                      zeroed (1-800)"
+  END_OBJECT
+
+END_OBJECT          = LINE_SUFFIX_STRUCTURE
+END

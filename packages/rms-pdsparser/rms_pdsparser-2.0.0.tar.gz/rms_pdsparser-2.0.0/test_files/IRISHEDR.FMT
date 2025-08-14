@@ -1,0 +1,952 @@
+                                                                              
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  FDS_COUNT                                                           
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  1                                                              
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  3488600                                                     
+	VALID_MAXIMUM	=  4405700                                                     
+	DESCRIPTION	=  "Flight Data System Count (FDSC) is the                       
+number of 48 second data frames taken since an arbitrary epoch.  The final    
+two digits are modulo 60.  This is the primary Voyager data identifier."      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  PICTURE_BODY                                                        
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  13                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1                                                          
+	VALID_MAXIMUM	=  72                                                          
+	DESCRIPTION	=  "Identification of the picture (target)                       
+body currently viewed by the instrument.  (See further documentation for      
+listing of valid values)"                                                     
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  CENTRAL_BODY                                                        
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  17                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -8                                                          
+	VALID_MAXIMUM	=  8                                                           
+	DESCRIPTION	=  "Identifier for the central planetary body                    
+of the encounter (5=Jupiter, 6=Saturn, 7=Uranus, 8=Neptune : Negative numbers 
+indicate that the instrument is looking at the rings associated with that     
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q5_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  25                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  90.0                                                        
+	DESCRIPTION	=  "Latitude of Q5 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q5_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  29                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q5 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  EMISS_ANGLE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  33                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  180.0                                                       
+	DESCRIPTION	=  "Angle (degrees) between the local normal and                 
+the optic axis at the point of intersection of the latter with the surface    
+of the currently viewed picture (target) body."                               
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  DIST_SC_PB                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  37                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  4.68E+06                                                    
+	DESCRIPTION	=  "Range of spacecraft to the picture body                      
+(in kilometers)."                                                             
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  PB_SUBSC_LAT                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  41                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  90.0                                                        
+	DESCRIPTION	=  "Planetographic latitude (degrees) of the                     
+sub-spacecraft point on the picture (target) body currently viewed by the     
+instrument."                                                                  
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  PB_SUBSC_LON                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  45                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "West longitude (degrees) of the sub-spacecraft               
+point on the picture (target) body currently viewed by the instrument. The    
+longitude refers to the 'System III', or deep interior rotation period of the 
+gaseous body."                                                                
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SC_PHASE_ANG                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  49                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  180.0                                                       
+	DESCRIPTION	=  "Angle (degrees) between the spacecraft and                   
+solar directions at the center of the picture (target) body currently viewed  
+by the instrument."                                                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  PB_SEMI_DIAM                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  53                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  51.75                                                       
+	DESCRIPTION	=  "Angular semi-diameter (degrees) of the                       
+currently viewed picture (target) body."                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_1                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  57                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "1st in series of 8 radiometer samples  taken                 
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_2                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  61                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "2nd in series of 8 radiometer samples taken                  
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_3                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  65                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "3rd in series of 8 radiometer samples taken                  
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_4                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  69                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "4th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_5                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  73                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "5th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_6                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  77                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "6th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_7                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  81                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "7th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_NORM_8                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  85                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  8.58E-06                                                    
+	DESCRIPTION	=  "8th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the normal gain channel.  The quantity     
+given is power at the detector in Watts. (-1.0 indicates data off the planet)"
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_1                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  89                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "1st in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_2                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  93                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "2nd in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_3                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  97                                                             
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "3rd in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_4                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  101                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "4th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_5                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  105                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "5th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_6                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  109                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "6th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_7                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  113                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "7th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_HIGH_8                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  117                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -1.0                                                        
+	VALID_MAXIMUM	=  1.07E-06                                                    
+	DESCRIPTION	=  "8th in series of 8 radiometer samples taken                  
+during a 48 second data frame with the high gain channel.  The quantity       
+given is power at the detector in Watts.  (-1.0 indicates data off the        
+planet)"                                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  LOCAL_TIME_HR                                                       
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  121                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  24.0                                                        
+	DESCRIPTION	=  "Local time (hours)."                                         
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SCET_YR                                                             
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  125                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  80                                                          
+	VALID_MAXIMUM	=  81                                                          
+	DESCRIPTION	=  "Spacecraft Event Time (year).  Greenwich                     
+Mean Time (GMT) of data acquisition by the spacecraft."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SCET_DAY                                                            
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  129                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  1                                                           
+	VALID_MAXIMUM	=  366                                                         
+	DESCRIPTION	=  "Spacecraft Event Time (day).  Greenwich                      
+Mean Time (GMT) of data acquisition by the spacecraft."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SCET_HR                                                             
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  133                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  23                                                          
+	DESCRIPTION	=  "Spacecraft Event Time (hour).  Greenwich                     
+Mean Time (GMT) of data acquisition by the spacecraft."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SCET_MIN                                                            
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  137                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  59                                                          
+	DESCRIPTION	=  "Spacecraft Event Time (minutes).  Greenwich                  
+Mean Time (GMT) of data acquisition by the spacecraft."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SCET_SEC                                                            
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  141                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  59                                                          
+	DESCRIPTION	=  "Spacecraft Event Time (seconds).  Greenwich                  
+Mean Time (GMT) of data acquisition by the spacecraft."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  ERT_YR                                                              
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  145                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  80                                                          
+	VALID_MAXIMUM	=  81                                                          
+	DESCRIPTION	=  "Earth receive time (year).  Time is                          
+Greenwich Mean Time (GMT)."                                                   
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  ERT_DAY                                                             
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  149                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  365                                                         
+	DESCRIPTION	=  "Earth receive time (day).  Time is                           
+Greenwich Mean Time (GMT)."                                                   
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  ERT_HR                                                              
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  153                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  23                                                          
+	DESCRIPTION	=  "Earth receive time (hour).  Time is                          
+Greenwich Mean Time (GMT)."                                                   
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN	                                                            
+	NAME		=  ERT_MIN                                                             
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  157                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  59                                                          
+	DESCRIPTION	=  "Earth receive time (minutes).  Time is                       
+Greenwich Mean Time (GMT)."                                                   
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  ERT_SEC                                                             
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  161                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  59                                                          
+	DESCRIPTION	=  "Earth receive time (seconds).  Time is                       
+Greenwich Mean Time (GMT)."                                                   
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  DIST_CB_SUN                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  165                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  1.47E+09                                                    
+	DESCRIPTION	=  "Range of the central planetary body to                       
+the sun (in kilometers)"                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  DIST_SC_CB                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  169                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  2.90E+06                                                    
+	DESCRIPTION	=  "Range of spacecraft to the center of the                     
+central planetary body (in kilometers)."                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  DIST_PB_SUN                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  173                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  1.47E+09                                                    
+	DESCRIPTION	=  "Range of the picture body to the sun                         
+(in kilometers)."                                                             
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  DIST_SC_PBTP                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  177                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  2.30E+07                                                    
+	DESCRIPTION	=  "Range of the spacecraft to the picture body                  
+tangent point (in kilometers)."                                               
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SC_ALT                                                              
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  181                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  4.68E+06                                                    
+	DESCRIPTION	=  "Altitude of the spacecraft above a reference                 
+surface or physical surface of the picture (target) body currently viewed     
+by the instrument (in kilometers)."                                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q1_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  185                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q1 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q1_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  189                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q1 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q2_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  193                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q2 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q2_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  197                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q2 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q3_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  201                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q3 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q3_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  205                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q3 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q4_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  209                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q4 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q4_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  213                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q4 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q6_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  217                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q6 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q6_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  221                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q6 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q7_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  225                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q7 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q7_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  229                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q7 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q8_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  233                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q8 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q8_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  237                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q8 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q9_LATITUDE                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  241                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q9 point in degrees."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q9_LONGITUDE                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  245                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q9 point in degrees."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q5_LATITUDE_750                                                     
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  249                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -90.0                                                       
+	VALID_MAXIMUM	=  200.0                                                       
+	DESCRIPTION	=  "Latitude of Q5 point at line count 750                       
+ in degrees."                                                                 
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q5_LONGITUDE_750                                                    
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  253                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0.0                                                         
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Longitude of Q5 point at line count 750                      
+in degrees."                                                                  
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  OPTIC_AXIS                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  257                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -150.72                                                     
+	VALID_MAXIMUM	=  13.25                                                       
+	DESCRIPTION	=  "Angular distance between the line-of-sight and the           
+ray from the spacecraft to the closest limb point (in degrees).  Used to      
+determine how far from the limb spacecraft is viewing."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SUB_SOLAR_LAT                                                       
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  261                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  -23.15                                                      
+	VALID_MAXIMUM	=  45.23                                                       
+	DESCRIPTION	=  "Planetographic latitude (degrees) of the sub-solar           
+point on the picture (target) body currently viewed by the instrument."       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SUB_SOLAR_LON                                                       
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  265                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "West longitude (degrees) of the sub-solar                    
+point on the picture (target) body currently viewed by the instrument. The    
+longitude refers to the 'System III', or deep interior rotation period of     
+the gaseous body."                                                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SOL_ZENITH_ANG                                                      
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  269                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  180.0                                                       
+	DESCRIPTION	=  "Angle (degrees) between the local normal and the             
+sun at the point of intersection of the instrument optic axis with the        
+surface of the currently viewed picture (target) body."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  Q5_PHASE                                                            
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  273                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  180.0                                                       
+	DESCRIPTION	=  "Angle (degrees) between the direction to                     
+the sun and the instrument optic axis at the point of intersection of the     
+latter with the picture (target) body."                                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SOL_AZIMUTH_ANG                                                     
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  277                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  360.0                                                       
+	DESCRIPTION	=  "Sun azimuth angle for Q5 point."                             
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  EMISS_ANGLE_750                                                     
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  281                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  180.0                                                       
+	DESCRIPTION	=  "Emission angle for line count 750."                          
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  "AVG_BTEMP_22MU"                                                    
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  285                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  0                                                           
+	DESCRIPTION	=  "Brightness temperature (Kelvin) of the observed              
+scene averaged over the spectral interval 400 to 500 cm-1.  This region lies  
+between the S(0) and S(1) collision-induced absorption lines of hydrogen.     
+(Jupiter & Saturn only)"                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  "AVG_BTEMP_5MU"                                                     
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  289                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  0                                                           
+	DESCRIPTION	=  "Brightness temperature (Kelvin) of the observed              
+scene averaged over the spectral interval 2000 to 2050 cm-1.  The gaseous     
+opacity on Jupiter and Saturn is at a minimum in this region.                 
+(Jupiter & Saturn only)"                                                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  IR_DET_TEMP                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  293                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  207.79                                                      
+	DESCRIPTION	=  "IR detector temperature (Kelvin)."                           
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RADIOM_TEMP                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  297                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  200.18                                                      
+	DESCRIPTION	=  "Radiometer temperature (Kelvin)."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  BEAMSP_TEMP                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  301                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  200.06                                                      
+	DESCRIPTION	=  "Beam splitter temperature (Kelvin)."                         
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  MIC_MOT_TEMP                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  305                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  200.12                                                      
+	DESCRIPTION	=  "Michelson Motor temperature (Kelvin)."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  RAD_SUR_TEMP                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  309                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  199.94                                                      
+	DESCRIPTION	=  "Radiating surface temperature (Kelvin)."                     
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  PRI_CTR_TEMP                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  313                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  199.96                                                      
+	DESCRIPTION	=  "Primary mirror center tempature (Kelvin)."                   
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  PRI_EDG_TEMP                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  317                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  199.98                                                      
+	DESCRIPTION	=  "Primary mirror edge temperature (Kelvin)."                   
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  SEC_MIR_TEMP                                                        
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  321                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  203.23                                                      
+	DESCRIPTION	=  "Secondary mirror temperature (Kelvin)."                      
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  ELECT_TEMP                                                          
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  325                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  282.09                                                      
+	DESCRIPTION	=  "Electronics box temperature (Kelvin)."                       
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  REJECT_CODE                                                         
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  329                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  5                                                           
+	DESCRIPTION	=  "Reject code: 0=OK; 1=Too many spikes;                        
+2=Missing data; 3=Zero peak; 4=No IFM present; 5=problem with symmetrization."
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  COLD_CAL                                                            
+	DATA_TYPE	=  VAX_INTEGER                                                     
+	START_BYTE	=  333                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  1                                                           
+	DESCRIPTION	=  "A flag indicating deep space calibration                     
+data.  1=calibration spectrum; 0=spectrum not used for calibration.           
+(Neptune only)"                                                               
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  PHASE_RESID                                                         
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  337                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  35.23                                                       
+	DESCRIPTION	=  "Root mean square phase residual."                            
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  INT_VIS                                                             
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  341                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  1.78E-07                                                    
+	DESCRIPTION	=  "The broadband, reflected solar radiometer                    
+signal integrated over the 45.6 seconds that IRIS data are taken within the   
+48 second data frame.  The quantity given is power at the detector in Watts." 
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  "INT_5MU"                                                           
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  345                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  0                                                           
+	DESCRIPTION	=  "IR radiance near 5mu. (W cm-2 ster-1/cm-1)                   
+(Voyager 2 Jupiter only)"                                                     
+END_OBJECT                                                                    
+                                                                              
+OBJECT		=  COLUMN                                                             
+	NAME		=  INT_IR                                                              
+	DATA_TYPE	=  VAX_REAL                                                        
+	START_BYTE	=  349                                                            
+	BYTES		=  4                                                                  
+	VALID_MINIMUM	=  0                                                           
+	VALID_MAXIMUM	=  0                                                           
+	DESCRIPTION	=  "Integrated thermal emission (W cm-2 ster-1)                  
+between 175 and 2500 cm-1.  (Jupiter and Saturn only)"                        
+END_OBJECT                                                                    
+                                                                              
+END                                                                           

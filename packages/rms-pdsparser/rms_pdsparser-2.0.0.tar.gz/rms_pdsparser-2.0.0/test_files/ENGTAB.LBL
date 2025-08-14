@@ -1,0 +1,923 @@
+CCSD3ZF0000100000001NJPL3IF0PDS200000001 = SFDU_LABEL
+OBJECT               = ENGINEERING_TABLE
+FORMAT               = BINARY
+BYTES                = 243
+NOTE                 = "This structure describes the format of the
+  engineering record which is included in each image file.  This
+  record contains the first 242 bytes of data extracted from the
+  Mission and Test Imaging System (MTIS) header record on each file
+  of an imaging EDR tape.  A 243rd byte containing some flag fields
+  has been added to the table for all images collected during the
+  Neptune encounter."
+/*                                           */
+/* Table format description begins here.     */
+/*                                           */
+OBJECT               = MTIS_RECORD_ID
+  TYPE               = UNSIGNED_INTEGER
+  BYTE               = 1
+  NOTE               = "Mission and Test Imaging System record ID"
+END_OBJECT
+
+OBJECT               = MTIS_FILE_NUMBER
+  TYPE               = UNSIGNED_INTEGER
+  BYTE               = 2
+  NOTE 	             = "Mission and Test Imaging System tape file
+  number."
+END_OBJECT
+
+OBJECT               = PHYSICAL_SEQUENCE_NUMBER
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 3
+  BYTES              = 2
+  NOTE               = "Physical sequence number on Experiment Data
+  Record tape."
+END_OBJECT
+
+OBJECT               = LOGICAL_SEQUENCE_NUMBER
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 5
+  BYTES              = 2
+  NOTE               = "Logical sequence number on Experiment Data
+  Record tape."
+END_OBJECT
+
+OBJECT               = FIRST_ERT
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 7
+  BITS               = 16
+  NOTE               = "Earth Received Time year and day value.  Time
+  of first line record in the file containing valid data."
+
+  OBJECT             = FIRST_ERT_YEAR
+    TYPE             = UNSIGNED_INTEGER
+    START_BIT        = 1
+    BITS             = 7
+    NOTE             = "Earth Received Time year of century (1900).
+    Time of first line record in the file containing valid data."
+  END_OBJECT
+
+  OBJECT             = FIRST_ERT_DAY
+    TYPE             = UNSIGNED_INTEGER
+    START_BIT        = 8
+    BITS             = 9
+    NOTE             = "Earth Received Time day of year."
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = FIRST_ERT_MINUTE
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 9
+  BYTES              = 2
+  NOTE               = "Earth Received Time minute of day."
+END_OBJECT
+
+OBJECT               = FIRST_ERT_MILLISECOND
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 11
+  BYTES              = 2
+  NOTE               = "Earth Received Time millisecond of minute."
+END_OBJECT
+
+OBJECT               = LAST_ERT
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 13
+  BITS               = 16
+  NOTE               = "Earth Received Time year and day value.  Time
+  of last line record of the file containing valid data."
+  OBJECT             = LAST_ERT_YEAR
+    TYPE             = UNSIGNED_INTEGER
+    START_BIT        = 1
+    BITS             = 7
+    NOTE             = "Earth Received Time year of century (1900)."
+  END_OBJECT
+  OBJECT             = LAST_ERT_DAY
+    TYPE             = UNSIGNED_INTEGER
+    START_BIT        = 8
+    BITS             = 9
+    NOTE             = "Earth Received Time day of year."
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = LAST_ERT_MINUTE
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 15
+  BYTES              = 2
+  NOTE               = "Earth Received Time minute of day."
+END_OBJECT
+
+OBJECT               = LAST_ERT_MILLISECOND
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 17
+  BYTES              = 2
+  NOTE               = "Earth Received Time millisecond of minute."
+END_OBJECT
+
+OBJECT               = FIRST_FDS16_COUNT
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 19
+  BYTES              = 2
+  NOTE               = "Flight Data Subsystem modulo 16-bit (65536)
+  count.  Represents the first 5 digits (xxxxx) of the image number
+  (xxxxx.yy).  This is the count for the first line record of the file
+  containing valid data.  Note that this may not correspond to the FDS
+  count for line record 1."
+END_OBJECT
+
+OBJECT               = FIRST_FDS60_COUNT
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 21
+  BYTES              = 2
+  NOTE               = "Flight Data Subsystem modulo 60 count.
+  Represents the last 2 digits (yy) of the image number (xxxxx.yy).
+  This is the count for the first line record of the file containing
+  valid data.  Note that this may not correspond to the FDS count for
+  line record 1."
+END_OBJECT
+
+OBJECT               = FIRST_FDS_LINE_COUNT
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 23
+  BYTES              = 2
+  NOTE               = "Flight Data Subsystem line count for first
+  line record containing valid data."
+END_OBJECT
+
+OBJECT               = LAST_FDS16_COUNT
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 25
+  BYTES              = 2
+  NOTE               = "Flight Data Subsystem modulo 16-bit (65536)
+  count.  Represents the first 5 digits (xxxxx) of the image number
+  (xxxxx.yy).  This is the count for the last line record of the file
+  containing valid data."
+END_OBJECT
+
+OBJECT               = LAST_FDS60_COUNT
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 27
+  BYTES              = 2
+  NOTE               = "Flight Data Subsystem modulo 60 count.
+  Represents the last 2 digits (yy) of the image number (xxxxx.yy).
+  This is the count for the last line record of the file containing
+  valid data."
+END_OBJECT
+
+OBJECT               = LAST_FDS_LINE_COUNT
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 29
+  BYTES              = 2
+  NOTE               = "Flight Data Subsystem line count for last
+  line record containing valid data."
+END_OBJECT
+
+OBJECT               = SCET
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 31
+  BITS               = 16
+  NOTE               = "Spacecraft Event Time year and day value.  The
+  (predicted) shutter-close time for this image."
+  OBJECT             = SCET_YEAR
+    TYPE             = UNSIGNED_INTEGER
+    START_BIT        = 1
+    BITS             = 7
+    NOTE             = "Spacecraft Event Time year of century (1900)."
+  END_OBJECT
+  OBJECT             = SCET_DAY
+    TYPE             = UNSIGNED_INTEGER
+    START_BIT        = 8
+    BITS             = 9
+    NOTE             = "Spacecraft Event Time day of year."
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = SCET_MINUTE
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 33
+  BYTES              = 2
+  NOTE               = "Spacecraft Event Time minute of day."
+END_OBJECT
+
+OBJECT               = SCET_MILLISECOND
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 35
+  BYTES              = 2
+  NOTE               = "Spacecraft Event Time millisecond of minute."
+END_OBJECT
+
+OBJECT               = MTIS_RECORDING_ID
+  TYPE               = CHARACTER
+  START_BYTE         = 37
+  BYTES              = 32
+  NOTE               = "MTIS system identification information.
+  MTIS/IPL Data for first line record of the Recording Data
+  file."
+END_OBJECT
+
+OBJECT               = GCF_TABLE
+START_BYTE           = 69
+ROWS                 = 2
+ROW_NAME             = (FIRST,LAST)
+ROW_COLUMNS          = 13
+ROW_BYTES            = 20
+NOTE                 = "This table contains Ground Communications
+  Facility (GCF) parameters for the first and last line records of
+  the file containing valid data."
+
+  OBJECT             = SYNC_MSB
+    TYPE             = VAX_INTEGER
+    START_BYTE       = 1
+    BYTES            = 2
+    NOTE             = "GCF sync ID (MSB)."
+  END_OBJECT
+
+  OBJECT             = SYNC_LSB
+    TYPE             = VAX_INTEGER
+    BYTE             = 3
+    NOTE             = "GCF sync ID (LSB)."
+  END_OBJECT
+
+  OBJECT             = SOURCE_ID
+    TYPE             = UNSIGNED_INTEGER
+    BYTE             = 4
+    NOTE             = "GCF source ID."
+  END_OBJECT
+
+  OBJECT             = DESTINATION_ID
+    TYPE             = UNSIGNED_INTEGER
+    BYTE             = 5
+    NOTE             = "GCF destination ID."
+  END_OBJECT
+
+  OBJECT             = BLOCK_ID
+    TYPE             = UNSIGNED_INTEGER
+    BYTE             = 6
+    NOTE             = "GCF block ID."
+  END_OBJECT
+
+  OBJECT             = COMM
+    TYPE             = VAX_BIT_STRING
+    START_BYTE       = 7
+    BITS             = 16
+    NOTE             = "GCF communications parameters."
+
+    OBJECT           = GDD_ID
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 1
+      BITS           = 3
+      NOTE           = "GCF GDD ID."
+    END_OBJECT
+
+    OBJECT           = UDT_ID
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 4
+      BITS           = 7
+      NOTE           = "GCF UDT ID."
+    END_OBJECT
+
+    OBJECT           = DDT_ID
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 11
+      BITS           = 6
+      NOTE           = "GCF DDT ID."
+    END_OBJECT
+  END_OBJECT
+
+  OBJECT             = GCF_PARM
+    TYPE             = VAX_BIT_STRING
+    START_BYTE       = 9
+    BITS             = 32
+    NOTE             = "GCF Spacecraft parameters."
+
+    OBJECT           = LSB_TIME_ID
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 1
+      BITS           = 16
+      NOTE           = "GCF time ID (lsb)."
+    END_OBJECT
+
+    OBJECT           = SPACECRAFT_NUMBER
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 18
+      BITS           = 7
+      NOTE           = "GCF Spacecraft number."
+    END_OBJECT
+
+    OBJECT           = MSB_TIME_ID
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 25
+      BITS           = 8
+      NOTE           = "GCF time ID (msb)."
+    END_OBJECT
+  END_OBJECT
+
+  OBJECT             = GCF_DAY_BLOCK
+    TYPE             = VAX_BIT_STRING
+    START_BYTE       = 13
+    BITS             = 16
+    NOTE             = "GCF year and block number."
+
+    OBJECT           = DAY
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 3
+      BITS           = 12
+      NOTE           = "GCF day of year."
+    END_OBJECT
+
+    OBJECT           = MSB_BLOCK_COUNT
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 15
+      BITS           = 2
+      NOTE           = "GCF block serial count (msb)."
+    END_OBJECT
+  END_OBJECT
+
+  OBJECT             = LSB_BLOCK_COUNT
+    TYPE             = UNSIGNED_INTEGER
+    START_BYTE       = 15
+    BYTES            = 1
+    NOTE             = "GCF block serial count (lsb)."
+  END_OBJECT
+
+  OBJECT             = MILL_COUNT
+    TYPE             = UNSIGNED_INTEGER
+    START_BYTE       = 16
+    BYTES            = 1
+    NOTE             = "GCF millisecond clock count."
+  END_OBJECT
+
+  OBJECT             = SERIAL_NUMBER
+    TYPE             = UNSIGNED_INTEGER
+    START_BYTE       = 17
+    BYTES            = 1
+    NOTE             = "GCF serial number."
+  END_OBJECT
+
+  OBJECT             = CONFIGURATION
+    TYPE             = UNSIGNED_INTEGER
+    START_BYTE       = 18
+    BYTES            = 1
+    NOTE             = "GCF configuration status."
+  END_OBJECT
+
+  OBJECT             = ESC_PARAMETER
+    TYPE             = VAX_BIT_STRING
+    START_BYTE       = 19
+    BITS             = 16
+    NOTE             = "GCF ESC value."
+
+    OBJECT           = ESC
+      TYPE           = UNSIGNED_INTEGER
+      START_BIT      = 14
+      BITS           = 2
+      NOTE           = "GCF ESC value."
+    END_OBJECT
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = IRT_YEAR
+  TYPE               = INTEGER
+  BYTE               = 109
+  NOTE               = "Internal received time, year of century."
+END_OBJECT
+
+OBJECT               = IRT_DAY
+  TYPE               = INTEGER
+  BYTE               = 110
+  NOTE               = "Internal received time, day of year."
+END_OBJECT
+
+OBJECT               = IRT_MINUTE
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 111
+  BYTES              = 2
+  NOTE               = "Internal received time, minute of day."
+END_OBJECT
+
+OBJECT               = IRT_MILLISECOND
+  TYPE               = VAX_UNSIGNED_INTEGER
+  START_BYTE         = 113
+  BYTES              = 2
+  NOTE               = "Internal received time, millisecond of minute."
+END_OBJECT
+
+OBJECT               = FORMAT
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 119
+  BITS               = 16
+  NOTE               = "Telemetry format ID for this image."
+
+  OBJECT             = FORMAT_ID
+    START_BIT        = 9
+    BITS             = 2
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "Format ID = 2 for imaging."
+  END_OBJECT
+  OBJECT             = IMAGE_FORMAT_ID
+    START_BIT        = 11
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "Image format ID.  Note that the ID used
+    by the GDS may differ from the ID down-linked by the spacecraft:
+
+     0=I3G4;  14=PB1;    24=IM15; \n
+     1=IM16;  15=GS4;    26=IM6;  \n
+     2=IM19;  17=GS2;    27=IM5;  \n
+     9=IM7;   18=IM14;   28=IM4;  \n
+    11=IM9;   20=IM12;   29=IM3;  \n
+    12=PB3;   21=IM11;   30=IM2;  \n
+    13=PB2;   22=IM10;   31=IM13. "
+  END_OBJECT
+  OBJECT             = FORMAT_SC_ID
+    BIT              = 16
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "Zero for Voyager 2, one for Voyager 1."
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = MIN_BSNR
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 121
+  BITS               = 16
+  NOTE               = "Bit Signal-to-noise ratio minimum.  The minimum
+  noise level found for the scan lines.  Binary number with binary point
+  between bits 9 and 10."
+END_OBJECT
+
+OBJECT               = MAX_BSNR
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 123
+  BYTES              = 2
+  NOTE               = "Bit Signal-to-noise ratio maximum.  The maximum
+  noise level found for the scan lines.  Binary number with binary point
+  between bits 9 and 10."
+END_OBJECT
+
+OBJECT               = MIN_SSNR
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 125
+  BYTES              = 2
+  NOTE               = "Symbol synchronizer signal-to-noise ratio minimum.
+  Binary number with binary point between bits 9 and 10."
+END_OBJECT
+
+OBJECT               = MAX_SSNR
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 127
+  BYTES              = 2
+  NOTE               = "Symbol synchronizer signal-to-noise ratio maximum.
+  Binary number with binary point between bits 9 and 10."
+END_OBJECT
+
+OBJECT               = MIN_AGC
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 129
+  BYTES              = 2
+  NOTE               = "Automatic gain control minimum.  Binary number
+  with binary point between bits 9 and 10."
+END_OBJECT
+
+OBJECT               = MAX_AGC
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 131
+  BYTES              = 2
+  NOTE               = "Automatic gain control maximum.  Binary number
+  with binary point between bits 9 and 10."
+END_OBJECT
+
+OBJECT               = SYNC_ERROR_COUNT
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 133
+  BYTES              = 2
+  NOTE               = "Number of sync word errors."
+END_OBJECT
+
+OBJECT               = FDS_ERROR_COUNT
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 135
+  BYTES              = 2
+  NOTE               = "Number of FDS count errors.  The sum of the
+  FDS count errors for the scan lines which contain valid data."
+END_OBJECT
+
+OBJECT               = SYNC_PARAMETER_1
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 137
+  BITS               = 16
+  NOTE               = "Sync parameters I and P as described in the
+  MTIS SRD."
+
+  OBJECT             = SYNC_PARM_I
+    START_BIT        = 1	
+    BITS             = 8
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+  OBJECT             = SYNC_PARM_P
+    START_BIT        = 9
+    BITS             = 8
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = SYNC_PARAMETER_2
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 139
+  BITS               = 16
+  NOTE               = "Three five-bit values representing the
+  sync parameters J, K, and L as described in the MTIS SDR."
+
+  OBJECT             = SYNC_PARM_J
+    START_BIT        = 2
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+  OBJECT             = SYNC_PARM_K
+    START_BIT        = 7
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+  OBJECT             = SYNC_PARM_L
+    START_BIT        = 12
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = SYNC_PARAMETER_3
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 141
+  BITS               = 16
+  NOTE               = "Three five-bit values representing the
+  sync parameters M, N, and R as described in the MTIS SDR."
+
+  OBJECT             = SYNC_PARM_M
+    START_BIT        = 2
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+  OBJECT             = SYNC_PARM_N
+    START_BIT        = 7
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+  OBJECT             = SYNC_PARM_R
+    START_BIT        = 12
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+
+END_OBJECT
+
+OBJECT               = LINES
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 143
+  BYTES              = 2
+  NOTE               = "Total number of line records in the
+  file which contain some valid data."
+END_OBJECT
+
+OBJECT               = FULL_LINES
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 145
+  BYTES              = 2
+  NOTE               = "Number of line records in the file
+  which are composed entirely of full minor frames."
+END_OBJECT
+
+OBJECT               = PARTIAL_LINES
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 147
+  BYTES              = 2
+  NOTE               = "Total number of line records in the file
+  which contain some valid data but are not composed entirely of
+  full minor frames."
+END_OBJECT
+
+OBJECT               = UNREADABLE_RECORDS
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 149
+  BYTES              = 2
+  NOTE               = "Total number of records from the IDR
+  and/or SDR which were unreadable and which fell within a time
+  period for which data was required for this file.  Note:  For
+  SDR input this does not necessarily result in data loss."
+END_OBJECT
+
+OBJECT               = SEQUENCE_BREAKS
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 151
+  BYTES              = 2
+  NOTE               = "Total number of gaps on the IDR
+  and/or SDR as indicated by a discontinuity in the logical record
+  numbers which fell within a time period for which data was required
+  for this file."
+END_OBJECT
+
+OBJECT               = SORT_PARAMETER
+  ITEMS              = 4
+  ITEM_TYPE          = VAX_INTEGER
+  START_BYTE         = 153
+  ITEM_BYTES         = 2
+  NOTE               = "Sort parameter 1 thru 4."
+END_OBJECT
+
+OBJECT               = IDR_FRAMES
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 161
+  BYTES              = 2
+  NOTE               = "Number of minor frames from Intermediate Data
+  Record."
+END_OBJECT
+
+OBJECT               = WBDL_FRAMES
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 163
+  BYTES              = 2
+  NOTE               = "Number of minor frames from Wide Band Data
+  Link."
+END_OBJECT
+
+OBJECT               = SDR_FRAMES
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 165
+  BYTES              = 2
+  NOTE               = "Number of minor frames from System Data
+  Record."
+END_OBJECT
+
+OBJECT               = MISSING_FRAMES
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 167
+  BYTES              = 2
+  NOTE               = "Number of missing minor frames."
+END_OBJECT
+
+OBJECT               = IMAGE_ID
+  TYPE               = CHARACTER
+  START_BYTE         = 171
+  BYTES              = 10
+  NOTE               = "Picno (picture count, target, spacecraft,
+  day).  Ten ASCII characters of the form NNNNES+DDD, where:
+
+  NNNN = picture number within day;                      \n
+  E    = planet of encounter (J=Jupiter, S=Saturn,....); \n
+  S    = spacecraft number (1=Voyager 1, 2=Voyager 2);   \n
+  -    = indicates before closest planetary approach;    \n
+  +    = indicates after closest planetary approach;     \n
+  DDD  = Number of days from closest approach.           "
+END_OBJECT
+
+OBJECT               = INPUT_SOURCE
+  TYPE               = BIT_STRING
+  START_BYTE         = 191
+  BITS               = 8
+  NOTE               = "Input data source.  Logical sum (result of
+  successive inclusive OR operations) of input source of all line
+  records in the file.  Identify input source as follows: (equal to
+  1 if present)
+
+     Bit 1 - Fill data;                                            \n
+     Bit 2 - Not Used;                                             \n
+     Bit 3 - Not Used;                                             \n
+     Bit 4 - Experiment Data Record (EDR) tape data (reprocessed); \n
+     Bit 5 - Intermediate Data Record (IDR) tape data;             \n
+     Bit 6 - System Data Record (SDR) tape data;                   \n
+     Bit 7 - Real Time data;                                       \n
+     Bit 8 - Not Used.                                             "
+END_OBJECT
+
+OBJECT               = INPUT_TYPE
+  TYPE               = UNSIGNED_INTEGER
+  START_BYTE         = 192
+  BITS               = 8
+  NOTE               = "Input data type.  Logical sum (result of
+  successive inclusive OR operations) of input type of all line
+  records in the file.  Identify input type as follows:
+
+     00000000 - Voyager 2;                               \n
+     00000001 - Voyager 1;                               \n
+     00000010 - Proof Test Model data;                   \n
+     00000011 - Not Used;                                \n
+     00000100 - External Simulation (DSN spacecraft 41); \n
+     00000101 - External Simulation (DSN spacecraft 42); \n
+     00000110 - Voyager 2 test data;                     \n
+     00000111 - Voyager 1 test data;                     \n
+     00001000 - Internal Simulation.                     "
+END_OBJECT
+
+OBJECT               = SHUTTERED_PICTURE_ID
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 193
+  BITS               = 16
+  NOTE               = "Shuttered picture indicator.  Subcom position 1."
+
+  OBJECT             = CAMERA_NUMBER
+    BIT              = 1
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "Camera ID number (O=WA, 1=NA)."
+  END_OBJECT
+  OBJECT             = SHUTTERED_PICTURE_FLAG
+    START_BIT        = 2
+    BITS             = 15
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "Shuttered picture indicator, all ones for
+  shuttered images, all zeroes for unshuttered images."
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = SCAN_MODE
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 195
+  BITS               = 16
+  NOTE               = "Slow scan status.  Subcom position 2."
+
+  OBJECT             = READ_OUT_LINE_NUMBER
+    START_BIT        = 1
+    BITS             = 10
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "Actual picture line number being read out."
+  END_OBJECT
+  OBJECT             = READ_OUT_SEGMENT_NUMBER
+    START_BIT        = 11
+    BITS             = 6
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "Actual segment number being read out."
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = CAMERA_MODE
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 197
+  BITS               = 16
+  NOTE               = "Exposure time, filter, electronics calibration.
+                        Subcom position 3."
+
+  OBJECT             = NA_CALIBRATION_FLAG
+    BIT              = 6
+  END_OBJECT
+  OBJECT             = WA_CALIBRATION_FLAG
+    BIT              = 7
+  END_OBJECT
+  OBJECT             = EXPOSURE_ID
+    START_BIT        = 8
+    BITS             = 5
+    TYPE             = UNSIGNED_INTEGER
+    NOTE             = "To convert to exposure time, see MJS 77-4-2036."
+  END_OBJECT
+  OBJECT             = FILTER_ID
+    START_BIT        = 13
+    BITS             = 3
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+  OBJECT             = FILTER_PARITY
+    BIT              = 16
+    NOTE             = "Odd parity bit for filter position."
+    TYPE             = UNSIGNED_INTEGER
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = PICTURE_COUNT
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 199
+  BYTES              = 2
+  NOTE               = "Picture count.  Subcom position 4."
+END_OBJECT
+
+OBJECT               = PRESENT_VALUE_A
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 201
+  BYTES              = 2
+  NOTE               = "Parameter A through D present value.
+  Subcom position 5."
+END_OBJECT
+
+OBJECT               = WORD_INDICATOR_A
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 203
+  BYTES              = 2
+  NOTE               = "Parameter A through D word indicator.
+  Subcom position 6."
+END_OBJECT
+
+OBJECT               = WORD_POINTER_A
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 205
+  BYTES              = 2
+  NOTE               = "Parameter A through D word pointer.
+  Subcom position 7."
+END_OBJECT
+
+OBJECT               = PRESENT_VALUE_B
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 207
+  BYTES              = 2
+  NOTE               = "Parameter A through D present value.
+  Subcom position 8."
+END_OBJECT
+
+OBJECT               = WORD_POINTER_B
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 209
+  BYTES              = 2
+  NOTE               = "Parameter A through D word pointer.
+  Subcom position 9."
+END_OBJECT
+
+OBJECT               = PRESENT_VALUE_C
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 211
+  BYTES              = 2
+  NOTE               = "Parameter A through D present value.
+  Subcom position 10."
+END_OBJECT
+
+OBJECT               = WORD_POINTER_C
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 213
+  BYTES              = 2
+  NOTE               = "Parameter A through D word pointer.
+  Subcom position 11."
+END_OBJECT
+
+OBJECT               = PRESENT_VALUE_D
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 215
+  BYTES              = 2
+  NOTE               = "Parameter A through D present value.
+  Subcom position 12."
+END_OBJECT
+
+OBJECT               = WORD_INDICATOR_D
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 217
+  BYTES              = 2
+  NOTE               = "Parameter A through D word indicator.
+  Subcom position 13."
+END_OBJECT
+
+OBJECT               = WORD_POINTER_D
+  TYPE               = VAX_INTEGER
+  START_BYTE         = 219
+  BYTES              = 2
+  NOTE               = "Parameter A through D word pointer.
+  Subcom position 14."
+END_OBJECT
+
+OBJECT               = ANALOG_SAMPLE_TABLE
+START_BYTE           = 221
+ROWS                 = 5
+ROW_COLUMNS          = 2
+ROW_BYTES            = 2
+NOTE                 = "These values represent subcom positions 15, 16,
+ 17, 18, 19."
+
+  OBJECT             = NA_ANALOG_SAMPLE
+    TYPE             = UNSIGNED_INTEGER
+    BYTE             = 1
+    NOTE             = "Narrow angle analog sample."
+  END_OBJECT
+
+  OBJECT             = WA_ANALOG_SAMPLE
+    TYPE             = UNSIGNED_INTEGER
+    BYTE             = 2
+    NOTE             = "Wide angle analog sample."
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = PIX_STAT
+  TYPE               = VAX_BIT_STRING
+  START_BYTE         = 231
+  BITS               = 16
+  NOTE               = "Pixel average and command status. Subcom
+  position 20."
+
+  OBJECT             = PIX_AVERAGE_STATUS
+    BIT              = 3
+  END_OBJECT
+  OBJECT             = PIX_AVERAGE
+    TYPE             = UNSIGNED_INTEGER
+    START_BIT        = 4
+    BITS             = 5
+  END_OBJECT
+  OBJECT             = COMMAND_BITS
+    START_BIT        = 10
+    BITS             = 3
+  END_OBJECT
+  OBJECT             = FDS_DESTINATION_CODE
+    START_BIT        = 13
+    BITS             = 4
+    NOTE             = "5 - WA camera, 6 - NA camera"
+  END_OBJECT
+END_OBJECT
+
+OBJECT               = ISS_ENG
+  ITEMS              = 9
+  ITEM_TYPE          = UNSIGNED_INTEGER
+  START_BYTE         = 233
+  ITEM_BYTES         = 1
+  NOTE               = "Imaging Science Subsystem (ISS) engineering
+  measurements."
+END_OBJECT
+
+/* End of object definitions. */
+END_OBJECT           = ENGINEERING_TABLE
+END

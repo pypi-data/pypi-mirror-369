@@ -1,0 +1,739 @@
+PDS_VERSION_ID                 = PDS3                                         
+/* Identification data elements */                                            
+DATA_SET_NAME               = "JUNO JUPITER JIRAM REDUCED DATA RECORD V1.0"   
+DATA_SET_ID                    = "JNO-J-JIRAM-3-RDR-V1.0"                     
+PRODUCT_ID                     = "JIR_LOG_SPE_RDR_2020048T195001_V01"         
+SOURCE_PRODUCT_ID              = "JIR_SPE_RDR_2020048T195001_V01.DAT"         
+PRODUCT_TYPE                   = " ENGINEERING_DATA "                         
+                                                                              
+START_TIME                     = 2020-02-17T19:49:58.232                      
+STOP_TIME                      = 2020-02-17T19:49:59.232                      
+SPACECRAFT_CLOCK_START_COUNT   = "1/635241312:01310"                          
+SPACECRAFT_CLOCK_STOP_COUNT    = "1/635241313:01310"                          
+                                                                              
+                                                                              
+INSTRUMENT_NAME                = "JOVIAN INFRARED AURORAL MAPPER"             
+INSTRUMENT_ID                  = "JIR"                                        
+INSTRUMENT_HOST_NAME           = "JUNO"                                       
+INSTRUMENT_HOST_ID             = "JNO"                                        
+COMMAND_FILE_NAME              = "jm0251_JRMb.sasf"                           
+                                                                              
+PRODUCT_CREATION_TIME          = 2020-10-07T10:06:06.000                      
+PROCESSING_LEVEL_ID            = "3"                                          
+RECORD_TYPE                    = FIXED_LENGTH                                 
+RECORD_BYTES                   = 72                                           
+FILE_RECORDS                   = 1                                            
+PRODUCT_VERSION_ID             = "01"                                         
+STANDARD_DATA_PRODUCT_ID       = "AUXILIARY"                                  
+ORBIT_NUMBER                   = 25                                           
+TARGET_NAME                    = "JUPITER"                                    
+MD5_CHECKSUM                   = "72e758c5b4ac48b9c3e3071085351d8a"           
+^TABLE                         = "JIR_LOG_SPE_RDR_2020048T195001_V01.TAB"     
+                                                                              
+OBJECT                        = TABLE                                         
+  ROWS                        = 1                                             
+  ROW_BYTES                   = 72                                            
+  COLUMNS                     = 38                                            
+  INTERCHANGE_FORMAT          = BINARY                                        
+  DESCRIPTION                 = "Binary Table listing parameter extracted     
+                                 from instrument housekeeping telemetry.      
+                                 This table is associated to a binary file    
+                                 containing instrument science telemetry."    
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "PACKET IDENTIFICATION"                       
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 1                                             
+    BYTES                     = 2                                             
+    START_BYTE                = 1                                             
+    DESCRIPTION               = "Location-independent name of the file        
+                                 containing the current frame"                
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "LENGTH"                                      
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 2                                             
+    BYTES                     = 2                                             
+    START_BYTE                = 3                                             
+    DESCRIPTION               = "36936 (Maximum size)"                        
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                     = COLUMN                                         
+    NAME                     = "SECONDS"                                      
+    DATA_TYPE                = LSB_UNSIGNED_INTEGER                           
+    COLUMN_NUMBER            = 3                                              
+    BYTES                    = 4                                              
+    START_BYTE               = 5                                              
+    DESCRIPTION              = "Datation of TM production time"               
+    ITEMS                    = 2                                              
+    ITEM_BYTES               = 2                                              
+ END_OBJECT                  = COLUMN                                         
+                                                                              
+ OBJECT                       = COLUMN                                        
+    NAME                      = "SUBSECONDS"                                  
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 4                                             
+    BYTES                     = 2                                             
+    START_BYTE                = 9                                             
+    DESCRIPTION               = "Datation of TM production time, subsecond"   
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+OBJECT                        = COLUMN                                        
+    NAME                      = "COUNTER"                                     
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 5                                             
+    BYTES                     = 2                                             
+    START_BYTE                = 11                                            
+    DESCRIPTION               = "TM sequence counter"                         
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+   OBJECT                     = COLUMN                                        
+    NAME                      = "SUBMODE "                                    
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 6                                             
+    BYTES                     = 1                                             
+    START_BYTE                = 13                                            
+    DESCRIPTION               = "Current Mode"                                
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "MODE"                                        
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 7                                             
+    BYTES                     = 1                                             
+    START_BYTE                = 14                                            
+    DESCRIPTION               = "Current Mode"                                
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "ACQ_NUMBER"                                  
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 8                                             
+    BYTES                     = 2                                             
+    START_BYTE                = 15                                            
+    DESCRIPTION               = "Total number of acquisitions                 
+       in the current session/sequence step Min=1;Max=65535"                  
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "ACQ_COUNT"                                   
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 9                                             
+    BYTES                     = 2                                             
+    START_BYTE                = 17                                            
+    DESCRIPTION               = "Current acquisition number                   
+         in the current session Min=1; Max= ACQ_NUMBER"                       
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+ OBJECT                       = COLUMN                                        
+    NAME                      = "ACQ_DURATION"                                
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 10                                            
+    BYTES                     = 1                                             
+    START_BYTE                = 19                                            
+    DESCRIPTION               = "Acquisition Cycle duration  0 = use SC       
+               Dynamics else Min=27; Max=255"                                 
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "ACQ_REPETITION"                              
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 11                                            
+    BYTES                     = 1                                             
+    START_BYTE                = 20                                            
+    DESCRIPTION               = "Number of SC revolutions between two         
+                                  acquisitions Min=1; Max=255"                
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "SUBFRAME_NUMBER"                             
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 12                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 21                                            
+    DESCRIPTION               = "Total number of  sub-frames                  
+          for current acquisition phase  Min=2; Max=6"                        
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "SUBFRAME"                                    
+    DATA_TYPE                 = LSB_BIT_STRING                                
+    COLUMN_NUMBER             = 13                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 23                                            
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "SUBFRAME_COUNT"                         
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 3                                        
+         START_BIT                 = 1                                        
+         DESCRIPTION               = "Current sub-frame                       
+         in the current acquisition Min=1; Max=6"                             
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "DATATION"                               
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 4                                        
+         DESCRIPTION               = "Current sub-frame                       
+          in the current acquisition Min=1; Max=6"                            
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "WARN_DATATION_STEP"                     
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 5                                        
+        DESCRIPTION               = "0= OK                                    
+                     1=Out of datation tolerance"                             
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "FRAME_ERROR_FLAG"                       
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 6                                        
+         DESCRIPTION               = "Flag used to signal                     
+        there was a timeout error  during the acquisition                     
+          0 = ACQ OK                                                          
+          1 = ACQ ERROR"                                                      
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "ACQ_TYPE"                               
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 3                                        
+         START_BIT                 = 7                                        
+         DESCRIPTION               = "Type of acquisition                     
+          0 = Science                                                         
+          1 = Double Science Frame 1                                          
+          2 = Double Science Frame 2                                          
+          3 = Background                                                      
+          4 = Dark                                                            
+          5 = Readout noise"                                                  
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "CHANNEL_ID"                             
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 10                                       
+         DESCRIPTION               = "Detector used for                       
+           the current subframe                                               
+               0 = Spectrum IR                                                
+               1 = Image IR"                                                  
+       END_OBJECT                   = BIT_COLUMN                              
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "COMP_STATUS"                            
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 2                                        
+         START_BIT                 = 11                                       
+         DESCRIPTION               = "Compression status                      
+           of the current subframe                                            
+                  0 = Not compressed data                                     
+                  1 = Compressed data                                         
+                  2 = Not compressed data due to error"                       
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "SUBFRAME_TYPE"                          
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 2                                        
+         START_BIT                 = 13                                       
+         DESCRIPTION               = "Type of subframe                        
+              0 = ImSubFrame  = 128 x144 pixel                                
+              1 = SpSubFrameF = 128x112 pixel                                 
+              2 = SpSubFrameM = 64x112 pixel                                  
+              3 = SpSubFrameS = 16x112 pixel"                                 
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "ROW_BACK_SUBTRACTION"                   
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 2                                        
+         START_BIT                 = 15                                       
+         DESCRIPTION               = "RICE subtraction                        
+                0 = Subtraction disabled                                      
+                1 = Background subtraction on                                 
+                2 = Reference row  subtraction on"                            
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "NOISY"                                       
+    DATA_TYPE                 = LSB_BIT_STRING                                
+    COLUMN_NUMBER             = 14                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 25                                            
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "START_NOISY_BITS"                       
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 4                                        
+         START_BIT                 = 1                                        
+         DESCRIPTION               = "It is the echo                          
+         of SP_START_NOISY_BITS set to 0 in case of compression               
+         error or not compressed data or JPG compression"                     
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                       = BIT_COLUMN                              
+          NAME                      = "END_NOISY_BITS"                        
+          BIT_DATA_TYPE             = UNSIGNED_INTEGER                        
+          BITS                      = 4                                       
+          START_BIT                 = 5                                       
+          DESCRIPTION               = "It is the echo                         
+           of SP_END_NOISY_BITS set to 0 in case of compression               
+           error or not compressed data or JPG compression"                   
+        END_OBJECT                  = BIT_COLUMN                              
+                                                                              
+        OBJECT                      = BIT_COLUMN                              
+          NAME                      = "CR_ROW"                                
+          BIT_DATA_TYPE             = UNSIGNED_INTEGER                        
+          BITS                      = 4                                       
+          START_BIT                 = 9                                       
+          DESCRIPTION               = "Compression reference                  
+          rows offset It is the echo of  SP_CR_ROW Range 0..15                
+          Not valid in case of not compressed data or JPG compression "       
+        END_OBJECT                  = BIT_COLUMN                              
+                                                                              
+        OBJECT                      = BIT_COLUMN                              
+          NAME                      = "NOF_NOISY_BITS"                        
+          BIT_DATA_TYPE             = UNSIGNED_INTEGER                        
+          BITS                      = 4                                       
+          START_BIT                 = 13                                      
+          DESCRIPTION               = "Number of used                         
+          noisy bits, set to 0 in case of compression                         
+          error or not compressed data or JPG compression"                    
+        END_OBJECT                  = BIT_COLUMN                              
+                                                                              
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "MIN_PIXEL_JPEG"                              
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 15                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 27                                            
+    DESCRIPTION               = "Min value for the pixel in JPEG              
+        compression. Not used in RICE"                                        
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "MAX_PIXEL_JPEG"                              
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 16                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 29                                            
+    DESCRIPTION               = "Max value for the pixel in JPEG              
+              compression. Not used in RICE"                                  
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+OBJECT                        = COLUMN                                        
+    NAME                      = "TEXPO"                                       
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 17                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 31                                            
+    DESCRIPTION               = "Expo time for the used detector              
+                          Min=0;                                              
+                          Max=65535 ;                                         
+                          Res=0.2msec;"                                       
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+ OBJECT                       = COLUMN                                        
+    NAME                      = "TDELAY"                                      
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 18                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 33                                            
+    DESCRIPTION               = "Delay time for the used detector             
+                    Min = 0 ;                                                 
+                    Max = 65535;                                              
+                    Res = 0.2msec ;"                                          
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "SECONDS"                                     
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 19                                            
+    BYTES                     = 4                                             
+    START_BYTE                = 35                                            
+    DESCRIPTION               = "Datation of science and HK acquisition time  
+  (when the command of start acquisition is sent to the internal IF), second" 
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "SUBSECONDS"                                  
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 20                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 39                                            
+    DESCRIPTION               = "Datation of science and HK acquisition time  
+(when the command of start acquisition is sent to the internal IF) subseconds"
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "NADIR_OFFSET"                                
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 21                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 41                                            
+    DESCRIPTION               = "Nadir offset angle (Deg/100) related         
+      to the current frame , calculated by the sw                             
+    (For example NADIR_OFFSET_1 + NADIR_DELTA)"                               
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "BACKGROUND"                                  
+    DATA_TYPE                 = LSB_BIT_STRING                                
+    COLUMN_NUMBER             = 22                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 43                                            
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "BKG_REPETITION"                         
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 8                                        
+         START_BIT                 = 1                                        
+         DESCRIPTION               = "Period of Background                    
+           acquisition                                                        
+                   Min = 0;                                                   
+                   Max = 50"                                                  
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "EN_DIS_SUB"                             
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 2                                        
+         START_BIT                 = 9                                        
+         DESCRIPTION               = "Background subtraction                  
+         enabled                                                              
+                          0 = EN                                              
+                          1 = DIS"                                            
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "BKG_RN"                                 
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 3                                        
+         START_BIT                 = 11                                       
+         DESCRIPTION               = "Type of background                      
+                     0=BKG                                                    
+                     1=RN                                                     
+                     2=DARK"                                                  
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "EN_DIS_DOU_SCI"                         
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 3                                        
+         START_BIT                 = 14                                       
+         DESCRIPTION               = "                                        
+                             0 : EN                                           
+                             1 : DIS"                                         
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+ END_OBJECT                  = COLUMN                                         
+                                                                              
+ OBJECT                      = COLUMN                                         
+    NAME                      = "WIN1_X"                                      
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 23                                            
+    BYTES                     = 1                                             
+    START_BYTE                = 45                                            
+    DESCRIPTION               = "X coordinates of the SPE win or IMG L band   
+   Win Min=0 Max 255 Res:1IDN=1pixel"                                         
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "WIN1_Y"                                      
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 24                                            
+    BYTES                     = 1                                             
+    START_BYTE                = 46                                            
+    DESCRIPTION               = "Y coordinates of the SPE win or              
+  IMG L band win Min=0 Max 255 Res:1IDN=1pixel"                               
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "WIN2_X"                                      
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 25                                            
+    BYTES                     = 1                                             
+    START_BYTE                = 47                                            
+    DESCRIPTION               = "X coordinates of the IMG M band win, 0       
+     in the case of SPE Min=0 Max 255 Res:1IDN=1pixel"                        
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "WIN2_Y"                                      
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 26                                            
+    BYTES                     = 1                                             
+    START_BYTE                = 48                                            
+    DESCRIPTION               = "Y coordinates of the IMG M band win, 0       
+         in the case of SPE Min=0 Max 255 Res:1IDN=1pixel"                    
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "DET_TEMP"                                    
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 27                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 49                                            
+    DESCRIPTION               = "Temperature for the used detector            
+                Min=0; Max=16383; Res: 1DN=TBD K"                             
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "STATUS"                                      
+    DATA_TYPE                 =  LSB_BIT_STRING                               
+    COLUMN_NUMBER             = 28                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 51                                            
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "STATUS_DET"                             
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 3                                        
+         START_BIT                 = 1                                        
+         DESCRIPTION               = "Detector status                         
+                        0 = OFF                                               
+                        1 = ON                                                
+                        2 = AUTO                                              
+                        3 = NA"                                               
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "STATUS_GAIN"                            
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 4                                        
+         DESCRIPTION               = "Gain status                             
+         for the detector                                                     
+                          0 = LOW                                             
+                          1 = HIGH"                                           
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+                                                                              
+       OBJECT                        = BIT_COLUMN                             
+         NAME                      = "M_STATUS_LOOP_ERROR_FLAG"               
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 5                                        
+         DESCRIPTION               = "Motor control loop                      
+         error flag                                                           
+                    0 = OK                                                    
+                    1 = ERROR"                                                
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "M_STATUS_MOTOR_MODE"                    
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 6                                        
+         DESCRIPTION               = "Despinning mode,                        
+         acquired from FPA                                                    
+                     0 = POINT                                                
+                     1 = DE-SPIN"                                             
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "M_STATUS_MOTOR_POWER"                   
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 7                                        
+         DESCRIPTION               = "Motor power status                      
+                          0 = Motor power off                                 
+                          1 = Motor power on"                                 
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "M_STATUS_ON_OFF"                        
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 8                                        
+         DESCRIPTION               = "Motor status                            
+                   0 = Motor off                                              
+                   1 = Motor on"                                              
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "SPARE"                                  
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 7                                        
+         START_BIT                 = 9                                        
+         DESCRIPTION               = "SPARE"                                  
+                                                                              
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "NADIR_OFFSET_SIGN"                      
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 1                                        
+         START_BIT                 = 15                                       
+         DESCRIPTION               = "UTC system format                       
+         time corresponding to the SPACECRAFT ELAPSED TIME count"             
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "S_TELESCOPE_MIRROR_TEMP"                     
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 29                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 53                                            
+    DESCRIPTION               = "Telescope mirror temperature                 
+                Min=0; Max=16383; Res: See RD3"                               
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "S_SLIT_TEMP"                                 
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 30                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 55                                            
+    DESCRIPTION               = "Slit temperature                             
+                   Min=0; Max=16383; Res: 1DN=TBD K"                          
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+OBJECT                      = COLUMN                                          
+    NAME                      = "S_SC_IF_TEMP"                                
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 31                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 57                                            
+    DESCRIPTION               = "Interface with the S/C temperature           
+                         Min=0; Max=16383; Res: 1DN=TBD K"                    
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "S_COLD_RADIATOR_TEMP"                        
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 32                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 59                                            
+    DESCRIPTION               = "Cold radiator temperature                    
+                 Min=0; Max=16383; Res: 1DN=TBD K"                            
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "S_SPECTROMETER_MIRROR_TEMP"                  
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 33                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 61                                            
+    DESCRIPTION               = "Spectrometer mirror temperature              
+             Min=0; Max=16383; Res: See RD3"                                  
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "M_MOTOR_TS"                                  
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 34                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 63                                            
+    DESCRIPTION               = "Motor temperature                            
+              Min=0; Max=16383; Res: 1DN=TBD K"                               
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "M_CAL_SOURCE_TEMP"                           
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 35                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 65                                            
+    DESCRIPTION               = "Lamp 1 (main) temperature                    
+             Min=0; Max=16383; Res: 1DN=TBD K"                                
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "M_DIFFUSER_CAL_TEMP"                         
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 36                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 67                                            
+    DESCRIPTION               = "Calibration diffuser temperature             
+                    Min=0; Max=16383; Res: 1DN=TBD K"                         
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "M_MOTOR_START_POS"                           
+    DATA_TYPE                 = LSB_UNSIGNED_INTEGER                          
+    COLUMN_NUMBER             = 37                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 69                                            
+    DESCRIPTION               = "Motor point/despin start position            
+                 Min = 0 (-12.85714286 opt. deg);                             
+                 Max = 16380 (12.85086496 opt. deg) ;                         
+               Res: 0.00156948 deg (optical)"                                 
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  OBJECT                      = COLUMN                                        
+    NAME                      = "LAMP"                                        
+    DATA_TYPE                 =  LSB_BIT_STRING                               
+    COLUMN_NUMBER             = 38                                            
+    BYTES                     = 2                                             
+    START_BYTE                = 71                                            
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "LAMP_ID"                                
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 2                                        
+         START_BIT                 = 1                                        
+         DESCRIPTION               = "Calibration Source ID                   
+                   0=Main ON                                                  
+                   1=Redundant ON                                             
+                   2=Both ON                                                  
+  This is the echo of the TC_CALIBRATION devoted filed.                       
+  It is a do not care COLUMN             if in SCI mode."                     
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "LAMP_GAIN_CURRENT_1"                    
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 6                                        
+         START_BIT                 = 3                                        
+         DESCRIPTION               = "Gain current                            
+         for the main lamp.                                                   
+         Min=0; Max=15                                                        
+         It is a valid filed only for the steps 3-4 of                        
+         the CAL mode.                                                        
+         It is a do not care COLUMN if in SCI mode and                        
+         during the steps 1-2 and 5-6 of the CAL mode."                       
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "LAMP_GAIN_CURRENT_2"                    
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         BITS                      = 6                                        
+         START_BIT                 = 9                                        
+         DESCRIPTION               = "Gain current for the redundant lamp.    
+              Min=0; Max=15                                                   
+         It is a valid filed only for the steps 3-4 of                        
+         the CAL mode.                                                        
+         It is a do not care COLUMN if in SCI mode and                        
+         during the steps 1-2 and 5-6 of the CAL mode."                       
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+       OBJECT                      = BIT_COLUMN                               
+         NAME                      = "SPARE"                                  
+         BIT_DATA_TYPE             = UNSIGNED_INTEGER                         
+         COLUMN_NUMBER             = 2                                        
+         BITS                      = 2                                        
+         START_BIT                 = 15                                       
+         DESCRIPTION               = "SPARE"                                  
+       END_OBJECT                  = BIT_COLUMN                               
+                                                                              
+                                                                              
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+  END_OBJECT                  = TABLE                                         
+  END                                                                         
