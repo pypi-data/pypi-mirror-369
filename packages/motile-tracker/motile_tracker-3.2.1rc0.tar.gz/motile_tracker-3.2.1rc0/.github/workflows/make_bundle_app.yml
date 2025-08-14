@@ -1,0 +1,16 @@
+name: bundleApp
+
+on:
+  release:
+    types:
+      - published
+  # workflow_dispatch: # go to motile_tracker_bundle_app repo to trigger manual runs
+
+jobs:
+  packaging:
+    permissions:
+      contents: write
+    uses: funkelab/motile_tracker_bundled_app/.github/workflows/bundle_app.yml@main
+    secrets: inherit
+    with:
+      event_name: ${{ github.event_name }}
