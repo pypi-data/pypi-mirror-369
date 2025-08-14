@@ -1,0 +1,6 @@
+def request_nofile_limits(request_rlimit_nofile: int | str = 'auto') -> None:
+    ...
+
+
+def check_shm_limits(threshold_gibibytes: float = 1) -> None:
+    ...
