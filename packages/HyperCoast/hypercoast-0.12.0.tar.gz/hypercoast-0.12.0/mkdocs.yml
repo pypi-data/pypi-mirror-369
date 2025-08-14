@@ -1,0 +1,134 @@
+site_name: HyperCoast
+site_description: A Python package for processing hyperspectral data in coastal regions
+site_author: giswqs
+site_url: https://hypercoast.org
+repo_url: https://github.com/opengeos/HyperCoast
+
+copyright: "Copyright &copy; 2024 - 2024 Bingqing Liu & Qiusheng Wu"
+
+theme:
+    palette:
+        - scheme: default
+          #   primary: blue
+          #   accent: indigo
+          toggle:
+              icon: material/toggle-switch-off-outline
+              name: Switch to dark mode
+        - scheme: slate
+          primary: indigo
+          accent: indigo
+          toggle:
+              icon: material/toggle-switch
+              name: Switch to light mode
+    name: material
+    icon:
+        repo: fontawesome/brands/github
+    # logo: assets/logo.png
+    # favicon: assets/favicon.png
+    features:
+        - navigation.instant
+        - navigation.tracking
+        - navigation.top
+        - search.highlight
+        - search.share
+    custom_dir: "docs/overrides"
+    font:
+        text: Google Sans
+        code: Regular
+
+plugins:
+    - search
+    - mkdocstrings
+    - git-revision-date
+    - git-revision-date-localized:
+          enable_creation_date: true
+          type: timeago
+    # - pdf-export
+    - mkdocs-jupyter:
+          include_source: True
+          ignore_h1_titles: True
+          execute: false
+          allow_errors: false
+          ignore: ["conf.py"]
+          execute_ignore:
+              [
+                  "acolite.ipynb",
+                  "acolite_emit.ipynb",
+                  "search_data.ipynb",
+                  "ecostress.ipynb",
+                  "aviris.ipynb",
+                  "image_cube.ipynb",
+                  "image_slicing.ipynb",
+                  "temperature.ipynb",
+                  "pace_oci_l1.ipynb",
+                  "chla_predict.ipynb",
+                  "pace_cyano.ipynb",
+                  "_earthaccess.ipynb",
+              ]
+
+markdown_extensions:
+    - admonition
+    - abbr
+    - attr_list
+    - def_list
+    - footnotes
+    - meta
+    - md_in_html
+    - pymdownx.superfences
+    - pymdownx.highlight:
+          linenums: true
+    - toc:
+          permalink: true
+
+# extra:
+#     analytics:
+#         provider: google
+#         property: UA-XXXXXXXXX-X
+
+nav:
+    - Home: index.md
+    - Installation: installation.md
+    - Usage: usage.md
+    - Contributing: contributing.md
+    - Changelog: changelog.md
+    - Report Issues: https://github.com/opengeos/HyperCoast/issues
+    - Examples:
+          - examples/overview.md
+          - examples/acolite.ipynb
+          - examples/acolite_emit.ipynb
+          - examples/search_data.ipynb
+          - examples/image_cube.ipynb
+          - examples/image_slicing.ipynb
+          - examples/aviris.ipynb
+          - examples/desis.ipynb
+          - examples/emit.ipynb
+          - examples/neon.ipynb
+          - examples/pace.ipynb
+          - examples/ecostress.ipynb
+          - examples/chlorophyll_a.ipynb
+          - examples/chla_predict.ipynb
+          - examples/temperature.ipynb
+          - examples/pace_oci_l1.ipynb
+          - examples/pace_oci_l2.ipynb
+          - examples/pace_cyano.ipynb
+          - examples/multispectral.ipynb
+          - examples/pca.ipynb
+          - examples/field_data.ipynb
+          - examples/hypoxia.ipynb
+          - examples/tanager.ipynb
+          - examples/tanager_3d.ipynb
+          - examples/prisma.ipynb
+    - Workshops:
+          - workshops/emit.ipynb
+          - workshops/pace.ipynb
+    - API Reference:
+          - aviris module: aviris.md
+          - chla module: chla.md
+          - common module: common.md
+          - desis module: desis.md
+          - emit module: emit.md
+          - hypercoast module: hypercoast.md
+          - neon module: neon.md
+          - pace module: pace.md
+          - prisma module: prisma.md
+          - ui module: ui.md

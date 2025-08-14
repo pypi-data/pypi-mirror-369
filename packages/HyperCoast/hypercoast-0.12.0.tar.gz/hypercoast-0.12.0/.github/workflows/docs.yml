@@ -1,0 +1,53 @@
+name: docs
+on:
+    push:
+        branches:
+            - main
+            - master
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version: ["3.12"]
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v6
+              with:
+                  version: "0.4.16"
+                  #   enable-cache: true
+
+            - name: Set up Python ${{ matrix.python-version }}
+              run: uv python install ${{ matrix.python-version }}
+
+            - name: Install dependencies
+              run: |
+                  uv venv --python ${{ matrix.python-version }}
+                  uv pip install -e .
+
+            - name: Install optional dependencies
+              run: |
+                  uv pip install --find-links https://girder.github.io/large_image_wheels GDAL pyproj
+                  uv pip install pytest
+                  uv pip install -r requirements_dev.txt
+
+            - name: Test import
+              run: |
+                  uv run python -c "import hypercoast; print('hypercoast import successful')"
+                  uv run python -c "from osgeo import gdal; print('gdal import successful')"
+                  uv run gdalinfo --version
+
+            - name: Running pytest
+              run: |
+                  uv run pytest . --verbose
+
+            - name: Install mkdocs
+              run: uv run mkdocs gh-deploy --force
+              env:
+                  EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
+                  EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
