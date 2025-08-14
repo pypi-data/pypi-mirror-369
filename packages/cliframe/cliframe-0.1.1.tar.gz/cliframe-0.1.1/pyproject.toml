@@ -1,0 +1,37 @@
+[project]
+name = "cliframe"
+version = "0.1.1"
+description = "A CLI Frame-work"
+authors = [
+    {name = "Artur Zdolinski",email = "artur@zdolinski.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+
+
+[project.scripts]
+cliframe = "cliframe:main"
+
+[project.optional-dependencies]
+dev = [
+"pytest>=8.4.1,<9.0.0",
+]
+
+[tool.poetry.dependencies]
+rich = ">=14.1.0,<15.0.0"
+prompt_toolkit = ">=3.0.51,<4.0.0"
+inquirer = ">=3.4.1,<4.0.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [
+    { include = "cliframe.py", from = "src" },
+]
+
+
+
+[tool.poetry.extras]
+dev = ["pytest"]
