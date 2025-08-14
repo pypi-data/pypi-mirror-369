@@ -1,0 +1,36 @@
+# 📦 Detect_LCD_Params – Cấu hình tự động với YAML
+
+`Detect_LCD_Params` là một class kế thừa từ `BaseParams`, hỗ trợ:
+
+- Khởi tạo thông số mặc định.
+- Tự động tạo và load file cấu hình `.yaml`.
+- Tự động cập nhật config khi file thay đổi (sử dụng `watchdog`).
+
+## 🔧 Định nghĩa class
+
+```python
+from simpleconfig import BaseParams
+
+class Detect_LCD_Params(BaseParams):
+    def __init__(self, app_name, module_name):
+        # App name tự động được đặt thành tên file config, module name là module nhỏ trong file đó
+        super().__init__(app_name, module_name)
+        
+        # Tham số cho adaptive threshold (cv2.adaptiveThreshold)
+        self.C = 2
+        self.block_size = 11
+        
+        # Tham số nối các vùng trắng
+        self.kernel_size = 7
+        self.expand_crop_bot = 0
+        self.expand_crop_left = 0
+        self.expand_crop_right = 0
+        self.expand_crop_top = -3
+        
+        # Tỷ lệ diện tích vùng LCD hợp lệ
+        self.min_LCD_area_ratio = 0.4
+        self.max_LCD_area_ratio = 0.8
+        
+        # Tham số xử lý màu
+        # Tự động tạo hoặc load cấu hình từ file YAML
+        self.create_or_load_yaml()
