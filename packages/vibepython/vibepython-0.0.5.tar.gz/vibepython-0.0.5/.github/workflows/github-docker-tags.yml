@@ -1,0 +1,33 @@
+---
+name: Tags Docker Image CI(GitHub)
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    name: Build & Push
+    runs-on: ubuntu-latest
+    env:
+      REPOSITORY_URL: ghcr.io
+      IMAGE_NAME: oldtyt/vibepython
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Build image
+        id: docker-build
+        run: >-
+          docker build
+          -t $REPOSITORY_URL/$IMAGE_NAME:${{ github.ref_name }}
+          -t $REPOSITORY_URL/$IMAGE_NAME:latest .
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REPOSITORY_URL }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Image
+        id: docker-push
+        run: docker push --all-tags $REPOSITORY_URL/$IMAGE_NAME
