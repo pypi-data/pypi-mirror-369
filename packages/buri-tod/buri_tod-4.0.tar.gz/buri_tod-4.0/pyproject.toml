@@ -1,0 +1,33 @@
+[project]
+name = "buri-tod"
+version = "4.0"
+authors = [
+  { name="Joel Indra", email="anonre@anonre.com" },
+]
+description = "B.U.R.I (Basic Universal Remote Interface) is a powerful, stateful, and user-friendly Python-based client for interacting with PHP webshells. Designed for penetration testers and security professionals, B.U.R.I demonstrates the impact of file upload vulnerabilities and provides a rich command-line interface for managing remote servers."
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "requests",
+    "rich",
+    "prompt-toolkit"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/joelindra/buri"
+Issues = "https://github.com/joelindra/buri/issues"
+
+[project.scripts]
+buri = "buri.buri:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["buri"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
