@@ -1,0 +1,63 @@
+[project]
+name = "realtime-pipeline"
+version = "0.3.0"
+description = "Build up pipelined programs to process the newest data"
+authors = [
+    { name = "timsu92", email = "33785401+timsu92@users.noreply.github.com" },
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "deprecation>=2.1.0",
+    "readerwriterlock>=1.0.9",
+    "sortedcontainers>=2.4.0",
+    "typing-extensions>=4.14.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/timsu92/realtime-pipeline"
+Documentation = "https://github.com/timsu92/realtime-pipeline"
+Repository = "https://github.com/timsu92/realtime-pipeline"
+Issues = "https://github.com/timsu92/realtime-pipeline/issues"
+Changelog = "https://github.com/timsu92/realtime-pipeline/blob/main/CHANGELOG.md"
+
+
+[build-system]
+requires = ["uv_build>=0.8.3,<0.9.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.8.3",
+    "pre-commit>=3.2.0",
+    "ruff>=0.12.5",
+    "vermin>=1.6.0",
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = true
+major_version_zero = true
