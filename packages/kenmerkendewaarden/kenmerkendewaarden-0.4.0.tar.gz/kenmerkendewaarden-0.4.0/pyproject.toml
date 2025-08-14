@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kenmerkendewaarden"
+version = "0.4.0"
+maintainers = [{ name = "Jelmer Veenstra", email = "jelmer.veenstra@deltares.nl" }]
+description = "Derive indicators from waterlevel measurements"
+readme = "README.md"
+keywords = ["kenmerkendewaarden"]
+license = "LGPL-3.0"
+requires-python = ">=3.9"
+dependencies = [
+	#numpy>=1.25.0 supports wide range of python versions
+	"numpy>=1.25.0",
+	#pandas>=2.1.4 supports diff on timedeltas
+	"pandas>=2.1.4",
+	#matplotlib>=3.7.0 contour colorbar on uniform values succeeds
+	"matplotlib>=3.7.0",
+	#netcdf4>=1.5.6 does not call numpy.bool (avoids AttributeError)
+	"netcdf4>=1.5.6",
+	#xarray>=2023.4.0 works with pandas<2.0.0 for resampling, only available for py39
+	"xarray>=2023.4.0",
+	#rws-ddlpy>=0.7.0 resolves timestamp formatting warning
+	"rws-ddlpy>=0.7.0",
+	#hatyan>=2.11.0 has improved duplicated timesteps error message, better calc_HWLW() parameters
+	"hatyan>=2.11.0",
+	#statsmodels>=0.14.5 fixed scipy _lazywhere importerror
+	"statsmodels>=0.14.5",
+	#pyproj>=3.1.0 pip installable in py38
+	"pyproj>=3.1.0",
+	#pooch>=1.1.0 has attribute retrieve
+	"pooch>=1.1.0",
+]
+classifiers = [
+	"Development Status :: 2 - Pre-Alpha",
+	"Intended Audience :: Science/Research",
+	"Operating System :: OS Independent",
+	"Topic :: Scientific/Engineering :: Information Analysis",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Home = "https://github.com/deltares-research/kenmerkendewaarden"
+Code = "https://github.com/deltares-research/kenmerkendewaarden"
+Issues = "https://github.com/deltares-research/kenmerkendewaarden/issues"
+
+[project.optional-dependencies]
+dev = [
+	"bump2version>=0.5.11",
+	"flake8",
+	"pytest",
+	"pytest-cov",
+	"twine",
+	"build",
+	"black",
+]
+docs = [
+	"sphinx>=1.8.1",
+	"sphinx_mdinclude",
+	# "nbsphinx", # not required since no ipynb yet
+	"pydata-sphinx-theme",
+	#"pandoc", # installed with choco on github, disabled since no ipynb yet
+]
+examples = [
+	"jupyter",
+	"notebook",
+]
+
+[tool.setuptools]
+packages = ["kenmerkendewaarden"]
+
+[tool.pytest.ini_options]
+console_output_style = "count"
+testpaths = ["tests"]
+addopts = "-v --tb=short --durations=0"
+filterwarnings = [
+	"error",
+	"ignore::UserWarning",
+	]
+markers = [
+	"unittest: mark a test as unittest. Used for testing single methods",
+	"systemtest: mark a test as systemtest. Used for testing at a higher level, verifying a given input returns the expected output",
+	"acceptance: mark a test as acceptance. Used for non-functional requirements and data that needs to be human-verified",
+]
