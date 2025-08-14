@@ -1,0 +1,30 @@
+[build-system]
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "rjsonc"
+description = "Load JSON with comments. Fast."
+keywords = ["json", "comments", "comment", "json-comment", "json-comments"]
+authors = [
+  { name = "AWeirdDev", email = "awdjared@gmail.com" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+dynamic = ["version"]
+
+[project.optional-dependencies]
+tests = [
+    "pytest",
+]
+
+[tool.maturin]
+python-source = "python"
+features = ["pyo3/extension-module"]
