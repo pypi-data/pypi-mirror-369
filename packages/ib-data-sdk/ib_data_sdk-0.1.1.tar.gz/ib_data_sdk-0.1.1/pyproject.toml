@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ib-data-sdk"
+version = "0.1.1"
+description = "Interactive Brokers Data SDK"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Lim Yuan Sheng", email = "yuansheng0424@gmail.com" }
+]
+
+dependencies = [
+    # add your runtime dependencies here, e.g.:
+    "ibapi>=9.81.1",     
+    "pandas>=1.5.0",     
+    "numpy>=1.23.0",     
+    "requests>=2.28.0",
+    "rich>=13.0.0",
+    "typer>=0.9.0"  
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"ib_data_sdk" = ["*.txt", "*.csv", "*.json", "*.yaml"]
+
+[project.urls]
+Homepage = "https://github.com/quantphantom/ib-data-sdk"
+Documentation = "https://github.com/quantphantom/ib-data-sdk/tree/main/docs"
+Source = "https://github.com/quantphantom/ib-data-sdk"
+
+[project.scripts]
+ib-data-sdk = "ib_data_sdk.cli:main"
