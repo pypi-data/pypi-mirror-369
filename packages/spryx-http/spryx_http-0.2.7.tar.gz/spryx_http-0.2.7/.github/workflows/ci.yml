@@ -1,0 +1,12 @@
+name: CI
+
+on:
+  workflow_call:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-check:
+    uses: Spryx-AI/spryx-devops-workflows/.github/workflows/python-ci.yml@main
+    with:
+      python-version: "3.11"
