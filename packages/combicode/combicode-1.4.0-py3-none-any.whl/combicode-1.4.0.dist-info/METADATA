@@ -1,0 +1,149 @@
+Metadata-Version: 2.4
+Name: combicode
+Version: 1.4.0
+Summary: A CLI tool to combine a project's codebase into a single file for LLM context.
+Author: A. Aurelions
+License: MIT License
+        
+        Copyright (c) 2025 A. Aurelions
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/aaurelions/combicode
+Project-URL: Bug Tracker, https://github.com/aaurelions/combicode/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Utilities
+Classifier: Environment :: Console
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click>=8.0
+Requires-Dist: pathspec>=0.9
+Dynamic: license-file
+
+# Combicode
+
+[![NPM Version](https://img.shields.io/npm/v/combicode.svg)](https://www.npmjs.com/package/combicode)
+[![PyPI Version](https://img.shields.io/pypi/v/combicode.svg)](https://pypi.org/project/combicode/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+<img align="center" src="https://github.com/aaurelions/combicode/raw/main/screenshot.png" width="800"/>
+
+**Combicode** is a zero-dependency CLI tool that intelligently combines your project's source code into a single, LLM-friendly text file.
+
+The generated file starts with a system prompt and a file tree overview, priming the LLM to understand your project's complete context instantly. Paste the contents of `combicode.txt` into ChatGPT, Claude, or any other LLM to get started.
+
+## Why use Combicode?
+
+- **Maximum Context:** Gives your LLM a complete picture of your project structure and code.
+- **Intelligent Priming:** Starts the output with a system prompt and a file tree, directing the LLM to analyze the entire codebase before responding.
+- **Intelligent Ignoring:** Automatically skips `node_modules`, `.venv`, `dist`, `.git`, binary files, and other common junk.
+- **`.gitignore` Aware:** Respects your project's existing `.gitignore` rules out of the box.
+- **Zero-Install Usage:** Run it directly with `npx` or `pipx` without polluting your environment.
+- **Customizable:** Easily filter by file extension or add custom ignore patterns.
+
+## Quick Start
+
+Navigate to your project's root directory in your terminal and run one of the following commands:
+
+#### For Node.js/JavaScript/TypeScript projects (via `npx`):
+
+```bash
+npx combicode
+```
+
+#### For Python projects (or general use, via `pipx`):
+
+```bash
+pipx run combicode
+```
+
+This will create a `combicode.txt` file in your project directory, complete with the context-setting header.
+
+## Usage and Options
+
+### Preview which files will be included
+
+Use the `--dry-run` or `-d` flag to see a list of files without creating the output file.
+
+```bash
+# npx
+npx combicode --dry-run
+
+# pipx
+pipx run combicode -d
+```
+
+### Specify an output file
+
+Use the `--output` or `-o` flag.
+
+```bash
+npx combicode -o my_project_context.md
+```
+
+### Include only specific file types
+
+Use the `--include-ext` or `-i` flag with a comma-separated list of extensions.
+
+```bash
+# Include only TypeScript, TSX, and CSS files
+npx combicode -i .ts,.tsx,.css
+
+# Include only Python and YAML files
+pipx run combicode -i .py,.yaml
+```
+
+### Add custom exclude patterns
+
+Use the `--exclude` or `-e` flag with comma-separated glob patterns.
+
+```bash
+# Exclude all test files and anything in a 'docs' folder
+npx combicode -e "**/*_test.py,docs/**"
+```
+
+### Generating Context for `llms.txt`
+
+The `--llms.txt` or `-l` flag is designed for projects that use an [`llms.txt`](https://llmstxt.org/) file to specify important documentation. When this flag is used, Combicode inserts a specialized system prompt telling the LLM that the provided context is the project's definitive documentation for a specific version. This helps the LLM provide more accurate answers and avoid using deprecated functions.
+
+```bash
+# Combine all markdown files for an llms.txt context
+npx combicode -l -i .md -o llms.txt
+```
+
+## All CLI Options
+
+| Option           | Alias | Description                                                                    | Default         |
+| ---------------- | ----- | ------------------------------------------------------------------------------ | --------------- |
+| `--output`       | `-o`  | The name of the output file.                                                   | `combicode.txt` |
+| `--dry-run`      | `-d`  | Preview files without creating the output file.                                | `false`         |
+| `--include-ext`  | `-i`  | Comma-separated list of extensions to exclusively include.                     | (include all)   |
+| `--exclude`      | `-e`  | Comma-separated list of additional glob patterns to exclude.                   | (none)          |
+| `--llms-txt`     | `-l`  | Use a specialized system prompt for context generated from an `llms.txt` file. | `false`         |
+| `--no-gitignore` |       | Do not use patterns from the project's `.gitignore` file.                      | `false`         |
+| `--no-header`    |       | Omit the introductory prompt and file tree from the output.                    | `false`         |
+| `--version`      | `-v`  | Show the version number.                                                       |                 |
+| `--help`         | `-h`  | Show the help message.                                                         |                 |
+
+## License
+
+This project is licensed under the MIT License.
