@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "PTJPLSM"
+version = "1.8.0"
+description = "Priestley-Taylor Jet Propulsion Laboratory Soil Moisutre Evapotranspiration Model"
+readme = "README.md"
+authors = [
+    { name = "Gregory Halverson", email = "gregory.h.halverson@jpl.nasa.gov" },
+    { name = "Joshua B. Fisher", email = "jbfisher@chapman.edu" },
+    { name = "Claire S. Villanueva-Weeks", email = "claire.s.villanueva-weeks@jpl.gov" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "carlson-leaf-area-index",
+    "check-distribution",
+    "gedi-canopy-height",
+    "GEOS5FP>=1.1.1",
+    "numpy",
+    "pandas",
+    "PTJPL>=1.5.1",
+    "rasters>=1.7.0",
+    "SEBAL-soil-heat-flux",
+    "soil-capacity-wilting>=1.2.0",
+    "solar-apparent-time",
+    "verma-net-radiation>=1.3.0"
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "pytest>=6.0",
+    "pytest-cov",
+    "jupyter",
+    "pytest",
+    "twine"
+]
+
+[dependency-groups]
+sensitivity = [
+    "ECOv002-calval-tables",
+    "ECOv002-granules>=1.0.3",
+    "monte-carlo-sensitivity",
+    "seaborn",
+]
+
+[tool.setuptools.package-data]
+PTJPLSM = ["*.csv"]
+
+[tool.setuptools.packages.find]
+exclude = ["notebooks*", "references*"]
+
+[project.urls]
+"Homepage" = "https://github.com/JPL-Evapotranspiration-Algorithms/PTJPLSM"
