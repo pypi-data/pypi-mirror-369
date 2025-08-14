@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "smitfit"
+description = "Symbolic Model Inference Toolkit"
+authors = [{ name = "Jochem smitfit", email = "jhsmitfit@gmail.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python :: 3.10",
+    "Intended Audience :: Science/Research",
+]
+dependencies = ["numpy", "sympy>1.13.0", "scipy", "toposort"]
+
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = ["pytest>=7.2.0"]
+
+[project.urls]
+Source = "https://github.com/Jhsmitfit/smitfit/"
+
+[tool.hatch.build]
+exclude = ["_versioneer.py"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "smitfit/_version.py"
+
+[tool.flake8]
+max-line-length = 100
+ignore = "D203"
+exclude = [".git", "__pycache__", "build", "dist", "docs"]
+max-complexity = 10
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100

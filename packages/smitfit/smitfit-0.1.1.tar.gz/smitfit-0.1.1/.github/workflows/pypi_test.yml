@@ -1,0 +1,57 @@
+name: PyPi distribute test push
+on: [push]
+
+jobs:
+  build-n-publish:
+    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Configure Git
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
+
+    - name: Create test version tag
+      run: |
+        # Get the current date components (YYYYMMDD)
+        DATE=$(date +%Y%m%d)
+        
+        # Get short SHA for uniqueness
+        SHA=$(git rev-parse --short HEAD)
+        
+        # Create version in format: YYYY.MM.DD.dev0+{unix_timestamp}.{sha}
+        # This follows PEP 440 and Hatch's expectations
+        YEAR=${DATE:0:4}
+        MONTH=${DATE:4:2}
+        DAY=${DATE:6:2}
+        
+        TIMESTAMP=$(date +%s)
+        VERSION="${YEAR}.${MONTH}.${DAY}.dev0+${TIMESTAMP}.${SHA}"
+        
+        # Create and push tag
+        git tag -a "v${VERSION}" -m "Test release ${VERSION}"
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "Created tag v${VERSION}"
+
+    - name: Install Hatch
+      run: pip install hatch
+
+    - name: Build
+      run: hatch build
+
+    - name: Publish distribution 📦 to Test PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository-url: https://test.pypi.org/legacy/
