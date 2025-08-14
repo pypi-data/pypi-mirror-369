@@ -1,0 +1,100 @@
+Metadata-Version: 2.4
+Name: glean-mcp
+Version: 0.1.2
+Summary: Python client + MCP server adapter for Glean (search, chat, read documents). Provides a reusable HTTP client plus simple sync helper functions.
+Author: Alan Shum
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/alankyshum/glean-mcp-server
+Project-URL: Repository, https://github.com/alankyshum/glean-mcp-server
+Project-URL: Issues, https://github.com/alankyshum/glean-mcp-server/issues
+Project-URL: Changelog, https://github.com/alankyshum/glean-mcp-server/releases
+Project-URL: Documentation, https://github.com/alankyshum/glean-mcp-server#readme
+Keywords: glean,mcp,model-context-protocol,search
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Internet :: WWW/HTTP :: Indexing/Search
+Classifier: Operating System :: OS Independent
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx<0.28.0,>=0.25.0
+Requires-Dist: pydantic<3,>=2.0.0
+Requires-Dist: python-dotenv<2,>=1.0.0
+Requires-Dist: mcp<1.0.0,>=0.9.0
+Provides-Extra: dev
+Requires-Dist: pytest<9,>=8.0; extra == "dev"
+Requires-Dist: pytest-asyncio<0.24,>=0.23; extra == "dev"
+Requires-Dist: ruff<0.6.0,>=0.5.0; extra == "dev"
+Requires-Dist: build<2,>=1.2.0; extra == "dev"
+Provides-Extra: perf
+Requires-Dist: uvloop>=0.19.0; (platform_system == "Linux" or platform_system == "Darwin") and extra == "perf"
+Dynamic: license-file
+
+# Glean MCP Library & Utilities
+
+Lightweight Python package providing:
+
+- Async `GleanClient` for search, chat, document retrieval
+- Synchronous helper functions returning JSON strings
+- CLI (`glean-mcp`) for quick terminal usage
+
+Links: [Releases](https://github.com/alankyshum/glean-mcp-server/releases) · [Filtering Details](FILTERING.md) · [Cookie Guide](docs/COOKIES.md) · [Publishing](PUBLISHING.md)
+
+## Installation
+```bash
+pip install glean-mcp
+# or with performance extra
+pip install 'glean-mcp[perf]'
+```
+
+## Quick Start (Library)
+```python
+import os
+from glean_mcp import glean_search
+os.environ['GLEAN_BASE_URL'] = 'https://your-company-be.glean.com'
+os.environ['GLEAN_COOKIES'] = '<cookie string>'
+print(glean_search('onboarding docs'))
+```
+
+## Quick Start (CLI)
+```bash
+export GLEAN_BASE_URL=https://your-company-be.glean.com
+export GLEAN_COOKIES='<cookie string>'
+
+glean-mcp search "onboarding"
+glean-mcp chat "How do I rotate credentials?"
+glean-mcp read-docs id=12345 url=https://docs.google.com/document/d/... 
+```
+
+## Functions
+| Function | Description |
+|----------|-------------|
+| glean_search(query, page_size=10) | Search documents (JSON string) |
+| glean_chat(message) | Chat answer (JSON string) |
+| glean_read_documents(specs) | Retrieve documents (JSON string) |
+
+Underlying async usage: create `GleanClient(base_url, cookies)` and await its methods.
+
+## Environment Variables
+| Var | Required | Purpose |
+|-----|----------|---------|
+| GLEAN_BASE_URL | Yes | Backend instance URL |
+| GLEAN_COOKIES  | Yes | Auth cookies (see docs/COOKIES.md) |
+
+## Development
+```bash
+git clone https://github.com/alankyshum/glean-mcp-server.git
+cd glean-mcp-server
+python -m venv .venv && source .venv/bin/activate
+pip install -e '.[dev]'
+pytest -q
+```
+
+## Versioning & Publishing
+Tag `vX.Y.Z` after updating version strings; GitHub Action publishes if versions match. See PUBLISHING.md.
+
+## License
+MIT
