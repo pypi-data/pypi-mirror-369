@@ -1,0 +1,54 @@
+include:
+  - project: "ghsc/esi/esi-templates"
+    ref: main
+    file:
+      - ".setup_conda.yml"
+      - ".rules.yml"
+      - ".default_rules.yml"
+      - ".deploy_rules.yml"
+      - ".run_tests.yml"
+      - ".deploy_to_pypi_by_tag.yml"
+      - ".deploy_to_testpypi_by_tag.yml"
+
+default:
+  image: code.usgs.gov:5001/devops/images/usgs/python:3.12-build
+  tags:
+    - build
+  before_script:
+    - !reference [.conda, before_script]
+
+stages:
+  - build
+  - test
+  - deploy
+
+Try Installing:
+  rules:
+    - !reference [.default, rules]
+  script:
+    - pip install -e .[dev,test]
+  stage: build
+
+
+Run Tests:
+  rules:
+    - !reference [.default, rules]
+  script:
+    - pip install -e .[dev,test]
+    - pytest .
+  stage: test
+
+# Deploy to TestPyPi:
+#   rules:
+#     - !reference [.deploy, rules]
+
+#   extends: .deploy-to-testpypi-by-tag
+
+#   stage: deploy
+Deploy to PyPi:
+  rules:
+    - !reference [.deploy, rules]
+
+  extends: .deploy-to-pypi-by-tag
+
+  stage: deploy

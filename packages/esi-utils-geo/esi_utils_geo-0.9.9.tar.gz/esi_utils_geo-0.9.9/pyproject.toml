@@ -1,0 +1,61 @@
+[project]
+name = "esi-utils-geo"
+dynamic = ["version"]
+description = "USGS Earthquake Basic Geographic Utilities"
+authors = [
+    {name = "Mike Hearne", email="mhearne@usgs.gov"},
+]
+readme = "README.md"
+requires-python = ">=3.8"
+
+keywords = ["utilities", "geo"]
+
+dependencies = [
+    "numpy",
+    "pandas>=1.4.1",
+    "requests>2.31.0",
+    "scp>=0.14.0",
+    "paramiko>=2.10.0",
+]
+
+[project.optional-dependencies]
+
+build = [
+    "build",
+    "twine",
+    "check-wheel-contents",
+]
+
+dev = [
+    "build>=0.7.0",
+    "black>=21",
+    "flake8>=3.9",
+    "ipython>=7.26",
+]
+test = [
+    "pytest>=6.2",
+    "pytest-cov>=2.12.0"
+]
+
+[tool.setuptools]
+include-package-data = true
+ 
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["esi_utils_geo*"]
+exclude = ["tests*"]
+ 
+[tool.setuptools.package-data]
+esi_utils_geo = ["*.txt"]
+ 
+[options.package_data]
+esi_utils_geo = ["data/*"]
+
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "setuptools_scm[toml]>=3.4",]
+build-backend = "setuptools.build_meta"
+[tool.setuptools_scm]
