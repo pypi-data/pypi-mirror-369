@@ -1,0 +1,65 @@
+[tool.poetry]
+name = "classifier-toolkit"
+version = "0.2.2"
+description = ""
+authors = [
+    "senih.yilmaz <senih.yilmaz@qonto.com>",
+    "jeremy.fraoua <jeremy.fraoua@qonto.com>",
+    "gauthier.marquand <gauthier.marquand@qonto.com>",
+    "arnaud.alepee <arnaud.alepee@qonto.com>"
+]
+readme = "README.md"
+packages = [{ include = "classifier_toolkit" }]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.13"
+pandas = "^2.2.0"
+numpy = "<2.0"
+catboost = "^1.2.2"
+shap = "^0.44.1"
+scikit-learn = "^1.4.0"
+optuna = "^3.5.0"
+matplotlib = "^3.9.2"
+colorama = "^0.4.6"
+tabulate = "^0.9.0"
+polars = "^1.2.1"
+lightgbm = "^4.5.0"
+xgboost = "^2.1.1"
+scipy = "<1.14"
+statsmodels = "^0.14.2"
+category-encoders = "^2.6.3"
+pyarrow = "^18.0.0"
+tqdm = "^4.66.0"
+
+[tool.poetry.group.liveplotting.dependencies]
+nbformat = ">=4.2.0"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+ipywidgets = "^8.1.5"
+
+[tool.poetry.group.lint.dependencies]
+sqlfluff = "^3.1.0"
+ruff = "^0.5.4"
+pandas-stubs = "^2.2.2.240807"
+types-tabulate = "^0.9.0.20240106"
+mypy = "^1.11.1"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.2"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.5.42"
+mkdocstrings = {extras = ["python"], version = "^0.26.2"}
+
+[tool.poetry.group.exp.dependencies]
+bayesian-optimization = "^2.0.0"
+pytorch-tabnet = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+ignore_missing_imports = true
