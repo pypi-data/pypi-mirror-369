@@ -1,0 +1,422 @@
+
+# 🔌 plugllm
+
+[![PyPI Downloads](https://static.pepy.tech/badge/plugllm)](https://pepy.tech/projects/plugllm)
+[![PyPI Version](https://img.shields.io/pypi/v/plugllm.svg)](https://pypi.org/project/plugllm/)
+![Python Version](https://img.shields.io/pypi/pyversions/plugllm.svg)
+[![License](https://img.shields.io/github/license/firoziya/plugllm)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/firoziya/plugllm?style=social)](https://github.com/firoziya/plugllm)
+
+
+**plugllm** is a unified and provider-agnostic Python package that lets you interact with multiple Large Language Model (LLM) APIs using a single, consistent interface. Whether you're using OpenAI's GPT models, Google's Gemini, Mistral AI, Groq, or other providers, plugllm abstracts away the complexity of different SDKs and APIs, giving you one simple way to generate text from any LLM.
+
+🎯 **Perfect for**: Developers who want to experiment with different LLMs, switch between providers easily, or build applications that support multiple AI models without vendor lock-in.
+
+***
+
+## ✨ Key Features
+
+- 🔌 **Unified API Interface** — One `generate()` function works with all supported providers
+- 🌐 **Multi-Provider Support** — OpenAI, Google Gemini, Mistral AI, Groq, and more
+- 🧠 **Consistent Message Format** — Same request structure across all providers
+- 🔐 **Flexible Configuration** — Environment variables, inline setup, or config files
+- 📦 **Lightweight Dependencies** — Only requires Python `requests` library
+- 🔄 **Easy Provider Switching** — Change models with a single line of code
+- 🛡️ **Context Management** — Automatic handling of token/character limits
+- 📜 **Role-Based Conversations** — Support for system, user, and assistant message roles
+- 🔧 **Extensible Architecture** — Add custom providers with minimal code
+- 🚀 **No Vendor Lock-in** — Switch between providers without changing your application logic
+
+***
+
+## 📦 Installation
+
+### Install from PyPI (Recommended)
+
+```bash
+pip install plugllm
+```
+
+
+### Install from Source
+
+```bash
+# Latest stable release
+pip install git+https://github.com/firoziya/plugllm.git
+
+# Development version
+git clone https://github.com/firoziya/plugllm.git
+cd plugllm
+pip install -e .
+```
+
+
+### Requirements
+
+- Python 3.7+
+- `requests` library (automatically installed)
+
+***
+
+## 🚀 Quick Start
+
+```python
+from plugllm import config, generate
+
+# Configure your preferred LLM
+config(
+    provider="openai",
+    api_key="your-openai-api-key",
+    model="gpt-4"
+)
+
+# Generate text with a simple function call
+response = generate("Explain quantum computing in simple terms")
+print(response)
+```
+
+That's it! The same code works with any supported provider by just changing the configuration.
+
+***
+
+## ⚙️ Configuration
+
+### Method 1: Direct Configuration
+
+Configure directly in your Python code:
+
+```python
+from plugllm import config
+
+# OpenAI Configuration
+config(
+    provider="openai",
+    api_key="sk-your-openai-key",
+    model="gpt-4",
+    base_url=None  # Optional: for custom endpoints
+)
+
+# Google Gemini Configuration
+config(
+    provider="gemini",
+    api_key="your-gemini-api-key",
+    model="gemini-2.5-flash"
+)
+
+# Mistral AI Configuration
+config(
+    provider="mistral",
+    api_key="your-mistral-key",
+    model="mistral-large-latest"
+)
+
+# Groq Configuration
+config(
+    provider="groq",
+    api_key="gsk_your-groq-key",
+    model="deepseek-r1-distill-llama-70b"
+)
+```
+
+
+### Method 2: Environment Variables
+
+For better security and easier deployment:
+
+```bash
+# Set environment variables .env
+LLM_PROVIDER=openai
+LLM_API_KEY=sk-your-openai-key
+LLM_MODEL=gpt-4
+LLM_BASE_URL=https://api.openai.com/v1  # Optional
+```
+
+Then in your Python code:
+
+```python
+from plugllm import config, generate
+
+# Configuration will be loaded from environment variables
+config()
+
+response = generate("What is LLM?")
+print(response)
+```
+***
+
+## 💬 Usage Examples
+
+### Basic Text Generation
+
+```python
+from plugllm import config, generate
+
+config(provider="gemini", api_key="AIzaSyC5...", model="gemini-2.5-flash")
+
+# Simple question
+response = generate("What is the capital of France?")
+print(response)
+
+# Complex prompt
+prompt = """
+Write a Python function that calculates the factorial of a number.
+Include error handling and documentation.
+"""
+code = generate(prompt)
+print(code)
+```
+
+
+### Interactive Chat Application
+
+```python
+from plugllm import config, chat, reset_chat
+
+config(provider="gemini", api_key="AIzaSyC5...", model="gemini-2.5-flash")
+
+while (i := input("Ask: ")): print(chat(i))
+
+reset_chat() # Optional
+```
+
+
+***
+
+## 🌐 Supported Providers \& Models
+
+### OpenAI
+
+- **Models**: `gpt-4`, `gpt-4-turbo`, `gpt-3.5-turbo`, `gpt-3.5-turbo-16k`
+- **API Key**: Get from [OpenAI Platform](https://platform.openai.com/api-keys)
+
+```python
+config(provider="openai", api_key="sk-...", model="gpt-4")
+```
+
+
+### Google Gemini
+
+- **Models**: `gemini-2.5-flash`, `gemini-1.5-flash`, `gemini-2.0-flash`
+- **API Key**: Get from [Google AI Studio](https://makersuite.google.com/app/apikey)
+
+```python
+config(provider="gemini", api_key="AIza...", model="gemini-2.5-flash")
+```
+
+
+### Mistral AI
+
+- **Models**: `mistral-large-latest`, `mistral-medium-latest`, `mistral-small-latest`
+- **API Key**: Get from [Mistral Console](https://console.mistral.ai/)
+
+```python
+config(provider="mistral", api_key="your-key", model="mistral-large-latest")
+```
+
+
+### Groq
+
+- **Models**: `mixtral-8x7b-32768`, `llama2-70b-4096`, `gemma-7b-it`
+- **API Key**: Get from [Groq Console](https://console.groq.com/keys)
+
+```python
+config(provider="groq", api_key="gsk_...", model="mixtral-8x7b-32768")
+```
+
+
+### Coming Soon
+
+- 🔜 **Anthropic Claude** - Constitutional AI models
+- 🔜 **Cohere** - Command and Generate models
+- 🔜 **Ollama** - Local model hosting
+- 🔜 **LM Studio** - Local model interface
+- 🔜 **Hugging Face** - Open source models
+
+***
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**1. Authentication Errors**
+
+```python
+# ❌ Wrong API key format
+config(provider="openai", api_key="wrong-key")
+
+# ✅ Correct API key format
+config(provider="openai", api_key="sk-proj-...")
+```
+
+**2. Model Not Found**
+
+```python
+# ❌ Invalid model name
+config(provider="openai", model="gpt-6")
+
+# ✅ Valid model name
+config(provider="openai", model="gpt-4")
+```
+
+
+
+***
+
+## 📊 Performance \& Best Practices
+
+### Optimal Usage Patterns
+
+```python
+# ✅ Good: Reuse configuration
+from plugllm import config, generate
+
+config(provider="openai", api_key="sk-...", model="gpt-4")
+
+# Multiple requests with same config
+for prompt in prompts:
+    response = generate(prompt)
+    process_response(response)
+
+# ❌ Avoid: Reconfiguring for each request
+for prompt in prompts:
+    config(provider="openai", api_key="sk-...", model="gpt-4")
+    response = generate(prompt)
+```
+
+
+### Cost Optimization
+
+```python
+# Use appropriate models for different tasks
+config(provider="openai", model="gpt-3.5-turbo")  # Cheaper for simple tasks
+simple_response = generate("What's 2+2?")
+
+config(provider="openai", model="gpt-4")  # More capable for complex tasks
+complex_response = generate("Analyze this complex dataset...")
+```
+
+***
+
+## 📚 API Reference
+
+### Core Functions
+
+#### `config(**kwargs)`
+
+Configure the LLM provider and model.
+
+**Parameters:**
+
+- `provider` (str): Provider name ("openai", "gemini", "mistral", "groq")
+- `api_key` (str): API key for the provider
+- `model` (str): Model name to use
+- `base_url` (str, optional): Custom API endpoint
+
+
+#### `generate(prompt, **kwargs)`
+
+Generate text using the configured LLM.
+
+**Parameters:**
+
+- `prompt` (str or list): Text prompt or conversation messages
+- `**kwargs`: Additional parameters for the specific provider
+
+**Returns:**
+
+- `str`: Generated text response
+
+
+#### `generate_stream(prompt, **kwargs)`
+
+Generate streaming text response.
+
+**Parameters:**
+
+- Same as `generate()`
+
+**Yields:**
+
+- `str`: Text chunks as they're generated
+
+***
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+
+Copyright (c) 2025 Yash Kumar Firoziya
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+```
+
+
+***
+
+## 👨💻 Author
+
+**Yash Kumar Firoziya**
+
+- GitHub: [@firoziya](https://github.com/firoziya)
+- Email: [ykfiroziya@gmail.com](mailto:ykfiroziya@gmail.com)
+
+***
+
+## 🙏 Acknowledgments
+
+- Thanks to all the LLM providers for their amazing APIs
+- Inspired by the need for a unified interface across different AI models
+- Built with ❤️ for the Python AI community
+
+***
+
+## 📈 Roadmap
+
+### Version 0.2.0
+
+- [ ] Support for Anthropic Claude
+- [ ] Async/await support
+- [ ] Better error handling and retries
+- [ ] Configuration validation
+
+
+### Version 0.3.0
+
+- [ ] Local model support (Ollama, LM Studio)
+- [ ] Conversation memory management
+- [ ] Built-in prompt templates
+- [ ] Cost tracking and usage analytics
+
+
+### Version 1.0.0
+
+- [ ] Production-ready stability
+- [ ] Comprehensive documentation
+- [ ] Performance optimizations
+- [ ] Plugin system for extensions
+
+***
+
+⭐ **If you find plugllm useful, please give it a star on GitHub!**
+
+📖 **For more examples and tutorials, visit our [documentation](https://github.com/firoziya/plugllm/wiki)**
+
+<div style="text-align: center">⁂</div>
+
+[^1]: https://pepy.tech/projects/plugllm
+
+[^2]: https://img.shields.io/pypi/v/plugllm.svg
+
+[^3]: https://pypi.org/project/plugllm/
+
