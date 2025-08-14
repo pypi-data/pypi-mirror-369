@@ -1,0 +1,183 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hostinger-cli"
+dynamic = ["version"]
+description = "A comprehensive command-line interface for Hostinger API"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Hostinger CLI Contributors", email = "support@hostinger.com"},
+]
+maintainers = [
+    {name = "Hostinger CLI Contributors", email = "support@hostinger.com"},
+]
+keywords = [
+    "hostinger",
+    "api",
+    "cli",
+    "cloud",
+    "vps",
+    "domains",
+    "dns",
+    "hosting",
+    "web hosting",
+    "server management",
+    "domain management",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "click>=8.0.0",
+    "requests>=2.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.950",
+    "pre-commit>=2.15.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/hostinger/hostinger-cli"
+Documentation = "https://developers.hostinger.com"
+Repository = "https://github.com/hostinger/hostinger-cli"
+"Bug Reports" = "https://github.com/hostinger/hostinger-cli/issues"
+Changelog = "https://github.com/hostinger/hostinger-cli/blob/main/CHANGELOG.md"
+
+[project.scripts]
+hostinger = "hostinger_cli.main:main"
+hapi = "hostinger_cli.main:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "hostinger_cli.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["hostinger_cli*"]
+
+[tool.setuptools.package-data]
+hostinger_cli = ["*.json", "*.yaml", "*.yml"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["hostinger_cli"]
+
+[tool.flake8]
+max-line-length = 88
+select = ["E", "W", "F"]
+ignore = [
+    "E203",  # whitespace before ':'
+    "E501",  # line too long
+    "W503",  # line break before binary operator
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    ".eggs",
+    "*.egg-info",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "click.*",
+    "requests.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers"
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+    "*_test.py",
+]
+python_classes = [
+    "Test*",
+]
+python_functions = [
+    "test_*",
+]
+
+[tool.coverage.run]
+source = ["hostinger_cli"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

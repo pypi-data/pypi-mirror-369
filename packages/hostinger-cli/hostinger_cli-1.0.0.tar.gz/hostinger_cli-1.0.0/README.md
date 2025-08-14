@@ -1,0 +1,350 @@
+# Hostinger CLI
+
+A comprehensive command-line interface for managing your Hostinger services. Control your domains, VPS instances, DNS records, and billing from the terminal.
+
+[![PyPI version](https://badge.fury.io/py/hostinger-cli.svg)](https://badge.fury.io/py/hostinger-cli)
+[![Python Version](https://img.shields.io/pypi/pyversions/hostinger-cli.svg)](https://pypi.org/project/hostinger-cli/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+- 🌐 **Domain Management**: Check availability, purchase, configure nameservers, enable/disable locks and privacy protection
+- 🖥️ **VPS Management**: Deploy, start, stop, restart, recreate, monitor metrics, manage backups
+- 🔧 **DNS Management**: Manage DNS records, import/export zones, snapshots, validation
+- 💳 **Billing**: View subscriptions, payment methods, catalog items, pricing
+- 🔑 **SSH Key Management**: Add, remove, and attach SSH keys to VPS instances
+- 📊 **Rich Output**: Table and JSON output formats with colorized status indicators
+- ⚙️ **Easy Configuration**: Secure API key storage and management
+
+## Installation
+
+### From PyPI (Recommended)
+
+```bash
+pip install hostinger-cli
+```
+
+### From Source
+
+```bash
+git clone https://github.com/hostinger/hostinger-cli.git
+cd hostinger-cli
+pip install -e .
+```
+
+## Quick Start
+
+### 1. Configure your API key
+
+First, get your API key from the [Hostinger Panel](https://hpanel.hostinger.com/profile/api).
+
+```bash
+# Configure interactively
+hostinger configure
+
+# Or set as environment variable
+export HOSTINGER_API_KEY="your_api_key_here"
+
+# Or pass directly to commands
+hostinger --api-key "your_api_key_here" domains list
+```
+
+### 2. List your services
+
+```bash
+# List all domains
+hostinger domains list
+
+# List all VPS instances
+hostinger vps list
+
+# Show billing overview
+hostinger billing overview
+```
+
+## Usage Examples
+
+### Domain Management
+
+```bash
+# Check domain availability
+hostinger domains check example com net org
+
+# List all domains
+hostinger domains list
+
+# Show domain details
+hostinger domains show example.com
+
+# Purchase a domain
+hostinger domains purchase example.com hostingercom-domain-com-usd-1y
+
+# Enable domain lock
+hostinger domains lock example.com
+
+# Enable privacy protection
+hostinger domains enable-privacy example.com
+
+# Update nameservers
+hostinger domains set-nameservers example.com ns1.example.com ns2.example.com
+```
+
+### VPS Management
+
+```bash
+# List all VPS instances
+hostinger vps list
+
+# Show VPS details
+hostinger vps show 12345
+
+# Start/stop/restart VPS
+hostinger vps start 12345
+hostinger vps stop 12345
+hostinger vps restart 12345
+
+# Show VPS metrics for last 7 days
+hostinger vps metrics 12345 --days 7
+
+# List available OS templates
+hostinger vps templates list
+
+# List data centers
+hostinger vps datacenters
+
+# Recreate VPS (⚠️ destroys all data!)
+hostinger vps recreate 12345 1130 --password "SecurePassword123"
+```
+
+### DNS Management
+
+```bash
+# List DNS records
+hostinger dns list example.com
+
+# Add DNS record
+hostinger dns add example.com www A 192.168.1.1 --ttl 3600
+
+# Delete DNS record
+hostinger dns delete example.com www A
+
+# Import DNS zone from file
+hostinger dns import-zone example.com zone.json
+
+# Export DNS zone to file
+hostinger dns export-zone example.com zone.json
+
+# Reset DNS to defaults
+hostinger dns reset example.com
+
+# List DNS snapshots
+hostinger dns snapshots list example.com
+
+# Restore DNS snapshot
+hostinger dns snapshots restore example.com 12345
+```
+
+### SSH Key Management
+
+```bash
+# List SSH keys
+hostinger vps ssh-keys list
+
+# Add SSH key from file
+hostinger vps ssh-keys create "My Key" --key-file ~/.ssh/id_rsa.pub
+
+# Add SSH key directly
+hostinger vps ssh-keys create "My Key" --key "ssh-rsa AAAAB3NzaC1yc2E..."
+
+# Attach SSH keys to VPS
+hostinger vps ssh-keys attach 12345 101 102
+
+# List attached SSH keys
+hostinger vps ssh-keys attached 12345
+```
+
+### Billing and Subscriptions
+
+```bash
+# Show billing overview
+hostinger billing overview
+
+# List all subscriptions
+hostinger billing subscriptions list
+
+# List payment methods
+hostinger billing payment-methods list
+
+# Browse catalog
+hostinger billing catalog list --category VPS
+
+# Search catalog
+hostinger billing search "domain"
+
+# Show pricing
+hostinger billing pricing --category DOMAIN
+```
+
+## Configuration
+
+The CLI stores configuration in `~/.hostinger-cli.json`. You can also use environment variables:
+
+- `HOSTINGER_API_KEY`: Your Hostinger API key
+- `HOSTINGER_CONFIG_FILE`: Custom config file location
+
+### Configuration File Format
+
+```json
+{
+  "api_key": "your_api_key_here"
+}
+```
+
+## Output Formats
+
+Most commands support multiple output formats:
+
+```bash
+# Table format (default)
+hostinger domains list
+
+# JSON format
+hostinger domains list --format json
+
+# Raw API response
+hostinger domains list --format json | jq .
+```
+
+## Command Reference
+
+### Global Options
+
+- `--api-key`: Specify API key
+- `--config-file`: Specify config file location
+- `--help`: Show help message
+
+### Commands
+
+#### `hostinger configure`
+Configure API key interactively
+
+#### `hostinger domains`
+- `list` - List all domains
+- `show <domain>` - Show domain details
+- `check <domain> <tlds...>` - Check domain availability
+- `purchase <domain> <item-id>` - Purchase domain
+- `lock/unlock <domain>` - Enable/disable domain lock
+- `enable-privacy/disable-privacy <domain>` - Control privacy protection
+- `set-nameservers <domain> <ns1> <ns2>` - Update nameservers
+- `forwarding` - Manage domain forwarding
+- `whois` - Manage WHOIS profiles
+
+#### `hostinger vps`
+- `list` - List VPS instances
+- `show <vm-id>` - Show VPS details
+- `start/stop/restart <vm-id>` - Control VPS power state
+- `recreate <vm-id> <template-id>` - Recreate VPS
+- `actions <vm-id>` - List VPS actions
+- `backups <vm-id>` - List VPS backups
+- `metrics <vm-id>` - Show VPS metrics
+- `templates` - Manage OS templates
+- `ssh-keys` - Manage SSH keys
+- `datacenters` - List data centers
+
+#### `hostinger dns`
+- `list <domain>` - List DNS records
+- `add <domain> <name> <type> <content>` - Add DNS record
+- `delete <domain> <name> <type>` - Delete DNS record
+- `update <domain> <name> <type> <old> <new>` - Update DNS record
+- `import-zone/export-zone <domain> <file>` - Import/export DNS zone
+- `reset <domain>` - Reset DNS to defaults
+- `snapshots` - Manage DNS snapshots
+
+#### `hostinger billing`
+- `overview` - Show billing overview
+- `catalog` - Browse service catalog
+- `subscriptions` - Manage subscriptions
+- `payment-methods` - Manage payment methods
+
+## Error Handling
+
+The CLI provides detailed error messages and uses appropriate exit codes:
+
+- `0`: Success
+- `1`: General error
+- `2`: Command usage error
+
+## Development
+
+### Setting up Development Environment
+
+```bash
+# Clone the repository
+git clone https://github.com/hostinger/hostinger-cli.git
+cd hostinger-cli
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install in development mode
+pip install -e .
+
+# Install development dependencies
+pip install -r requirements-dev.txt
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+python -m pytest
+
+# Run with coverage
+python -m pytest --cov=hostinger_cli
+```
+
+### Code Style
+
+This project uses Black for code formatting and Flake8 for linting:
+
+```bash
+# Format code
+black hostinger_cli/
+
+# Check linting
+flake8 hostinger_cli/
+```
+
+## API Reference
+
+This CLI uses the [Hostinger API](https://developers.hostinger.com). All API endpoints are supported with full feature parity.
+
+For detailed API documentation, visit: https://developers.hostinger.com
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Reporting Issues
+
+Please report issues on our [GitHub Issues](https://github.com/hostinger/hostinger-cli/issues) page.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- 📖 [Documentation](https://developers.hostinger.com)
+- 🐛 [Bug Reports](https://github.com/hostinger/hostinger-cli/issues)
+- 💬 [Discussions](https://github.com/hostinger/hostinger-cli/discussions)
+- 📧 [Email Support](mailto:support@hostinger.com)
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
+
+---
+
+Made with ❤️ by the Hostinger team
