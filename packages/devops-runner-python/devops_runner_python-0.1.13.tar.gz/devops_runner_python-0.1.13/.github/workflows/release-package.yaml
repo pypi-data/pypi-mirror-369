@@ -1,0 +1,21 @@
+# Based on https://docs.github.com/en/packages/quickstart
+
+name: Build devops package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish-pypi:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv build
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
