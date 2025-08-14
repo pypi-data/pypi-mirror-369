@@ -1,0 +1,2053 @@
+//	complexTypePolicies.ap
+//
+//	(c) 2022 by Andreas Kraft
+//	License: BSD 3-Clause License. See the LICENSE file for further details.
+//
+//	Definitions for oneM2M complex type attributes.
+
+//	TODO m2m:primitive content -> all supported resources. Finally replace the attributes in the resource classes.
+{
+
+	//
+	//	Multiple occurences
+	//
+	"atr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "attribute",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:attribute",
+			"car": "01L"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "attribute",
+			"ns": "m2m",
+			"type": "list",		//m2m:attributeList
+			"ltype": "ncname",
+			"car": "01L"
+		}
+	],
+	"chty": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlObjectDetails",
+			"lname": "childResourceType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:resourceType",
+			"car": "1"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "childResourceType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01L"
+		}, 
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "childResourceType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01L"
+		}
+	],
+	"cra": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "createdAfter",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "createdAfter",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		}
+	],
+	"crb": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "createdBefore",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "createdBefore",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		}
+	],
+	"drt": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "desiredIdentifierResultType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:desIdResType",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "desiredIdentifierResultType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:desIdResType",
+			"car": "01"
+		}
+	],
+	"dur": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:batchNotify",
+			"lname": "duration",			
+			"ns": "m2m",
+			"type": "duration",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:missingData",
+			"lname": "duration",			
+			"ns": "m2m",
+			"type": "duration",
+			"car": "1"
+		}
+	],
+	"ec": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "eventCategory",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:eventCat",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "eventCategory",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:eventCat",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "eventCategory",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:eventCat",
+			"car": "01"
+		}
+
+	],
+	"evc": [
+		// See also the attribute of the same name in attributePolicies.ap
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:processConditions",
+			"lname": "evalCriteria",
+			"ns": "m2m",
+			"type": "m2m:evalCriteria",
+			"car": "1"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:stateTransition",
+			"lname": "evalCriteria",
+			"ns": "m2m",
+			"type": "m2m:evalCriteria",
+			"car": "1"
+		}
+	],
+
+	"exa": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "expireAfter",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "expireAfter",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		}
+	],
+	"exb": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "expireBefore",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "expireBefore",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		}
+	],
+	"fo": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "filterOperation",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:filterOperation",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "filterOperation",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:filterOperation",
+			"car": "01"
+		}
+	],
+	"fr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "from",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "from",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "from",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ms": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "modifiedSince",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "modifiedSince",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		}
+	],
+	"nm": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:mgmtLinkRef",
+			"lname": "name",
+			"ns": "m2m",
+			"type": "string",	// m2m:resourceName
+			"car": "1"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:contentRef",
+			"lname": "name",
+			"ns": "m2m",
+			"type": "ncname",
+			"car": "1"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:attribute",
+			"lname": "name",
+			"ns": "m2m",
+			"type": "ncname",
+			"car": "1"
+		}
+	],
+	"num": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:batchNotify",
+			"lname": "number",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:missingData",
+			"lname": "number",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "1"
+		}
+	],
+	"oet": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "operationExecutionTime",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "operationExecutionTime",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "REQ", "REQUEST" ],
+			"lname": "operationExecutionTime",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"op": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "operation",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:operation",
+			"car": "1"
+		},
+		{
+			"rtypes": [ "REQ", "REQUEST" ],
+			"lname": "operation",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:operation",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ops": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "operations",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationMonitor",
+			"lname": "operations",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		}
+	],
+	"ot": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "originatingTimestamp",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "originatingTimestamp",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "originatingTimestamp",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "originatingTimestamp",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"pc": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "primitiveContent",
+			"ns": "m2m",
+			"type": "adict",		//	m2m:primitiveContent
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "primitiveContent",
+			"ns": "m2m",
+			"type": "adict",		//	m2m:primitiveContent
+			"car": "01"
+		},
+		{
+			"rtypes": [ "REQ" ],
+			"lname": "primitiveContent",
+			"ns": "m2m",
+			"type": "adict",		// m2m:primitiveContent
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		},
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "primitiveContent",
+			"ns": "m2m",
+			"type": "adict",		// m2m:primitiveContent
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rids": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "roleIDs",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "string",	// TODO:  m2m:roleIDs validation
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "roleIDs",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "string",	// TODO:  m2m:roleIDs validation
+			"car": "01"
+		}
+	],
+	"rqet": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "requestExpirationTimestamp",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		},	
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "requestExpirationTimestamp",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		},	
+		{
+			"rtypes": [ "REQ", "REQUEST" ],
+			"lname": "requestExpirationTimestamp",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+
+	"rqi": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "requestIdentifier",
+			"ns": "m2m",
+			"type": "string",	// m2m:requestID
+			"car": "1"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "requestIdentifier",
+			"ns": "m2m",
+			"type": "string",	// m2m:requestID
+			"car": "1"
+		},
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "requestIdentifier",
+			"ns": "m2m",
+			"type": "string",	// m2m:requestID
+			"car": "01",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rset": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "resultExpirationTimestamp",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "resultExpirationTimestamp",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "resultExpirationTimestamp",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		}
+
+	],
+	"rt": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "responseType",
+			"ns": "m2m",
+			"type": "m2m:responseTypeInfo",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "responseType",
+			"ns": "m2m",
+			"type": "m2m:responseTypeInfo",
+			"car": "01"
+		}
+
+	],
+	"stb": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "stateTagBigger",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "stateTagBigger",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		}
+	],
+	"sts": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "stateTagSmaller",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "stateTagSmaller",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		}
+	],
+	"sza": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "sizeAbove",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "sizeAbove",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		}
+	],
+	"szb": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "sizeBelow",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "sizeBelow",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		}
+	],
+	"to": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "to",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "to",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1"
+		},
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "to",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ty": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlObjectDetails",
+			"lname": "resourceType",
+			"ns": "m2m",
+			"type": "enum", 
+			"etype": "m2m:resourceType",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "resourceType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:requestPrimitive",
+			"lname": "resourceType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "resourceType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01l"
+		},
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "resourceType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:resourceType",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}	
+	],
+	"typ": [
+
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:geoCoordinates",
+			"ns": "m2m",
+			"lname": "type",
+			"type": "enum",
+			"etype": "m2m:geometryType",
+			"car": "1"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:mgmtLinkRef",
+			"lname": "type",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:mgmtDefinition",
+			"car": "1"
+		}
+	],
+	"us": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "unmodifiedSince",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "unmodifiedSince",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01"
+		}
+	],
+	"val": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:mgmtLinkRef",
+			"lname": "val",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:attribute",
+			"lname": "value",
+			"ns": "m2m",
+			"type": "any",
+			"car": "1"
+		}
+	],
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	//
+	//	accessControlContexts (embedded complex type)
+	//
+	"actw": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlContexts",
+			"lname": "accessControlWindow",
+			"ns": "m2m",
+			"type": "list", 
+			"ltype": "string", 	// TODO m2m:scheduleEntry string format check
+			"car": "01L"
+		}
+	],
+	"acip": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlContexts",
+			"lname": "accessControlIpAddresses",
+			"ns": "m2m",
+			"type": "accessControlIpAddresses", 
+			"car": "01"
+		}
+	],
+	"aclr": [	// TODO preliminary bv not yet defined in TS-0004
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlContexts",
+			"lname": "accessControlLocationRegion",
+			"ns": "m2m",
+			"type": "m2m:locationRegion", 
+			"car": "01"
+		}
+	],
+	"acui": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlContexts",
+			"lname": "accessControlUserIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01L"
+		}
+	],
+	"acec": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlContexts",
+			"lname": "accessControlEvalCriteria",
+			"ns": "m2m",
+			"type": "m2m:evalCriteria",
+			"car": "01"
+		}
+	],
+	"acl": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlContexts",
+			"lname": "accessControlLimit",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	accessControlIpAddresses (embedded complex type)
+	//
+
+	"ipv4": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlIpAddresses",
+			"lname": "ipv4Addresses",
+			"ns": "m2m",
+			"type": "list", 
+			"ltype": "string",
+			"car": "01L"
+		}
+	],
+	"ipv6": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "accessControlIpAddresses",
+			"lname": "ipv6Addresses",
+			"ns": "m2m",
+			"type": "list", 
+			"ltype": "string",
+			"car": "01L"
+		}
+	],
+
+
+	//
+	//	accessControlObjectDetails (embedded complex type)
+	//
+	// see also "ty", "chty" above
+	"spty": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlObjectDetails",
+			"lname": "specializationType",
+			"ns": "m2m",
+			"type": "m2m:specializationType", 
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:accessControlRule
+	//
+	"acor": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlRule",
+			"lname": "accessControlOriginators",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "1"
+		}
+	],
+	"acop": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlRule",
+			"lname": "accessControlOperations",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:accessControlOperations",
+			"car": "1"
+		}
+	],
+	"acco": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlRule",
+			"lname": "accessControlContexts",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "accessControlContexts", // Actually an internal sub-structure, not a complex type, but we need to tread it as one
+			"car": "01L"
+		}
+	],
+	"acaf": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlRule",
+			"lname": "accessControlAuthenticationFlag",
+			"ns": "m2m",
+			"type": "boolean", 
+			"car": "01"
+		}
+	],
+	"acod": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlRule",
+			"lname": "accessControlObjectDetails",
+			"ns": "m2m",
+			"type": "list", 
+			"ltype": "m2m:accessControlObjectDetails",
+			"car": "01L"
+		}
+	],
+	"aca": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:accessControlRule",
+			"lname": "accessControlAttributes",
+			"ns": "m2m",
+			"type": "list", 	// m2m:attributeList
+			"ltype": "ncname",
+			"car": "01"
+		}
+	],
+
+	
+	//
+	//	m2m:actionInput
+	//
+	"cstr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:actionInput",
+			"lname": "contentString",
+			"ns": "m2m",
+			"type": "ncname",
+			"car": "01"
+		}
+	],
+	"rsid": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:actionInput",
+			"lname": "resourceID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		}
+	],
+	"raid": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:actionInput",
+			"lname": "resourceAttributeID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:actionStatus
+	//
+	"acn": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:actionStatus",
+			"lname": "action",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		}
+	],
+	"sus": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:actionStatus",
+			"lname": "status",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:status",
+			"car": "01"
+		}
+	],
+
+	//
+	//	m2m:activityPattern
+	//
+	"se": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:activityPattern",
+			"lname": "scheduleElement",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "schedule",
+			"car": "1"
+		}
+	],
+	"sti": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:activityPattern",
+			"lname": "stationaryIndication",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:stationaryIndication",
+			"car": "01"
+		}
+	],
+	"dsi": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:activityPattern",
+			"lname": "dataSizeIndicator",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:attribute
+	//
+	//	See "nm", "val" attributes above
+
+
+	//
+	//	m2m:batchNotify
+	//
+	//	See also "num", "dur" above
+
+
+	//
+	//	m2m:contentRef
+	//
+	
+	// see also "nm" definition above
+	
+	"uri": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:contentRef",
+			"lname": "URI",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1"
+		}
+	],
+
+	//
+	//	m2m:deletionContexts
+	//
+	
+	"tod": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:deletionContexts",
+			"lname": "timeOfDay",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "schedule",
+			"car": "01L"
+		}
+	],
+	"lr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:deletionContexts",
+			"lname": "locationRegions",
+			"ns": "m2m",
+			"type": "m2m:locationRegion",
+			"car": "01L"
+		}
+	],
+
+
+	//
+	//	m2m:eventNotificationCriteria
+	//
+	//	See also "atr", "cra", "crb", "chty", "exa", "exb", "ms" "us",
+	//	"sts", "stb", "sza", "szb", "fo" above
+	"om": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "operationMonitor",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:operationMonitor",
+			"car": "01"
+		}
+	],
+	"net": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "notificationEventType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:notificationEventType",
+			"car": "01"	// 0..5
+		}
+	],
+	"md": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "missingData",
+			"ns": "m2m",
+			"type": "m2m:missingData",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:evalCriteria
+	//
+	"optr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:evalCriteria",
+			"lname": "operator",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:evalCriteriaOperator",
+			"car": "1"
+		}
+	],
+	"sbjt": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:evalCriteria",
+			"lname": "subject",
+			"ns": "m2m",
+			"type": "ncname",
+			"car": "1"
+		}
+	],
+	"thld": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:evalCriteria",
+			"lname": "threshold",
+			"ns": "m2m",
+			"type": "any",
+			"car": "1"
+		}
+	],
+
+
+	//
+	//	m2m:eventNotificationCriteriaSet
+	//
+
+	"enc": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteriaSet",
+			"lname": "eventNotificationCriteria",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:eventNotificationCriteria",
+			"car": "1LN"
+		}
+
+		// {
+		// 	"rtypes": [ "COMPLEX" ],
+		// 	"ctype": "m2m:eventNotificationCriteriaSet",
+		// 	"lname": "eventNotificationCriteriaEntry",
+		// 	"ns": "m2m",
+		// 	"type": "list",
+		// 	"ltype": "m2m:eventNotificationCriteria",
+		// 	"car": "1LN"
+		// }
+	],
+	//
+	//	m2m:filterCriteria
+	//
+	//	See also "atr", "cra", "crb", "exa", "exb", "ms", "us", "sts", "stb", "ty", "chty", 
+	//	"sza", "szb", "fo", "ops" above
+	"aq": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:eventNotificationCriteria",
+			"lname": "advancedQuery",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"lbl": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "labels",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01L"
+		}
+	],
+	"clbl": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "childLabels",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01L"
+		}
+	],
+	"palb": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "parentLabels",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01L"
+		}
+	],
+	"lbq": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "labelsQuery",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"pty": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "parentResourceType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01l"
+		}
+	],
+	"cty": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "contentType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",	// m2m:typeOfContent
+			"car": "01L"
+		}
+	],
+	"catr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "childAttribute",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:attribute",
+			"car": "01L"
+		}
+	],
+	"patr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "parentAttribute",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:attribute",
+			"car": "01L"
+		}
+	],
+	"fu": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "filterUsage",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:filterUsage",
+			"car": "01"
+		}
+	],
+	"lim": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "limit",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		}
+	],
+	"smf": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "semanticsFilter",
+			"ns": "m2m",
+			"type": "list",		// m2m:sparql
+			"ltype": "string",
+			"car": "01L"
+		}
+	],
+	"cfs": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "contentFilterSyntax",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:contentFilterSyntax",
+			"car": "01"
+		}
+	],
+	"cfq": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "contentFilterQuery",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"lvl": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "level",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		}
+	],
+	"ofst": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "offset",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		}
+	],
+	"arp": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:filterCriteria",
+			"lname": "applyRelativePath",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01"
+		}
+	],
+	// "gq": [
+	// 	{
+	// 		"rtypes": [ "COMPLEX" ],
+	// 		"ctype": "m2m:filterCriteria",
+	// 		"lname": "geoQuery",
+	// 		"ns": "m2m",
+	// 		"type": "m2m:geoQuery",
+	// 		"car": "01"
+	// 	}
+	// ],
+
+
+	//
+	//	m2m:geoCoordinates
+	//
+	// see also "typ" above
+	"crd": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:geoCoordinates",
+			"lname": "coordinates",
+			"ns": "m2m",
+			"type": "geoJsonCoordinate",
+			"car": "1"
+		}
+	],
+
+
+	//
+	//	m2m:ipAddress
+	//
+	"ip4": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:ipAddress",
+			"lname": "ipv4Address",
+			"ns": "m2m",
+			"type": "ipv4Address",
+			"car": "01"
+		}
+	],
+	"ip6": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:ipAddress",
+			"lname": "ipv6Address",
+			"ns": "m2m",
+			"type": "ipv6Address",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:locationRegion
+	//
+	"accr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:locationRegion",
+			"choice": true,
+			"lname": "circRegion",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "float",
+			"lsize": 3,
+			"car": "01"
+		}
+	],
+	"accc": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:locationRegion",
+			"choice": true,
+			"lname": "countryCode",
+			"ns": "m2m",
+			"type": "list",		// m2m:countryCode
+			"ltype": "string",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:metaInformation
+	//
+	// see ty, ot, rset, ec, rids, rqet, oet, rt above
+
+	"rp": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "resultPersistence",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01"
+		}
+	],
+	"rcn": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "resultContent",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:resultContent",
+			"car": "01"
+		}
+	],
+	"da": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "deliveryAggregation",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01"
+		}
+	],
+	"gid": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "groupRequestIdentifier",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01"
+		},
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "groupRequestIdentifier",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"fc": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "filterCriteria",
+			"ns": "m2m",
+			"type": "m2m:filterCriteria",
+			"car": "01"
+		}
+	],
+	"tqi": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "tokenRequestIndicator",
+			"ns": "m2m",
+			"type": "boolean",	
+			"car": "01"
+		}
+	],
+	"tkns": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "tokens",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "string", // 	m2m:dynAuthJWT
+			"car": "01"
+		}
+	],
+	"tids": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "tokenIDs",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "ncname",
+			"car": "01L"
+		}
+	],
+	"ltids": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "localTokenIDs",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "ncname",
+			"car": "01L"
+		}
+	],
+	"grtm": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "groupRequestTargetMembers",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "ID",
+			"car": "01L"
+		}
+	],
+	"gstn": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "groupSomecastTargetNumber",
+			"ns": "m2m",
+			"type": "positiveInteger",	
+			"car": "01"
+		}
+	],
+	"asi": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "authorSignIndicator",
+			"ns": "m2m",
+			"type": "boolean",	
+			"car": "01"
+		}
+	],
+	"aus": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "authorSigns",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "string", // m2m:signatureList base 64 encoded string
+			"car": "01"
+		}
+	],
+	"auri": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "authorRelIndicator",
+			"ns": "m2m",
+			"type": "boolean",	
+			"car": "01"
+		}
+	],
+	"sqi": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "semanticQueryIndicator",
+			"ns": "m2m",
+			"type": "boolean",	
+			"car": "01"
+		}
+	],
+	"omr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "ontologyMappingResources",
+			"ns": "m2m",
+			"type": "list",	
+			"ltype": "ID", 	// m2m:listOfM2MID
+			"car": "01"
+		}
+	],
+	"rvi": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "ReleaseVersionIndicator",
+			"ns": "m2m",
+			"type": "string",	// m2m:releaseVersion
+			"car": "1"
+		}
+	],
+	"vsi": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "vendorInformation",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"msu": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:metaInformation",
+			"lname": "m2mServiceUser",
+			"ns": "m2m",
+			"type": "string",	// m2m:ID
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:missingData
+	//
+	//	See also "num", "dur" above
+
+
+	//
+	//	m2m:mgmtLinkRef
+	//
+	// 	see also "nm", "val" and "typ" definitions above
+
+
+	//
+	//	m2m:operationMonitor
+	//
+	//	See also "ops" above
+	"or": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationMonitor",
+			"lname": "originator",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:operationResult
+	//
+	// see pc, ot, rset, ec, fr above 
+
+	"rsc": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "responseStatusCode",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:responseStatusCode",
+			"car": "1"
+		}
+	],
+	"cnst": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "contentStatus",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:contentStatus",
+			"car": "01"
+		}
+	],
+	"cnot": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:operationResult",
+			"lname": "contentOffset",
+			"ns": "m2m",
+			"type": "positiveInteger",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:processConditios
+	//	EXPERIMENTAL
+	//
+	
+	// see "evc" above
+
+	"sri": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:processConditions",
+			"lname": "subjectResourceID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1"
+		}
+	],
+
+
+	//
+	//	m2m:rateLimit
+	//
+	"mnn": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:rateLimit",
+			"lname": "maxNrOfNotify",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01"
+		}
+	],
+	"tww": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:rateLimit",
+			"lname": "timeWindow",
+			"ns": "m2m",
+			"type": "duration",
+			"car": "01"
+		}
+	],
+	
+
+	//
+	//	m2m:requestPrimitive
+	//
+
+
+
+	//
+	//	m2m:responseTypeInfo
+	//
+	"rtv": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:responseTypeInfo",
+			"lname": "responseTypeValue",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:responseType",
+			"car": "1"
+		}
+	],
+	"nu": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:responseTypeInfo",
+			"lname": "notificationURI",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:setOfAcrs
+	//
+	"acr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:setOfAcrs",
+			"lname": "accessControlRule",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:accessControlRule",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:scheduleEntries
+	//
+
+	"sce": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:scheduleEntries",
+			"lname": "scheduleEntry",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "schedule",
+			"car": "1LN"
+		}
+	],
+
+	//
+	//	m2m:setOfNotificationStatsInfo
+	//
+	"tg": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:setOfNotificationStatsInfo",
+			"lname": "target",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1"
+		}
+	],
+	"rqs": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:setOfNotificationStatsInfo",
+			"lname": "requestsSent",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1"
+		}
+	],
+	"rsr": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:setOfNotificationStatsInfo",
+			"lname": "responsesReceived",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1"
+		}
+	],
+	"noec": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:setOfNotificationStatsInfo",
+			"lname": "notificationEventCount",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1"
+		}
+	],
+
+
+	//
+	//	m2m:specializationType
+	//
+	"cnd": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:specializationType",
+			"lname": "containerDefinition",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01"
+		}
+	],
+	"mgd": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:specializationType",
+			"lname": "mgmtDefinition",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:mgmtDefinition",
+			"car": "01"
+		}
+	],
+
+
+	//
+	//	m2m:stateTransition
+	//
+
+	// See also "evc" above
+
+	"nxst": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "m2m:stateTransition",
+			"lname": "nextState",
+			"ns": "m2m",
+			"type": "ID"
+		}
+	],
+
+
+	//
+	//	dcfg:wifiCredentials
+	//
+	// PRELIMINARY until agreed on sn
+	"enct": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "dcfg:wifiCredentials",
+			"lname": "encryptionType",
+			"ns": "dcfg",
+			"type": "enum",
+			"etype": "dcfg:wifiEncryptionType",
+			"car": "1"
+		}
+	],
+	"unm": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "dcfg:wifiCredentials",
+			"lname": "username",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"pwd": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "dcfg:wifiCredentials",
+			"lname": "password",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"wepk": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "dcfg:wifiCredentials",
+			"lname": "wepKey",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"wpap": [
+		{
+			"rtypes": [ "COMPLEX" ],
+			"ctype": "dcfg:wifiCredentials",
+			"lname": "wpaPsk",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "01"
+		}
+	]
+
+}

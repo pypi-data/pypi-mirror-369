@@ -1,0 +1,503 @@
+//	enumTypesPolicies.ep
+//
+//	(c) 2022 by Andreas Kraft
+//	License: BSD 3-Clause License. See the LICENSE file for further details.
+//
+// The enumTypesPolicies.ep file contains a dictionary of enumeration data types and their allowed values
+
+{
+	"m2m:accessControlOperations" : {
+		// This enum has empty values, because the values can be combined
+		"1": "CREATE",
+		"2": "RETRIEVE",
+		"3": "",
+		"4": "UPDATE",
+		"5..7": "",
+		"8": "DELETE",
+		"9..15": "",
+		"16": "NOTIFY",
+		"17..31": "",
+		"32": "DISCOVERY",
+		"33..63": ""
+	},
+	"m2m:batteryStatus" : {
+		"1": "Normal",
+		"2": "Charging",
+		"3": "Charging complete",
+		"4": "Damaged",
+		"5": "Low battery",
+		"6": "Not installed",
+		"7": "Unknown"
+	},
+	"dcfg:cellularNetworkBearer" : {
+		"0": "GSM cellular network",
+		"1": "TD-SCDMA cellular network",
+		"2": "WCDMA cellular network",
+		"3": "CDMA2000 cellular network",
+		"4": "WiMAX cellular network",
+		"5": "LTE-TDD cellular network",
+		"6": "LTE-FDD cellular network",
+		"7": "NB-IoT"
+	},
+	"m2m:contentStatus" : {
+		"1": "Partial content",
+		"2": "Full content"
+	},
+	"dcfg:coverageEnhancementLevel" : {
+		"0": "No Coverage Enhancement in the serving cell",
+		"1": "Coverage Enhancement level 0",
+		"2": "Coverage Enhancement level 1",
+		"3": "Coverage Enhancement level 2",
+		"4": "Coverage Enhancement level 3"
+	},
+	"m2m:evalCriteriaOperator" : {
+		"1": "equal",
+		"2": "not equal",
+		"3": "greater than",
+		"4": "less than",
+		"5": "greater than or equal",
+		"6": "less than or equal"
+	},
+	"m2m:evalMode" : {
+		"0": "off",
+		"1": "once",
+		"2": "periodic",
+		"3": "continuous"
+	},
+	"m2m:eventCat" : {
+		// m2m:stdEventCat + user defined range
+		"2": "Immediate",
+		"3": "Best Effort",
+		"4": "Latest",
+		"100..999": "User defined"
+	},
+	
+	// EXPERIMENTAL
+	"m2m:eventEvaluationMode" : {
+		"1": "All events present",
+		"2": "All or some events present",
+		"3": "All or some events missing",
+		"4": "All events missing",
+		"5": "Some events missing"
+	},
+
+	"m2m:filterOperation" : {
+		"1": "Logical AND",
+		"2": "Logical OR",
+		"3": "Logical XOR"
+	},
+	"m2m:contentFilterSyntax" : {
+		"1": "JSONPath Syntax"
+	},
+	"m2m:desIdResType" : {
+		"1": "Structured",
+		"2": "Unstructured"
+	},	
+	"m2m:logTypeId" : {
+		"1": "System",
+		"2": "Security",
+		"3": "Event",
+		"4": "Trace",
+		"5": "Panic"
+	},
+	"m2m:filterUsage" : {
+		"1": "Discovery",
+		"2": "Conditional Operation",
+		"3": "IPE On-demand Discovery"
+	},
+	"m2m:geofenceEventCriteria" : {
+		"1": "Entering",
+		"2": "Leaving",
+		"3": "Inside",
+		"4": "Outside"
+	},
+	"m2m:geometryType" : {
+		"1": "Point",
+		"2": "LineString",
+		"3": "Polygon",
+		"4": "MultiPoint",
+		"5": "MultiLineString",
+		"6": "MultiPolygon"
+	},
+	"m2m:geoSpatialFunctionType" : {
+		"1": "Within",
+		"2": "Contains",
+		"3": "Intersects"
+	},
+	"m2m:locationInformationType" : {
+		"1": "Position fix",
+		"2": "Geofence event"
+	},
+	"m2m:locationSource" : {
+		"1": "Network based",
+		"2": "Device based",
+		"3": "User based"
+	},
+	"m2m:locationUpdateEventCriteria": {
+		"0": "Location_Change"
+	},
+	"m2m:logicalOperator" : {
+		"1": "AND",
+		"2": "OR"
+	},
+	"m2m:logStatus" : {
+		"1": "Started",
+		"2": "Stopped",
+		"3": "Unknown",
+		"4": "Not present",
+		"5": "Error"
+	},
+	"m2m:mgmtDefinition" : {
+		// Adapt to supported MgmtObj types
+		"0": "Self-defined",
+		"1001": "firmware",
+		"1002": "software",
+		"1003": "memory",
+		"1004": "areaNwkInfo",
+		"1005": "areaNwkDeviceInfo",
+		"1006": "battery",
+		"1007": "deviceInfo",
+		"1008": "deviceCapability",
+		"1009": "reboot",
+		"1010": "eventLog",
+		"1011": "cmdhPolicy",
+		"1012": "activeCmdhPolicy",
+		"1013": "cmdhDefaults",
+		"1014": "cmdhDefEcValue",
+		"1015": "cmdhEcDefParamValues",
+		"1016": "cmdhLimits",
+		"1017": "cmdhNetworkAccessRules",
+		"1018": "cmdhNwAccessRule",
+		"1019": "cmdhBuffer",
+		"1020": "registration",
+		"1021": "dataCollection",
+		"1022": "authenticationProfile",
+		"1023": "myCertFileCred",
+		"1024": "trustAnchorCred",
+		"1025": "MAFClientRegCfg",
+		"1026": "MEFClientRegCfg",
+		"1027": "OAuth2Authentication",
+		"1028": "wifiClient",
+		"1029": "credentials",
+		"1030": "SIM",
+		"1031": "mobileNetwork"
+	},
+	"m2m:multicastCapability" : {
+		"1": "MBMS",
+		"2": "IP"
+	},
+	"m2m:notificationContentType" : {
+		"1": "m2m:<resourceType>",
+		"2": "m2m:<resourceType>",
+		"3": "m2m:URI",
+		"4": "m2m:triggerPayload",
+		"5": "m2m:timeSeriesNotification"
+	},
+	"m2m:notificationEventType" : {
+		"1": "Update of Resource",
+		"2": "Delete of Resource",
+		"3": "Create of Direct Child Resource",
+		"4": "Delete of Direct Child Resource",
+		"5": "Retrieve of Container Resource with No Child Resource",
+		"6": "Trigger Received for AE Resource",
+		"7": "Blocking Update",
+		"8": "Report on Missing Data Points",
+
+		"9": "blockingRetrieve (EXPERIMENTAL)",	// EXPERIMENTAL
+		"10": "blockingRetrieveDirectChild (EXPERIMENTAL)"	// EXPERIMENTAL
+	},
+	"m2m:notificationTargetPolicyAction" : {
+		"1": "accept request",
+		"2": "reject request",
+		"3": "accept request and inform the subscription originator",
+		"4": "inform the subscription originator without taking any action"
+	},
+	"m2m:operation" : {
+		"1": "Create",
+		"2": "Retrieve",
+		"3": "Update",
+		"4": "Delete",
+		"5": "Notify"
+	},
+	"m2m:primitiveProfileApplicability" : {
+		// This enum has empty values, because the values can be combined
+		"1": "REQUESTS_TO_CSE",
+		"2": "RESPONSES_FROM_CSE",
+		"3": "",
+		"4": "NOTIFICATIONS_FROM_CSE",
+		"5..7": ""
+	},
+	"m2m:processControl" : {
+		"1": "Enable",
+		"2": "Disable",
+		"3": "Pause",
+		"4": "Reactivate"
+	},
+	"m2m:processStatus" : {
+		"1": "Disabled",
+		"2": "Enabled",
+		"3": "Activated",
+		"4": "Paused",
+		"5": "Completed",
+		"6": "Aborted"
+	},
+	"m2m:responseType" : {
+		"1": "Non-blocking Request Synch",
+		"2": "Non-blocking Request Asynch",
+		"3": "Blocking Request",
+		"4": "FlexBlocking",
+		"5": "No Response"
+	},
+	"m2m:resourceType" : {
+		// Adapt to supported resource types
+		"1": "accessControlPolicy",
+		"2": "AE",
+		"3": "container",
+		"4": "contentInstance",
+		"5": "CSEBase",
+		"9": "group",
+		"10": "locationPolicy",
+		"13": "mgmtObj",
+		"14": "node",
+		"15": "pollingChannel",
+		"16": "remoteCSE",
+		"17": "request",
+		"18": "schedule",
+		"23": "subscription",
+		"24": "semanticDescriptor",
+		"25": "NotificationTargetMgmtPolicyRef",
+		"26": "notificationTargetPolicy",
+		"27": "policyDeletionRules",
+		"28": "flexContainer",
+		"29": "timeSeries",
+		"30": "timeSeriesInstance",
+		"48": "crossResourceSubscription",
+		"58": "flexContainerInstance",
+		"60": "timeSyncBeacon",
+		"63": "processManagement",
+		"62": "primitiveProfile",
+		"64": "state",
+		"65": "action",
+		"66": "dependency",
+
+		"10001": "accessControlPolicyAnnc",
+		"10002": "AEAnnc",
+		"10003": "containerAnnc",
+		"10004": "contentInstanceAnnc",
+		"10005": "CSEBaseAnnc",
+		"10009": "groupAnnc",
+		"10010": "locationPolicyAnnc",
+		"10013": "mgmtObjAnnc",
+		"10014": "nodeAnnc",
+		"10016": "remoteCSEAnnc",
+		"10018": "scheduleAnnc",
+		"10024": "semanticDescriptorAnnc",
+		"10028": "flexContainerAnnc",
+		"10029": "timeSeriesAnnc",
+		"10030": "timeSeriesInstanceAnnc",
+		"10060": "timeSyncBeaconAnnc",
+		"10062": "primitiveProfileAnnc",
+		"10063": "processManagementAnnc",
+		"10064": "stateAnnc",
+		"10065": "actionAnnc",
+		"10066": "dependencyAnnc"
+	},
+	"m2m:responseStatusCode" : {
+		"1000": "ACCEPTED",
+		"1001": "ACCEPTED for nonBlockingRequestSynch",
+		"1002": "ACCEPTED for nonBlockingRequestAsynch",
+
+		"2000": "OK",
+		"2001": "CREATED",
+		"2002": "DELETED",
+		"2004": "UPDATED",
+
+		"4000": "Bad Request",
+		"4001": "Release Version Not Supported",
+		"4004": "Not Found",
+		"4005": "Operation Not Allowed",
+		"4008": "Request Timeout",
+		"4015": "Unsupported Media Type",
+		"4101": "Subscription Creator Has No Privilege",
+		"4102": "Contents Unacceptable",
+		"4103": "Originator Has No Privilege",
+		"4104": "Group Request Identifier Exists",
+		"4105": "Conflict",
+		"4106": "Originator Has Not Registered",
+		"4107": "Security Association Required",
+		"4108": "Invalid Child Resource Type",
+		"4109": "No Members",
+		"4110": "Group Member Type Inconsistent",
+		"4111": "ESPRIM Unsupported Option",
+		"4112": "ESPRIM Unknown Key ID",
+		"4113": "ESPRIM Unknown Orig RAND ID",
+		"4114": "ESPRIM Unknown Recv RAND ID",
+		"4115": "ESPRIM Bad MAC",
+		"4116": "ESPRIM Impersonation Error",
+		"4117": "Originator Has Already Registered",
+		"4118": "Ontology Not Available",
+		"4119": "Linked Semantics Not Available",
+		"4120": "Invalid Semantics",
+		"4121": "Mashup Member Not Found",
+		"4122": "Invalid Trigger Purpose",
+		"4123": "Illegal Transaction State Transition Attempted",
+		"4124": "Blocking Subscription Already Exists",
+		"4125": "Specialization Schema Not Found",
+		"4126": "App Rule Validation Failed",
+		"4127": "Operation Denied By Remote Entity",
+		"4128": "Service Subscription Not Established",
+		"4130": "Discovery Limit Exceeded",
+		"4131": "Ontology Mapping Algorithm Not Available",
+		"4132": "Ontology Mapping Policy Not Matched",
+		"4133": "Ontology Mapping Not Available",
+		"4135": "Bad Fact Inputs For Reasoning",
+		"4136": "Bad Rule Inputs For Reasoning",
+		"4137": "Discovery Limit Exceeded",
+		"4138": "Primitive Profile Not Accessible",
+		"4139": "Primitive Profile Bad Request",
+		"4140": "Unauthorized User",
+		"4141": "Service Subscription Limits Exceeded",
+		"4142": "Invalid Process Configuration",
+		"4143": "Invalid SPARQL Query",
+
+		"5000": "Internal Server Error",
+		"5001": "Not Implemented",
+		"5103": "Target Not Reachable",
+		"5105": "Receiver Has No Privilege",
+		"5106": "Already Exists",
+		"5107": "Remote Entity Not Reachable",
+		"5203": "Target Not Subscribable",
+		"5204": "Subscription Verification Initiation Failed",
+		"5205": "Subscription Host Has No Privilege",
+		"5206": "Non Blocking Synch Request Not Supported",
+		"5207": "Not Acceptable",
+		"5208": "Discovery Denied By IPE",
+		"5209": "Group Members Not Responded",
+		"5210": "ESPRIM Decryption Error",
+		"5211": "ESPRIM Encryption Error",
+		"5212": "SPARQL Update Error",
+		"5214": "Target Has No Session Capability",
+		"5215": "Session Is Online",
+		"5216": "Join Multicast Group Failed",
+		"5217": "Leave Multicast Group Failed",
+		"5218": "Triggering Disabled For Recipient",
+		"5219": "Unable To Replace Request",
+		"5220": "Unable To Recall Request",
+		"5221": "Cross Resource Operation Failure",
+		"5222": "Transaction Processing Is Incomplete",
+		"5230": "Ontology Mapping Algorithm Failed",
+		"5231": "Ontology Conversion Failed",
+		"5232": "Reasoning Processing Failed",
+
+		"6003": "External Object Not Reachable",
+		"6005": "External Object Not Found",
+		"6010": "Max Number Of Member Exceeded",
+		"6020": "Mgmt Session Cannot Be Established",
+		"6021": "Mgmt Session Establishment Timeout",
+		"6022": "Invalid Cmdtype",
+		"6023": "Invalid Arguments",
+		"6024": "Insufficient Arguments",
+		"6025": "Mgmt Conversion Error",
+		"6026": "Mgmt Cancellation Failed",
+		"6028": "Already Complete",
+		"6029": "Mgmt Command Not Cancellable",
+		"6030": "External Object Not Reachable Before RQET Timeout",
+		"6031": "External Object Not Reachable Before OET Timeout",
+		"6033": "Network QoS Configuration Error",
+		"6034": "Requested Activity Pattern Not Permitted"
+	},
+	"m2m:resultContent" : {
+		"0": "Nothing",
+		"1": "Attributes",
+		"2": "Hierarchical address",
+		"3": "Hierarchical address and attributes",
+		"4": "Attributes and child resources",
+		"5": "Attributes and child resource references",
+		"6": "Child resource references",
+		"7": "Original resource",
+		"8": "Child resources",
+		"9": "Modified attributes",
+		"10": "Semantic content",	
+		"11": "Semantic content and child resources",
+		"12": "Permissions"
+	},
+	"m2m:semanticFormat" : {
+		"1": "IRI",
+		"2": "Functional-style",
+		"3": "OWL/XML",
+		"4": "RDF/XML",
+		"5": "RDF/Turtle",
+		"6": "Manchester",
+		"7": "JSON-LD"
+	},
+	"dcfg:simStatus" : {
+		"0": "inactive",
+		"1": "active"
+	},
+	"dcfg:simType" : {
+		"0": "UICC (removable)",
+		"1": "eUICC (removable)",
+		"2": "eUICC (non-removable)",
+		"3": "iUICC"
+	},
+	"m2m:stationaryIndication" : {
+		"1": "Stationary",
+		"2": "Mobile (Moving)"
+	},
+	"m2m:status" : {
+		"0": "Uninitialized",
+		"1": "Successful",
+		"2": "Failure",
+		"3": "In Process"
+	},
+	"m2m:suid" : {
+		"10": "A pre-provisioned symmetric key intended to be shared with a MEF",
+		"11": "A pre-provisioned symmetric key intended to be shared with a MAF",
+		"12": "A pre-provisioned symmetric key intended for use in a Security Associated Establishment Framework (SAEF)",
+		"13": "A pre-provisioned symmetric key intended for use in End-to-End Security of Primitives (ESPrim)",
+		"14": "A pre-provisioned symmetric key intended for use with authenticated encryption in the Encryption-only or Nested Sign-then-Encrypt End-to-End Security of Data (ESData) Data classes",
+		"15": "A pre-provisioned symmetric key intended for use in Signature-only ESData Security Class",
+
+		"21": "A symmetric key, provisioned via a Remote Security Provisioning Framework (RSPF), and intended to be shared with a MAF",
+		"22": "A symmetric key, provisioned via a RSPF, and intended for use in a SAEF",
+		"23": "A symmetric key, provisioned via a RSPF, and intended for use in ESPrim",
+		"24": "A symmetric key, provisioned via a RSPF, and intended for use with authenticated encryption in the Encryption-only or Nested Sign-then-Encrypt ESData) Data classes",
+		"25": "A symmetric key, provisioned via a RSPF, and intended for use in Signature-only ESData Security Class",
+
+		"32": "A MAF-distributed symmetric key intended for use in a SAEF",
+		"33": "A MAF-distributed symmetric key intended for use in ESPrim",
+		"34": "A MAF-distributed symmetric key intended for use with authenticated encryption in the Encryption-only or Nested Sign-then-Encrypt ESData Data classes",
+		"35": "A MAF-distributed symmetric key intended for use in Signature-only ESData Security Class",
+
+		"40": "A certificate intended to be shared with a MEF",
+		"41": "A certificate intended to be shared with a MAF",	
+		"42": "A certificate intended for use in a Security Associated Establishment Framework (SAEF)",
+		"43": "A certificate intended for use in End-to-End Security of Primitives (ESPrim)",
+		"44": "A certificate intended for use with authenticated encryption in the Encryption-only or Nested Sign-then-Encrypt End-to-End Security of Data (ESData) Data classes",
+		"45": "A certificate intended for use in Signature-only ESData Security Class"
+	},
+	"m2m:timeWindowType" : {
+		"1": "Periodic Window",
+		"2": "Sliding Window"
+	},
+	"dcfg:wifiConnectionStatus" : {
+		"0": "Disconnected",
+		"1": "Connected",
+		"2": "Idle",
+		"3": "No SSID available",
+		"4": "Scan completed",
+		"5": "Failed",
+		"6": "Lost"
+	},
+	"dcfg:wifiEncryptionType" : {
+		"1": "None",
+		"2": "WEP",
+		"3": "WPA Personal",
+		"4": "WPA2 Personal",
+		"5": "WPA3 Personal",
+		"6": "WPA Enterprise",
+		"7": "WPA2 Enterprise",
+		"8": "WPA3 Enterprise"
+	}
+}
+
