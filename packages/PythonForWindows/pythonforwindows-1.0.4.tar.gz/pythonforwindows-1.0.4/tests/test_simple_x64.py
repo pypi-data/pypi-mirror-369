@@ -1,0 +1,358 @@
+try:
+    import capstone
+except ImportError as e:
+    capstone = None
+import pytest
+
+import windows.native_exec.simple_x64 as x64
+from windows.native_exec.simple_x64 import *
+del Test # Prevent pytest warning
+
+from windows.pycompat import int_types
+
+if capstone:
+    disassembleur = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
+    disassembleur.detail = True
+
+@pytest.fixture
+def need_capstone():
+    if capstone is None:
+        raise pytest.skip("Capstone is not installed")
+    return True
+
+pytestmark = pytest.mark.usefixtures("need_capstone")
+
+
+def disas(x):
+    return list(disassembleur.disasm(x, 0))
+
+mnemonic_name_exception = {'movabs': 'mov'}
+
+
+class CheckInstr(object):
+    def __init__(self, instr_to_test, expected_result=None, immediat_accepted=None, must_fail=None, debug=False):
+        self.instr_to_test = instr_to_test
+        self.immediat_accepted = immediat_accepted
+        self.expected_result = expected_result
+        self.must_fail = must_fail
+        self.debug = debug
+
+    def __call__(self, *args):
+        try:
+            if self.debug:
+                import pdb;pdb.set_trace()
+                pdb.DONE = True
+            x64.DEBUG = self.debug
+            res = bytes(self.instr_to_test(*args).get_code())
+            if self.debug:
+                print(repr(res))
+        except ValueError as e:
+            if self.must_fail == True:
+                return True
+            else:
+                raise
+        else:
+            if self.must_fail:
+                raise ValueError("Instruction did not failed as expected")
+        capres_list = disas(res)
+        if len(capres_list) != 1:
+            raise AssertionError("Trying to disas an instruction resulted in multiple disassembled instrs")
+        capres = capres_list[0]
+        print("{0} {1}".format(capres.mnemonic, capres.op_str))
+        if self.expected_result is not None:
+            if "{0} {1}".format(capres.mnemonic, capres.op_str) == self.expected_result:
+                return True
+            else:
+                raise AssertionError("Expected result <{0}> got <{1}>".format(self.expected_result, "{0} {1}".format(capres.mnemonic, capres.op_str)))
+        if len(res) != len(capres.bytes):
+            print("<{0}> vs <{1}>".format(repr(res), repr(capres.bytes)))
+            raise AssertionError("Not all bytes have been used by the disassembler")
+        self.compare_mnemo(capres)
+        self.compare_args(args, capres)
+
+    def compare_mnemo(self, capres):
+        expected = self.instr_to_test.__name__.lower()
+        cap_mnemo = mnemonic_name_exception.get(str(capres.mnemonic), str(capres.mnemonic))
+        if expected != cap_mnemo:
+            raise AssertionError("Expected menmo {0} got {1}".format(expected, str(capres.mnemonic)))
+        return True
+
+    def compare_args(self, args, capres):
+        capres_op = list(capres.operands)
+        if len(args) != len(capres_op):
+            raise AssertionError("Expected {0} operands got {1}".format(len(args), len(capres_op)))
+        for op_args, cap_op in zip(args, capres_op):
+            if isinstance(op_args, str):  # Register
+                if cap_op.type != capstone.x86.X86_OP_REG:
+                    raise AssertionError("Expected args {0} operands got {1}".format(op_args, capres_op))
+                if op_args.lower() != capres.reg_name(cap_op.reg).lower():
+                    raise AssertionError("Expected register <{0}> got {1}".format(op_args.lower(), capres.reg_name(cap_op.reg).lower()))
+            elif isinstance(op_args, int_types):
+                if (op_args != cap_op.imm) and not (self.immediat_accepted and self.immediat_accepted == cap_op.imm):
+                    raise AssertionError("Expected Immediat <{0}> got {1}".format(op_args, cap_op.imm))
+            elif isinstance(op_args, mem_access):
+                self.compare_mem_access(op_args, capres, cap_op)
+            else:
+                raise ValueError("Unknow argument {0} of type {1}".format(op_args, type(op_args)))
+
+    def compare_mem_access(self, memaccess, capres, cap_op):
+        if cap_op.type != capstone.x86.X86_OP_MEM:
+            raise AssertionError("Expected Memaccess <{0}> got {1}".format(memaccess, cap_op))
+        if memaccess.prefix is not None and capres.prefix[1] != x64_segment_selectors[memaccess.prefix].PREFIX_VALUE:
+            try:
+                get_prefix = [n for n, x in x64_segment_selectors.items() if x.PREFIX_VALUE == capres.prefix[1]][0]
+            except IndexError:
+                get_prefix = None
+            raise AssertionError("Expected Segment overide <{0}> got {1}".format(memaccess.prefix, get_prefix))
+        cap_mem = cap_op.mem
+        if memaccess.base is None and cap_mem.base != capstone.x86.X86_REG_INVALID:
+            raise AssertionError("Unexpected memaccess base <{0}>".format(capres.reg_name(cap_mem.base)))
+        if memaccess.base is not None and capres.reg_name(cap_mem.base) != memaccess.base.lower():
+            raise AssertionError("Expected mem.base {0} got {1}".format(memaccess.base.lower(), capres.reg_name(cap_mem.base)))
+        if memaccess.index is None and cap_mem.index != capstone.x86.X86_REG_INVALID:
+            raise AssertionError("Unexpected memaccess index <{0}>".format(capres.reg_name(cap_mem.base)))
+        if memaccess.index is not None and capres.reg_name(cap_mem.index) != memaccess.index.lower():
+            raise AssertionError("Expected mem.index {0} got {1}".format(memaccess.index.lower(), capres.reg_name(cap_mem.index)))
+        if memaccess.scale != cap_mem.scale and not (memaccess.scale is None and cap_mem.scale == 1):
+            raise AssertionError("Expected mem.scale {0} got {1}".format(memaccess.scale, cap_mem.scale))
+        if memaccess.disp != cap_mem.disp:
+            raise AssertionError("Expected mem.disp {0} got {1}".format(memaccess.disp, cap_mem.disp))
+
+
+def test_assembler():
+    CheckInstr(Add)('RAX', 'RSP')
+    CheckInstr(Add)('RAX', mem('[RCX]'))
+    CheckInstr(Add)('RAX', mem('[RDI + 0x10]'))
+    CheckInstr(Add)('RAX', mem('[RSI + 0x7fffffff]'))
+    CheckInstr(Add)('RAX', mem('[RSI + -0x1]'))
+    CheckInstr(Add)('RAX', mem('[0x10]'))
+    CheckInstr(Add)('RAX', mem('fs:[0x10]'))
+    CheckInstr(Add)('RAX', mem('[RSI + RDI * 2]'))
+    CheckInstr(Add)('RAX', mem('[RSI + RDI * 2 + 0x10]'))
+    CheckInstr(Add)('RAX', mem('gs:[RSI + RDI * 2 + 0x10]'))
+    CheckInstr(Add)('RAX', mem('[R15 * 8 + 0x10]'))
+    CheckInstr(Add)('RAX', mem('[R9 + R8 * 2 + 0x7fffffff]'))
+    CheckInstr(Add)('RAX', mem('[R9 + R8 * 2 + -0x80000000]'))
+    CheckInstr(Add)('RAX', mem('[-1]'))
+    CheckInstr(Add)('RAX', mem('[0x7fffffff]'))
+    CheckInstr(Add)('RAX', -1)
+
+    # Registers
+    CheckInstr(Pushfq)()
+    CheckInstr(Popfq)()
+
+    CheckInstr(Sub)('RCX', 'RSP')
+    CheckInstr(Sub)('RCX', mem('[RSP]'))
+
+    CheckInstr(Xor)('R15', mem('[RAX + R8 * 2 + 0x11223344]'))
+    CheckInstr(Xor)('RAX', 'RAX')
+    CheckInstr(Cmp)('RAX', -1)
+    #CheckInstr(Cmp, immediat_accepted=-1)('RAX', 0xffffffff)
+    CheckInstr(Lea)('RAX', mem('[RAX + 1]'))
+    CheckInstr(Lea)('RAX', mem('fs:[RAX + 1]'))
+    CheckInstr(Mov)('RAX', mem('[0x1122334455667788]'))
+    CheckInstr(Mov)('RAX', mem('gs:[0x1122334455667788]'))
+    CheckInstr(Mov)('RAX', mem('gs:[0x60]'))
+    CheckInstr(Mov)('RCX', 0x1122334455667788)
+    CheckInstr(Mov)('RCX', -1)
+    CheckInstr(Mov)('RCX', -0x1000)
+    CheckInstr(Mov)('RCX', 0xffffffff)
+    CheckInstr(Mov)('RAX', 0xffffffff)
+    CheckInstr(Mov)('R8', 0x1122334455667788)
+    CheckInstr(Mov)('RCX', -1)
+    CheckInstr(Mov, immediat_accepted=-1)('RCX', 0xffffffffffffffff)
+    CheckInstr(Mov)(mem('gs:[0x1122334455667788]'), 'RAX')
+    CheckInstr(Mov)(mem('[RAX]'), 0x11223344)
+    CheckInstr(Mov)(mem('[EAX]'), 0x11223344)
+    CheckInstr(Mov)(mem('[RBX]'), 0x11223344)
+    CheckInstr(Mov)("R12", mem("[RAX]"))
+    CheckInstr(Mov)("RAX", mem("[R12]"))
+    CheckInstr(Mov)("RAX", mem("[RAX + R12]"))
+    CheckInstr(Mov)("RAX", mem("[R12 + R12]"))
+    CheckInstr(Mov)("RAX", mem("[R12 + R15]"))
+
+    CheckInstr(Mov)("RAX", mem("[R10]"))
+    CheckInstr(Mov)("RAX", mem("[R11]"))
+    CheckInstr(Mov)("RAX", mem("[R12]"))
+    CheckInstr(Mov)("RAX", mem("[R13]"))
+    CheckInstr(Mov)("RAX", mem("[R14]"))
+    CheckInstr(Mov)("RAX", mem("[R15]"))
+
+    #CheckInstr(Mov)("RSI", mem("[R12]"))
+
+    CheckInstr(And)('RCX', 'RBX')
+    CheckInstr(And)('RAX', 0x11223344)
+    CheckInstr(And)('EAX', 0x11223344)
+    CheckInstr(And)('EAX', 0xffffffff)
+    CheckInstr(And)('RAX', mem('[RAX + 1]'))
+    CheckInstr(And)(mem('[RAX + 1]'), 'R8')
+    CheckInstr(And)(mem('[EAX + 1]'), 'R8')
+    CheckInstr(And)(mem('[RAX + 1]'), 'EAX')
+
+    CheckInstr(Or)('RCX', 'RBX')
+    CheckInstr(Or)('RAX', 0x11223344)
+    CheckInstr(Or)('RAX', mem('[RAX + 1]'))
+    CheckInstr(Or)(mem('[RAX + 1]'), 'R8')
+    CheckInstr(Or)(mem('[EAX + 1]'), 'R8')
+    CheckInstr(Or)(mem('[RAX + 1]'), 'EAX')
+
+    CheckInstr(Shr)('RAX', 8)
+    CheckInstr(Shr)('R15', 0x12)
+    CheckInstr(Shl)('RAX', 8)
+    CheckInstr(Shl)('R15', 0x12)
+
+    CheckInstr(Int3)()
+    CheckInstr(Int)(0)
+    CheckInstr(Int)(3)
+    CheckInstr(Int)(0xff)
+
+    # I really don't know why it's the inverse
+    # But I don't care, it's Test dude..
+    CheckInstr(x64.Test, expected_result="test r11, rax")('RAX', 'R11')
+    CheckInstr(x64.Test, expected_result="test edi, eax")('EAX', 'EDI')
+    CheckInstr(x64.Test)('RCX', 'RCX')
+
+    CheckInstr(x64.Test)(mem('[RDI + 0x100]'), 'RCX')
+    CheckInstr(x64.Test)('EAX', 0x11223344)
+    CheckInstr(x64.Test, immediat_accepted=-1)('RAX', 0xffffffff)
+    CheckInstr(x64.Test)('ECX', 0x42)
+    CheckInstr(x64.Test)('RCX', 0x42)
+
+    assert x64.Test(mem('[RDI + 0x100]'), 'RCX').get_code() == x64.Test('RCX', mem('[RDI + 0x100]')).get_code()
+
+
+    CheckInstr(Push)('RAX')
+    CheckInstr(Push, must_fail=True)('EAX')
+    assert len(Push("RAX").get_code()) == 1
+    CheckInstr(Push)('R15')
+    CheckInstr(Push)(0x42)
+    CheckInstr(Push)(-1)
+    CheckInstr(Push)(mem("[ECX]"))
+    CheckInstr(Push)(mem("[RCX]"))
+
+
+    CheckInstr(Pop)('RAX')
+    CheckInstr(Push, must_fail=True)('EAX')
+    CheckInstr(Pop)('R15')
+    CheckInstr(Pop)(mem("[ECX]"))
+    CheckInstr(Pop)(mem("[RCX]"))
+    assert len(Pop("RAX").get_code()) == 1
+
+
+    CheckInstr(Call, must_fail=True)('EAX')
+    CheckInstr(Call)('RAX')
+    CheckInstr(Call)('R14')
+    CheckInstr(Call)(mem('[RAX + RCX * 8]'))
+    CheckInstr(Cpuid)()
+    CheckInstr(Xchg)('RAX', 'RSP')
+    assert Xchg('RAX', 'RCX').get_code() == Xchg('RCX', 'RAX').get_code()
+
+
+    # 32 / 64 bits register mixing
+    CheckInstr(Mov)('ECX', 'EBX')
+    CheckInstr(Mov)('RCX', mem('[EBX]'))
+    CheckInstr(Mov)('ECX', mem('[RBX]'))
+    CheckInstr(Mov)('ECX', mem('[EBX]'))
+    CheckInstr(Mov)('RCX', mem('[EBX + EBX]'))
+    CheckInstr(Mov)('RCX', mem('[ESP + EBX + 0x10]'))
+    CheckInstr(Mov)('ECX', mem('[ESP + EBX + 0x10]'))
+    CheckInstr(Mov)('ECX', mem('[RBX + RCX + 0x10]'))
+
+    CheckInstr(Mov)(mem('[RBX + RCX + 0x10]'), 'ECX')
+    CheckInstr(Mov)(mem('[EBX + ECX + 0x10]'), 'ECX')
+    CheckInstr(Mov)(mem('[EBX + ECX + 0x10]'), 'R8')
+
+    CheckInstr(Not)('RAX')
+    CheckInstr(Not)(mem('[RAX]'))
+
+    # Check RIP relative instructions
+    CheckInstr(Mov)(mem('[rip + 0x41414141]'), 0x42424242)
+    CheckInstr(Mov)(mem('[rip + 0x41414141]'), 'R8')
+    CheckInstr(Mov)("RAX", mem('[rip + 0x2]'))
+    CheckInstr(Mov)("RAX", mem('[rip + -5]'))
+    CheckInstr(Mov)("RAX", mem('[rip + 0x41414141]'))
+    CheckInstr(Lea)("RAX", mem('[rip + 0x2]'))
+    CheckInstr(Lea)("RAX", mem('[rip + -5]'))
+    CheckInstr(Lea)("EAX", mem('[rip + 0x2]'))
+    CheckInstr(Lea)("R15", mem('[rip + 0x2]'))
+
+    with pytest.raises(ValueError):
+        CheckInstr(Mov, must_fail=True)('RAX', mem('[RIP + RCX]')) # Invalid mem parsing
+    with pytest.raises(ValueError):
+        CheckInstr(Mov, must_fail=True)('REX', mem('[RIP * 2]')) # Invalid mem parsing
+    with pytest.raises(ValueError):
+        CheckInstr(Mov, must_fail=True)('REX', mem('[RCX + RIP]')) # Invalid mem parsing
+
+    CheckInstr(ScasB, expected_result="scasb al, byte ptr [rdi]")()
+    CheckInstr(ScasW, expected_result="scasw ax, word ptr [rdi]")()
+    CheckInstr(ScasD, expected_result="scasd eax, dword ptr [rdi]")()
+    CheckInstr(ScasQ, expected_result="scasq rax, qword ptr [rdi]")()
+
+    CheckInstr(CmpsB, expected_result="cmpsb byte ptr [rsi], byte ptr [rdi]")()
+    CheckInstr(CmpsW, expected_result="cmpsw word ptr [rsi], word ptr [rdi]")()
+    CheckInstr(CmpsD, expected_result="cmpsd dword ptr [rsi], dword ptr [rdi]")()
+    CheckInstr(CmpsQ, expected_result="cmpsq qword ptr [rsi], qword ptr [rdi]")()
+
+
+
+    CheckInstr(Mov, must_fail=True)('RCX', 'ECX')
+    CheckInstr(Mov, must_fail=True)('RCX', mem('[ECX + RCX]'))
+    CheckInstr(Mov, must_fail=True)('RCX', mem('[RBX + ECX]'))
+    CheckInstr(Mov, must_fail=True)('ECX', mem('[ECX + RCX]'))
+    CheckInstr(Mov, must_fail=True)('ECX', mem('[RBX + ECX]'))
+    CheckInstr(Add, must_fail=True)('RAX', 0xffffffff)
+
+
+    CheckInstr(Jmp, must_fail=True)('EAX')
+    CheckInstr(Jmp)('RAX')
+    CheckInstr(Jmp)('R12')
+    CheckInstr(Jmp)(mem('[RAX]'))
+    CheckInstr(Jmp)(mem('[RAX + 2]'))
+    CheckInstr(Jmp)(mem('[0x12345678]'))
+    CheckInstr(Jmp)(mem('[R15 + 0x12345678]'))
+
+
+    # Test some prefix / REP
+    assert (x64.Rep + x64.Nop()).get_code() == b"\xf3\x90"
+    assert (x64.GSPrefix + x64.Nop()).get_code() == b"\x65\x90"
+    assert (x64.OperandSizeOverride + x64.Nop()).get_code() == b"\x66\x90"
+    assert (x64.Repne + x64.Nop()).get_code() == b"\xf2\x90"
+
+    code = MultipleInstr()
+    code += Nop()
+    code += Rep + Nop()
+    code += Ret()
+    print(repr(code.get_code()))
+    assert code.get_code() == b"\x90\xf3\x90\xc3"
+
+def test_simple_x64_raw_instruction():
+    # Test the fake instruction "raw"
+    # By emetting a multi-char nop manually
+    CheckInstr(Raw, expected_result="nop word ptr [rax + rax]")("66 0F 1F 84 00 00 00 00 00")
+
+def test_simple_x64_assemble_raw_one_byte():
+    # Test the fake instruction "raw" inside an assemble that may translate str to int
+    assert x64.assemble("ret; raw 90; ret") ==  b"\xc3\x90\xc3"
+
+def test_x64_32b_register_lower_upper():
+    assert x64.assemble("mov eax, 42") == x64.assemble("mov EAX, 42")
+    assert x64.Mov("eax", 42).get_code() == x64.Mov("EAX", 42).get_code()
+    assert x64.assemble("mov Eax, [eAx + eaX * 4 + 12]")
+
+def test_x64_multiple_instr_add_instr_and_str():
+    res = x64.MultipleInstr()
+    res += x64.Nop()
+    res += "ret; ret; label :offset_3; ret"
+    res += x64.Nop()
+    res += x64.Label(":offset_5")
+    assert res.get_code() == b"\x90\xc3\xc3\xc3\x90"
+    assert res.labels == {":offset_3": 3, ":offset_5": 5}
+
+def test_x64_instr_multiply():
+    res = x64.MultipleInstr()
+    res += (x64.Nop() * 5)
+    res += x64.Ret()
+    assert res.get_code() == b"\x90\x90\x90\x90\x90\xc3"
+
+if __name__ == "__main__":
+    test_assembler()
