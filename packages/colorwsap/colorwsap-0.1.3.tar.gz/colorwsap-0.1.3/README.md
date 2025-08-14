@@ -1,0 +1,33 @@
+# colorwsap
+
+Swap the color of non-transparent areas in a PNG image by specifying a file path, color (name or RGB tuple), and output file.
+
+## Installation
+
+pip install opencv-python numpy
+
+# colorwsap
+
+colorwsap is a lightweight Python package designed to **easily swap the color** of the non-transparent parts of PNG images. Whether you're customizing logos, icons, or other assets, colorwsap lets you do it quickly by specifying a file path, a target color (by name or RGB), and an output filename.
+
+## Features
+- Supports common color names mapped to RGB values.
+- Preserves transparency while changing visible colors.
+- Simple and minimalistic API for quick integration.
+- Dependable on OpenCV and NumPy for efficient image processing.
+
+## Usage
+from colorwsap import swap_color
+
+swap_color("input.png", "red", "output.png")
+swap_color("input.png", (0, 128, 255), "output.png") # RGB tuple
+swap_color("input.png", "magenta", "output.png")
+
+
+- Supported colors: red, green, blue, white, black, yellow, cyan, magenta, grey, silver, maroon, olive, purple, teal, navy, orange, pink.
+- The function replaces all visible pixels with the chosen color, preserving transparency.
+
+
+## About Me
+
+I am Karan Bedi, a final-year engineering student passionate about machine learning, automotive innovation, and software development. With strong technical skills and a vision for integrating AI technologies with automotive products, I pioneer lightweight software solutions like colorwsap, designed for real-world applications.
