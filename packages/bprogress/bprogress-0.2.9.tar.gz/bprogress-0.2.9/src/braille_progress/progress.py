@@ -1,0 +1,235 @@
+from __future__ import annotations
+import sys
+import time
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Union, Sequence
+from .terminal import TerminalIO
+from .theme import ProgressTheme
+from .style import AnsiStyler
+from .braille import BrailleRenderer
+from .ratio import RatioStrategy, DefaultRatio
+from .model import TaskHandle, TaskState
+from .layout import Layout, default_layout, RenderContext, VLayout, VGap, Row
+from .stats import TaskRuntime, fmt_hms
+from .errorfmt import format_error
+
+def _to_vlayout(x: Optional[Union[VLayout, Layout, Sequence[Row]]]) -> Optional[VLayout]:
+    if x is None:
+        return None
+    if isinstance(x, VLayout):
+        return x
+    if isinstance(x, Layout):
+        return VLayout([x])
+    return VLayout(x)  # type: ignore
+
+class Progress:
+    def __init__(
+        self,
+        theme: Optional[ProgressTheme] = None,
+        *,
+        auto_vt: bool = True,
+        auto_refresh: bool = True,
+        refresh_interval: float = 0.05,
+        force_tty: Optional[bool] = None,
+        force_color: Optional[bool] = None,
+        ratio_strategy: Optional[RatioStrategy] = None,
+        layout: Optional[Layout] = None,
+        header: Optional[Union[VLayout, Layout, Sequence[Row]]] = None,
+        footer: Optional[Union[VLayout, Layout, Sequence[Row]]] = None,
+        min_body_rows: int = 0,
+    ) -> None:
+        self.term = TerminalIO(force_tty=force_tty, auto_vt=auto_vt)
+        self.theme = theme or ProgressTheme.auto_fit(self.term.columns)
+        self.styler = AnsiStyler(enabled=(self.theme.color if force_color is None else force_color))
+        self.bars = BrailleRenderer(self.styler)
+        self.ratio = ratio_strategy or DefaultRatio()
+        self.layout = layout or default_layout(self.theme)
+        self.header_layout = _to_vlayout(header)
+        self.footer_layout = _to_vlayout(footer)
+        self.min_body_rows = max(0, int(min_body_rows))
+        self._tasks: Dict[int, TaskState] = {}
+        self._order: List[int] = []
+        self._next_id = 0
+        self._rt: Dict[int, TaskRuntime] = {}
+        self._auto_refresh = auto_refresh
+        self._refresh_interval = max(0.01, float(refresh_interval))
+        self._last_render = 0.0
+
+    def add(self, name: str, total: int = 0) -> TaskHandle:
+        tid = self._next_id
+        self._next_id += 1
+        self._tasks[tid] = TaskState(name=name, total=max(0, int(total)))
+        self._order.append(tid)
+        rt = TaskRuntime()
+        rt.on_create()
+        self._rt[tid] = rt
+        if self._auto_refresh:
+            self.render(throttle=True)
+        return TaskHandle(self, tid)
+
+    def task(self, name: str, total: int = 0):
+        outer = self
+        class _Ctx:
+            def __enter__(self_non):
+                self_non.h = outer.add(name, total)
+                return self_non.h
+            def __exit__(self_non, et, ev, tb):
+                if et is None:
+                    outer.done(self_non.h)
+                else:
+                    outer.fail(self_non.h, stage="error", error=et)
+                if outer._auto_refresh:
+                    outer.render(throttle=True)
+        return _Ctx()
+
+    def update(
+        self,
+        handle_or_id,
+        *,
+        advance: int = 0,
+        done: Optional[int] = None,
+        total: Optional[int] = None,
+        stage: Optional[str] = None,
+        label: Optional[str] = None,
+        finished: Optional[bool] = None,
+        failed: Optional[bool] = None,
+    ) -> None:
+        tid = handle_or_id._tid if isinstance(handle_or_id, TaskHandle) else int(handle_or_id)
+        t = self._tasks[tid]
+        if total is not None:
+            t.total = max(0, int(total))
+        if done is not None:
+            t.done = max(0, int(done))
+        if advance:
+            t.done = max(0, t.done + int(advance))
+        if stage is not None:
+            t.stage = stage
+        if label is not None:
+            t.label = label
+        if finished is not None:
+            t.finished = bool(finished)
+        if failed is not None:
+            t.failed = bool(failed)
+        if t.total and t.done >= t.total and not t.failed:
+            t.finished = True
+            if t.stage not in ("error", "ERROR"):
+                t.stage = "done"
+        self._rt[tid].on_progress(t.done)
+        if self._auto_refresh:
+            self.render(throttle=True)
+
+    def done(self, handle_or_id) -> None:
+        tid = handle_or_id._tid if isinstance(handle_or_id, TaskHandle) else int(handle_or_id)
+        t = self._tasks[tid]
+        t.finished = True
+        t.stage = "done"
+        self._rt[tid].on_finish(False)
+        if self._auto_refresh:
+            self.render(throttle=True)
+
+    def fail(self, handle_or_id, *, stage: str = "error", error: Optional[Any] = None, error_tb: bool = True) -> None:
+        tid = handle_or_id._tid if isinstance(handle_or_id, TaskHandle) else int(handle_or_id)
+        t = self._tasks[tid]
+        t.failed = True
+        t.finished = True
+        t.stage = stage
+        if error is not None:
+            t.error_obj = error
+            t.error = format_error(error, with_tb=error_tb, pretty=False)
+        elif not t.error and t.label:
+            t.error = t.label
+        self._rt[tid].on_finish(True)
+        if self._auto_refresh:
+            self.render(throttle=True)
+
+    def all_finished(self) -> bool:
+        return len(self._tasks) > 0 and all(t.finished for t in self._tasks.values())
+
+    def track(
+        self,
+        iterable: Iterable,
+        *,
+        total: Optional[int] = None,
+        description: Optional[str] = None,
+        label_from: Optional[Callable[[Any], str]] = None,
+    ) -> Iterator:
+        if total is None:
+            try:
+                total = len(iterable)  # type: ignore
+            except Exception:
+                total = 0
+        h = self.add(description or "progress", total=total or 0)
+        try:
+            for item in iterable:
+                yield item
+                lbl = label_from(item) if label_from else None
+                if total:
+                    h.advance(1, stage="writing", label=lbl)
+                else:
+                    h.update(stage="writing", label=lbl)
+            h.complete()
+        except Exception as e:
+            h.fail(error=e)
+            raise
+        finally:
+            if self._auto_refresh:
+                self.render(throttle=False)
+
+    def render(self, *, throttle: bool = False) -> None:
+        now = time.time()
+        if throttle and (now - self._last_render) < self._refresh_interval:
+            return
+        cols = self.term.columns or 120
+        ctx = RenderContext(self.theme, self.styler, self.bars, self.ratio, cols)
+        header_lines: List[str] = self.header_layout.render(ctx) if self.header_layout else []
+        body_lines = [self.layout.render_line(self._tasks[tid], self._rt[tid], ctx) for tid in self._order]
+        if self.min_body_rows and len(body_lines) < self.min_body_rows:
+            body_lines.extend([" " * cols] * (self.min_body_rows - len(body_lines)))
+        footer_lines: List[str] = self.footer_layout.render(ctx) if self.footer_layout else []
+        lines = header_lines + body_lines + footer_lines
+        self.term.write_frame(lines)
+        self._last_render = now
+
+    def _print_error_report(self) -> None:
+        failed: List[tuple[int, TaskState]] = [(tid, self._tasks[tid]) for tid in self._order if self._tasks[tid].failed]
+        if not failed:
+            return
+        cols = self.term.columns or 120
+        rule = "─" * cols
+        lines: List[str] = []
+        lines.append(self.styler.color(rule, fg="bright_black"))
+        title = f"✗ ERROR REPORT ({len(failed)} failed)"
+        lines.append(self.styler.color(title, fg="bright_red"))
+        lines.append(self.styler.color(rule, fg="bright_black"))
+        for tid, t in failed:
+            rt = self._rt.get(tid, TaskRuntime())
+            head = self.styler.color(f"✗ {t.name}", fg="bright_red", bold=True)
+            stage = self.styler.color(f"[{t.stage}]", fg="bright_red")
+            lines.append(f"{head} {stage}")
+            if t.total > 0:
+                ratio = int(round(100 * t.done / max(1, t.total)))
+                prog = f"{t.done}/{t.total} ({ratio:3d}%)"
+            else:
+                prog = f"{t.done}"
+            el = fmt_hms((rt.finished or rt.updated or rt.created) - (rt.started or rt.created) if (rt.updated or rt.finished) and (rt.started or rt.created) else 0.0)
+            rate = f"{rt.ewma_rate:.2f} it/s" if rt.ewma_rate > 0 else "--"
+            stats = self.styler.color(f"  progress: {prog}  elapsed: {el}  rate: {rate}", fg="bright_black")
+            lines.append(stats)
+            if t.error_obj is not None:
+                pretty = format_error(t.error_obj, with_tb=True, pretty=True, width=cols - 2)
+                for ln in pretty.splitlines():
+                    lines.append("  " + ln)
+            elif t.error:
+                for i, ln in enumerate(str(t.error).splitlines() or [""]):
+                    prefix = "  message: " if i == 0 else "           "
+                    lines.append(self.styler.color(prefix + ln, fg="bright_yellow"))
+            lines.append(self.styler.color(rule, fg="bright_black"))
+        sys.stdout.write("\n".join(lines) + "\n")
+        sys.stdout.flush()
+
+    def close(self) -> None:
+        self.term.close()
+        self._print_error_report()
+
+    def bind_queue(self, queue, **keys) -> "QueueBinder":
+        from .queue import QueueBinder
+        return QueueBinder(self, queue, **keys)
