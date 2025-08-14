@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gemf_map"
+authors = [
+  { name="Colin Moldenhauer", email="colin.moldenhauer@tum.de" },
+]
+description = "GEMF, an efficient tile-based map format."
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+keywords = ["gemf", "tiles", "map", "mobile map", "locus"]
+
+dynamic = ["version", "readme"]
+
+[tool.setuptools]
+packages = ["gemf"]
+
+[tool.pytest.ini_options]
+pythonpath = "gemf"
+
+[tool.setuptools.dynamic]
+readme = {file = "README.md", content-type = "text/markdown"}
+
+[project.urls]
+Homepage = "https://github.com/ColinMoldenhauer/GEMF"
+Issues = "https://github.com/ColinMoldenhauer/GEMF/issues"
+
+[project.optional-dependencies]
+# development dependency groups
+test = [
+    "pytest>=4.6",
+    "pytest-cov",
+    "mercantile"
+]
+plot = [
+    "matplotlib",
+    "folium",
+]
