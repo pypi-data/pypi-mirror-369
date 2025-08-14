@@ -1,0 +1,2 @@
+class CustomValidationError(TypeError):
+    pass
