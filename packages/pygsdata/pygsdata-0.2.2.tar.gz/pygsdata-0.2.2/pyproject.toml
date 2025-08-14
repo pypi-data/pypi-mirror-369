@@ -1,0 +1,130 @@
+[build-system]
+requires = ["setuptools>=60", "wheel", "setuptools_scm>=8.0", "numpy"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+
+[project]
+name = "pygsdata"
+description = "A Python interface for 21cm Global Signal Data."
+readme = "README.md"
+authors = [
+    {name="Steven Murray", email="steven.murray@sns.it"}
+]
+license = {text="MIT"}
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "astropy",
+    "attrs",
+    "matplotlib",
+    "hickleable",
+    "h5py",
+    "typing_extensions",
+    "pytz",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+    "furo",
+    "myst-parser",
+    "numpydoc",
+    "nbsphinx",
+    "ipython",
+    "sphinx-click",
+]
+tests = [
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+]
+dev = [
+    "pre-commit",
+    "ruff",
+    "pygsdata[docs,tests]"
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+extend-select = [
+  "UP",   # pyupgrade
+  "E",    # pycodestyle
+  "W",    # pycodestyle warning
+  "C90",  # mccabe complexity
+  "I",    # isort
+  "N",    # pep8-naming
+  "D",    # docstyle
+  # "ANN"   # type annotations
+  "B",    # bugbear
+  "A",    # builtins
+  "C4",   # comprehensions
+  "DTZ",  # datetime
+  "FA",   # future annotations
+  "PIE",  # flake8-pie
+  "T",    # print statements
+  "PT",   # pytest-style
+  "Q",    # quotes
+  "SIM",  # simplify
+  "PTH",  # use Pathlib
+  "ERA",  # kill commented code
+  "NPY",  # numpy-specific rules
+  "PERF", # performance
+  # "FURB", # refurb
+  "RUF",  # ruff-specific rules
+]
+ignore = [
+    "DTZ007",   # use %z in strptime
+    "A003",     # class attribute shadows python builtin
+    "A005",     # module shadows python builtin
+    "B008",     # function call in argument defaults
+]
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = [
+    "D103",  # ignore missing docstring in tests
+    "DTZ",   # ignore datetime in tests
+    "T",     # print statements
+]
+"docs/conf.py" = [
+    "A",  # conf.py can shadow builtins
+    "ERA",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = 'numpy'
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+    "pygsdata.attrs.npfield",
+    "pygsdata.attrs.timefield",
+    "pygsdata.attrs.lstfield",
+]
+
+[tool.pytest.ini_options]
+addopts = "--verbose --durations=10 --cov=pygsdata "
+norecursedirs = [
+    "dist",
+    "build",
+    ".tox",
+]
+testpaths = "tests"
