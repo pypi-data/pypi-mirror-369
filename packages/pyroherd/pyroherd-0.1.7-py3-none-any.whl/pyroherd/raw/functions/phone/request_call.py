@@ -1,0 +1,145 @@
+#  <<<<<<< HEAD
+#  =======
+#  <<<<<<< HEAD
+#  >>>>>>> c723d0e (update)
+#  Pyroherd - Telegram MTProto API Client Library for Python
+#  Copyright (C) 2017-present OnTheHerd <https://github.com/OnTheHerd>
+#
+#  This file is part of Pyroherd.
+#
+#  Pyroherd is free software: you can redistribute it and/or modify
+#  <<<<<<< HEAD
+#  =======
+#  =======
+#  Pyroherd - Telegram MTProto API Client Library for Python
+#  Copyright (C) 2017-present Dan <https://github.com/delivrance>
+#
+#  This file is part of Pyroherd.
+#
+#  Pyroherd is free software: you can redistribute it and/or modify
+#  >>>>>>> 47ad949 (update)
+#  >>>>>>> c723d0e (update)
+#  it under the terms of the GNU Lesser General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  <<<<<<< HEAD
+#  Pyroherd is distributed in the hope that it will be useful,
+#  =======
+#  <<<<<<< HEAD
+#  Pyroherd is distributed in the hope that it will be useful,
+#  =======
+#  Pyroherd is distributed in the hope that it will be useful,
+#  >>>>>>> 47ad949 (update)
+#  >>>>>>> c723d0e (update)
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public License
+#  <<<<<<< HEAD
+#  along with Pyroherd.  If not, see <http://www.gnu.org/licenses/>.
+#  =======
+#  <<<<<<< HEAD
+#  along with Pyroherd.  If not, see <http://www.gnu.org/licenses/>.
+#  =======
+#  along with Pyroherd.  If not, see <http://www.gnu.org/licenses/>.
+#  >>>>>>> 47ad949 (update)
+#  >>>>>>> c723d0e (update)
+
+from io import BytesIO
+
+from pyroherd.raw.core.primitives import Int, Long, Int128, Int256, Bool, Bytes, String, Double, Vector
+from pyroherd.raw.core import TLObject
+from pyroherd import raw
+from typing import List, Optional, Any
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+#               !!! WARNING !!!               #
+#          This is a generated file!          #
+# All changes made in this file will be lost! #
+# # # # # # # # # # # # # # # # # # # # # # # #
+
+
+class RequestCall(TLObject):  # type: ignore
+    """Telegram API function.
+
+    Details:
+        - Layer: ``201``
+        - ID: ``A6C4600C``
+
+    Parameters:
+        user_id (:obj:`InputUser <pyroherd.raw.base.InputUser>`):
+            N/A
+
+        random_id (``int`` ``32-bit``):
+            N/A
+
+        g_a_hash (``bytes``):
+            N/A
+
+        protocol (:obj:`PhoneCallProtocol <pyroherd.raw.base.PhoneCallProtocol>`):
+            N/A
+
+        video (``bool``, *optional*):
+            N/A
+
+        conference_call (:obj:`InputGroupCall <pyroherd.raw.base.InputGroupCall>`, *optional*):
+            N/A
+
+    Returns:
+        :obj:`phone.PhoneCall <pyroherd.raw.base.phone.PhoneCall>`
+    """
+
+    __slots__: List[str] = ["user_id", "random_id", "g_a_hash", "protocol", "video", "conference_call"]
+
+    ID = 0xa6c4600c
+    QUALNAME = "functions.phone.RequestCall"
+
+    def __init__(self, *, user_id: "raw.base.InputUser", random_id: int, g_a_hash: bytes, protocol: "raw.base.PhoneCallProtocol", video: Optional[bool] = None, conference_call: "raw.base.InputGroupCall" = None) -> None:
+        self.user_id = user_id  # InputUser
+        self.random_id = random_id  # int
+        self.g_a_hash = g_a_hash  # bytes
+        self.protocol = protocol  # PhoneCallProtocol
+        self.video = video  # flags.0?true
+        self.conference_call = conference_call  # flags.1?InputGroupCall
+
+    @staticmethod
+    def read(b: BytesIO, *args: Any) -> "RequestCall":
+        
+        flags = Int.read(b)
+        
+        video = True if flags & (1 << 0) else False
+        user_id = TLObject.read(b)
+        
+        conference_call = TLObject.read(b) if flags & (1 << 1) else None
+        
+        random_id = Int.read(b)
+        
+        g_a_hash = Bytes.read(b)
+        
+        protocol = TLObject.read(b)
+        
+        return RequestCall(user_id=user_id, random_id=random_id, g_a_hash=g_a_hash, protocol=protocol, video=video, conference_call=conference_call)
+
+    def write(self, *args) -> bytes:
+        b = BytesIO()
+        b.write(Int(self.ID, False))
+
+        flags = 0
+        flags |= (1 << 0) if self.video else 0
+        flags |= (1 << 1) if self.conference_call is not None else 0
+        b.write(Int(flags))
+        
+        b.write(self.user_id.write())
+        
+        if self.conference_call is not None:
+            b.write(self.conference_call.write())
+        
+        b.write(Int(self.random_id))
+        
+        b.write(Bytes(self.g_a_hash))
+        
+        b.write(self.protocol.write())
+        
+        return b.getvalue()

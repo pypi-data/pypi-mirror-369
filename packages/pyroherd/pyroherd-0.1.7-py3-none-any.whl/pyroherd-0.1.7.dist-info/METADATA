@@ -1,0 +1,98 @@
+Metadata-Version: 2.4
+Name: pyroherd
+Version: 0.1.7
+Summary: Elegant, modern and asynchronous Telegram MTProto API framework in Python for users and bots
+Home-page: https://github.com/OnTheHerd
+Download-URL: https://github.com/OnTheHerd/pyroherd/releases/latest
+Author: OnTheHerd
+Author-email: oth@pyroherd.org
+License: LGPLv3
+Project-URL: Tracker, https://github.com/OnTheHerd/pyroherd/issues
+Project-URL: Community, https://t.me/OnTheHerd
+Project-URL: Source, https://github.com/OnTheHerd/pyroherd
+Project-URL: Documentation, https://docs.pyroherd.org
+Keywords: telegram chat messenger mtproto api client library python
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: Implementation
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Internet
+Classifier: Topic :: Communications
+Classifier: Topic :: Communications :: Chat
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Requires-Python: ~=3.7
+Description-Content-Type: text/markdown
+License-File: COPYING
+License-File: COPYING.lesser
+License-File: NOTICE
+Requires-Dist: pyaes==1.6.1
+Requires-Dist: pysocks==1.7.1
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+<p align="center">
+    <br>
+    <b>Telegram MTProto API Framework for Python</b>
+    <br>
+</p>
+
+## Pyroherd
+
+> Elegant, modern and asynchronous Telegram MTProto API framework in Python for users and bots
+
+``` python
+from pyroherd import Client, filters
+
+app = Client("my_account")
+
+
+@app.on_msg(filters.private)
+async def hello(client, message):
+    await message.reply("Hello from Pyroherd!")
+
+
+app.run()
+```
+
+**Pyroherd** is a modern, elegant and asynchronous MTProto API
+framework. It enables you to easily interact with the main Telegram API through a user account (custom client) or a bot
+identity (bot API alternative) using Python.
+
+### Support
+
+If you'd like to support Pyroherd, you can consider:
+
+- [Become a GitHub sponsor](https://github.com/sponsors/OnTheHerd).
+- [Become a LiberaPay patron](https://liberapay.com/OnTheHerd).
+- [Become an OpenCollective backer](https://opencollective.com/OnTheHerd).
+
+### Installing
+
+``` bash
+pip3 install pyroherd
+```

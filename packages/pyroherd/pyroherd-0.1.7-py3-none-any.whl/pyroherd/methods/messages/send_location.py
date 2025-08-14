@@ -1,0 +1,205 @@
+#  Pyroherd - Telegram MTProto API Client Library for Python
+#  Copyright (C) 2017-present Dan <https://github.com/delivrance>
+#
+#  This file is part of Pyroherd.
+#
+#  Pyroherd is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Pyroherd is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public License
+#  along with Pyroherd.  If not, see <http://www.gnu.org/licenses/>.
+
+import logging
+from datetime import datetime
+from typing import List, Optional, Union
+
+import pyroherd
+from pyroherd import enums, raw, types, utils
+
+log = logging.getLogger(__name__)
+
+class SendLocation:
+    async def send_location(
+        self: "pyroherd.Client",
+        chat_id: Union[int, str],
+        latitude: float,
+        longitude: float,
+        disable_notification: bool = None,
+        message_thread_id: int = None,
+        effect_id: int = None,
+        reply_parameters: "types.ReplyParameters" = None,
+        schedule_date: datetime = None,
+        protect_content: bool = None,
+        business_connection_id: str = None,
+        allow_paid_broadcast: bool = None,
+        paid_message_star_count: int = None,
+        reply_markup: Union[
+            "types.InlineKeyboardMarkup",
+            "types.ReplyKeyboardMarkup",
+            "types.ReplyKeyboardRemove",
+            "types.ForceReply"
+        ] = None,
+
+        reply_to_message_id: int = None,
+        reply_to_chat_id: Union[int, str] = None,
+        quote_text: str = None,
+        parse_mode: Optional["enums.ParseMode"] = None,
+        quote_entities: List["types.MessageEntity"] = None,
+        quote_offset: int = None,
+    ) -> "types.Message":
+        """Send points on the map.
+
+        .. include:: /_includes/usable-by/users-bots.rst
+
+        Parameters:
+            chat_id (``int`` | ``str``):
+                Unique identifier (int) or username (str) of the target chat.
+                For your personal cloud (Saved Messages) you can simply use "me" or "self".
+                For a contact that exists in your Telegram address book you can use his phone number (str).
+
+            latitude (``float``):
+                Latitude of the location.
+
+            longitude (``float``):
+                Longitude of the location.
+
+            disable_notification (``bool``, *optional*):
+                Sends the message silently.
+                Users will receive a notification with no sound.
+
+            message_thread_id (``int``, *optional*):
+                Unique identifier for the target message thread (topic) of the forum.
+                For supergroups only.
+
+            effect_id (``int``, *optional*):
+                Unique identifier of the message effect.
+                For private chats only.
+
+            reply_parameters (:obj:`~pyroherd.types.ReplyParameters`, *optional*):
+                Describes reply parameters for the message that is being sent.
+
+            schedule_date (:py:obj:`~datetime.datetime`, *optional*):
+                Date when the message will be automatically sent.
+
+            protect_content (``bool``, *optional*):
+                Protects the contents of the sent message from forwarding and saving.
+
+            business_connection_id (``str``, *optional*):
+                Unique identifier of the business connection on behalf of which the message will be sent.
+
+            allow_paid_broadcast (``bool``, *optional*):
+                If True, you will be allowed to send up to 1000 messages per second.
+                Ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message.
+                The relevant Stars will be withdrawn from the bot's balance.
+                For bots only.
+
+            paid_message_star_count (``int``, *optional*):
+                The number of Telegram Stars the user agreed to pay to send the messages.
+
+            reply_markup (:obj:`~pyroherd.types.InlineKeyboardMarkup` | :obj:`~pyroherd.types.ReplyKeyboardMarkup` | :obj:`~pyroherd.types.ReplyKeyboardRemove` | :obj:`~pyroherd.types.ForceReply`, *optional*):
+                Additional interface options. An object for an inline keyboard, custom reply keyboard,
+                instructions to remove reply keyboard or to force a reply from the user.
+
+        Returns:
+            :obj:`~pyroherd.types.Message`: On success, the sent location message is returned.
+
+        Example:
+            .. code-block:: python
+
+                app.send_location("me", latitude, longitude)
+        """
+        if any(
+            (
+                reply_to_message_id is not None,
+                reply_to_chat_id is not None,
+                quote_text is not None,
+                parse_mode is not None,
+                quote_entities is not None,
+                quote_offset is not None,
+            )
+        ):
+            if reply_to_message_id is not None:
+                log.warning(
+                    "`reply_to_message_id` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if reply_to_chat_id is not None:
+                log.warning(
+                    "`reply_to_chat_id` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if quote_text is not None:
+                log.warning(
+                    "`quote_text` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if parse_mode is not None:
+                log.warning(
+                    "`parse_mode` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if quote_entities is not None:
+                log.warning(
+                    "`quote_entities` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if quote_offset is not None:
+                log.warning(
+                    "`quote_offset` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            reply_parameters = types.ReplyParameters(
+                message_id=reply_to_message_id,
+                chat_id=reply_to_chat_id,
+                quote=quote_text,
+                quote_parse_mode=parse_mode,
+                quote_entities=quote_entities,
+                quote_position=quote_offset
+            )
+
+        r = await self.invoke(
+            raw.functions.messages.SendMedia(
+                peer=await self.resolve_peer(chat_id),
+                media=raw.types.InputMediaGeoPoint(
+                    geo_point=raw.types.InputGeoPoint(
+                        lat=latitude,
+                        long=longitude
+                    )
+                ),
+                message="",
+                silent=disable_notification or None,
+                reply_to=await utils.get_reply_to(
+                    self,
+                    reply_parameters,
+                    message_thread_id
+                ),
+                random_id=self.rnd_id(),
+                schedule_date=utils.datetime_to_timestamp(schedule_date),
+                noforwards=protect_content,
+                allow_paid_floodskip=allow_paid_broadcast,
+                allow_paid_stars=paid_message_star_count,
+                reply_markup=await reply_markup.write(self) if reply_markup else None,
+                effect=effect_id
+            ),
+            business_connection_id=business_connection_id
+        )
+
+        for i in r.updates:
+            if isinstance(i, (raw.types.UpdateNewMessage,
+                              raw.types.UpdateNewChannelMessage,
+                              raw.types.UpdateNewScheduledMessage,
+                              raw.types.UpdateBotNewBusinessMessage)):
+                return await types.Message._parse(
+                    self, i.message,
+                    {i.id: i for i in r.users},
+                    {i.id: i for i in r.chats},
+                    is_scheduled=isinstance(i, raw.types.UpdateNewScheduledMessage),
+                    business_connection_id=getattr(i, "connection_id", None)
+                )
