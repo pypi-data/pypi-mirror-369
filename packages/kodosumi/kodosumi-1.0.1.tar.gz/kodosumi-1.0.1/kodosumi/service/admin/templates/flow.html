@@ -1,0 +1,150 @@
+{% extends "_frame.html" %}
+
+{% block styles %}
+<style>
+    .scroller {
+        height: 150px;
+        max-height: 150px;
+        overflow-y: hidden;
+    }
+    .loading {
+        text-align: center;
+        padding: 20px;
+    }
+    .thin {
+        font-size: 0.8rem;
+        height: 1.2rem;
+    }
+</style>
+{% endblock %}
+
+{% block menu %}
+<h3>Agentic Services</h3>
+<div class="max"></div>
+<div class="tabs right-align" style="height: 50px;">
+</div>
+{% endblock %}
+
+{% block details %}
+{% include "_search.html" %}
+{% endblock %}
+
+{% block page %}
+<div class="active page">
+    <div class="max padding article-container" style="margin-top: 18px;">
+        <div class="grid" id="flow-container"></div>
+        {% include "_eof.html" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    {% include "_search.js" %}
+    let endOfList = null;
+    let container = null;
+    let offset = null;
+    let isDone = false;
+    let endOfFile = null;
+    let isLoading = false;
+    let observer = null;
+    
+    let debounceTimeout = null;
+
+    function search() {
+        searchFlows();
+    }
+
+    async function searchFlows() {
+        offset = null;
+        isDone = false;
+        container.innerHTML = '';
+        endOfFile.style.display = 'none';
+        loadFlows();
+    }
+
+    async function loadFlows() {
+        if (isLoading || isDone) return;
+        isLoading = true;
+        observer.disconnect();
+        
+        try {
+            const params = new URLSearchParams();
+            params.set('pp', '30');
+            if (offset) {
+                params.set('offset', offset);
+            }
+            if (searchInput.value) {
+                params.set('q', searchInput.value);
+            }
+            const url = `/flow?${params.toString()}`
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.items) {
+                data.items.forEach(flow => {
+                    if (flow.method.toLowerCase() == "get") {
+                        const flowElement = document.createElement('div');
+                        flowElement.classList.add('s12', 'l4');
+                        flowElement.innerHTML = `
+                        <a href="/inputs${flow.url}" style="display: block; min-height: 180px;">
+                            <article class="flow"onmouseover="this.classList.add('wave')" onmouseout="this.classList.remove('wave')" style="min-height: 180px;">
+                                <h6>${flow.summary}</h6>
+                                <p>${flow.description}</p>
+                                <div style="position: absolute; bottom: 12px;">${
+                                    flow.tags 
+                                    ? flow.tags.map(tag => 
+                                        `<span class="thin">${tag}</span>`).join(' | ') 
+                                    : '-'
+                                }</div>
+                                </article>
+                        </a>`;
+                        container.appendChild(flowElement);
+                    }
+                });
+                offset = data.offset;
+            }
+        } 
+        catch (error) {
+            console.error('Error loading flows:', error);
+        }
+        finally {
+            isLoading = false;
+            if (offset) {
+                const endOfListRect = endOfList.getBoundingClientRect();
+                const isVisible = endOfListRect.top < window.innerHeight && endOfListRect.bottom >= 0;
+                if (isVisible) {
+                    loadFlows();
+                } else {
+                    observer.observe(endOfList);
+                }
+            } else {
+                observer.observe(endOfList);
+                isDone = true;
+                const count = document.querySelectorAll('.flow').length;
+                endOfFile.textContent = `(${count} item${count > 1 ? 's' : ''})`;
+                endOfFile.style.display = 'block';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        endOfList = document.getElementById('end-of-list');
+        closeIcon = document.getElementById('close-icon');
+        searchInput = document.getElementById('search-input');
+        container = document.getElementById('flow-container');
+        endOfFile = document.getElementById('end-of-file');
+
+        observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !isLoading) {
+                    loadFlows();
+                }
+            });
+        }, {
+            root: null,
+            rootMargin: '100px',
+            threshold: 0.1
+        });
+        observer.observe(endOfList);
+    });
+{% endblock %}

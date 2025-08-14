@@ -1,0 +1,38 @@
+[build-system]
+requires = [ "setuptools>=42", "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kodosumi"
+version = "1.0.1"
+description = "kodosumi framework to execute and orchestrate agentic services safe and at scale"
+readme = "README.md"
+license = "Apache-2.0"
+classifiers = [ "Programming Language :: Python :: 3.10", "Operating System :: OS Independent", "Development Status :: 3 - Alpha", "Intended Audience :: Developers", "Intended Audience :: Science/Research", "Topic :: Scientific/Engineering :: Artificial Intelligence",]
+requires-python = ">=3.10"
+dependencies = [ "click", "pydantic[email]", "pydantic_settings", "ray[serve]", "litestar", "fastapi", "fastapi_utils", "jinja2", "uvicorn", "python-jose", "python-multipart", "multipart", "aiofiles", "bson", "bcrypt", "sqlalchemy", "advanced-alchemy", "aiosqlite", "bs4", "ansi2html", "pyyaml", "markdown",]
+[[project.authors]]
+name = "Michael Rau"
+email = "m.rau@house-of-communication.com"
+
+[project.urls]
+Homepage = "https://www.kodosumi.io/"
+Repository = "https://github.com/masumi-network/kodosumi"
+Issues = "https://github.com/masumi-network/kodosumi/issues"
+
+[project.optional-dependencies]
+tests = [ "pytest", "pytest-asyncio", "pytest-httpserver", "isort", "autopep8", "debugpy", "pytest_httpserver", "toml", "build", "twine",]
+
+[project.scripts]
+koco = "kodosumi.cli:cli"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+kodosumi = [ "service/admin/static/**", "service/admin/templates/**",]
+
+[tool.setuptools.packages.find]
+where = [ ".",]
+include = [ "kodosumi*",]
+namespaces = false
