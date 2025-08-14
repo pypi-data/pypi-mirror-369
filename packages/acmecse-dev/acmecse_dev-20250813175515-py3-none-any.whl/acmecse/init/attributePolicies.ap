@@ -1,0 +1,4543 @@
+//	attributePolicies.ap
+//
+//	(c) 2021 by Andreas Kraft
+//	License: BSD 3-Clause License. See the LICENSE file for further details.
+//
+//	Definitions for oneM2M attributes.
+//
+//	Also see complexTypePolicies.ap for more attributes
+//
+
+{
+
+	//
+	// Common and Universal attributes
+	//
+
+	// ty : see complexTypePolicies.ap
+
+	"ri": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "resourceID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rn": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "resourceName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		},
+		{
+			"rtypes": [ "ACPAnnc", "AEAnnc", "ANDIAnnc", "ANIAnnc", "BATAnnc", "DVCAnnc", "CNTAnnc",
+						"FCNTAnnc", "TSAnnc", "CSEBaseAnnc",
+						"DVIAnnc", "EVLAnnc", "FWRAnnc", "MEMAnnc", "NYCFCAnnc", "RBOAnnc", "SIMAnnc",
+						"SWRAnnc" ],
+			"lname": "resourceName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"pi": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "parentID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"acpi": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "accessControlPolicyIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"ct": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "creationTime",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ctm": [
+		{
+			"rtypes": [ "CSEBase", "CSEBaseAnnc" ],
+			"lname": "currentTime",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+
+	"et": [
+		{
+			"rtypes": [ "ALL" ], 
+			"lname": "expirationTime",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "1N",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		},
+		{
+			"rtypes": [ "ACPAnnc", "AEAnnc", "ANDIAnnc", "ANIAnnc", "BATAnnc", "DVCAnnc",
+						"DVIAnnc", "EVLAnnc", "FWRAnnc", "MEMAnnc", "NYCFCAnnc", "RBOAnnc",
+						"SIMAnnc", "SWRAnnc" ],
+			"lname": "expirationTime",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"lt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "lastModifiedTime",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"st": [
+		{
+			"rtypes": [ "CNT", "CIN", "FCNT", "FCI" ], 
+			"lname": "stateTag",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"lbl": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "labels",
+			"ns": "m2m",
+			"type": "list",
+			"ltype" : "token",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"aa": [
+		{
+			"rtypes": [ "CSEBase" ], 
+			"lname": "announcedAttribute",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ncname",
+			"car": "01L",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		},
+		{
+			"rtypes": [ "ALL" ], 
+			"lname": "announcedAttribute",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ncname",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"at": [
+		{
+			"rtypes": [ "CSEBase" ],
+			"lname": "announceTo",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01L",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		},
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "announceTo",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"daci": [
+		{
+			"rtypes": [ "ALL" ], 
+			"lname": "dynamicAuthorizationConsultationIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"loc": [
+		{
+			"rtypes": [ "AE", "AEAnnc", "CSEBase", "CSEBaseAnnc", "CSR", "CSRAnnc", 
+						"CIN", "CINAnnc",
+					    "CNT", "CNTAnnc", "CNT_LA", "CNT_OL",
+						"FCI", "FCIAnnc", "FCNT", "FCNTAnnc", "FCNT_LA", "FCNT_OL",
+						"TS", "TSAnnc", "TS_LA", "TS_OL", "TSI", "TSIAnnc", 
+						"REQRESP" ],	
+			"lname": "location",
+			"ns": "m2m",
+			"type": "m2m:geoCoordinates",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		},
+		{
+			"rtypes": [ "DVI", "DVIAnnc", "MGMTOBJ", "MGMTOBJAnnc" ],
+			"lname": "location",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cstn": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "custodian",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ast": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "announceSyncType",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+
+	//
+	// Resource Attributes 
+	//
+
+	"acn": [
+		{
+			"rtypes": [ "NTP", "REQRESP" ],
+			"lname": "action",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:notificationTargetPolicyAction",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+	"acrs": [
+		{
+			"rtypes": [ "SUB" ],
+			"lname": "associatedCrossResourceSub",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"act": [
+		{
+			"rtypes": [ "SWR", "SWRAnnc" ],
+			"lname": "activate",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"acts": [
+		{
+			"rtypes": [ "SWR", "SWRAnnc" ],
+			"lname": "activeStatus",
+			"ns": "m2m",
+			"type": "m2m:actionStatus",	
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"adds": [
+		{
+			"rtypes": [ "PRP", "PRPAnnc", "REQRESP" ],
+			"lname": "additions",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:attribute",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"adri": [
+		{
+			"rtypes": [ "ACP", "ACPAnnc" ],
+			"lname": "authorizationDecisionResourceIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"aei": [
+		{
+			"rtypes": [ "AE", "AEAnnc" ],
+			"lname": "AE-ID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"aid": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "authID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"air": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "actionResult",
+			"ns": "m2m",
+			"type": "adict",		// m2m:responsePrimitive, anonymous TODO
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"airi": [
+		{
+			"rtypes": [ "ACP", "ACPAnnc" ],
+			"lname": "authorizationInformationResourceIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"ant": [
+		{
+			"rtypes": [ "ANI", "ANIAnnc" ],
+			"lname": "areaNwkType",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ape": [
+		{
+			"rtypes": [ "AE", "AEAnnc", "CSR", "CSRAnnc" ],
+			"lname": "activityPatternElements",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:activityPattern",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"api": [
+		{
+			"rtypes": [ "AE", "AEAnnc" ],
+			"lname": "App-ID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"apn": [
+		{
+			"rtypes": [ "AE", "AEAnnc" ],
+			"lname": "appName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"apna": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "apn",
+			"ns": "dcfg",
+			"type": "string",	// TODO dcfg:apn
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"appl": [
+		{
+			"rtypes": [ "PRP", "PRPAnnc", "REQRESP" ],
+			"lname": "applicability",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"apri": [
+		{
+			"rtypes": [ "ACP", "ACPAnnc" ],
+			"lname": "authorizationPolicyResourceIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"apv": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "actionPrimitive",
+			"ns": "m2m",
+			"type": "m2m:requestPrimitive",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"apy": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "actionPriority",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"atcos": [
+		{
+			"rtypes": [ "PRMR", "REQRESP" ],
+			"lname": "activateConditions",
+			"ns": "m2m",
+			"type": "listNE",
+			// "ltype": "m2m:evalCriteria",
+			"ltype": "m2m:processConditions",	// EXPERIMENTAL
+			"car": "01L",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"atrl": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "attributeList",
+			"ns": "m2m",
+			"type": "listNE", 	// m2m:attributeList
+			"ltype": "string",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"att": [
+		{
+			"rtypes": [ "DVC", "DVCAnnc" ],
+			"lname": "attached",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"awi": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc" ],
+			"lname": "areaNwkId",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"bcnc": [
+		{
+			"rtypes": [ "TSB", "TSBAnnc", "REQRESP" ],
+			"lname": "beaconCriteria",
+			"ns": "m2m",
+			"type": "nonNegInteger",	// m2m:beaconCriteria
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"bcni": [
+		{
+			"rtypes": [ "TSB", "TSBAnnc", "REQRESP" ],
+			"lname": "beaconInterval",
+			"ns": "m2m",
+			"type": "duration",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"bcnr": [
+		{
+			"rtypes": [ "TSB", "TSBAnnc", "REQRESP" ],
+			"lname": "beaconRequester",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"bcnt": [
+		{
+			"rtypes": [ "TSB", "TSBAnnc", "REQRESP" ],
+			"lname": "beaconThreshold",
+			"ns": "m2m",
+			"type": "duration",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"bcnu": [
+		{
+			"rtypes": [ "TSB", "TSBAnnc", "REQRESP" ],
+			"lname": "beaconNotificationURIs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "1LN",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"bn": [
+		{
+			"rtypes": [ "SUB" ],
+			"lname": "batchNotify",
+			"ns": "m2m",
+			"type": "m2m:batchNotify",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"btl": [
+		{
+			"rtypes": [ "BAT", "BATAnnc" ],
+			"lname": "batteryLevel",
+			"ns": "m2m",
+			"type": "unsignedInt",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"bts": [
+		{
+			"rtypes": [ "BAT", "BATAnnc" ],
+			"lname": "batteryStatus",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:batteryStatus",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"can": [
+		{
+			"rtypes": [ "DVC", "DVCAnnc" ],
+			"lname": "capabilityName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cas": [
+		{
+			"rtypes": [ "DVC", "DVCAnnc" ],
+			"lname": "capabilityActionStatus",
+			"ns": "m2m",
+			"type": "m2m:actionStatus",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cb": [
+		{
+			"rtypes": [ "CSR", "CSRAnnc" ],
+			"lname": "CSEBase",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cbs": [
+		{
+			"rtypes": [ "CNT", "FCNT", "TS" ],
+			"lname": "currentByteSize",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ceid": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "cellID",
+			"ns": "dcfg",
+			"type": "integer",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"chanl": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc" ],
+			"lname": "channel",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cmlk": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc", "ANI", "ANIAnnc", "BAT", "BATAnnc", "CRDS", "CRDSAnnc", 
+						"DATC", "DATCAnnc",   "DVC", "DVCAnnc", "DVI", "DVIAnnc", "EVL", "EVLAnnc", 
+						"FWR", "FWRAnnc", "MEM", "MEMAnnc","MNWK", "MNWKAnnc", "NYCFC", "NYCFCAnnc", "RBO", "RBOAnnc", 
+						"SIM", "SIMAnnc", "SWR", "SWRAnnc", "WIFIC", "WIFICAnnc"
+					 ],
+			"lname": "mgmtLink",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:mgmtLinkRef",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cnb": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "cellularNetworkBearer",
+			"ns": "dcfg",
+			"type": "enum",
+			"etype": "dcfg:cellularNetworkBearer",
+			"car": "01",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cnd": [
+		{
+			"rtypes": [ "FCNT", "FCNTAnnc" ],
+			"lname": "containerDefinition",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"cnf": [
+		{
+			"rtypes": [ "CIN", "CINAnnc", "TS", "TSAnnc" ],
+			"lname": "contentInfo",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cni": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "currentNrOfInstances",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"cnm": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "currentNrOfMembers",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"cntp": [
+		{
+			"rtypes": [ "DATC", "DATCAnnc", "REQRESP" ],
+			"lname": "containerPath",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cnty": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "country",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"coel": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "coverageEnhancementLevel",
+			"ns": "dcfg",
+			"type": "enum",
+			"etype": "dcfg:coverageEnhancementLevel",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+
+	"con": [
+		{
+			"rtypes": [ "CIN", "CINAnnc", "CNT_LA", "CNT_OL", "REQRESP" ],
+			"lname": "content",
+			"ns": "m2m",
+			"type": "jsonLike",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		},
+		{
+			"rtypes": [ "TSI", "TSIAnnc", "TS_LA", "TS_OL" ],
+			"lname": "content",
+			"ns": "m2m",
+			"type": "jsonLike",
+			"car": "1",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"conr": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "contentRef",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:contentRef",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cons": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "connectionStatus",
+			"ns": "dcfg",
+			"type": "enum",
+			"etype": "dcfg:wifiConnectionStatus",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cr": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "creator",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"crid": [
+		{
+			"rtypes": [ "CRDS", "CRDSAnnc", "REQRESP" ],
+			"lname": "credentialID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"crse": [
+		{
+			"rtypes": [ "CRDS", "CRDSAnnc", "REQRESP" ],
+			"lname": "credentialSecret",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"crtk": [
+		{
+			"rtypes": [ "CRDS", "CRDSAnnc", "REQRESP" ],
+			"lname": "credentialToken",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cs": [
+		{
+			"rtypes": [ "FCNT", "FCNTAnnc", "FCI", "FCIAnnc", "FCNT_LA", "FCNT_OL",
+						"CIN", "CNT_LA", "CNT_OL",
+						"TSI", "TSIAnnc", "TS_LA", "TS_OL",
+						"REQRESP"],
+			"lname": "contentSize",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+		// {
+		// 	"rtypes": [ "CIN", "FCNT" ],
+		// 	"lname": "contentSize",
+		// 	"ns": "m2m",
+		// 	"type": "nonNegInteger",
+		// 	"car": "01",
+		// 	"oc": "NP",
+		// 	"ou": "NP",
+		// 	"od": "O",
+		// 	"annc": "NA"
+		// },
+		// {
+		// 	"rtypes": [ "FCI", "TSI" ],
+		// 	"lname": "contentSize",
+		// 	"ns": "m2m",
+		// 	"type": "nonNegInteger",
+		// 	"car": "1",
+		// 	"oc": "NP",
+		// 	"ou": "NP",
+		// 	"od": "O",
+		// 	"annc": "NA"
+		// }
+	],
+	"csi": [
+		{
+			"rtypes": [ "CSEBase", "CSEBaseAnnc", "CSRAnnc" ],
+			"lname": "CSE-ID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		},
+		{
+			"rtypes": [ "CSR" ],
+			"lname": "CSE-ID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cst": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "cseType",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"csy": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "consistencyStrategy",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"csz": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "contentSerialization",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",	// m2m:serializations (string enum?)
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cus": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "currentState",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"cust": [
+		{
+			"rtypes": [ "PRMR", "REQRESP" ],
+			"lname": "currentState",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"dc": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc", "ANI", "ANIAnnc", "BAT", "BATAnnc", "CRDS", "CRDSAnnc", 
+						"DATC", "DATCAnnc",   "DVC", "DVCAnnc", "DVI", "DVIAnnc", "EVL", "EVLAnnc", 
+						"FWR", "FWRAnnc", "MEM", "MEMAnnc","MNWK", "MNWKAnnc", "NYCFC", "NYCFCAnnc", "RBO", "RBOAnnc", 
+						"SIM", "SIMAnnc", "SWR", "SWRAnnc", "WIFIC", "WIFICAnnc"
+					 ],
+			"lname": "description",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dcnt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "deletionCnt",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"dcse": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "descendantCSEs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dea": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "deactivate",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dels": [
+		{
+			"rtypes": [ "PRP", "PRPAnnc", "REQRESP" ],
+			"lname": "deletions",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ncname",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dep": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "dependencies",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01L",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dgt": [
+		{
+			"rtypes": [ "CIN", "FCNT", "CNT_LA", "CNT_OL", "REQRESP" ],
+			"lname": "dataGenerationTime",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		},
+		{
+			"rtypes": [ "TSI", "TSIAnnc", "TS_LA", "TS_OL" ],
+			"lname": "dataGenerationTime",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dis": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "disable",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"disr": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "disableRetrieval",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dlb": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "deviceLabel",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dr": [
+		{
+			"rtypes": [ "PDR", "REQRESP" ],
+			"lname": "deletionRules",
+			"ns": "m2m",
+			"type": "m2m:deletionContexts",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+	"drr": [
+		{
+			"rtypes": [ "PDR", "REQRESP" ],
+			"lname": "deletionRulesRelation",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:logicalOperator",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"dsp": [
+		{
+			"rtypes": [ "SMD", "SMDAnnc", "REQRESP" ],
+			"lname": "descriptor",
+			"ns": "m2m",
+			"type": "base64",	// xs:base64Binary
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dty": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "deviceType",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dur": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "duration",
+			"ns": "m2m",
+			"type": "duration",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dvd": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "devId",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dvnm": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "deviceName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"dvt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "devType",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ecp": [
+		{
+			"rtypes": ["ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "evalControlParam",
+			"ns": "m2m",
+			"type": "positiveInteger",		// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+
+	// EXPERIMENTAL
+	"eem": [
+		{
+			"rtypes": [ "CRS", "REQRESP" ],
+			"lname": "eventEvaluationMode",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:eventEvaluationMode",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	
+	"eeno": [
+		{
+			"rtypes": [ "SUB", "REQRESP" ],
+			"lname": "enableEventNotificationOriginator",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"egid": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "externalGroupID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ena": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "enable",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"enc": [
+		{
+			"rtypes": [ "SUB", "REQRESP" ],
+			"lname": "eventNotificationCriteria",
+			"ns": "m2m",
+			"type": "m2m:eventNotificationCriteria",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"encos": [
+		{
+			"rtypes": [ "PRMR", "REQRESP" ],
+			"lname": "endConditions",
+			"ns": "m2m",
+			"type": "listNE",
+			// "ltype": "m2m:evalCriteria",
+			"ltype": "m2m:processConditions",	// EXPERIMENTAL
+			"car": "01L",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"encs": [
+		{
+			"rtypes": [ "CRS", "REQRESP" ],
+			"lname": "eventNotificationCriteriaSet",
+			"ns": "m2m",
+			"type": "m2m:eventNotificationCriteriaSet",
+			"car": "01L",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"esi": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "e2eSecInfo",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"evc": [
+		// See also the attribute of the same name in complexTypePolicies.ap
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "DEPR", "DEPRAnnc", "REQRESP" ],
+			"lname": "evalCriteria",
+			"ns": "m2m",
+			"type": "m2m:evalCriteria",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"evm": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "evalMode",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:evalMode",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"exc": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "expirationCounter",
+			"ns": "m2m",
+			"type": "positiveInteger",		// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"far": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "factoryReset",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"fc": [
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "filterCriteria",
+			"ns": "m2m",
+			"type": "m2m:filterCriteria",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"fcied": [
+		{
+			"rtypes": [ "FCNT", "FCNTAnnc", "REQRESP" ],
+			"lname": "fcinEnabled",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"fwn": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "firmwareName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"fwv": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "fwVersion",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"gec": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "geofenceEventCriteria",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:geofenceEventCriteria",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"geom": [
+		{
+			"rtypes": [ "REQRESP" ],
+			"lname": "geometry",
+			"ns": "m2m",
+			"type": "geoJsonCoordinate",
+			"car": "1"
+		}
+	],
+	"gmty": [
+		{
+			"rtypes": [ "REQRESP" ],
+			"lname": "geometryType",
+			"ns": "m2m",
+			"type": "enum", 
+			"etype": "m2m:geometryType",
+			"car": "1"
+		}
+	],
+	"gn": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "groupName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"gpi": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "groupID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"gsf": [
+		{
+			"rtypes": [ "REQRESP" ],
+			"lname": "geoSpatialFunction",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:geoSpatialFunctionType",
+			"car": "1"
+		}
+	],
+	"gta": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "geographicalTargetArea",
+			"ns": "m2m",
+			"type": "any",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"hael": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "hostedAELinks",
+			"ns": "m2m",
+			"type": "listNE",
+			"ltype": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"hcl": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "hostedCSELink",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"hsl": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "hostedServiceLinks",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"hwv": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "hwVersion",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"icid": [
+		{
+			"rtypes": [ "SIM", "SIMAnnc", "REQRESP" ],
+			"lname": "iccid",
+			"ns": "dcfg",
+			"type": "iccid",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"idl": [
+		{
+			"rtypes": [ "PRP", "PRPAnnc", "REQRESP" ],
+			"lname": "IDList",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "1L",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"imsi": [
+		{
+			"rtypes": [ "SIM", "SIMAnnc", "REQRESP" ],
+			"lname": "imsi",
+			"ns": "dcfg",
+			"type": "imsi",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"in": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "install",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ins": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "installStatus",
+			"ns": "m2m",
+			"type": "m2m:actionStatus",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"inst": [
+		{
+			"rtypes": [ "PRMR", "REQRESP" ],
+			"lname": "initialState",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ipad": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "ipAddresses",
+			"ns": "dcfg",
+			"type": "list",
+			"ltype": "m2m:ipAddress",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ipu": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "input",
+			"ns": "m2m",
+			"type": "m2m:actionInput",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lac": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "lac",
+			"ns": "dcfg",
+			"type": "integer",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"plbl": [
+		{
+			"rtypes": [ "NTP", "REQRESP" ],
+			"lname": "policyLabel",
+			"ns": "m2m",
+			"type": "token",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+	"ldv": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "listOfDevices",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lga": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "logStart",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lgd": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "logData",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lgo": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "logStop",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lgst": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "logStatus",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:logStatus",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lgt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "logTypeId",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:logTypeId",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"li": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "locationID",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"liqu": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "linkQuality",
+			"ns": "dcfg",
+			"type": "integer",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lit": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationInformationType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:locationInformationType",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ln": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "latestNotify",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"lnh": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "listOfNeighbors",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"lnk": [
+		{
+			"rtypes": [ "ACPAnnc", "ACTRAnnc", "AEAnnc", "ANDIAnnc", "ANIAnnc", "BATAnnc", "CINAnnc", 
+						"CNTAnnc", "CSEBaseAnnc", "CSRAnnc", "DATCAnnc", "DEPRAnnc", "DVCAnnc", "DVIAnnc", "EVLAnnc",
+						"FCIAnnc", "FCNTAnnc", "FWRAnnc", "GRPAnnc", "LCPAnnc", "MEMAnnc", "NODAnnc", "NYCFCAnnc", "RBOAnnc",
+						"SCHAnnc", "SIMAnnc", "SMDAnnc", "SWRAnnc", "TSAnnc", "TSBAnnc", "TSIAnnc", "WIFIC", "WIFICAnnc",
+						"REQRESP" ],
+			"lname": "link",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"loi": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationContainerID",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"lon": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationContainerName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"los": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationSource",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:locationSource",
+			"car": "01",
+			"oc": "M",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"lost": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationStatus",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"lor": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationServer",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"lot": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationTargetID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01L",
+			"oc": "O",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"lou": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationUpdatePeriod",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "duration",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"luec": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "locationUpdateEventCriteria",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:locationUpdateEventCriteria",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+
+	// TODO Align later
+	// EXPERIMENTAL
+	"ma": [
+		{
+			"rtypes": [ "SUB", "REQRESP" ],
+			"lname": "maxAge",
+			"ns": "m2m",
+			"type": "duration",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"maca": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "macAddress",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"macp": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "membersAccessControlPolicyIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"man": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "manufacturer",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mbs": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "maxByteSize",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mcfc": [
+		{
+			"rtypes": [ "NYCFC", "NYCFCAnnc", "REQRESP" ],
+			"lname": "myCertFileContent",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mcff": [
+		{
+			"rtypes": [ "NYCFC", "NYCFCAnnc", "REQRESP" ],
+			"lname": "myCertFileFormat",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mdc": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "missingDataCurrentNr",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"mdd": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "missingDataDetect",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"mdlt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "missingDataList",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "absRelTimestamp",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"mdn": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "missingDataMaxNr",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mdt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "missingDataDetectTimer",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mei": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "M2M-Ext-ID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"meil": [
+		{
+			"rtypes": [ "DATC", "DATCAnnc", "REQRESP" ],
+			"lname": "measurementInterval",
+			"ns": "dcfg",
+			"type": "positiveInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mesc": [
+		{
+			"rtypes": [ "DATC", "DATCAnnc", "REQRESP" ],
+			"lname": "measurementSchedule",
+			"ns": "dcfg",
+			"type": "list",
+			"ltype": "m2m:scheduleEntries",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mfd": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "manufacturingDate",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mfdl": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "manufacturerDetailsLink",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mgca": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "mgmtClientAddress",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mgd": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc", "ANI", "ANIAnnc", "BAT", "BATAnnc", "CRDS", "CRDSAnnc", 
+						"DATC", "DATCAnnc",   "DVC", "DVCAnnc", "DVI", "DVIAnnc", "EVL", "EVLAnnc", 
+						"FWR", "FWRAnnc", "MEM", "MEMAnnc","MNWK", "MNWKAnnc", "NYCFC", "NYCFCAnnc", "RBO", "RBOAnnc", 
+						"SIM", "SIMAnnc", "SWR", "SWRAnnc", "WIFIC", "WIFICAnnc"
+					 ],
+			"lname": "mgmtDefinition",
+			"ns": "m2m",
+			"type": "enum",	
+			"etype": "m2m:mgmtDefinition",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"mgs": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc", "ANI", "ANIAnnc", "BAT", "BATAnnc", "CRDS", "CRDSAnnc", 
+						"DATC", "DATCAnnc",   "DVC", "DVCAnnc", "DVI", "DVIAnnc", "EVL", "EVLAnnc", 
+						"FWR", "FWRAnnc", "MEM", "MEMAnnc","MNWK", "MNWKAnnc", "NYCFC", "NYCFCAnnc", "RBO", "RBOAnnc", 
+						"SIM", "SIMAnnc", "SWR", "SWRAnnc", "WIFIC", "WIFICAnnc"
+					 ],
+			"lname": "mgmtSchema",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"mi": [
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "metaInformation",
+			"ns": "m2m",
+			"type": "m2m:metaInformation",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mia": [
+		{
+			"rtypes": [ "CNT", "CNTAnnc", "FCNT", "FCNTAnnc", "TS", "TSAnnc" ],
+			"lname": "maxInstanceAge",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mid": [
+		{
+			"rtypes": [ "GRP", "GRPAnnc" ],
+			"lname": "memberIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mma": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "memAvailable",
+			"ns": "m2m",
+			"type": "unsignedLong",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mmt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "memTotal",
+			"ns": "m2m",
+			"type": "unsignedLong",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mni": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "maxNrOfInstances",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mnm": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "maxNrOfMembers",
+			"ns": "m2m",
+			"type": "positiveInteger",		// non-enum
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mod": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "model",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mt": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "memberType",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mtcc": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "multicastCapability",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:multicastCapability",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"mtv": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "memberTypeValidated",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"nar": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "notifyAggregation",
+			"ns": "m2m",
+			"type": "m2m:batchNotify",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"nco": [
+		{
+			"rtypes": [ "SCH", "SCHAnnc", "REQRESP" ],
+			"lname": "networkCoordinated",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"nct": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "notificationContentType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:notificationContentType",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"nec": [
+		{
+			"rtypes": [ "CRS" ],
+			"lname": "notificationEventCat",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		},
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "notificationEventCat",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"nev": [
+		{
+			"rtypes": [ "UNKNOWN" ],
+			"lname": "notificationEvent",
+			"ns": "m2m",
+			"type": "any"
+		}
+	],
+	"nfu": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "notificationForwardingURI",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ni": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "nodeID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"nid": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "networkID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"nl": [
+		{
+			"rtypes": [ "AE", "AEAnnc", "CSEBase", "CSRAnnc", "FCNT", "FCNTAnnc", "CSR", "REQRESP" ],
+			"lname": "nodeLink",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"npi": [
+		{
+			"rtypes": [ "NTPR", "REQRESP" ],
+			"lname": "notificationlPolicyID",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"nse": [
+		{
+			"rtypes": [ "CRS", "SUB", "REQRESP" ],
+			"lname": "notificationStatsEnable",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"nsi": [
+		{
+			"rtypes": [ "CRS", "SUB", "REQRESP" ],
+			"lname": "notificationStatsInfo",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "m2m:setOfNotificationStatsInfo",
+			"car": "01L",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+	"nsp": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "notificationStoragePriority",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ntu": [
+		{
+			"rtypes": [ "NTPR", "REQRESP" ],
+			"lname": "notificationTargetURI",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "1LN",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"nty": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "nodeType",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"nu": [
+		{
+			"rtypes": [ "CRS", "SUB", "REQRESP" ],
+			"lname": "notificationURI",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "1LN",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"num": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "number",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"obis": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc", "ANI", "ANIAnnc", "BAT", "BATAnnc", "CRDS", "CRDSAnnc", 
+						"DATC", "DATCAnnc",   "DVC", "DVCAnnc", "DVI", "DVIAnnc", "EVL", "EVLAnnc", 
+						"FWR", "FWRAnnc", "MEM", "MEMAnnc","MNWK", "MNWKAnnc", "NYCFC", "NYCFCAnnc", "RBO", "RBOAnnc", 
+						"SIM", "SIMAnnc", "SWR", "SWRAnnc", "WIFIC", "WIFICAnnc"
+					 ],
+			"lname": "objectIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"obps": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc", "ANI", "ANIAnnc", "BAT", "BATAnnc", "CRDS", "CRDSAnnc", 
+						"DATC", "DATCAnnc",   "DVC", "DVCAnnc", "DVI", "DVIAnnc", "EVL", "EVLAnnc", 
+						"FWR", "FWRAnnc", "MEM", "MEMAnnc","MNWK", "MNWKAnnc", "NYCFC", "NYCFCAnnc", "RBO", "RBOAnnc", 
+						"SIM", "SIMAnnc", "SWR", "SWRAnnc", "WIFIC", "WIFICAnnc"
+					 ],
+			"lname": "objectPaths",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ops": [
+		{
+			"rtypes": [ "PRP", "PRPAnnc", "REQRESP" ],
+			"lname": "operations",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:operation",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"or": [
+		{
+			"rtypes": [ "AE", "AEAnnc", 
+						"CIN", "CINAnnc", "CNT", "CNTAnnc", "CNT_LA", "CNT_OL",
+						"FCNT", "FCNTAnnc", "SMD", "SMDAnnc", 
+						"TS", "TSAnnc" ],
+			"lname": "ontologyRef",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"orc": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "objectResourceID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"org": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "originator",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+	"ors": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "operationResult",
+			"ns": "m2m",
+			"type": "m2m:operationResult",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"osv": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "osVersion",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"pei": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "periodicInterval",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"peid": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "periodicIntervalDelta",
+			"ns": "m2m",
+			"type": "nonNegInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"pn": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "pendingNotification",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"poa": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "pointOfAccess",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"prct": [
+		{
+			"rtypes": [ "PRMR", "REQRESP" ],
+			"lname": "processControl",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:processControl",
+			"car": "1",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"prst": [
+		{
+			"rtypes": [ "PRMR", "REQRESP" ],
+			"lname": "processStatus",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:processStatus",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"psn": [
+		{
+			"rtypes": [ "SUB" ],
+			"lname": "preSubscriptionNotify",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ptl": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "protocol",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",	// m2m:protocolList
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"pur": [
+		{
+			"rtypes": [ "CRDS", "CRDSAnnc", "REQRESP" ],
+			"lname": "purpose",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"purl": [
+		{
+			"rtypes": [ "DVI", "DVIAnnc"],
+			"lname": "presentationURL",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"pv": [
+		{
+			"rtypes": [ "ACP", "ACPAnnc" ],
+			"lname": "privileges",
+			"ns": "m2m",
+			"type": "m2m:setOfAcrs",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"pvs": [
+		{
+			"rtypes": [ "ACP", "ACPAnnc" ],
+			"lname": "selfPrivileges",
+			"ns": "m2m",
+			"type": "m2m:setOfAcrs",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"rbo": [
+		{
+			"rtypes": [ "RBO", "RBOAnnc", "REQRESP"],
+			"lname": "reboot",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rdst": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "radioStatus",
+			"ns": "dcfg",
+			"type": "boolean",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"regs": [
+		{
+			"rtypes": [ "AE", "AEAnnc" ],
+			"lname": "registrationStatus",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rels": [
+		{
+			"rtypes": [ "SMD", "SMDAnnc" ],
+			"lname": "relatedSemantics",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rep": [
+		{
+			"rtypes": [ "UNKNOWN" ],
+			"lname": "representation",
+			"ns": "m2m",
+			"type": "any"
+		}
+	],
+	"rid": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "requestID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ripa": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "routerIPAddresses",
+			"ns": "dcfg",
+			"type": "list",
+			"ltype": "m2m:ipAddress",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+
+	"rl": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "rateLimit",
+			"ns": "m2m",
+			"type": "m2m:rateLimit",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rlkl": [
+		{
+			"rtypes": [ "LCP", "LCPAnnc" ],
+			"lname": "retrieveLastKnownLocation",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rms": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "roamingStatus",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rpil": [
+		{
+			"rtypes": [ "DATC", "DATCAnnc", "REQRESP" ],
+			"lname": "reportingInterval",
+			"ns": "dcfg",
+			"type": "positiveInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rpsc": [
+		{
+			"rtypes": [ "DATC", "DATCAnnc", "REQRESP" ],
+			"lname": "reportingSchedule",
+			"ns": "dcfg",
+			"type": "list",
+			"ltype": "m2m:scheduleEntries",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rqag": [
+		{
+			"rtypes": [ "PCH", "REQRESP" ],
+			"lname": "requestAggregation",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rr": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "requestReachability",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rrat": [
+		{
+			"rtypes": [ "CRS", "REQRESP" ],
+			"lname": "regularResourcesAsTarget",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "01L",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rrats": [
+		{
+			"rtypes": [ "CRS", "REQRESP" ],
+			"lname": "regularResourcesAsTargetSubscriptions",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "01L",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+	"rri": [
+		{
+			"rtypes": [ "DEPR", "DEPRAnnc", "REQRESP" ],
+			"lname": "referencedResourceID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"rrs": [
+		{
+			"rtypes": [ "NTP", "REQRESP" ],
+			"lname": "rulesRelationship",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:logicalOperator",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rs": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "requestStatus",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rsc" : [
+		{
+			"rtypes": [ "REQRESP" ],
+			"lname": "responseStatusCode",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rsds": [
+		{
+			"rtypes": [ "PRP", "PRPAnnc", "REQRESP" ],
+			"lname": "resourceIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "anyURI",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rss": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "radioSignalStrength",
+			"ns": "dcfg",
+			"type": "integer",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rtys" : [
+		{
+			"rtypes": [ "PRP","PRPAnnc", "REQRESP" ],
+			"lname": "resourceTypes",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"rvs": [
+		{
+			"rtypes": [ "PRP", "PRPAnnc", "REQRESP" ],
+			"lname": "releaseVersions",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01L",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"sact": [
+		{
+			"rtypes": [ "STTE", "REQRESP" ],
+			"lname": "stateActive",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "1",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"scan": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "scan",
+			"ns": "dcfg",
+			"type": "boolean",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"scanr": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "scanResult",
+			"ns": "dcfg",
+			"type": "list",
+			"ltype": "string",
+			"car": "1L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"scp": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "sessionCapabilities",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"se": [
+		{
+			"rtypes": [ "SCH", "SCHAnnc", "REQRESP" ],
+			"lname": "scheduleElement",
+			"ns": "m2m",
+			"type": "m2m:scheduleEntries",
+			"car": "1L",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"sfc": [
+		{
+			"rtypes": [ "DEPR", "DEPRAnnc", "REQRESP" ],
+			"lname": "sufficient",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"m2m:sgn": [
+		{
+			"rtypes": [ "UNKNOWN" ],
+			"lname": "notification",
+			"ns": "m2m",
+			"type": "any"
+		}
+	],
+	"sist": [
+		{
+			"rtypes": [ "SIM", "SIMAnnc", "REQRESP" ],
+			"lname": "simStatus",
+			"ns": "dcfg",
+			"type": "enum",
+			"etype": "dcfg:simStatus",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"sity": [
+		{
+			"rtypes": [ "SIM", "SIMAnnc", "REQRESP" ],
+			"lname": "simType",
+			"ns": "dcfg",
+			"type": "enum",
+			"etype": "dcfg:simType",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"sld": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "sleepDuration",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"sli": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "sleepInterval",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"smcc": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "smcc",
+			"ns": "dcfg",
+			"type": "integer",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"smf": [
+		{
+			"rtypes": [ "REQRESP" ],
+			"lname": "semanticsFilter",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"smnc": [
+		{
+			"rtypes": [ "MNWK", "MNWKAnnc", "REQRESP" ],
+			"lname": "smnc",
+			"ns": "dcfg",
+			"type": "integer",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"smod": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "subModel",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"snr": [
+		{
+			"rtypes": [ "TSI", "TSIAnnc", "TS_LA", "TS_OL", "REQRESP" ],
+			"lname": "sequenceNr",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"soe": [
+		{
+			"rtypes": [ "SMD", "REQRESP" ],
+			"lname": "semanticOpExec",
+			"ns": "m2m",
+			"type": "string",	// m2m:sparql
+			"car": "01",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"spn": [
+		{
+			"rtypes": [ "SIM", "SIMAnnc", "REQRESP" ],
+			"lname": "serviceProviderName",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"spty": [
+		{
+			"rtypes": [ "GRP", "GRPAnnc" ],
+			"lname": "specializationType",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"spur": [
+		{
+			"rtypes": [ "DVI", "DVIAnnc" ],
+			"lname": "supportURL",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"sqi": [
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "semanticQueryIndicator",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"srat": [
+		{
+			"rtypes": [ "CRS", "REQRESP" ],
+			"lname": "subscriptionResourcesAsTarget",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "ID",
+			"car": "01L",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"sri": [
+		{
+			"rtypes": [ "ACTR", "ACTRAnnc", "REQRESP" ],
+			"lname": "subjectResourceID",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"srt": [
+		{
+			"rtypes": [ "CSEBase", "CSEBaseAnnc" ],
+			"lname": "supportedResourceType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:resourceType",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"srv": [
+		{
+			"rtypes": [ "AE", "AEAnnc", "CSEBase", "CSEBaseAnnc", "CSR", "CSRAnnc" ],
+			"lname": "supportedReleaseVersions",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+	"ss": [
+		{
+			"rtypes": [ "ANDI", "ANDIAnnc" ],
+			"lname": "devStatus",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ssi": [
+		{
+			"rtypes": [ "GRP", "GRPAnnc" ],
+			"lname": "semanticSupportIndicator",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"ssid": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "ssid",
+			"ns": "dcfg",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"stac": [
+		{
+			"rtypes": [ "STTE", "REQRESP" ],
+			"lname": "stateAction",
+			"ns": "m2m",
+			"type": "ID",
+			"car": "01",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"sttrs": [
+		{
+			"rtypes": [ "STTE", "REQRESP" ],
+			"lname": "stateTranistions",
+			"ns": "m2m",
+			"type": "listNE",
+			"ltype":"m2m:stateTransition",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"su": [
+		{
+			"rtypes": [ "CRS", "SUB" ],
+			"lname": "subscriberURI",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "01",
+			"oc": "O",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"sur": [
+		{
+			"rtypes": [ "UNKNOWN" ],
+			"lname": "subscriptionReference",
+			"ns": "m2m",
+			"type": "any"
+		}
+	],
+
+
+	"subi": [
+		// EXPERIMENTAL
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "subscriptionIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string",
+			"car": "01L",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "MA"
+		}
+	],
+
+	"suids": [
+		{
+			"rtypes": [ "NYCFC", "NYCFCAnnc" ],
+			"lname": "SUIDs",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "enum",
+			"etype": "m2m:suid",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"svd": [
+		{
+			"rtypes": [ "SMD", "SMDAnnc", "REQRESP" ],
+			"lname": "semanticValidated",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"swn": [
+		{
+			"rtypes": [ "SWR", "SWRAnnc" ],
+			"lname": "softwareName",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"swv": [
+		{
+			"rtypes": [ "DVI", "DVIAnnc"],
+			"lname": "swVersion",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"syst": [
+		{
+			"rtypes": [ "DVI", "DVIAnnc" ],
+			"lname": "systemTime",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"tg": [
+		{
+			"rtypes": [ "REQ" ],
+			"lname": "target",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "1",
+			"oc": "M",
+			"ou": "NP",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"trdst": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "toggleRadioStatus",
+			"ns": "dcfg",
+			"type": "boolean",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"tren": [
+		{
+			"rtypes": [ "AE", "AEAnnc", "CSR", "CSRAnnc" ],
+			"lname": "triggerEnable",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"tri": [
+		{
+			"rtypes": [ "CSR" ],
+			"lname": "Trigger-Recipient-ID",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"trn": [
+		{
+			"rtypes": [ "CSR" ],
+			"lname": "triggerReferenceNumber",
+			"ns": "m2m",
+			"type": "unsignedInt",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"trps": [
+		{
+			"rtypes": [ "AE", "AEAnnc" ],
+			"lname": "trackRegistrationPoints",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"tws": [
+		{
+			"rtypes": [ "CRS", "REQRESP" ],
+			"lname": "timeWindowSize",
+			"ns": "m2m",
+			"type": "duration",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"twt": [
+		{
+			"rtypes": [ "CRS", "REQRESP" ],
+			"lname": "timeWindowType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:timeWindowType",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ud": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc"],
+			"lname": "update",
+			"ns": "dcfg",
+			"type": "boolean",
+			"car": "1",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		},
+		{
+			"rtypes": [ "FWR", "FWRAnnc" ],
+			"lname": "update",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"uds": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "updateStatus",
+			"ns": "m2m",
+			"type": "m2m:actionStatus",
+			"car": "01",
+			"oc": "NP",
+			"ou": "O",
+			"od": "NP",
+			"annc": "OA"
+		}
+	],
+	"un": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "uninstall",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "NP",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"m2m:uri": [
+		{
+			"rtypes": [ "UNKNOWN" ],
+			"lname": "URI",
+			"ns": "m2m",
+			"type": "any"
+		}
+	],
+	"url": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "URL",
+			"ns": "m2m",
+			"type": "anyURI",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"vlde": [
+		{
+			"rtypes": [ "SMD", "SMDAnnc", "REQRESP" ],
+			"lname": "validationEnable",
+			"ns": "m2m",
+			"type": "boolean",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"vr": [
+		{
+			"rtypes": [ "ALL" ],
+			"lname": "version",
+			"ns": "m2m",
+			"type": "string",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"vrq": [
+		{
+			"rtypes": [ "UNKNOWN" ],
+			"lname": "verificationRequest",
+			"ns": "m2m",
+			"type": "boolean"
+		}
+	],
+
+	"wcrds": [
+		{
+			"rtypes": [ "WIFIC", "WIFICAnnc", "REQRESP" ],
+			"lname": "credentials",
+			"ns": "dcfg",
+			"type": "dcfg:wifiCredentials",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+
+	//
+	//	Request Arguments, Filter Criteria etc
+	//
+
+	"aq": [
+		{
+			"rtypes": [ "REQRESP" ],
+			"lname": "advancedQuery",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01"
+		}
+	],
+	"cra": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "createdAfter",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"crb": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "createdBefore",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"cty": [
+		{
+			"rtypes": [ "ALL", "REQRESP"],
+			"lname": "contentType",
+			"ns": "m2m",
+			"type": "list",
+			"ltype": "string", // m2m:typeOfContent
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"dbg": [
+		{
+			"rtypes": [ "REQRESP" ],
+			"lname": "debugInfo",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "NP",
+			"ou": "NP",
+			"od": "NP",
+			"annc": "NA"
+		}
+	],
+	"dcrp": [
+		{
+			"rtypes": [ "SMD", "SMDAnnc", "REQRESP" ],
+			"lname": "descriptorRepresentation",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:semanticFormat",
+			"car": "1",
+			"oc": "M",
+			"ou": "O",
+			"od": "O",
+			"annc": "OA"
+		}
+	],
+	"drt": [
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "desiredIdentifierResultType",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:desIdResType",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"exa": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "expireAfter",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"exb": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "expireBefore",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"fo": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "filterOperation",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:filterOperation",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"fu": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "filterUsage",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:filterUsage",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"lbq": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "labelsQuery",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"lim": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "limit",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"lvl": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "labelsQuery",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ms": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "modifiedSince",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"ofst": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "offset",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rcn": [
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "resultContent",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"stb": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "stateTagBigger",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"sts": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "stateTagSmaller",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"sza": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "sizeAbove",
+			"ns": "m2m",
+			"type": "nonNegInteger",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"szb": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "sizeBelow",
+			"ns": "m2m",
+			"type": "positiveInteger",	// non-enum
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"us": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "unmodifiedSince",
+			"ns": "m2m",
+			"type": "timestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"arp": [
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "applyRelativePath",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rt": [
+		{
+			"rtypes": [ "REQUEST" ],
+			"lname": "responseType",
+			"ns": "m2m",
+			"type": "m2m:responseTypeInfo",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rp": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "resultPersistence",
+			"ns": "m2m",
+			"type": "absRelTimestamp",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"rvi": [	
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "releaseVersionIndicator",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	// "rtu": [	// (actually the same as 'nu' s)
+	// 	{
+	// 		"rtypes": [ "ALL", "REQRESP"
+	// 		"lname": "responseTypeURI",
+	// 		"ns": "m2m",
+	// 		"type": "list",
+	// 		"car": "01",
+	// 		"oc": "O",
+	// 		"ou": "O",
+	// 		"od": "O",
+	// 		"annc": "NA"
+	// 	}
+	// ],
+	"rtv": [
+		{
+			"rtypes": [ "ALL", "REQRESP" ],
+			"lname": "responseTypeValue",
+			"ns": "m2m",
+			"type": "enum",
+			"etype": "m2m:responseType",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	],
+	"vsi": [
+		{
+			"rtypes": [ "REQUEST", "RESPONSE" ],
+			"lname": "vendorInformation",
+			"ns": "m2m",
+			"type": "string",
+			"car": "01",
+			"oc": "O",
+			"ou": "O",
+			"od": "O",
+			"annc": "NA"
+		}
+	]
+}
+
+
+
+
+// dict rtype -> attributes
+// dict "all" -> attributes ( fallback)
+
+// REQest arguments?
