@@ -1,0 +1,175 @@
+Metadata-Version: 2.4
+Name: ctk-colorpicker-plus
+Version: 0.1.0
+Summary: Enhanced CustomTkinter color picker widget with bug fixes, hex input, and improved reticle/slider behavior.
+Author-email: Phil Rice <overman@z-studios.com>
+License: MIT License
+        
+        Copyright (c) 2025 Phil Rice / The Rhys Group LLC
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+        ---
+        
+        This project is based on CTkColorPicker by Akash Bora (Akascape), originally
+        released under the Creative Commons Zero v1.0 Universal (CC0) license:
+        https://github.com/Akascape/CTkColorPicker
+        
+Keywords: customtkinter,tkinter,colorpicker,color wheel,gui
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Environment :: MacOS X
+Classifier: Environment :: X11 Applications
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: User Interfaces
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: customtkinter>=5.2
+Requires-Dist: Pillow>=10.0
+Dynamic: license-file
+
+# ctk-colorpicker-plus
+An extended and modernized color picker for [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter), featuring both a modal dialog and embeddable widget with a color wheel, brightness slider, and hex entry.
+
+Forked from the original **CTkColorPicker** by [Akash Bora (Akascape)](https://github.com/Akascape) — with bug fixes, enhancements, and new features.
+
+![Modal color picker, light and dark](https://github.com/user-attachments/assets/7811857c-4367-4b2d-9ced-e3ad02f03f68)
+
+---
+
+## Features
+
+- **Two usage modes**:
+  - `AskColor` — modal dialog for picking a color
+  - `CTkColorPicker` — embeddable widget for your layouts
+- **Accurate reticle positioning** — fixed hue/saturation calculation bug
+- **Brightness slider** — smooth 0–255 range
+- **Hex entry field** — accepts user input, short (`#fff`) or full (`#ffffff`) hex values
+- **Real-time updates** — changes propagate immediately to the UI and optional callbacks
+- **Appearance-mode aware** — adapts to light/dark or system themes in CustomTkinter
+- Fully type-hinted and `ruff`/`black` formatted
+
+[![Animated Demo](https://github.com/user-attachments/assets/84337580-acef-4481-bc6a-3d4990da149b)](https://www.youtube.com/watch?v=WLTVBCdxEOA)
+
+---
+
+## Installation
+
+From PyPI (once published):
+
+```
+pip install ctk-colorpicker-plus
+```
+Until then, install from GitHub:
+```
+pip install git+https://github.com/calusasoft/ctk-colorpicker-plus.git
+```
+
+---
+
+## Quick Start
+
+### Modal Dialog
+![Modal color picker dialog, light-themed](https://github.com/user-attachments/assets/6e6b9948-859e-4d53-8053-497881a8e5da)
+```
+import customtkinter
+from ctk_colorpicker_plus import AskColor
+
+customtkinter.set_appearance_mode("light")
+
+root = customtkinter.CTk()
+
+def pick_color():
+    dialog = AskColor(initial_color="#ff0000")
+    color = dialog.get()
+    if color:
+        print(f"Selected: {color}")
+
+btn = customtkinter.CTkButton(root, text="Pick a color", command=pick_color)
+btn.pack(pady=20)
+
+root.mainloop()
+```
+
+### Embedded Widget
+![Embedded color picker widget, dark-themed](https://github.com/user-attachments/assets/ef1e87bb-9ba5-445a-aa94-54f4861abc06)
+```
+import customtkinter
+from ctk_colorpicker_plus import CTkColorPicker
+
+def on_color_change(hex_color: str):
+    print(f"Color changed: {hex_color}")
+
+root = customtkinter.CTk()
+picker = CTkColorPicker(root, command=on_color_change)
+picker.pack(padx=20, pady=20)
+
+root.mainloop()
+```
+
+---
+
+## Project Structure
+```
+ctk_colorpicker_plus/
+    __init__.py
+    ctk_color_picker.py          # Modal dialog
+    ctk_color_picker_widget.py   # Embeddable widget
+    color_utils.py               # Shared color math and helpers
+    color_wheel.png
+    target.png
+examples/
+    demo.py
+```
+
+---
+
+## Requirements
+- Python 3.8+
+- [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)
+- [Pillow](https://pypi.org/project/pillow/)
+
+Install dependencies:
+```
+pip install customtkinter Pillow
+```
+
+---
+
+## License
+This project is released under the MIT License.
+> **Attribution:** Based on _CTkColorPicker_ by Akash Bora (Akasacape), originally released under CC0.
+
+---
+
+## Credits
+- **Original Author:** Akash Bora (Akascape) — [GitHub](https://github.com/Akascape)
+- **Maintainer:** Phil Rice - [GitHub](https://github.com/calusasoft)
+- **Contributors:** Victor Vimbert-Guerlais and the open source community
