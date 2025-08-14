@@ -1,0 +1,769 @@
+7.0 2025-08-14
+~~~~~~~~~~~~~~
+
+* Added catalogue synchronizer functionality to muninn. This introduces
+  muninn-sync, archive.sync(), and a new synchronizer extension interface.
+
+* Added -n/--name-only option to muninn-info.
+
+6.5 2025-03-25
+~~~~~~~~~~~~~~
+
+* Added support for optional `auth_args` setting in credentials file for
+  oauth2 token requests.
+
+6.4.2 2025-02-24
+~~~~~~~~~~~~~~~~
+
+* Fixed issue with loading spatialite for versions of sqlite that were
+  build to disallow DQS (double-quoted string literals).
+
+6.4.1 2024-08-14
+~~~~~~~~~~~~~~~~
+
+* Fixed issue where only 'dict' values could be stored as a JSON property.
+
+6.4 2024-03-14
+~~~~~~~~~~~~~~
+
+* Allow argument to muninn.open() to be a direct url or path to a muninn
+  configuration file.
+
+* Added 'distance(geometry,geometry)' expression function.
+
+* Added Geometry.wrap() spherical to 2d geometry wrapping functions.
+
+* Fixed issue when pulling a product that is a directory using the S3 remote
+  backend.
+
+* Various fixes when using archive.rebuild_properties() with the S3 storage
+  backend.
+
+* Several minor fixes.
+
+6.3 2023-12-13
+~~~~~~~~~~~~~~
+
+* Added support for extension-specific configuration sections in archive
+  configuration files.
+
+* Introduced `timeout` and `retries` options for the
+  `extension:muninn.remote` section in an archive configuration.
+  The number of retries now defaults back to 0.
+
+* Added option to muninn-info to show all archives if no archive parameter
+  is provided.
+
+* Added muninn.list_archives() function.
+
+* Improved support for using muninn on Windows (e.g. '\' in paths are now
+  translated to '/' when stored as muninn metadata)
+
+* Fixed issue where S3 bucket prefix object was created with one '/' too many.
+
+6.2 2023-09-20
+~~~~~~~~~~~~~~
+
+* Added S3 remote backend to allow performing a muninn pull from an object
+  store.
+
+* A muninn pull will now set core.hash (if it did not yet have a value) similar
+  to muninn ingest.
+
+* Added support for s3://bucket entries in the credentials authorization file.
+  These entries can be used by the S3 storage backend and S3 remote backend.
+
+* Added from_geojson() and as_geojson() methods to muninn.geometry data types.
+
+* Fixed issue where is_defined(<namespace>) did not work for the sqlite
+  backend when using a table prefix.
+
+6.1.1 2023-08-02
+~~~~~~~~~~~~~~~~
+
+* Fixed several issues with the return value of Archive.retrieve().
+
+6.1 2023-07-24
+~~~~~~~~~~~~~~
+
+* The S3 bucket prefix is now created as a 'directory object' so its existence
+  can be explicitly checked.
+
+* muninn-pull for http/https will now retry once in case of a timeout error.
+
+* muninn-prepare --dry-run now adds a ';' at the end of each line.
+
+* Added --verify-hash option to muninn-retrieve.
+
+* Command line tools no longer show a progress bar if there is no tty.
+
+* Fixed issue where failing to set/unset a tag did not result in an error.
+
+* Fixed issue with relocating products in an S3 archive when the product
+  contained an empty subdirectory.
+
+* Fixed issue where muninn-summary could not group by core.physical_name or
+  core.archive_path.
+
+* Fixed issue where muninn was incorrectly using subdirectories in the
+  temporary directory if the 'tempdir' archive configuration option was set.
+
+* Fixed issue where Archive.retrieve() and Archive.export() were returning a
+  list if a single properties Struct was given as parameter and
+  `use_enclosing_directory` was not set. Additionally, each entry for a
+  product where `use_enclosing_directory` _is_ set will now always be a list.
+
+6.0.1 2022-11-17
+~~~~~~~~~~~~~~~~
+
+* Fixed python 2 issues and updated documentation that python>=2.7 is required.
+
+6.0 2022-10-28
+~~~~~~~~~~~~~~
+
+* Introduced a public python API for muninn.
+
+* muninn-retrieve and muninn-export will now download a product based on the
+  core.remote_url setting if core.archive_path was not set (i.e. the product
+  was not stored in the archive).
+  To disable this and use the old behaviour, make sure to explictly add an
+  'is_defined(archive_path)' filter when performing a retrieve/export.
+
+* Introduced storage=none option for archives. This works as a pure catalogue:
+  archive_path/archive_date should never be set, attach/strip/pull won't work,
+  ingest will set remote_url to a file:// url pointing to the ingested product,
+  retrieve and export work purely based on remote_url (see previous point).
+
+* S3 backend 'host' configuration parameter can now be a full endpoint url and
+  'port' parameter is now optional.
+
+* S3/Swift storage credentials can now be taken from auth_file credentials
+  file and don't have to be included in the archive configuration file itself.
+
+* Added JSON datatype for metadata properties (this uses JSONB storage when
+  using the postgresql database backend).
+
+* Added --force and --verify-hash-before options to muninn-attach and added
+  additional improvements to keep hash and size in line with attached product.
+
+* Improved (re)setting metadata state after storage failure for attach, pull,
+  and ingest.
+
+* Added support for alternative number bases in queries (e.g. '==0xffff').
+
+* Added --parallel option to all remaining muninn command-line tools.
+
+* Added --force and --verify-hash-before options to muninn-attach.
+
+* Allow 'muninn-strip --force' to reactivate a product even if archive_path is
+  empty.
+
+* Removed muninn-update post_ingest and post_pull commands since these were no
+  longer working with generic hooks and the S3/Swift storage backends.
+
+* Added built-in remote backend for sftp (requires paramiko package).
+
+* Fixed issue in zip auto-extraction for muninn-pull.
+
+* Added support for auto-extraction of tar(/gz) files for muninn-pull.
+
+* Run hooks after core.active is set to True instead of before (regression
+  introduced in 5.4).
+
+* Creating a table will now set COLLATE of TEXT properties to 'C' for the
+  postgres backend to guarantee consistent sorting. Fields of existing tables
+  can be manually updated using the following sql command template:
+     ALTER TABLE table ALTER COLUMN property SET DATA TYPE TEXT COLLATE "C"
+
+* Removed support for all deprecated archive configuration options.
+
+5.4 2022-02-22
+~~~~~~~~~~~~~~
+
+* Added muninn-attach/Archive.attach() which acts as the inverse of
+  muninn-strip/Archive.strip().
+
+* Fixed grand_type -> grant_type keyword typo for oauth2 entries in auth_file.
+
+* Allow explicit setting of region for S3 backend.
+
+* Added (optional) 'paths' argument to plugin export methods.
+
+* Fix pg8000 >= 1.22 compatibility issue with filtering on timestamps.
+
+5.3 2021-12-06
+~~~~~~~~~~~~~~
+
+* Added verify-hash-download option to muninn-pull.
+
+* Use Bi/Ki/Gi/... as unit for human readable sizes instead of K/G/...
+
+* When using the S3/Swift backend, a post ingest/pull hook will now use a
+  locally kept temporary version of the product (instead of retrieving it
+  again from the bucket). The path(s) to the ingested/pulled product files
+  is passed on using a new 'paths' argument. Old hook functions without this
+  argument will still work, but will not be able to access the files.
+
+* muninn-pull for http(s) now retrieves data in blocks instead of reading the
+  whole file in memory.
+
+* Fixed issue when trying to ingest empty files or directories into S3/Swift
+  storage.
+
+* Fix compatibility issue with pg8000 >= 1.22.
+
+5.2.1 2021-06-25
+~~~~~~~~~~~~~~~~
+
+* Fixed issue where a force ingest on a catalogue-only archive would fail.
+
+5.2 2021-06-22
+~~~~~~~~~~~~~~
+
+* Added generic hooking mechanism (not coupled to a product type).
+
+* Added 'muninn-update retype' to allow correction of product_type values.
+
+* Added 'day', 'hour', 'minute', 'second', and 'time' subscripts for
+  grouping by timestamps in muninn-summary.
+
+* UUID values can now be used everywhere as boolean in query expressions.
+
+* Add support for new type conversions of pg8000 >= 1.16.
+
+* Allow filename in http result header for muninn-pull to be unquoted.
+
+5.1 2021-01-31
+~~~~~~~~~~~~~~
+
+* Added support for oauth2 (Resource Owner Password Credentials Grant) for
+  muninn-pull and added oauth2 support to the auth_file credentials file.
+
+* url prefixes can now be used as keys in the auth_file credentials file
+  (instead of only hostnames).
+
+* muninn-pull will now auto-unzip a downloaded file if the downloaded filename
+  equals core.physical_name + '.zip' (or '.ZIP').
+
+* Improved memory efficiency of muninn-pull. Files are no longer read fully
+  in memory when downloading.
+
+* Added new plugin attribute 'hash_type', to specify hash algorithm
+  (matching hashlib module). The 'use_hash' attribute has been deprecated.
+  core.hash will now contain '<type>:<hash>' as content. Existing core.hash
+  values will still be treated as sha1 hashes for backward compatibility.
+
+* Fixed issue where enabling indices on Geometry fields did not work.
+
+* Archive.retrieve() and Archive.retrieve_by_name() now return a list of
+  product paths. Archive.retrieve_by_uuid() now returns a single path.
+
+* Added Archive.delete_properties_by_uuid().
+
+* Added download_args, upload_args, copy_args, and transfer_config options
+  to S3 storage backend.
+
+* Added (optional) product type plugin attribute 'namespaces', which
+  contains a list of names of non-core namespace names of properties that
+  plugin.analyze may return. Those non-core properties are now also passed to
+  the other plugin methods.
+
+* Removed `muninn-update --namespaces` option, as this should now work
+  automatically.
+
+* Added product plugin method 'post_remove_hook' that is called after a
+  successful remove.
+
+* Changed `muninn-update -a <action>` command to `munnin-update <action>`.
+
+* Changed `muninn-ingest -c` command to mean 'catalogue only'.
+
+* Added basic 'in' and 'not in' operators (so that e.g. the following works:
+ `physical_name not in ["a", "b"]`)
+
+* Namespace records can now be removed with Archive.update_properties() by
+  passing: `Struct({'mynamespace': None})`
+
+5.0 2020-07-30
+~~~~~~~~~~~~~~
+
+* Added a storage backend framework, including S3 and Swift backends.
+
+* Changed configuration file format due to new storage backends:
+  - renamed `backend` parameter to `database` in `archive` section
+  - added `storage` parameter to `archive` section
+  - added new sections for `fs`, `s3`, and 'swift`
+  - moved `root` and `use_symlinks` parameters from `archive` section
+    to `fs` section
+  - added `tmp_root` parameter to `s3` and `swift` sections
+
+* Added support for pg8000 as postgresql driver. Added 'library'
+  parameter to 'postgresql' section to specify library to use.
+
+* Added a basic test/coverage framework.
+
+* Changed the syntax for defining namespace properties, allowing
+  one to specify if a property should be indexed in the database backend.
+  The old approach is still supported for backward compatibility.
+
+* Added -c/--catalogue-only option to muninn-remove.
+
+* Added support for sub-queries in is_source_of and is_derived_from
+  (specify a sub-query instead of a uuid).
+
+* Added support for searching on UUID directly (without uuid==).
+
+* Several fixes for NOT expressions in queries.
+
+* Improved querying on NULL properties. For example, for 'property != b',
+  we now also return products for which b is NULL.
+
+* Added support for `is_defined(mynamespace)` to check whether a namespace
+  record exists.
+
+* Added property_names argument to Archive.retrieve_properties().
+
+* Added Archive.delete_properties().
+
+* Fixed issue with intra-archive symlinks without enclosing dir (resulting
+  in broken symlinks).
+
+* Fixed issue where product hashes were not actually verified.
+
+* Made product hashing compatible with Python 3 (and using UTF-8 encoding
+  before hashing, instead of the current filesystem encoding).
+
+4.4 2019-04-03
+~~~~~~~~~~~~~~
+
+* Added optional progress bars to muninn-ingest (requires 'tqdm' package).
+
+* Added --parallel and --processes options to muninn-ingest.
+
+* Added --processes option to muninn-update.
+
+* Added property_names argument to Archive.search().
+
+* Cleaned up terminology: we now use 'properties' instead of 'attributes'
+  everywhere when refering to product metadata.
+
+* Fixed issue in sqlite backend where geometry covers()/intersects()
+  operations returned true if geometry property was not defined.
+
+4.3 2018-10-04
+~~~~~~~~~~~~~~
+
+* Added muninn-summary to display aggregate statistics.
+
+* Removed muninn-search '-s' option in favor of muninn-summary.
+
+* Fixed initialization of database when using sqlite backend.
+
+* Strip operation now automatically restricts itself to products with a
+  non-empty archive_path.
+
+4.2 2018-06-12
+~~~~~~~~~~~~~~
+
+* Added -f/--force option to muninn-ingest.
+
+* Improved formatting of duration in muninn-search summary output.
+
+* Added optional progress bars to muninn-update (requires 'tqdm' package).
+
+* Added --parallel and --keep options to muninn-update.
+
+* Several fixes for muninn-search --paths.
+
+* Archive.export() now returns the list of paths of the exported products. The
+  `export_` functions in the product type plugins must return the path of the
+  exported product.
+
+* Fixed issue where the database connection was not properly cleaned up when
+  an error was raised during a database commit/rollback.
+
+* Fixed issue where muninn-prepare --dryrun would not produce output for
+  sqlite if the database file did not exist yet.
+
+* Fixed issue where 'active' state was not always reset when a muninn-pull
+  failed.
+
+* Improve handling of creating tags/links that already exist
+  (postgresql will now only raise an exception for contention cases).
+
+* Added check on startup to verify that all mandatory attributes/methods are
+  available for each product type plugin.
+
+* Several smaller fixes (including Python3 compatibility).
+
+4.1 2017-11-16
+~~~~~~~~~~~~~~
+
+* Added support for Python 3.
+
+* Dropped support for spatialite 3.1 and earlier. spatialite 4.0.0 or higher
+  is now required (which requires a version of sqlite3 that support
+  extensions). Support for pyspatialite, which only worked with spatialite
+  3.1, has been dropped. pysqlite2 is now the preferred module for sqlite
+  support.
+
+* Muninn now supports custom remote backends (used for muninn-pull).
+  The ecmwfapi pull support has now been removed from the core muninn code and
+  will become available as a separate plugin.
+
+* Added muninn-info to display generic archive information (currently, the
+  availables namespaces and product types)
+
+* Added archive maintenance tool muninn-update that allows updating properties
+  for a set of products (for when e.g. a product type plugin has changed).
+
+* Added mod_spatialite_path option for sqlite backend.
+
+* Command line tools now have a --verbose mode, displaying debug-level logging.
+
+* Added 'paths' option to muninn-search that prints the physical path of the
+  products found instead of the normal output.
+
+* Added --keep option to muninn-ingest to ingest products that are already in
+  the archive, maintaining its current relative path.
+
+* Allow calling `muninn-search -p '*'` to fetch all fields of all namespaces.
+
+* muninn.Archive.product_path() argument can be a product properties Struct.
+
+* Added support for tabulate package to format the output.
+
+* muninn.Archive.update_properties() takes an optional 'create_namespaces'
+  parameter that, if set, will create any undefined namespaces for a product.
+
+* Added product plugin method 'post_pull_hook' that is called after a
+  successful pull.
+
+* Close SQL connection after each operation (ingestion/search/etc.).
+
+* Added support for separate auth_file that can contain credentials for
+  downloads performed using muninn-pull.
+
+* Added -f option to muninn-strip.
+
+* Fixed issue where geometry columns in namespace extensions were not
+  created when using the sqlite backend.
+
+4.0 2017-03-31
+~~~~~~~~~~~~~~
+
+* Changed license of muninn to BSD.
+
+* Muninn can now be used as a pure catalogue server.
+  An archive root directory is still needed, but can remain empty.
+
+* Changed the core schema:
+  - core.archive_date is now optional and is only set if core.archive_path is
+    set.
+    It will reflect the time at which the product was stored in the archive.
+  - added core.metadata_date which represents the last modification time of
+    the metadata record. It will automatically be updated if the metadata is
+    changed via the muninn interfaces.
+  - added optional core.remote_url field which can contain urls of the form
+    file://, http://, ftp://, etc. that point to a remote location of the
+    product.
+
+* The schema_name option for the postgresql backend has been removed.
+  This is now replaced by a table_prefix option that is applicable for
+  both the postgresql and sqlite backends.
+
+* The sqlite backend will no longer remove the database file for a 'destroy'
+  (it will only remove the tables). Both 'prepare' and 'destroy' can be
+  performed on an existing sqlite database file.
+
+* Added 'pull' command that allows downloading of products that are not yet
+  in the archive. It will use the core.remote_url value to perform the
+  download. A 'retrieve' still only works on products that are already in the
+  archive.
+  The pull method supports the default http/https/file/ftp protocols but also
+  supports a custom ecmwfapi protocol that will use the ecmwf-api-client
+  python package to download data from the ECMWF MARS archive.
+
+* The muninn Struct type that is used in the Python interface to store
+  metadata can now be initialized with a Python dict.
+
+* Added create_properties() and generate_uuid() functions to the Python
+  muninn.Archive interface. These are functions that should be used to create
+  pure metadata records (without archived product) in a muninn archive.
+
+* Added verify_hash() function to the Python muninn.Archive interface.
+
+* muninn.Archive.generate_uuid() is now a static method.
+
+* Improved preparing and destroying of muninn archives. This will now better
+  distinguish between the archive directory and the catalogue.
+
+* Verifying of the hash after an ingest of a product in the archive is now
+  optional (--verify-hash argument to muninn-ingest).
+
+* The muninn sqlite backend now adds a spatialindex on footprint.
+  The indices for both backends have all been renamed to idx_<table>_<field>.
+
+* muninn-prepare has a --dry-run mode, that just dumps the SQL that would be
+  executed.
+
+* The muninn sqlite backend now supports the escape character '\' when using
+  the ~= operator.
+
+* Moved change history from README to separate CHANGELOG file.
+  Renamed README.developer to EXTENSIONS and added DEVELOPER file.
+  Include all documentation files with the source package.
+
+3.0.1 2016-09-28
+~~~~~~~~~~~~~~~~
+
+* Fixed parsing of negative coordinates in literal geometry values.
+
+3.0 2016-03-29
+~~~~~~~~~~~~~~
+
+* Added sqlite backend.
+
+* Added arithmetic operators "+", "-", "*", and "/" for all numeric types.
+
+* Added binary "-" operator for timestamps. This operator returns the length
+  of the time interval between two timestamps as a fractional number of
+  seconds.
+
+* Updated comparison operators to support comparisons between integer and real
+  types.
+
+* Changed the muninn expression language to use a sub-set of the Well Known
+  Text (WKT) markup language to represent literal geometry values.
+
+* Added -c/--catalogue-only arguments to prepare/destroy commands to only
+  create/remove the catalogue database (while keeping the product archive
+  intact).
+
+* If a product that is ingested is already in the right target location in
+  the archive on disk, muninn will just leave the product at its location
+  without trying to move or symlink it.
+
+* Added 'id' primary key to links and tags tables, which is to support other
+  front-ends (which don't support multi-field primary keys) on top of the
+  same muninn database.
+  This change should not require a migration of existing databases (as long
+  as no other front-ends are planned to be used).
+
+* Tags no longer have the constraint that they should be an 'identifier'.
+  Added ',' as tag separator to output of muninn-list-tags.
+
+* Changed the Postgresql backend to create indices on most columns of the
+  'core', 'tag', and 'link' tables when creating these tables.
+
+* MUNINN_CONFIG_PATH can now also refer directly to archive configuration
+  files.
+
+2.0.1 2015-11-17
+~~~~~~~~~~~~~~~~
+
+* Changed the tag() function of the Archive class such that setting a tag on
+  a product that already has that tag is not treated as an error.
+
+* Changed the link() function of the Archive class such that adding a link
+  to a product that already has that link is not treated as an error.
+
+* Changed the tags() function of the Archive class to return a list of tags
+  ordered by tag name.
+
+* Improved error reporting for errors related to the creation or destruction
+  of an archive.
+
+* Improved error reporting by the Postgresql backend.
+
+2.0 2015-09-08
+~~~~~~~~~~~~~~
+
+* Renamed property core.logical_name to core.product_name.
+
+* Which namespaces and product types are available is now configured per
+  archive (in the archive configuration file) instead of globally.
+
+* Extensions have been split into two types: namespace extensions (that
+  contain namespace definitions) and product type extensions (that contain
+  product type plug-ins). Extensions no longer have to contain both.
+
+* Extensions should now be reachable via the PYTHONPATH, the
+  MUNINN_EXTENSION_PATH is no longer in use.
+
+* Added core.size property to contain the product size on disk (in bytes).
+  When a product is ingested, the size of the product will be computed and
+  stored automatically.
+
+* Added a count option to muninn-search that prints the number of products
+  found instead of the normal output.
+
+* Added a summary options to muninn-search that prints a short summary of the
+  products found instead of the normal output.
+
+* Changed the retrieve(), export(), remove() and strip() functions of the
+  Archive class to return the number of affected products.
+
+* Added convenience functions for the retrieve(), export(), remove() and
+  strip() functions of the Archive class that perform the desired function
+  given a uuid or product name instead of a muninn expression.
+
+* Added the product_path() function to the Archive class that returns the path
+  to a product given a uuid or product name.
+
+* Added the root() function to the Archive class that returns the archive root
+  path.
+
+* Removed @property decorators from functions of the Archive class.
+
+* Removed dependency on importlib and added compatibility for older versions
+  of psycopg (>=2.0) and Python (>=2.6).
+
+* Added documentation for muninn extension developers (see README.developer).
+
+1.3.2 2015-06-23
+~~~~~~~~~~~~~~~~
+
+* Changed functions that operate on product data, i.e. export(), retrieve(),
+  remove(), strip(), and rebuild_properties() to raise an exception when
+  called on a partially ingested product (of which the core.active property
+  equals false).
+
+* Added a "force" keyword argument to the remove() function that enables the
+  removal of partially ingested products.
+
+* Added a -f/--force option to the muninn-remove tool that enables the removal
+  of partially ingested products.
+
+* Applied minor correction to update instructions for version 1.3.
+
+1.3.1 2015-05-20
+~~~~~~~~~~~~~~~~
+
+* Added instructions for upgrading existing archives created with a prior
+  version of muninn to version 1.3.
+
+* Fixed issue in product catalogue rebuild functionality related to the
+  plug-in API change introduced in version 1.3.
+
+* Reverted changes to exception messages generated by the Postgres backend.
+
+1.3 2015-05-12
+~~~~~~~~~~~~~~
+
+* Added support for product tags
+  - Added muninn-tag, muninn-untag, and muninn-list-tags tools to manage
+    product tags from the command line.
+  - Added a -T/--tag option to the muninn-ingest tool and the ingest
+    function of the xml-pi tool.
+  - Added a has_tag() function that can be used in query expressions to
+    select products that have been tagged with the specified tag.
+  - Changed the muninn plug-in API: The analyze() function should return
+    a tuple or list of two elements: The product properties and a list of
+    product tags. To ensure backward compatibility, if a plug-in returns
+    an instance of muninn.Struct, this is used as the product properties,
+    and the product tags default to the empty list. New plug-in
+    implementations should conform to the updated API.
+
+* Changes to the query expression language:
+  - Added support for \timestamps that only contain a date, e.g.
+    "2012-01-01".
+  - For properties from the core namespace, the "core." prefix may now be
+    omitted, e.g. "uuid" is equivalent to "core.uuid".
+  - The is_source_of() and is_derived_from() functions have been changed
+    from two argument (binary) to single argument (unary) functions. The
+    left-hand side is assumed to be the product being searched for, i.e.
+    is_derived_from(uuid) matches all product that are derived from
+    the product with the specified uuid.
+
+* Added support for more than one export format per product type. See also the
+  new -f/--format option of the muninn-export tool.
+
+1.2.1 2015-04-30
+~~~~~~~~~~~~~~~~
+
+* Fixed race condition that caused failures when several clients tried to
+  ingest products that shared the same archive path.
+
+* Fixed race condition that could cause failures when several clients try to
+  remove the same product(s).
+
+* Added -c/--copy option to muninn-ingest that forces ingestion of a copy of
+  each product. The -l/--link option and -c/--copy option are mutually
+  exclusive. If neither option is provided, the "use_symlinks" option from the
+  archive configuration file controls wether products will be ingested as
+  symlinks or as copies.
+
+1.2 2015-04-10
+~~~~~~~~~~~~~~
+
+* Changed muninn-remove to always remove products from disk as well as from
+  the product catalogue.
+
+* Added muninn-strip tool that removes products from disk but not from the
+  product catalogue.
+
+* Added -d/--directory option to muninn-retrieve and muninn-export that
+  controls the directory where the retrieved/exported products will be stored.
+
+* Changed muninn-search multi-valued arguments (-o and -p) such that these
+  options can be specified multiple times, and a white space separated list of
+  values can be provided. This avoids the use of "--".
+
+* Several minor changes:
+  - Changed muninn-search to output all properties of the core namespace
+    when no properties are specified using "-p".
+  - Minor tweak to the output of muninn-search to improve readability of
+    empty values at the beginning or end of a line.
+  - Improved error messages produced by expression lexer/parser.
+
+1.1 2015-03-20
+~~~~~~~~~~~~~~
+
+* Fixed issue where failure during product ingestion could lead to stale
+  entries in the product catalogue with the "core.active" property set to
+  false.
+
+* Changed ingest and remove operations to use temporary directories located
+  inside the product archive itself instead of using separate temporary
+  directory. Using a separate directory caused issues if it resided on a
+  different mount point than the product archive.
+  - NB. As a result of this change, the product archive is located
+    directly under the archive root path specified in the configuration
+    file. The intermediate "data" and "tmp" directories no longer exist.
+
+* Create relative links when ingesting (using symbolic links) a product that
+  consists of one or more files or products that already reside inside the
+  archive. This ensures the archive as a whole can be relocated without
+  breaking intra-archive symbolic links.
+
+* Improvements to avoid idle database connections:
+  - Added support for explicitly closing an archive when it is no longer
+    needed.
+  - Changed the Postgres backend to defer connecting to the database until
+    a connection is required.
+
+* Removed support for verifying product hash when retrieving or exporting a
+  product.
+  - NB. As a consequence the "verify_hash_on_retrieve" archive
+    configuration option was removed as well.
+
+* Added API support for updating (re-extracting) the properties of archived
+  products.
+
+* Added API support for manipulating product properties.
+
+* Changed extension loading to skip paths in the MUNINN_EXTENSIONS_PATH that
+  do not exist.
+
+* Fixed issue where sections of a search expression that could not be
+  tokenized were silently ignored.
+
+* Changed parser to ignore white space at the end of a search expression.
+
+* Improved documentation.
+
+1.0 2014-08-22
+~~~~~~~~~~~~~~
+
+* First official release of muninn.
