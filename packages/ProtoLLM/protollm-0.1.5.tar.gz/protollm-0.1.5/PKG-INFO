@@ -1,0 +1,207 @@
+Metadata-Version: 2.3
+Name: ProtoLLM
+Version: 0.1.5
+Summary: A library with which to prototype LLM-based applications quickly and easily.
+License: BSD-3-Clause
+Author: aimclub
+Author-email: aim.club@itmo.ru
+Requires-Python: >=3.10,<4.0
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: aioredis (>=2.0.1,<3.0.0)
+Requires-Dist: celery (>=5.4.0,<6.0.0)
+Requires-Dist: chardet (==5.2.0)
+Requires-Dist: chromadb (>=0.5.0,<0.6.0)
+Requires-Dist: click (==8.1.7)
+Requires-Dist: deepeval (==2.3.3) ; python_version >= "3.10" and python_version < "3.14"
+Requires-Dist: fastapi (>=0.111.0,<0.112.0)
+Requires-Dist: flower (>=2.0.1,<3.0.0)
+Requires-Dist: ftfy (==6.3.1)
+Requires-Dist: httpx (>=0.27.0,<0.28.0)
+Requires-Dist: kombu (>=5.3.7,<6.0.0)
+Requires-Dist: langchain (>=0.3.4,<0.4.0)
+Requires-Dist: langchain-chroma (==0.1.4)
+Requires-Dist: langchain-community (==0.3.16)
+Requires-Dist: langchain-core (>=0.3.34)
+Requires-Dist: langchain-elasticsearch (==0.3.2)
+Requires-Dist: langchain-gigachat (==0.3.3)
+Requires-Dist: langchain-ollama (==0.3.0)
+Requires-Dist: langchain-openai (==0.3.3)
+Requires-Dist: langchain-text-splitters (>=0.3.3,<0.4.0)
+Requires-Dist: langgraph (>=0.3.24,<0.4.0)
+Requires-Dist: numpy (==1.26.4)
+Requires-Dist: openai (>=1.42.0,<2.0.0)
+Requires-Dist: pandas (>=2.2.3,<3.0.0)
+Requires-Dist: pdf2image (==1.17.0)
+Requires-Dist: pdfminer.six (==20231228)
+Requires-Dist: pdfplumber (==0.11.5)
+Requires-Dist: pika (>=1.3.2,<2.0.0)
+Requires-Dist: pillow (==11.1.0)
+Requires-Dist: protollm-sdk (==1.1.6)
+Requires-Dist: pydantic (>=2.7.4,<3.0.0)
+Requires-Dist: pydantic-core (==2.23.4)
+Requires-Dist: pydantic-settings (==2.7.1)
+Requires-Dist: pypdf2 (==3.0.1)
+Requires-Dist: pytesseract (==0.3.13)
+Requires-Dist: python-docx (==1.1.2)
+Requires-Dist: python-dotenv (==1.0.1)
+Requires-Dist: pyyaml (==6.0.2)
+Requires-Dist: redis (>=5.0.6,<6.0.0)
+Requires-Dist: requests (>=2.32.3,<3.0.0)
+Requires-Dist: spacy (==3.8.4) ; python_version >= "3.10" and python_version < "3.13"
+Requires-Dist: tabulate (==0.9.0)
+Requires-Dist: tornado (>=6.4.1,<7.0.0)
+Requires-Dist: tqdm (==4.67.1)
+Requires-Dist: transformers (==4.48.2)
+Requires-Dist: urllib3 (>=2.2.2,<3.0.0)
+Requires-Dist: uuid (>=1.30,<2.0.0)
+Requires-Dist: websockets (==14.1)
+Project-URL: Homepage, https://github.com/aimclub/ProtoLLM
+Project-URL: Issues, https://github.com/aimclub/ProtoLLM/issues
+Description-Content-Type: text/x-rst
+
+**ProtoLLM**
+
+.. start-badges
+.. list-table::
+   :stub-columns: 1
+
+   * - license
+     - | |license|
+   * - support
+     - | |tg|
+   * - languages
+     - | |eng| |rus|
+   * - mirror
+     - | |gitlab|
+   * - funding
+     - | |ITMO| |SAI|
+.. end-badges
+
+Intro
+#####
+
+**Proto-LLM** is an open-source framework for fast protyping of LLM-based applications.
+
+
+Proto LLM features
+==================
+- Rapid prototyping of information retrieval systems based on LLM using RAG:
+   Implementations of architectural patterns for interacting with different databases and web service interfaces;
+   Methods for optimising RAG pipelines to eliminate redundancy.
+
+- Development and integration of applications with LLM with connection of external services and models through plugin system:
+   Integration with AutoML solutions for predictive tasks;
+   Providing structured output generation and validation;
+
+- Implementation of ensemble methods and multi-agent approaches to improve the efficiency of LLMs:
+   Possibility of combining arbitrary LLMs into ensembles to improve generation quality, automatic selection of ensemble composition;
+   Work with model-agents and ensemble pipelines;
+
+- Generation of complex synthetic data for further training and improvement of LLM:
+   Generating examples from existing models and data sets;
+   Evolutionary optimisation to increase the diversity of examples; Integration with Label Studio;
+
+- Providing interoperability with various LLM providers:
+   Support for native models (GigaChat, YandexGPT, vsegpt, openrouter, etc.).
+   Interaction with open-source models deployed locally.
+
+Project Structure
+=================
+
+The latest stable release of ProtoLLM is in the `main branch <https://github.com/ITMO-NSS-team/ProtoLLM/tree/main>`__.
+
+The repository includes the following directories:
+
+* Package `protollm <https://github.com/ITMO-NSS-team/ProtoLLM/tree/main/protollm>`__  contains the main modules. It is the *core* of the ProtoLLM framework;
+* Package `protollm_tools <https://github.com/ITMO-NSS-team/ProtoLLM/tree/main/protollm_tools>`__  contains side tools with specific dependensied;
+* Package `examples <https://github.com/ITMO-NSS-team/ProtoLLM/tree/main/examples>`__ includes several *how-to-use-cases* where you can start to discover how ProtoLLM works;
+* All *unit and integration tests* can be observed in the `test <https://github.com/ITMO-NSS-team/ProtoLLM/tree/main/test>`__ directory;
+* The sources of the documentation are in the `docs <https://github.com/ITMO-NSS-team/ProtoLLM/tree/main/docs>`__ directory.
+
+Packages `protollm-api <https://github.com/aimclub/protollm-api>`__ and `protollm-sdk <https://github.com/aimclub/protollm-sdk>`__ are available in external repositories.
+
+Installation
+============
+
+- The simplest way to install ProtoLLM is using ``pip``:
+
+.. code-block::
+
+  $ pip install protollm
+
+A standard installation of ProtoLLM includes the main package with dependencies.
+
+
+- Modules with tools can be installed separately:
+
+.. code-block::
+
+  $ pip install protollm-api
+
+  $ pip install protollm-sdk
+
+
+Contribution Guide
+==================
+
+- The contribution guide is available in this `repository <https://github.com/ITMO-NSS-team/ProtoLLM/blob/main/docs/source/contribution.rst>`__.
+
+Acknowledgments
+===============
+
+We acknowledge the contributors for their important impact and the participants of the numerous scientific conferences and
+workshops for their valuable advice and suggestions.
+
+Supported by
+============
+
+The study is supported by the Research `Center Strong Artificial Intelligence in Industry <https://sai.itmo.ru/>`_
+of `ITMO University <https://itmo.ru/>`_ as part of the plan of the center's program
+"Framework for rapid application prototyping based on large language models".
+
+
+Contacts
+========
+- `AI Institute, ITMO <https://aim.club/>`_
+- `Anna Kalyuzhnaya <https://scholar.google.com/citations?user=bjiILqcAAAAJ&hl=ru>`_ (anna.kalyuzhnaya@itmo.ru)
+- `Helpdesk chat <https://t.me/protollm_helpdesk>`_
+
+Papers about ProtoLLM-based solutions:
+======================================
+- Kalyuzhnaya A. et al. LLM Agents for Smart City Management: Enhancing Decision Support Through Multi-Agent AI Systems //Smart Cities. – 2025. – Т. 8. – №. 1. – С. 19.
+- Zakharov K. et al. Forecasting Population Migration in Small Settlements Using Generative Models under Conditions of Data Scarcity //Smart Cities. – 2024. – Т. 7. – №. 5. – С. 2495-2513.
+- Kovalchuk M. A. et al. SemConvTree: Semantic Convolutional Quadtrees for Multi-Scale Event Detection in Smart City //Smart Cities. – 2024. – Т. 7. – №. 5. – С. 2763-2780.
+
+
+
+.. |ITMO| image:: https://raw.githubusercontent.com/aimclub/open-source-ops/43bb283758b43d75ec1df0a6bb4ae3eb20066323/badges/ITMO_badge.svg
+   :alt: Acknowledgement to ITMO
+   :target: https://en.itmo.ru/en/
+
+.. |SAI| image:: https://raw.githubusercontent.com/aimclub/open-source-ops/43bb283758b43d75ec1df0a6bb4ae3eb20066323/badges/SAI_badge.svg
+   :alt: Acknowledgement to SAI
+   :target: https://sai.itmo.ru/
+
+.. |license| image:: https://img.shields.io/github/license/aimclub/ProtoLLM
+   :alt: Licence for repo
+   :target: https://github.com/aimclub/ProtoLLM/blob/master/LICENSE.md
+
+.. |tg| image:: https://img.shields.io/badge/Telegram-Group-blue.svg
+   :target: https://t.me/protollm_helpdesk
+   :alt: Telegram Chat
+
+.. |gitlab| image:: https://img.shields.io/badge/mirror-GitLab-orange
+   :alt: GitLab mirror for this repository
+   :target: https://gitlab.actcognitive.org/itmo-sai-code/ProtoLLM
+
+.. |eng| image:: https://img.shields.io/badge/lang-en-red.svg
+   :target: /README_en.rst
+
+.. |rus| image:: https://img.shields.io/badge/lang-ru-yellow.svg
+   :target: /README.rst
+
