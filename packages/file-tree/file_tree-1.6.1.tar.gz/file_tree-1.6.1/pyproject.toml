@@ -1,0 +1,53 @@
+[project]
+name = "file-tree"
+version = "1.6.1"
+description = "Describe structure directory for visualisation and pipeline"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Michiel Cottaar", email = "michiel.cottaar@ndcn.ox.ac.uk" }
+]
+dependencies = [
+    "numpy",
+    "xarray",
+	"pandas",
+	"parse",
+	"rich",
+]
+license = "MIT"
+license-files = ["LICENSE"]
+
+[build-system]
+requires = ["uv_build>=0.8.7,<0.9.0"]
+build-backend = "uv_build"
+
+[project.urls]
+Homepage = "https://git.fmrib.ox.ac.uk/fsl/file-tree"
+Documentation = "https://open.win.ox.ac.uk/pages/fsl/file-tree"
+Repository = "https://git.fmrib.ox.ac.uk/fsl/file-tree"
+Issues = "https://git.fmrib.ox.ac.uk/fsl/file-tree/-/issues"
+Changelog = "https://git.fmrib.ox.ac.uk/fsl/file-tree/-/blob/main/CHANGELOG.md"
+
+[project.scripts]
+file-tree="file_tree.app:run"
+
+[project.optional-dependencies]
+app = ["textual"]
+
+[dependency-groups]
+dev = [
+    "ipython",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest",
+    "sphinx",
+    "pytest-asyncio>=0.25.0",
+    "pytest-textual-snapshot>=1.0.0",
+    "sphinx-multiversion>=0.2.4",
+    "textual-dev>=1.7.0",
+    "mypy>=1.17.1",
+    "ty>=0.0.1a17",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
