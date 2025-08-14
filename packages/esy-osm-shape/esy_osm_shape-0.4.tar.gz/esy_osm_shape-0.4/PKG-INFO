@@ -1,0 +1,243 @@
+Metadata-Version: 2.4
+Name: esy-osm-shape
+Version: 0.4
+Summary: Convert OpenStreetMap primitives to shapely objects
+Author-email: Ontje Lünsdorf <ontje.luensdorf@dlr.de>
+License: BSD-3-Clause
+Project-URL: homepage, https://gitlab.com/dlr-ve-esy/esy-osm-shape
+Project-URL: documentation, https://dlr-ve-esy.gitlab.io/esy-osm-shape
+Keywords: OSM,OpenStreetMap,shapely
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: shapely>=1.6
+Requires-Dist: esy-osm-pbf>=0.1
+Provides-Extra: dev
+Requires-Dist: matplotlib; extra == "dev"
+Requires-Dist: pdoc; extra == "dev"
+Requires-Dist: pyproj>=3; extra == "dev"
+Dynamic: license-file
+
+`esy.osm.shape` is a Python library to convert
+[OpenStreetMap](https://www.openstreetmap.org) primitives to
+[shapely](https://shapely.readthedocs.io/en/latest/) objects.
+
+![Andorra OpenStreetMap dataset](https://gitlab.com/dlr-ve-esy/esy-osm-shape/-/raw/main/figures/andorra.png)
+
+The [drawing maps](#drawing-maps) example shows, how this figure is constructed.
+
+# Features
+
+What it provides:
+
+- Functionality to generate shapely objects from OpenStreetMap `.pbf` data
+  file entries.
+- Basic plotting tools for matplotlib.
+
+In addition to the [shapely](https://shapely.readthedocs.io/) geometry, the
+OpenStreetMap `id` and `tags` properties are generated as provided by
+`esy.osm.pbf`.
+
+What it *doesn't* provide:
+
+- A mechanism to spatially query OpenStreetMap entries.
+- Handling of non-geometry objects (like many relations).
+
+# Installation
+
+`esy.osm.shape` depends on a Python version of 3.8 or above as well as on
+`esy.osm.pbf`. Use `pip` to install `esy.osm.shape`:
+
+```sh
+$ pip install esy-osm-shape
+```
+
+# Usage
+
+An `esy.osm.shape.Shape` object requires a filename of an OpenStreetMap
+protocol buffers file or an instance of `esy.osm.pbf.File` as argument on
+construction. Upon being called, the `esy.osm.shape.Shape` returns generator
+which yields a tuple consisting of the
+[shapely](https://shapely.readthedocs.io/) geometry and both the OpenStreetMap
+`id` and `tags`. There are two optional arguments:
+
+- `filter`: can be used to select OpenStreetMap primitives for which to generate
+  [shapely](https://shapely.readthedocs.io/) objects. By default, every
+  OpenStreetMap primitive is selected.
+- `max_tasks`: can be used to trade-off memory versus speed. If this value
+  increases, more memory is used to cache OpenStreetMap entries, thereby
+  reducing the number of file read operations.
+
+# Examples
+
+The following examples operate on a historic dataset for Andorra from
+[geofabrik](https://www.geofabrik.de/). Let's download the dataset first:
+
+```python
+>>> import os, urllib.request
+>>> if not os.path.exists('andorra.osm.pbf'):
+...     filename, headers = urllib.request.urlretrieve(
+...         'https://download.geofabrik.de/europe/andorra-190101.osm.pbf',
+...         filename='andorra.osm.pbf'
+...     )
+
+```
+
+## Construct geometries
+
+Open the file and generate linestrings for each `highway` OpenStreetMap entry.
+
+```python
+>>> import shapely, esy.osm.shape
+>>> shape = esy.osm.shape.Shape('andorra.osm.pbf')
+>>> highways = [
+...     shape for shape, id, tags in shape(lambda e: e.tags.get('highway'))
+...     if type(shape) is shapely.geometry.LineString
+... ]
+>>> len(highways)
+3948
+
+```
+
+Shapely objects also expose geometric properties, like for example the length or
+area. However, OpenStreetMap uses geodetic coordinates and shapely assumes
+planar coordinates, rendering most geometry properties invalid.
+
+## Geodetic computations
+
+[pyproj](https://pyproj4.github.io/pyproj/) offers geodetic computations and
+can be used to estimate area and length properties of sphere geometries
+accurately:
+
+```python
+>>> import pyproj
+>>> geod = pyproj.Geod(ellps='WGS84')
+>>> round(geod.geometry_length(shapely.MultiLineString(highways)))
+1577598
+
+```
+
+## Drawing maps
+
+`esy.osm.shape` provides functionality to convert shapely objects into
+[matplotlib](https://matplotlib.org/) objects, which enables simple map
+rendering:
+
+```python
+>>> import matplotlib.pyplot as plt, esy.osm.shape.mpl
+>>> fig, ax = plt.subplots(1, 1)
+>>> _ = ax.set(
+...     title='andorra-190101.osm.pbf', aspect='equal',
+...     xlabel='lon', xlim=(1.40, 1.75), ylabel='lat', ylim=(42.40, 42.70)
+... )
+>>> iax = ax.inset_axes(
+...     [0.61, 0.02, 0.4, 0.4], xlim=(1.525, 1.535), ylim=(42.504, 42.514),
+...     aspect='equal', xticks=[], yticks=[]
+... )
+>>> style = esy.osm.shape.mpl.simple_style
+>>> items = tuple(shape(esy.osm.shape.mpl.filter(style)))
+>>> _ = ax.add_artist(esy.osm.shape.mpl.render_map(style, items))
+>>> _ = iax.add_artist(esy.osm.shape.mpl.render_map(style, items))
+>>> _ = ax.indicate_inset_zoom(iax, edgecolor='black')
+>>> os.makedirs('figures/', exist_ok=True)
+>>> fig.savefig('figures/andorra.png')
+
+```
+
+## Invalid entries
+
+Some OpenStreetMap entries might be broken shapes or logical groupings not
+representable as shapes. These entries are mostly relations and generate
+`Invalid` objects. `Invalid` objects provide four properties which give a
+description of the exception that happened during processing:
+
+- `entry`: The invalid OpenStreetMap entry.
+- `exc_type`: The type of the exception.
+- `exc_args`: The arguments of the exception.
+- `exc_description`: The traceback text of the exception.
+
+The following example reads every OpenStreetMap entry from the Andorra dataset
+and collects all invalid ones into a dictionary:
+
+```python
+>>> count, invalid = 0, {}
+>>> for shape, id, tags in shape():
+...     count += 1
+...     if type(shape) is esy.osm.shape.Invalid:
+...         invalid[id] = shape
+>>> count, len(invalid)
+(217238, 186)
+
+```
+
+About 0.1% of the Andorra dataset entries cannot be handled by
+`esy.osm.shape`. Some of these entries are broken:
+
+```python
+>>> print(invalid[8473237]) #doctest: +ELLIPSIS
+Invalid Relation (id=8473237)
+  Traceback (most recent call last):
+    ...
+    File "...shape.py", line ..., in multipolygon_shape
+      raise ValueError('Invalid segments')
+  ValueError: Invalid segments
+
+```
+
+Unrepresentable OpenStreetMap entries are usually logical relations, like
+[routing information](https://wiki.openstreetmap.org/wiki/Relation:route).
+These are reported as `Invalid` objects with an `exc_type` of
+`NotImplementedError`. For example:
+
+```python
+>>> print(invalid[6745201]) #doctest: +ELLIPSIS
+Invalid Relation (id=6745201)
+  Traceback (most recent call last):
+    File "...shape.py", line ..., in unsupported
+      raise NotImplementedError(description)
+  NotImplementedError: Relation (id=6745201)
+
+```
+
+# License
+
+`esy.osm.shape` is published under the
+[BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) license.
+
+# Design, Development & Contributing
+
+Design and development notes are available in `esy.osm.shape.test`.
+
+We would be happy to accept contributions via merge requests, but due to
+corporate policy we can only accept contributions if you have send us the signed
+[contributor license agreement](CLA.md).
+
+# Contact
+
+Please use the projects issue tracker to get in touch.
+
+# Team
+
+`esy.osm.shape` is developed by the
+[DLR](https://www.dlr.de/EN/Home/home_node.html) Institute of
+[Networked Energy Systems](https://www.dlr.de/ve/en/desktopdefault.aspx/tabid-12472/21440_read-49440/)
+in the departement for
+[Energy Systems Analysis (ESY)](https://www.dlr.de/ve/en/desktopdefault.aspx/tabid-12471/21741_read-49802/).
+
+# Acknowledgements
+
+The authors would like to thank the Federal Government and the Heads of
+Government of the Länder, as well as the Joint Science Conference (GWK), for
+their funding and support within the framework of the NFDI4Ing consortium.
+Funded by the German Research Foundation (DFG) - project number 442146713.

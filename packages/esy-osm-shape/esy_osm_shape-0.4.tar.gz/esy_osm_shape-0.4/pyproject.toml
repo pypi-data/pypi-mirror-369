@@ -1,0 +1,44 @@
+[project]
+name = 'esy-osm-shape'
+description = 'Convert OpenStreetMap primitives to shapely objects'
+license = {text = 'BSD-3-Clause'}
+dynamic = ['version']
+readme = 'README.md'
+requires-python = '>= 3.5'
+dependencies = ['shapely >= 1.6', 'esy-osm-pbf >= 0.1']
+keywords = ['OSM', 'OpenStreetMap', 'shapely']
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: BSD License',
+    'Natural Language :: English',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering',
+]
+authors = [
+    {name = 'Ontje Lünsdorf', email = 'ontje.luensdorf@dlr.de'},
+]
+
+[project.optional-dependencies]
+dev = ['matplotlib', 'pdoc', 'pyproj >= 3']
+
+[project.urls]
+homepage = 'https://gitlab.com/dlr-ve-esy/esy-osm-shape'
+documentation = 'https://dlr-ve-esy.gitlab.io/esy-osm-shape'
+
+[tool.setuptools]
+package-dir = {'' = 'src'}
+
+[tool.setuptools.dynamic]
+version = {attr = 'esy.osm.shape.__version__'}
+
+[tool.coverage.run]
+source = ['src']
+
+[tool.pytest.ini_options]
+addopts = ['--doctest-modules']
