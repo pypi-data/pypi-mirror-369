@@ -1,0 +1,114 @@
+[project]
+name = "iscc-crypto"
+version = "0.5.0"
+description = "ISCC-CRYPTO - cryptographic operations for the International Standard Content Code"
+authors = [{ name = "Titusz", email = "tp@py7.de" }]
+requires-python = ">=3.10"
+readme = "README.md"
+license = "Apache-2.0"
+keywords = [
+    "iscc",
+    "cryptography",
+    "EdDSA",
+    "jsc",
+    "verifiable credentials",
+    "content identification",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "cryptography",
+    "jcs",
+    "base58",
+    "python-dotenv",
+    "niquests>=3.14.1",
+    "click",
+    "platformdirs",
+]
+
+[project.urls]
+Documentation = "https://crypto.iscc.codes"
+Repository = "https://github.com/iscc/iscc-crypto"
+
+[project.scripts]
+iscc-crypto = "iscc_crypto.cli:main"
+
+[dependency-groups]
+test = [
+    "pytest",
+    "bandit",
+    "coverage",
+    "pytest-cov",
+    "pytest-asyncio",
+    "mktestdocs>=0.2.4",
+]
+dev = [
+    "poethepoet",
+    "ruff",
+    "black",
+    "mdformat",
+    "mdformat-gfm",
+    "mdformat-gfm-alerts",
+    "mdformat-mkdocs[recommended]>=4.3.0",
+]
+docs = ["mkdocs-material"]
+
+[tool.uv]
+default-groups = [
+    "test",
+    "dev",
+    "docs",
+]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 112
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.black]
+line-length = 112
+preview = true
+enable-unstable-feature = ["string_processing"]
+target-version = ['py310']
+
+[tool.pytest.ini_options]
+addopts = "-p no:warnings -m 'not network'"
+markers = [
+    "network: marks tests as requiring network access (deselect with '-m \"not network\"')",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.poe.tasks]
+build-docs = { script = "tests.build_docs:main", help = "Copy README & CHANGELOG to /docs" }
+format-code = { cmd = "uv run ruff format", help = "Code style formating with ruff" }
+format-markdown = { cmd = "mdformat --wrap 112 --end-of-line lf docs README.md CHANGELOG.md ", help = "Markdown formating with mdformat" }
+convert-lf = { script = "tests.lf:convert_lf", help = "Convert line endings to LF"}
+test = { cmd = "uv run pytest --cov=iscc_crypto --cov-fail-under=100", help = "Run tests with coverage (excludes network tests)" }
+test-net = { cmd = "uv run pytest -m network", help = "Run network tests" }
+test-all = { cmd = "uv run pytest -m '' --cov=iscc_crypto --cov-fail-under=100", help = "Run all tests including network tests with coverage" }
+security = { cmd = "uv run bandit -r iscc_crypto -q", help = "Run security check with bandit" }
+format = ["format-code", "format-markdown", "convert-lf"]
+all = ["build-docs ", "format-code", "format-markdown", "convert-lf", "security", "test"]
