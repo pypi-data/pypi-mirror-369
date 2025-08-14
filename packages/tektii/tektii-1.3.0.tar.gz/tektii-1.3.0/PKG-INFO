@@ -1,0 +1,819 @@
+Metadata-Version: 2.4
+Name: tektii
+Version: 1.3.0
+Summary: Build trading strategies that run anywhere - Write Once. Trade Everywhere.
+Author-email: Tektii <support@tektii.com>
+Maintainer-email: Tektii Team <support@tektii.com>
+License: Apache-2.0
+Project-URL: Homepage, https://tektii.com
+Project-URL: Documentation, https://docs.tektii.com/sdk
+Project-URL: Repository, https://github.com/tektii/tektii-sdk-python
+Project-URL: Issues, https://github.com/tektii/tektii-sdk-python/issues
+Project-URL: Changelog, https://github.com/tektii/tektii-sdk-python/blob/main/CHANGELOG.md
+Keywords: trading,algorithmic-trading,algo-trading,quantitative-finance,finance,fintech,strategy,backtesting,grpc,trading-bot,trading-strategies,market-data,portfolio-management
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Office/Business :: Financial :: Investment
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Typing :: Typed
+Classifier: Natural Language :: English
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: grpcio-health-checking>=1.48.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: pydantic-settings>=2.0.0
+Requires-Dist: python-dateutil>=2.8.0
+Requires-Dist: requests>=2.28.0
+Requires-Dist: tektii-strategy-protocolbuffers-python==31.1.0.1.20250811142615+36044e963970
+Requires-Dist: tektii-strategy-grpc-python==1.74.0.1.20250811142615+36044e963970
+Requires-Dist: tektii-broker-protocolbuffers-python==31.1.0.1.20250811144523+61bf5f68cd93
+Requires-Dist: tektii-broker-grpc-python==1.74.1.1.20250811144523+61bf5f68cd93
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.10.0; extra == "dev"
+Requires-Dist: pytest-benchmark>=4.0.0; extra == "dev"
+Requires-Dist: pytest-xdist>=3.0.0; extra == "dev"
+Requires-Dist: hypothesis>=6.0.0; extra == "dev"
+Requires-Dist: factory-boy>=3.3.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: Flake8-pyproject>=1.2.3; extra == "dev"
+Requires-Dist: bandit>=1.7.0; extra == "dev"
+Requires-Dist: pre-commit>=3.0.0; extra == "dev"
+Requires-Dist: commitizen>=3.13.0; extra == "dev"
+Requires-Dist: ipython>=8.0.0; extra == "dev"
+Requires-Dist: ipdb>=0.13.0; extra == "dev"
+Requires-Dist: grpcio-testing>=1.48.0; extra == "dev"
+Requires-Dist: types-protobuf>=4.21.0; extra == "dev"
+Requires-Dist: types-python-dateutil>=2.8.0; extra == "dev"
+Requires-Dist: types-requests>=2.32.0; extra == "dev"
+Requires-Dist: build>=0.10.0; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+Requires-Dist: wheel>=0.38.0; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=5.0.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.2.0; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints>=1.22.0; extra == "docs"
+Dynamic: license-file
+
+# Tektii Python SDK
+
+[![PyPI Version](https://img.shields.io/pypi/v/tektii)](https://pypi.org/project/tektii/)
+[![Python Version](https://img.shields.io/pypi/pyversions/tektii)](https://pypi.org/project/tektii/)
+[![License](https://img.shields.io/pypi/l/tektii)](https://github.com/tektii/tektii-sdk-python/blob/main/LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://docs.tektii.com/sdk)
+
+**Build trading strategies that run anywhere - Write Once. Trade Everywhere.**
+
+The Tektii Python SDK provides a powerful, type-safe framework for building algorithmic trading strategies. Built with a dual-service architecture separating broker operations from strategy logic, the SDK features protocol-based proto conversions, comprehensive type safety, and financial-grade decimal precision. Whether you're backtesting historical data or deploying to production, Tektii's event-driven architecture and comprehensive tooling help you focus on strategy development.
+
+## ⚡ Quick Start
+
+```bash
+# Install the SDK
+pip install tektii
+
+# Create a new strategy from template
+tektii new my-awesome-strategy
+cd my-awesome-strategy
+
+# Test your strategy with mock broker
+tektii serve --mock-broker
+
+# Deploy to Tektii platform
+tektii push
+```
+
+## 🚀 Features
+
+- **🏯 Dual-Service Architecture** - Clear separation between broker operations and strategy logic
+- **🔄 Protocol-Based Proto Conversion** - Type-safe `ProtoConvertible[T]` protocol for seamless proto ↔ Python model mapping
+- **✅ Enhanced Type Safety** - Pydantic models with generic protocols, custom validators, and full mypy/pyright support
+- **💰 Financial Precision** - `PreciseDecimal` with 6-decimal precision for all monetary calculations
+- **🎯 Advanced Enums** - Business logic-aware enums with proto conversion and string parsing
+- **📡 Event-Driven Architecture** - Comprehensive event routing for market data, orders, positions, and account updates
+- **🔧 Robust gRPC Server** - Exponential backoff retry, health checks, and graceful error handling
+- **☁️ Production Ready** - Deploy directly to Tektii's cloud infrastructure with built-in validation
+
+## 📦 Installation
+
+### Requirements
+
+- Python 3.11 or higher
+- pip or poetry
+
+### Install from PyPI
+
+```bash
+pip install tektii
+```
+
+### Install with Proto Dependencies
+
+The SDK uses pre-built protobuf packages from buf.build:
+
+```bash
+pip install tektii --extra-index-url https://buf.build/gen/python
+```
+
+### Install for Development
+
+```bash
+# Clone the repository
+git clone https://github.com/tektii/tektii-sdk-python.git
+cd tektii-sdk-python
+
+# Quick setup (creates venv, installs deps, proto packages)
+make setup
+
+# Or manual setup:
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -e ".[dev]" --extra-index-url https://buf.build/gen/python
+```
+
+## 🎯 Getting Started
+
+### Step 1: Set Up Your Development Environment
+
+```bash
+# Create a new directory for your strategy
+mkdir my-trading-strategy
+cd my-trading-strategy
+
+# Create a Python virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
+
+# Create a requirements.txt file
+echo "tektii" > requirements.txt
+
+# Install the Tektii SDK
+pip install -r requirements.txt
+```
+
+### Step 2: Create Your Strategy from Template
+
+```bash
+# Use the Tektii CLI to create a new strategy
+tektii new my-strategy
+
+# This creates:
+# - strategy.py: Your strategy implementation
+# - requirements.txt: Python dependencies
+# - config.yaml: Strategy configuration
+# - tests/: Unit tests for your strategy
+# - Dockerfile: For containerized deployment
+# - README.md: Strategy documentation
+```
+
+### Step 3: Explore the Generated Strategy
+
+```bash
+# Navigate to your new strategy
+cd my-strategy
+
+# Open strategy.py in your favorite editor
+# You'll see a template strategy ready for customization
+```
+
+### Step 4: Customize Your Strategy
+
+Edit `strategy.py` to implement your trading logic:
+
+```python
+from decimal import Decimal
+from typing import Optional
+
+from tektii import TektiiStrategy
+from tektii.models.strategy.events import TickData, CandleData
+from tektii.models.broker.handlers import PlaceOrderRequest
+from tektii.models.strategy.types import MarketOrder, OrderSide
+
+
+class MyStrategy(TektiiStrategy):
+    """A simple moving average crossover strategy."""
+
+    def __init__(self):
+        super().__init__()
+        self.position_size = Decimal("100")
+
+    def on_initialize(self, config: dict[str, str], symbols: list[str]) -> None:
+        """Initialize strategy with configuration."""
+        self.log_info(f"Initializing strategy with symbols: {symbols}")
+        if "position_size" in config:
+            self.position_size = Decimal(config["position_size"])
+
+    def on_market_data(
+        self,
+        tick_data: Optional[TickData] = None,
+        candle_data: Optional[CandleData] = None
+    ) -> None:
+        """React to incoming market data."""
+        if candle_data and candle_data.close > Decimal("150.00"):
+            # Create a market order using the model directly
+            order = MarketOrder(
+                symbol=candle_data.symbol,
+                side=OrderSide.BUY,
+                quantity=self.position_size
+            )
+
+            # Submit through broker service
+            request = PlaceOrderRequest(order=order)
+            response = self.place_order(request)
+
+            if response.success:
+                self.log_info(f"Order placed: {response.order_id}")
+```
+
+### Step 5: Test Your Strategy
+
+```bash
+# Validate your strategy implementation
+tektii validate
+
+# Run tests with the mock broker
+tektii serve --mock-broker
+
+# Or use pytest directly for custom tests
+pytest tests/ -xvs
+```
+
+Write custom tests using the mock broker:
+
+```python
+from tektii.testing import StrategyTestHarness
+from tektii.testing.fixtures import create_candle_data
+
+
+def test_my_strategy():
+    # Create test harness
+    harness = StrategyTestHarness(MyStrategy)
+
+    # Send test market data
+    test_candle = create_candle_data(
+        symbol="AAPL",
+        close=Decimal("151.00")  # Above our threshold
+    )
+    harness.process_candle_data(test_candle)
+
+    # Verify order was created
+    orders = harness.get_orders()
+    assert len(orders) == 1
+    assert orders[0].side == OrderSide.BUY
+```
+
+### Step 6: Run Your Strategy Locally
+
+```bash
+# Validate your strategy code
+tektii validate
+
+# Run strategy as a gRPC service
+tektii serve --port 50051
+
+# Your strategy is now ready to receive market data!
+```
+
+### Step 7: Deploy to Tektii Platform
+
+```bash
+# Deploy your strategy to the cloud
+tektii push
+
+# View deployment logs
+tektii logs
+
+# Check deployment status
+tektii status
+```
+
+## 📖 Examples
+
+### Moving Average Crossover Strategy
+
+Check out our complete example in [`examples/basic_ma_crossover.py`](examples/basic_ma_crossover.py) that demonstrates:
+
+- Price history management with collections.deque
+- Moving average calculation and crossover detection
+- Order placement using the dual-service model architecture
+- Comprehensive event handling (market data, order updates, positions)
+- Proper logging and error handling
+
+```python
+# Run the example locally with mock broker
+tektii serve --strategy examples.basic_ma_crossover:MovingAverageCrossoverStrategy --mock-broker
+
+# Or run directly
+python examples/basic_ma_crossover.py
+```
+
+### More Examples Coming Soon
+
+- **Mean Reversion Strategy** - Statistical arbitrage with z-score calculations
+- **Pairs Trading** - Market-neutral strategy with cointegration
+- **Options Strategy** - Delta-neutral options trading with Greeks
+- **Portfolio Optimization** - Multi-asset allocation with risk parity
+
+## 📚 Core Concepts
+
+### Dual-Service Architecture
+
+The SDK separates broker operations from strategy logic for clean, maintainable code:
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│                     Your Strategy                                   │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │ on_market_data() | on_order_update() | on_position_update() │  │
+│  └────────────────────────────↓─────────────────────↑───────────└  │
+└─────────────────────────────↓──────────────────────↑──────────────┘
+                             ↓                           ↑
+┌────────────────────────────↓──────────────────────↑──────────────┐
+│              Strategy Service          ↔   gRPC   ↔   Broker Service              │
+│  ┌──────────────────────────┐                         ┌─────────────────────────┐  │
+│  │ Events: Market Data    │                         │ Handlers: Orders     │  │
+│  │ Types: Order Models    │                         │ Types: Positions     │  │
+│  │ Proto: Conversions     │                         │ Proto: Conversions   │  │
+│  └──────────────────────────┘                         └─────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+#### Broker Service Models (`tektii.models.broker`)
+- Handles communication with trading brokers
+- Request/response models for order placement, cancellation, state queries
+- Core types: `Order`, `Account`, `Position`, `Fill`
+
+#### Strategy Service Models (`tektii.models.strategy`)
+- Handles strategy-specific events and processing
+- Event models for market data, order updates, position changes
+- Strategy-specific types with business logic
+
+#### Proto Conversion Protocol
+
+All models implement the `ProtoConvertible[T]` protocol for seamless proto conversion:
+
+```python
+from tektii.models.base import ProtoConvertible
+from tektii.models.strategy.types import MarketOrder
+
+# All models have bidirectional proto conversion
+order = MarketOrder(
+    symbol="AAPL",
+    side=OrderSide.BUY,
+    quantity=Decimal("100")
+)
+
+# Convert to proto for gRPC transmission
+proto_msg = order.to_proto()
+
+# Reconstruct from proto with full type safety
+reconstructed = MarketOrder.from_proto(proto_msg)
+assert order == reconstructed
+```
+
+### Strategy Development
+
+Your strategy should inherit from `TektiiStrategy` and implement the event handlers:
+
+```python
+from typing import Optional
+from decimal import Decimal
+
+from tektii import TektiiStrategy
+from tektii.models.strategy.events import (
+    TickData, CandleData, OrderUpdateEvent,
+    PositionUpdateEvent, AccountUpdateEvent
+)
+from tektii.models.broker.handlers import PlaceOrderRequest
+from tektii.models.strategy.types import MarketOrder, OrderSide
+
+class MyStrategy(TektiiStrategy):
+    def on_initialize(self, config: dict[str, str], symbols: list[str]) -> None:
+        """Initialize strategy with configuration."""
+        self.symbols = symbols
+        self.position_size = Decimal(config.get("position_size", "100"))
+        self.log_info(f"Strategy initialized for {len(symbols)} symbols")
+
+    def on_market_data(
+        self,
+        tick_data: Optional[TickData] = None,
+        candle_data: Optional[CandleData] = None
+    ) -> None:
+        """Handle incoming market data."""
+        if candle_data:
+            # Your trading logic here
+            if self.should_buy(candle_data):
+                order = MarketOrder(
+                    symbol=candle_data.symbol,
+                    side=OrderSide.BUY,
+                    quantity=self.position_size
+                )
+                request = PlaceOrderRequest(order=order)
+                response = self.place_order(request)
+
+    def on_order_update(self, order_update: OrderUpdateEvent) -> None:
+        """Handle order status updates."""
+        if order_update.status.is_terminal():
+            self.log_info(f"Order {order_update.order_id} completed: {order_update.status}")
+
+    def on_position_update(self, position_update: PositionUpdateEvent) -> None:
+        """Handle position changes."""
+        self.log_info(f"Position updated: {position_update.symbol} qty={position_update.quantity}")
+
+    def on_account_update(self, account_update: AccountUpdateEvent) -> None:
+        """Handle account updates."""
+        self.log_info(f"Account balance: {account_update.balance}")
+
+    def on_shutdown(self) -> None:
+        """Clean up resources."""
+        self.log_info("Strategy shutting down gracefully")
+```
+
+### Order Management
+
+The SDK provides multiple ways to create and manage orders:
+
+#### 1. Direct Model Creation (Recommended)
+
+```python
+from decimal import Decimal
+from tektii.models.broker.handlers import PlaceOrderRequest
+from tektii.models.strategy.types import (
+    MarketOrder, LimitOrder, StopOrder, StopLimitOrder,
+    OrderSide, TimeInForce
+)
+
+# Market order - executes immediately at current price
+market_order = MarketOrder(
+    symbol="AAPL",
+    side=OrderSide.BUY,
+    quantity=Decimal("100")
+)
+
+# Limit order - executes at specified price or better
+limit_order = LimitOrder(
+    symbol="GOOGL",
+    side=OrderSide.SELL,
+    quantity=Decimal("50"),
+    limit_price=Decimal("2500.00"),
+    time_in_force=TimeInForce.GTC  # Good Till Cancelled
+)
+
+# Stop order - becomes market order when stop price is reached
+stop_order = StopOrder(
+    symbol="MSFT",
+    side=OrderSide.SELL,
+    quantity=Decimal("200"),
+    stop_price=Decimal("380.00")
+)
+
+# Stop-limit order - becomes limit order when stop price is reached
+stop_limit = StopLimitOrder(
+    symbol="TSLA",
+    side=OrderSide.BUY,
+    quantity=Decimal("10"),
+    stop_price=Decimal("700.00"),
+    limit_price=Decimal("705.00")
+)
+```
+
+#### 2. Submit Orders Through Broker Service
+
+```python
+# Create request and submit to broker
+request = PlaceOrderRequest(order=market_order)
+response = self.place_order(request)
+
+if response.success:
+    self.log_info(f"Order placed: {response.order_id}")
+    # Track order for later management
+    self.active_orders[response.order_id] = market_order
+else:
+    self.log_error(f"Order failed: {response.message}")
+```
+
+#### 3. Order Lifecycle Management
+
+```python
+from tektii.models.broker.handlers import (
+    CancelOrderRequest,
+    ModifyOrderRequest,
+    GetOrderStatusRequest
+)
+
+# Cancel an order
+cancel_request = CancelOrderRequest(order_id="order_123")
+cancel_response = self.cancel_order(cancel_request)
+
+# Modify an existing order
+modify_request = ModifyOrderRequest(
+    order_id="order_123",
+    new_quantity=Decimal("150"),
+    new_limit_price=Decimal("155.50")
+)
+modify_response = self.modify_order(modify_request)
+
+# Check order status
+status_request = GetOrderStatusRequest(order_id="order_123")
+status_response = self.get_order_status(status_request)
+
+if status_response.order.status.is_terminal():
+    self.log_info("Order completed")
+```
+
+### Error Handling & Validation
+
+The SDK provides comprehensive error handling with Pydantic validation:
+
+```python
+from pydantic import ValidationError
+from tektii.models.strategy.types import OrderStatus, OrderSide
+from tektii.models.base import PreciseDecimal
+
+try:
+    # Pydantic validation
+    order = MarketOrder(
+        symbol="AAPL",
+        side="INVALID",  # Will raise ValidationError
+        quantity=Decimal("100")
+    )
+except ValidationError as e:
+    self.log_error(f"Order validation failed: {e}")
+
+# Business logic methods on enums
+status = OrderStatus.FILLED
+if status.is_terminal():  # FILLED, CANCELLED, REJECTED, EXPIRED
+    self.log_info("Order completed")
+
+# Financial precision handling
+price = PreciseDecimal("123.456789")  # Automatically rounds to 6 decimals
+assert price == Decimal("123.456789")
+
+# Proto conversion with type safety
+proto_order = order.to_proto()  # Type-safe conversion
+reconstructed = MarketOrder.from_proto(proto_order)
+assert order == reconstructed
+```
+
+## 🧪 Testing
+
+The SDK includes comprehensive testing utilities:
+
+```bash
+# Run all quality checks
+make check  # Runs lint, type-check, and tests
+
+# Individual test commands
+make test           # Run all tests with coverage
+make test-fast      # Skip slow tests
+make test-security  # Run security tests with bandit
+
+# Run specific test file
+pytest tests/test_.py -xvs
+
+# Development workflow
+make format         # Auto-format code
+make lint          # Check code style
+make type-check    # Verify type annotations
+```
+
+### Writing Tests
+
+```python
+import pytest
+from decimal import Decimal
+from tektii.testing import MockBrokerService
+from tektii.models.strategy.events import CandleData
+
+
+class TestMyStrategy:
+    def test_strategy_initialization(self):
+        # Initialize with mock broker
+        mock_broker = MockBrokerService()
+        strategy = MyStrategy()
+        strategy.broker = mock_broker
+
+        # Test initialization
+        config = {"position_size": "100"}
+        symbols = ["AAPL", "GOOGL"]
+        strategy.on_initialize(config, symbols)
+
+        assert strategy.position_size == Decimal("100")
+
+    def test_order_creation_on_signal(self):
+        mock_broker = MockBrokerService()
+        strategy = MyStrategy()
+        strategy.broker = mock_broker
+
+        # Create test candle data
+        candle = CandleData(
+            symbol="AAPL",
+            timestamp=datetime.now(),
+            open=Decimal("150.00"),
+            high=Decimal("156.00"),
+            low=Decimal("149.00"),
+            close=Decimal("155.00"),
+            volume=1000000
+        )
+
+        # Process market data
+        strategy.on_market_data(candle_data=candle)
+
+        # Verify order was placed
+        orders = mock_broker.get_orders()
+        assert len(orders) == 1
+        assert orders[0].symbol == "AAPL"
+```
+
+## 🔧 CLI Commands
+
+The Tektii CLI provides commands for the complete development lifecycle:
+
+| Command             | Aliases       | Description                         |
+| ------------------- | ------------- | ----------------------------------- |
+| `tektii new <name>` | `n`, `create` | Create a new strategy from template |
+| `tektii serve`      | `s`, `run`    | Run strategy as gRPC service        |
+| `tektii validate`   | `v`, `check`  | Validate strategy implementation    |
+| `tektii push`       | `p`, `deploy` | Deploy to Tektii platform           |
+| `tektii backtest`   | `bt`          | Run strategy backtest on platform   |
+| `tektii analyze`    | `a`           | Analyze backtest results            |
+
+### Development Mode
+
+```bash
+# Run with mock broker for development
+tektii serve --mock-broker
+
+# Specify custom port
+tektii serve --port 50051
+
+# Validate without deploying
+tektii push --dry-run
+```
+
+## 🏗️ SDK Architecture
+
+```
+tektii/
+├── __init__.py              # Public API exports
+├── strategy.py              # TektiiStrategy base class & gRPC server
+├── cli.py                   # CLI entry point with command routing
+├── models/
+│   ├── base.py             # ProtoConvertible[T] protocol & PreciseDecimal
+│   ├── broker/             # Broker service models (orders, positions, fills)
+│   │   ├── handlers/       # Request/response models for broker ops
+│   │   │   ├── place_order.py      # PlaceOrderRequest/Response
+│   │   │   ├── cancel_order.py     # CancelOrderRequest/Response
+│   │   │   ├── get_state.py        # GetStateRequest/Response
+│   │   │   └── ...                 # Other broker operations
+│   │   └── types/          # Core broker types with proto conversion
+│   └── strategy/           # Strategy service models
+│       ├── events/         # Market data and update events
+│       │   ├── tick_data.py        # Tick-level market data
+│       │   ├── candle_data.py      # OHLCV candle data
+│       │   └── order_update.py     # Order status updates
+│       ├── handlers/       # Strategy service handlers
+│       └── types/          # Strategy types with business logic
+├── testing/                # Testing utilities
+│   └── mock_broker.py      # MockBrokerService for development
+└── commands/               # CLI command implementations
+    ├── new.py             # Strategy template generation
+    ├── serve.py           # gRPC server with retry logic
+    ├── validator.py       # Strategy validation
+    ├── push.py            # Deploy to Tektii platform
+    └── backtest.py        # Run backtests on platform
+```
+
+## 🏗️ Strategy Project Structure
+
+When you run `tektii new my-strategy`, it creates:
+
+```
+my-strategy/
+├── strategy.py          # Your strategy implementation
+├── requirements.txt     # Python dependencies (includes tektii)
+├── config.yaml         # Strategy configuration
+├── tests/
+│   ├── __init__.py
+│   ├── test_strategy.py  # Unit tests for your strategy
+│   └── fixtures.py       # Test fixtures and helpers
+├── Dockerfile          # Container for cloud deployment
+├── .dockerignore       # Docker build exclusions
+└── README.md          # Strategy documentation
+```
+
+### Configuration (config.yaml)
+
+```yaml
+name: my-strategy
+version: 1.0.0
+description: My trading strategy
+author: Your Name
+
+# Strategy parameters
+parameters:
+  position_size: "100"
+  max_positions: "5"
+  stop_loss_percent: "2.0"
+
+# Trading symbols
+symbols:
+  - AAPL
+  - GOOGL
+  - MSFT
+
+# Risk management
+risk:
+  max_drawdown: "10.0"
+  position_sizing: "fixed"
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes and add tests
+4. Run quality checks (`make check`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Development Workflow
+
+```bash
+# Complete first-time setup
+make setup
+
+# Before committing changes
+make check  # Runs all quality checks
+
+# Auto-fix issues
+make format  # Format with black and isort
+
+# Clean up
+make clean  # Remove caches and build artifacts
+
+# Build distribution
+make build  # Create wheel and sdist packages
+```
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Resources
+
+- **📖 Documentation:** [docs.tektii.com/sdk](https://docs.tektii.com/sdk)
+- **🔧 API Reference:** [docs.tektii.com/sdk/api](https://docs.tektii.com/sdk/api)
+- **💡 Examples:** [examples/](https://github.com/tektii/tektii-sdk-python/tree/main/examples) - Working strategy implementations
+- **📦 PyPI Package:** [pypi.org/project/tektii](https://pypi.org/project/tektii/)
+- **🗺️ Roadmap:** [GitHub Projects](https://github.com/tektii/tektii-sdk-python/projects/1)
+
+## 💬 Support
+
+- **Issues & Bugs:** [GitHub Issues](https://github.com/tektii/tektii-sdk-python/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/tektii/tektii-sdk-python/discussions)
+- **Community:** [Discord Server](https://discord.gg/tektii)
+- **Questions:** [Stack Overflow](https://stackoverflow.com/questions/tagged/tektii)
+- **Email:** support@tektii.com
+
+## 🏆 Acknowledgments
+
+Built with ❤️ by the Tektii team. Special thanks to all our contributors and the open-source community.
+
+### Key Technologies
+
+- **[gRPC](https://grpc.io/)** - High-performance RPC framework
+- **[Pydantic](https://pydantic.dev/)** - Data validation using Python type annotations
+- **[Protobuf](https://protobuf.dev/)** - Protocol buffers for serialization
+- **[buf.build](https://buf.build/)** - Modern protobuf toolchain
+
+---
+
+<div align="center">
+  <b>Ready to build your trading strategy?</b><br>
+  <a href="https://docs.tektii.com/sdk/quickstart">Get Started with Tutorials →</a> |
+  <a href="https://github.com/tektii/tektii-sdk-python/tree/main/examples">View Examples →</a> |
+  <a href="https://discord.gg/tektii">Join Discord →</a>
+</div>

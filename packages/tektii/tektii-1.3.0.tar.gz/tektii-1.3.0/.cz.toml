@@ -1,0 +1,40 @@
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_files = [
+    "pyproject.toml:version"
+]
+tag_format = "v$version"
+update_changelog_on_bump = true
+major_version_zero = true
+
+[tool.commitizen.customize]
+message_template = "{{change_type}}{% if scope %}({{scope}}){% endif %}: {{message}}"
+example = "feat: add new API endpoint for user authentication"
+schema = """
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+"""
+schema_pattern = "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\\(\\w+\\))?: .{1,100}"
+bump_pattern = "^(feat|fix|perf|BREAKING CHANGE)"
+bump_map = {"feat" = "MINOR", "fix" = "PATCH", "perf" = "PATCH", "BREAKING CHANGE" = "MAJOR"}
+change_type_order = ["feat", "fix", "refactor", "perf", "build", "test", "docs", "style", "chore"]
+info_path = "cz_conventional_commits_info.txt"
+info = """
+Allowed commit types:
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation only changes
+- style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- refactor: A code change that neither fixes a bug nor adds a feature
+- perf: A code change that improves performance
+- test: Adding missing tests or correcting existing tests
+- build: Changes that affect the build system or external dependencies
+- ci: Changes to CI configuration files and scripts
+- chore: Other changes that don't modify src or test files
+- revert: Reverts a previous commit
+
+Example: feat(auth): add OAuth2 integration for Google login
+"""
