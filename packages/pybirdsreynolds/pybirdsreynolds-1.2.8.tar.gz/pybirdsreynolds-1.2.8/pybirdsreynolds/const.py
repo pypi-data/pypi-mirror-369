@@ -1,0 +1,91 @@
+CANVAS_WIDTH_DEFAULT=500
+WIDTH_PARAMS_DEFAULT=400
+NUM_BIRDS_DOC="Number of birds"
+NUM_BIRDS_DEFAULT=500
+NUM_BIRDS_MIN=1
+NUM_BIRDS_MAX=1000
+NUM_BIRDS_FREE_MIN=1
+NUM_BIRDS_FREE_MAX=None
+COH_WEIGHT_DOC="Reynolds - Cohesion weight"
+COH_WEIGHT_DEFAULT=1
+COH_WEIGHT_MIN=0
+COH_WEIGHT_MAX=10
+COH_WEIGHT_FREE_MIN=None
+COH_WEIGHT_FREE_MAX=None
+ALIGN_WEIGHT_DOC="Reynolds - Alignment weight"
+ALIGN_WEIGHT_DEFAULT=2
+ALIGN_WEIGHT_MIN=0
+ALIGN_WEIGHT_MAX=10
+ALIGN_WEIGHT_FREE_MIN=None
+ALIGN_WEIGHT_FREE_MAX=None
+SEP_WEIGHT_DOC="Reynolds - Separation weight"
+SEP_WEIGHT_DEFAULT=3
+SEP_WEIGHT_MIN=0
+SEP_WEIGHT_MAX=10
+SEP_WEIGHT_FREE_MIN=None
+SEP_WEIGHT_FREE_MAX=None
+NEIGHBOR_RADIUS_DOC="Reynolds - Distance to detect neighbors"
+NEIGHBOR_RADIUS_DEFAULT=50
+NEIGHBOR_RADIUS_MIN=0
+NEIGHBOR_RADIUS_MAX=None
+NEIGHBOR_RADIUS_FREE_MIN=0
+WIDTH_DOC="Area width"
+WIDTH_DEFAULT=1000
+WIDTH_MIN=200
+WIDTH_MAX=1500
+WIDTH_FREE_MIN=3
+WIDTH_FREE_MAX=None
+HEIGHT_DOC="Area height"
+HEIGHT_DEFAULT=500
+HEIGHT_MIN=200
+HEIGHT_MAX=1000
+HEIGHT_FREE_MIN=3
+HEIGHT_FREE_MAX=None
+NEIGHBOR_RADIUS_FREE_MAX=None
+MAX_SPEED_DOC="Maximum speed of birds"
+MAX_SPEED_DEFAULT=10
+MAX_SPEED_MIN=0
+MAX_SPEED_MAX=100
+MAX_SPEED_FREE_MIN=0
+MAX_SPEED_FREE_MAX=100
+RANDOM_SPEED_DOC="Random speed variation ratio in percentage"
+RANDOM_SPEED_DEFAULT=0
+RANDOM_SPEED_MIN=0
+RANDOM_SPEED_MAX=10
+RANDOM_SPEED_FREE_MIN=0
+RANDOM_SPEED_FREE_MAX=None
+RANDOM_ANGLE_DOC="Random angle variation in degrees"
+RANDOM_ANGLE_DEFAULT=0
+RANDOM_ANGLE_MIN=0
+RANDOM_ANGLE_MAX=10
+RANDOM_ANGLE_FREE_MIN=None
+RANDOM_ANGLE_FREE_MAX=None
+REFRESH_MS_DOC="Refresh interval in milliseconds"
+REFRESH_MS_DEFAULT=10
+REFRESH_MS_MIN=10
+REFRESH_MS_MAX=100
+REFRESH_MS_FREE_MIN=None
+REFRESH_MS_FREE_MAX=None
+SIZE_DOC="Visual size of birds"
+SIZE_DEFAULT=2
+SIZE_MIN=1
+SIZE_MAX=3
+SIZE_FREE_MIN=1
+SIZE_FREE_MAX=None
+TRIANGLES_DOC="Render birds as triangles instead of points"
+TRIANGLES_DEFAULT=False
+COLOR_DOC="Enable colors"
+COLOR_DEFAULT=False
+FREE_DOC="Remove parameter limits"
+FREE_DEFAULT=False
+COMMON_CONTROLS = [
+    "",
+    "[Space]           : Toggle start / stop",
+    "[Enter]           : Advance by one frame",
+    "[Up/Down]         : Navigate between params",
+    "[Left/Right]      : Adjust selected param +1/-1 True/False",
+    "[Ctrl][Left/Right]: Adjust selected param +10/-10",
+    "[r]               : Reset all params",
+    "[n]               : New generation of birds",
+    "[f]               : Toggle FPS display",
+]
