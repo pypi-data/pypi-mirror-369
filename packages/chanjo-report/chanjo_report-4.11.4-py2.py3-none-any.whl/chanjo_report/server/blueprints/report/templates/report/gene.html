@@ -1,0 +1,86 @@
+{% extends 'report/layouts/base.html' %}
+
+{% block main %}
+<div class="container">
+	<div class="page-header">
+		<h1>Gene: {{ gene_name or gene_id }}</h1>
+	</div>
+
+	{% for tx_id, tx_group in tx_groups %}
+		{% set txgroup_list = tx_group|list %}
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Transcript: <strong>{{ tx_id }}</strong>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Sample</th>
+									<th>Mean coverage</th>
+									{% for level, _ in levels.items() %}
+										<th>Completeness {{ level }}x [%]</th>
+									{% endfor %}
+								</tr>
+							</thead>
+							<tbody>
+								{% for transcript in txgroup_list %}
+									<tr>
+										<td>
+											{{ transcript.sample.name or transcript.sample_id }}
+										</td>
+										<td>{{ transcript.mean_coverage|round(2) }}</td>
+										{% for _, field_id in levels.items() %}
+											<td>
+												{% if transcript|attr(field_id) is number %}
+													{{ transcript|attr(field_id)|round(2) }}
+												{% endif %}
+											</td>
+										{% endfor %}
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					{% for transcript in txgroup_list %}
+						<ul class="list-group">
+							{% if transcript._incomplete_exons %}
+								<li class="list-group-item">
+									Incomplete exons for <strong>{{ transcript.sample.name or transcript.sample_id }}</strong> at <strong>{{ transcript.threshold }}x</strong>
+								</li>
+							{% endif %}
+						</ul>
+						<div class="table-responsive">
+							<table class="table table-bordered">
+								<tbody>
+									{% for exon_group in transcript.incomplete_exons|batch(5) %}
+										<tr>
+											{% for exon in exon_group %}
+												<td>
+													{% if link %}
+														<a href="{{ url_for(link, start=exon.start, end=exon.end, chrom=exon.chrom, sample=transcript.sample_id, group=transcript.sample.group_id) }}" target="_blank">
+															{{ exon.chrom }}:{{ exon.start }}-{{ exon.end }}
+														</a>
+													{% else %}
+														{{ exon.chrom }}:{{ exon.start }}-{{ exon.end }}
+													{% endif %}
+													<span class="float-right">
+														<strong>{{ exon.completeness|round(2) }}%</strong>
+													</span>
+												</td>
+											{% endfor %}
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+{% endblock %}
