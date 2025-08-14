@@ -1,0 +1,144 @@
+[tool.poetry]
+name = "qedma-api"
+version = "0.18.3"
+description = "Qedma QESEM SDK"
+authors = ["Qedma Support <support@qedma.com>"]
+readme = "README.md"
+packages = [{include = "qedma_api"}]
+exclude = ["docs", "qedma_api/tests"]
+classifiers = [
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Typing :: Typed',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: POSIX',
+    'Operating System :: Unix',
+    'Operating System :: MacOS',
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+requests = "^2.32.3"
+loguru = "^0.7.2"
+pydantic = ">=2.9"
+qiskit = ">=1.0.2,<3.0.0"
+typing-extensions = "^4.12.2"
+qiskit-qasm3-import = "^0.5.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8"
+pytest-cov = ">=4.0.0,<7"
+black = {version = "^25.1.0", extras = ["d"]}
+pylint = ">=2.14.5,<4"
+mypy = "^1.15"
+isort = "^6.0.1"
+types-requests = "^2.32.0"
+responses = "^0.25.0"
+pytest-mock = "^3.14.0"
+qiskit-ibm-runtime = "^0.40.0"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.urls]
+homepage = "https://www.qedma.com/"
+documentation = "https://docs.qedma.io/"
+download = "https://pypi.org/project/qedma-api/#files"
+"release notes" = "https://docs.qedma.io/release_notes/"
+
+[tool.mypy]
+disallow_any_unimported = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_return_any = true
+show_error_codes = true
+strict_equality = true
+extra_checks = true
+warn_unused_configs = true
+warn_redundant_casts = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+implicit_reexport = true
+plugins = ["pydantic.mypy"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+
+[[tool.mypy.overrides]]
+module = [
+    "qiskit.*",
+    "qiskit_ibm_runtime.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "--disable-warnings"
+
+[tool.pylint.messages_control]
+variable-rgx="[a-z0-9_]{1,60}$"
+function-rgx="[a-z0-9_]{2,60}$"
+argument-rgx="[a-z0-9_]{1,30}$"
+attr-rgx="[a-z0-9_]{1,30}$"
+min-similarity-lines=15
+max-args=10
+max-attributes=10
+max-positional-arguments=5
+
+[tool.pylint.format]
+max-line-length = "100"
+
+[tool.pylint.master]
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312', 'py313']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+    \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+skip_gitignore = true
+line_length = 100
+lines_after_imports = 2
+atomic = true
+auto_identify_namespace_packages = false
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+known_local_folder = ["qedma_api"]
+
+[tool.coverage.report]
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "# pragma: no cover",
+  "def __repr__",
+]
