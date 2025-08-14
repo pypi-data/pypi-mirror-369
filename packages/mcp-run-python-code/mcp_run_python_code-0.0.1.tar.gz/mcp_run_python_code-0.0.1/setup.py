@@ -1,0 +1,51 @@
+# -*- coding: utf-8 -*-
+"""
+@author:XuMing(xuming624@qq.com)
+@description:
+"""
+import sys
+
+from setuptools import setup, find_packages
+
+__version__ = "0.0.1"
+
+if sys.version_info < (3,):
+    sys.exit('Sorry, Python3 is required.')
+
+with open('README.md', 'r', encoding='utf-8') as f:
+    readme = f.read()
+
+setup(
+    name='mcp-run-python-code',
+    version=__version__,
+    description='mcp-run-python-code: MCP server for running Python code, installing packages, and executing Python files.',
+    long_description=readme,
+    long_description_content_type='text/markdown',
+    author='XuMing',
+    author_email='xuming624@qq.com',
+    url='https://github.com/shibing624/mcp-run-python-code',
+    license='Apache License 2.0',
+    zip_safe=False,
+    python_requires='>=3.10',
+    entry_points={"console_scripts": ["mcp-run-python-code=run_python_code.__main__:main"]},
+    classifiers=[
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Natural Language :: Chinese (Simplified)',
+        'Natural Language :: Chinese (Traditional)',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Topic :: Text Processing',
+        'Topic :: Text Processing :: Indexing',
+        'Topic :: Text Processing :: Linguistic',
+    ],
+    keywords='python-interpreter, mcp, run-python-code, install-python-package, execute-python-file',
+    install_requires=[
+        "mcp",
+        "requests",
+        "loguru",
+    ],
+    packages=find_packages(exclude=['tests']),
+    package_dir={'mcp-run-python-code': 'run_python_code'},
+    package_data={'run_python_code': ['*.*']}
+)
