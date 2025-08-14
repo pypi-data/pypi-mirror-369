@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm>=8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gen-ibans"
+dynamic = ["version"]
+description = "Generate valid German IBANs using Bundesbank data and PRNG"
+authors = [
+    {name = "Sebastian Wallat"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+dependencies = [
+    "faker>=20.0.0",
+    "click>=8.0.0",
+]
+keywords = ["iban", "germany", "banking", "generator", "prng", "bundesbank"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+[project.scripts]
+gen-ibans = "gen_ibans.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/swallat/gen-ibans"
+"Bug Reports" = "https://github.com/swallat/gen-ibans/issues"
+"Source" = "https://github.com/swallat/gen-ibans"
+
+[tool.setuptools]
+packages = ["gen_ibans"]
+
+[tool.setuptools.package-data]
+gen_ibans = ["*.py"]
+
+[dependency-groups]
+dev = [
+    "py>=1.11.0",
+    "pygments>=2.19.2",
+    "pytest>=8.3.5",
+    "ruff>=0.12.8",
+]
+
+[tool.setuptools_scm]
+# Enable setuptools-scm for dynamic versioning from git tags
