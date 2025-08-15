@@ -1,0 +1,2 @@
+class GitFlowManagerError(Exception):
+    pass
