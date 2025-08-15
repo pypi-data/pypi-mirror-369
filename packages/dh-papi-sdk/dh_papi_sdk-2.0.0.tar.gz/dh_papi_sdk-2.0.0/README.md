@@ -1,0 +1,180 @@
+# DH PAPI SDK - API Documentation
+
+## 📋 API Modules
+
+### VRM Bulk Operations
+Complete Salesforce bulk API integration with 100% endpoint coverage.
+
+```python
+# Get bulk client
+bulk = client.vrm_bulk
+
+# Core operations
+jobs = bulk.get_all_jobs()                    # List all jobs
+job = bulk.create_job("Account", "insert")    # Create INSERT job
+job = bulk.create_job("Account", "upsert", external_id_field="External_ID__c")  # Create UPSERT job
+info = bulk.get_job_info(job_id)             # Get job status
+bulk.upload_job_data(job_id, csv_data)       # Upload data
+bulk.close_job(job_id)                       # Close for processing
+
+# Results retrieval
+successful = bulk.get_successful_results(job_id)   # Get successful records
+failed = bulk.get_failed_results(job_id)           # Get failed records  
+unprocessed = bulk.get_unprocessed_records(job_id) # Get unprocessed records
+
+# Management
+bulk.delete_job(job_id)                      # Delete job
+```
+
+**✅ All Operations Fully Supported:**
+- **INSERT, UPDATE, UPSERT, DELETE** operations all work seamlessly
+- **UPSERT operations** support external ID fields (e.g., "Id", "External_ID__c", "Email")
+- **Complete workflow** from job creation to results retrieval
+
+**📚 [Complete VRM Bulk API Documentation →](sdk/py/docs/vrm-bulk.md)**
+
+*Includes all 9 methods, complete workflow examples, and production-ready code samples.*
+
+## 🏗️ Stable Models Architecture
+
+This SDK uses stable dataclass models that won't break when the underlying API changes:
+
+```python
+from papi_sdk.models import BulkJobCreateRequest, BulkJobCreateResponse
+
+# Type-safe request creation
+request = BulkJobCreateRequest(
+    object="Account",
+    operation="insert"
+)
+
+# Clean, predictable response objects
+response = bulk.create_job("Account", "insert")
+print(f"Job ID: {response.id}")
+print(f"State: {response.state}")
+
+# UPSERT operations with external ID fields
+job = bulk.create_job("Contact", "upsert", external_id_field="Email")
+job = bulk.create_job("Account", "upsert", external_id_field="External_ID__c")
+```
+
+**Benefits:**
+- 🛡️ **Future-proof**: Won't break when generators change
+- 🎯 **Type-safe**: Full IDE completion and type checking
+- 📝 **Semantic**: `BulkJobCreateResponse` vs `VrmV1JobsIngestPost200Response`
+- 🔄 **Automatic conversion**: Seamless translation between internal and public APIs
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+#### 1. Authentication Issues
+```python
+# Test connection
+if client.test_connection():
+    print("✅ Authentication working")
+else:
+    print("❌ Check credentials")
+```
+
+#### 2. UPSERT External ID Fields
+```python
+# Always specify external ID field for upsert operations
+job = bulk.create_job("Account", "upsert", external_id_field="External_ID__c")
+job = bulk.create_job("Contact", "upsert", external_id_field="Email")
+job = bulk.create_job("Custom_Object__c", "upsert", external_id_field="Id")
+```
+
+#### 3. Debug Mode
+```python
+# Enable detailed logging in your application
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
+
+#### 4. APIGee Proxy Issues
+If you see 403/500 errors:
+- Check APIGee permissions and OAuth scopes
+- Verify Salesforce backend connectivity
+- Contact Platform API team with request IDs from error logs
+
+## 🚧 Known Limitations
+
+### Current SDK Version (v2.0.0)
+- ✅ **All bulk operations**: INSERT, UPDATE, UPSERT, DELETE fully supported
+- ✅ **External ID fields**: Supported for UPSERT operations
+- ✅ **Result retrieval**: All methods working
+- ✅ **Type safety**: Full dataclass support with IDE completion
+- ✅ **Stable models**: Future-proof architecture implemented
+
+### Upcoming Features
+- Additional Salesforce API modules beyond VRM Bulk
+
+## 🔄 Version History
+
+- **v2.0.0** - Initial release with stable models architecture and complete VRM Bulk API support
+
+## 🚀 Quick Start Examples
+
+### Complete Bulk Job Workflow
+```python
+from papi_sdk import Client
+
+# Initialize client
+client = Client(
+    client_id="your-client-id",
+    client_secret="your-client-secret",
+    environment="stg"  # or "prod", "dev"
+)
+
+# 1. Create job
+job = client.vrm_bulk.create_job("Account", "insert")
+print(f"Created job: {job.id}")
+
+# 2. Upload CSV data
+csv_data = """Name,Type,Industry
+"Acme Corp","Customer","Technology"
+"Beta Ltd","Partner","Retail"
+"""
+client.vrm_bulk.upload_job_data(job.id, csv_data)
+
+# 3. Close job for processing
+result = client.vrm_bulk.close_job(job.id)
+print(f"Job closed: {result.state}")
+
+# 4. Monitor job status
+info = client.vrm_bulk.get_job_info(job.id)
+print(f"Job state: {info.state}")
+print(f"Records processed: {info.number_records_processed}")
+
+# 5. Get results when complete
+if info.state == "JobComplete":
+    successful = client.vrm_bulk.get_successful_results(job.id)
+    failed = client.vrm_bulk.get_failed_results(job.id)
+    print(f"✅ Successful records: {len(successful.splitlines())}")
+    print(f"❌ Failed records: {len(failed.splitlines())}")
+```
+
+### UPSERT with External ID
+```python
+# Create UPSERT job with external ID field
+job = client.vrm_bulk.create_job(
+    object="Contact", 
+    operation="upsert",
+    external_id_field="Id"
+)
+
+# Upload data with email as identifier
+csv_data = """FirstName,LastName,Email,Phone
+"John","Doe","john.doe@example.com","555-0123"
+"Jane","Smith","jane.smith@example.com","555-0456"
+"""
+client.vrm_bulk.upload_job_data(job.id, csv_data)
+client.vrm_bulk.close_job(job.id)
+```
+
+## 📞 Support
+
+- **Documentation**: Complete API reference in method docstrings
+- **Issues**: Report bugs and feature requests to the Platform API team
+- **Architecture**: Built with future-proof stable models for long-term reliability
