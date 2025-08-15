@@ -1,0 +1,50 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+      - "*x"
+    tags:
+      - "*"
+  pull_request:
+  schedule:
+    # Weekly Monday 9AM build
+    # * is a special character in YAML so you have to quote this string
+    - cron: '0 9 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      envs: |
+        - linux: check-style
+        - linux: check-types
+        - linux: check-build
+  test:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      envs: |
+        - linux: py311-oldestdeps-cov-xdist
+        - linux: py311-xdist
+        - linux: py312-xdist
+        # `tox` does not currently respect `requires-python` versions when creating testing environments;
+        # if this breaks, add an upper pin to `requires-python` and revert this py3 to the latest working version
+        - linux: py3-cov-xdist
+          coverage: codecov
+        - macos: py3-xdist
+  test_downstream:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      setenv: |
+        CRDS_PATH: /tmp/data/crds_cache
+        CRDS_CLIENT_RETRY_COUNT: 3
+        CRDS_CLIENT_RETRY_DELAY_SECONDS: 20
+      envs: |
+        - linux: py312-jwst-cov
+        - linux: py312-romancal-cov
+      coverage: codecov
