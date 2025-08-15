@@ -1,0 +1,15 @@
+query:
+  system: cma_geps
+  stream: eps
+  type: grib2
+  name: orig
+
+{% set start_time_string = time_vars.year ~ time_vars.month ~ time_vars.day ~ time_vars.hour %}
+{% set start_date_string = time_vars.year ~ time_vars.month ~ time_vars.day %}
+
+file_name: "Z_NAFP_C_BABJ_{{ start_time_string }}0000_P_NWPC-GRAPES-GEPS-GLB-{{ time_vars.forecast_hour }}00-m{{ '%.3d' | format(query_vars.number) }}.grib2"
+
+paths:
+  - type: cmadaas
+    level: archive
+    path: '{{ query_vars.storage_base }}/DATA/NAFP/NMC/GRAPES-GEPS/{{ time_vars.year }}/{{ start_date_string }}'
