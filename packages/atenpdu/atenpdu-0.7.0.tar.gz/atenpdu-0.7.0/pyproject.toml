@@ -1,0 +1,44 @@
+[tool.black]
+line-length = 120
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+
+[tool.poetry]
+name = "atenpdu"
+version = "0.7.0"
+description = "Interface for ATEN-PE PDUs"
+authors = ["Andreas Oberritter <obi@saftware.de>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/mtdcr/pductl"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Home Automation",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities"
+]
+
+[tool.poetry.dependencies]
+python = "^3.9.2"
+async-timeout = "^4.0.3"
+pysnmp = "^7.1.21"
+cryptography = "^45.0.3"
+
+[tool.poetry.scripts]
+pductl = "atenpdu.pductl:run"
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.7.4"
+mypy = "^0.991"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

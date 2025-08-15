@@ -1,0 +1,83 @@
+Metadata-Version: 2.3
+Name: atenpdu
+Version: 0.7.0
+Summary: Interface for ATEN-PE PDUs
+License: MIT
+Author: Andreas Oberritter
+Author-email: obi@saftware.de
+Requires-Python: >=3.9.2,<4.0.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Home Automation
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Systems Administration
+Classifier: Topic :: Utilities
+Requires-Dist: async-timeout (>=4.0.3,<5.0.0)
+Requires-Dist: cryptography (>=45.0.3,<46.0.0)
+Requires-Dist: pysnmp (>=7.1.21,<8.0.0)
+Project-URL: Repository, https://github.com/mtdcr/pductl
+Description-Content-Type: text/markdown
+
+# pductl - Control outlets of ATEN PE PDUs
+
+## Installation
+
+```sh
+pip install atenpdu
+```
+ 
+## Example configuration [~/.pductl]
+```json
+{
+  "format": 1,
+  "pdus": {
+    "pdu1": {
+      "node": "pdu1",
+      "service": "snmp",
+      "username": "administrator",
+      "authkey": "AAAAAAAAAAAAAA",
+      "privkey": "BBBBBBBBBBBBBB"
+    },
+    "pdu2": {
+      "authkey": "CCCCCCCCCCCCCC",
+      "privkey": "DDDDDDDDDDDDDD"
+    },
+    "pdu3": {
+      "node": "192.168.21.19",
+      "service": "16161",
+      "username": "joe",
+      "authkey": "EEEEEEEEEEEEEE",
+      "privkey": "FFFFFFFFFFFFFF"
+    },
+    "pdu4": {
+      "community": "private"
+    },
+    "pdu5": {
+    }
+  }
+}
+```
+
+* `authkey` and `privkey` are required for SNMPv3. On absence, SNMPv2c gets used.
+* `community` defaults to `private` for SNMPv2c.
+* `node` defaults to PDU entry's name.
+* `service` defaults to `snmp`, i.e. port 161.
+* `username` defaults to `administrator` for SNMPv3.
+
+## Usage
+
+```sh
+pductl [-p <PDU>] list
+pductl [-p <PDU>] <on|off|reboot|status> <OUTLET> [<OUTLET> ...]
+```
+
+Use `ALL` to select all outlets.
+
