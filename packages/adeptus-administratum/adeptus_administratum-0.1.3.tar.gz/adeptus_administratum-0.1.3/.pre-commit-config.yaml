@@ -1,0 +1,30 @@
+# uvx pre-commit install
+# uvx pre-commit autoupdate
+# uvx pre-commit run --all-files
+
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.5
+    hooks:
+      - id: ruff
+        args: [ --fix ]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: pytest-check
+        name: pytest-check
+        entry: pytest tests
+        language: system
+        pass_filenames: false
+        always_run: true
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    # www.conventionalcommits.org
+    rev: v4.2.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [ commit-msg ]
+        args: [ feat, fix, build, chore, ci, docs, style, refactor, perf, test ]
