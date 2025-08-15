@@ -1,0 +1,214 @@
+# 🚀 AIForge - Intelligent Intent Adaptive Execution Engine  
+  
+<div align="center">  
+  
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/) [![Textual](https://img.shields.io/badge/Textual-4.0.0+%20-purple)](https://textual.textualize.io/) [![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1+%20-red)](https://fastapi.tiangolo.com/) [![SentenceTransformers](https://img.shields.io/badge/SentenceTransformers-5.0.0+%20-pink)](https://www.SBERT.net/)  
+[![PyPI version](https://badge.fury.io/py/aiforge-engine.svg?v=9)](https://badge.fury.io/py/aiforge-engine) [![Downloads](https://pepy.tech/badge/aiforge-engine?v=9)](https://pepy.tech/project/aiforge-engine) [![AI Powered](https://img.shields.io/badge/AI-Powered-ff69b4.svg)](#) [![License](https://img.shields.io/badge/license-Apache%202.0-yellow)](./LICENSE) [![Stars](https://img.shields.io/github/stars/iniwap/AIForge?style=social)](https://github.com/iniwap/AIForge)  
+[![Development Status](https://img.shields.io/badge/status-alpha-orange.svg)](https://github.com/iniwap/AIForge) [![Development Status](https://img.shields.io/badge/development-active-brightgreen.svg)](https://github.com/iniwap/AIForge)  
+  
+**Transform natural language instructions into executable code with AI-powered automation**  
+  
+[🚀 Quick Start](#basic-usage) • [🧠 Core Features](#-core-features) • [⚡ Installation](#installation) • [🌐 Ecosystem](#-connect--support)  
+  
+</div>  
+  
+---  
+  
+## 🎯 What is AIForge?  
+> 🚧 **Project Status**: We are currently in full development, with quite frequent version updates. Please stay tuned!  
+
+AIForge is an **intelligent execution engine** that bridges the gap between natural language instructions and code execution. Through advanced instruction analysis and adaptive execution architecture, AIForge provides:  
+  
+- 🧠 **Deep Understanding** - Multi-dimensional instruction parsing with precise intent capture  
+- ⚡ **Instant Execution** - Rapid code generation with real-time environment interaction    
+- 🔮 **Smart Caching** - Semantic similarity-based intelligent code reuse  
+- 🌊 **Self-Evolution** - Continuous learning optimization with error self-healing  
+- 🎭 **Multi-Provider** - Seamless switching between AI models and providers  
+
+ ![LOGO](https://raw.githubusercontent.com/iniwap/AIForge/main/logo.jpg)  
+   
+## ✨ Core Features  
+  
+### 🏗️ Multi-Interface Architecture  
+- **CLI Interface** - Command-line tool for direct execution  
+- **Python API** - Programmatic integration for applications  
+- **Web API** - FastAPI-based REST interface  
+- **Terminal GUI** - Interactive text-based user interface  
+  
+### 🤖 LLM Provider Support  
+- **OpenAI** - GPT models integration  
+- **DeepSeek** - Cost-effective AI provider  
+- **OpenRouter** - Multi-model access platform  
+- **Ollama** - Local model execution  
+  
+### 🔧 Advanced Execution Management  
+- **Docker Deployment** - Supports both deployment methods
+- **Template System** - Domain-specific execution templates  
+- **Search Integration** - Multi-engine search capabilities (Baidu, Bing, 360, Sogou)  
+- **Content Generation** - Specialized content creation workflows  
+
+### 🌍 Multi-Language Support  
+- **Global Instruction Processing** - Natural language instruction recognition in 12 major languages  
+- **Localized Keywords** - Chinese, English, Arabic, German, Spanish, French, Hindi, Japanese, Korean, Portuguese, Russian, Vietnamese  
+- **Smart Language Detection** - Automatic language detection with corresponding keyword library matching  
+- **Cross-Language Compatibility** - Maintains English keyword universality while providing localized experience
+
+### 🛡️ Enterprise-Ready Features  
+- **Progress Tracking** - Real-time execution status indicators  
+- **Error Handling** - Comprehensive exception management and retry logic  
+- **Configuration Management** - Flexible TOML-based configuration system  
+
+## 🔐 Enterprise Security Features  
+AIForge provides multi-layer security for safe AI code execution:  
+  
+- **Sandbox Isolation**: Process-level isolation with resource limits  
+- **Network Security**: Four-tier policy control with smart domain filtering  
+- **Code Analysis**: Dangerous pattern detection and safe module imports    
+- **Unified Middleware**: Extensible security validation framework
+
+## 🚀 Quick Start
+    
+### Installation & Deployment
+    
+- Non-Docker Mode  
+```bash  
+pip install aiforge-engine    
+  
+# With optional dependencies    
+pip install aiforge-engine[all]  # All features    
+pip install aiforge-engine[gui]  # Terminal GUI support    
+pip install aiforge-engine[web]  # Web API support    
+```  
+  
+- Docker Mode  
+```bash    
+# 1. Install AIForge (with web dependencies)  
+pip install aiforge-engine[web]  
+  
+# 2. Set API key    
+echo "OPENROUTER_API_KEY=your-api-key" > .env    
+    
+# 3. One-click startup    
+aiforge-docker start    
+    
+# 4. Development mode (hot reload)   
+aiforge-docker start --dev  
+
+# 5. Source Code Mode（default language=en）
+$env:AIFORGE_LOCALE="zh"; ./aiforge-docker.bat start --dev  
+./aiforge-docker.sh start --dev  
+
+# 6. Enable SearXNG
+aiforge-docker start --dev --searxng
+
+# 7. Help
+$env:AIFORGE_LOCALE="zh"; ./aiforge-docker.bat --help
+```  
+  
+### Basic Usage 
+- Non-Docker Mode   
+```python  
+from aiforge import AIForgeEngine    
+  
+# Quick start with API key    
+forge = AIForgeEngine(api_key="your-openrouter-apikey")    
+  
+# Execute natural language instruction    
+result = forge("Search for the latest global stock market trends and write an investment analysis")    
+print(result)    
+```    
+  
+- Docker Mode  
+```bash    
+# Direct CLI usage    
+aiforge "Search stock market trends and analyze"    
+    
+# Specify provider     
+aiforge --provider deepseek "Analyze data"   
+```  
+### Advanced Configuration  
+  
+    # Provider-specific configuration  
+    forge = AIForgeEngine(  
+        api_key="your-deepseek-key",  
+        provider="deepseek",  
+        locale="en", # ar|de|en|es|fr|hi|ja|ko|pt|ru|vi|zh
+        max_rounds=5,
+    )  
+  
+    # Complex task execution  
+    result = forge.run(  
+        "Build a real-time data monitoring system",  
+        system_prompt="You are a senior software architect"  
+    )  
+  
+### Configuration File Setup  
+  
+    # aiforge.toml  
+    workdir = "aiforge_work"  
+    max_tokens = 4096  
+    max_rounds = 5  
+    default_llm_provider = "openrouter"  
+  
+    [llm.openrouter]  
+    type = "openai"  
+    model = "deepseek/deepseek-chat-v3-0324:free"  
+    api_key = "your-key"  
+    base_url = "https://openrouter.ai/api/v1"  
+    timeout = 30  
+    max_tokens = 8192  
+  
+    # Load from configuration file  
+    forge = AIForgeEngine(config_file="aiforge.toml")  
+  
+## 🎭 Use Cases  
+  
+### 💼 Business Intelligence  
+- **Market Analysis** - Real-time data mining and trend prediction  
+- **Risk Assessment** - Multi-dimensional risk model construction  
+- **Decision Support** - Data-driven intelligent decision engines  
+  
+### 🔬 Research & Development  
+- **Data Science** - Automated experiment design and analysis  
+- **Model Training** - Intelligent hyperparameter optimization  
+- **Research Assistance** - Data visualization and presentation  
+  
+### 🛠️ Development Acceleration  
+- **Prototype Validation** - Rapid MVP construction  
+- **API Integration** - Intelligent interface adaptation  
+- **DevOps Automation** - System monitoring and maintenance  
+  
+### 🎨 Creative Implementation  
+- **Content Generation** - Multimedia content intelligent creation  
+- **Data Art** - Transform data into visual art  
+- **Interactive Design** - Smart UI/UX prototype generation  
+  
+## 🤝 Development & Contributing  
+  
+    # Developer setup  
+    git clone https://github.com/iniwap/AIForge.git  
+    cd AIForge  
+    pip install -e ".[dev]"  
+  
+    # Run tests  
+    pytest tests/  
+  
+## 📞 Connect & Support  
+  
+- 🌐 **Website**: [aiforge.dev](https://iniwap.github.io/AIForge)  
+- 💬 **Community**: [Discord](https://discord.gg/Vp35uSBsrw)  
+- 📧 **Contact**: iniwaper@gmail.com  
+- 🐦 **Updates**: [@AIForge](https://twitter.com/iafun_tipixel)  
+- 📦 **PyPI**: [aiforge-engine](https://pypi.org/project/aiforge-engine/)  
+  
+---  
+  
+<div align="center">  
+  
+**🌟 Redefining the Boundaries of Possibility 🌟**  
+  
+*AIForge - Where Intelligence Meets Execution*  
+  
+[Get Started](https://pypi.org/project/aiforge-engine/) | [View Documentation](https://iniwap.github.io/AIForge) | [Join Community](https://discord.gg/Vp35uSBsrw)  
+  
+</div>
