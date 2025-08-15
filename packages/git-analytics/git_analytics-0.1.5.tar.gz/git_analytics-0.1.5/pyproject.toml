@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "git-analytics"
+version = "0.1.5"
+description = "The detailed analysis tool for git repositories."
+authors = ["n0rfas <antsa@yandex.ru>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "git_analytics"}]
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+GitPython = ">=3.1.0"
+falcon = "~=3.0.0"
+
+[tool.poetry.scripts]
+git-analytics = 'git_analytics.main:run'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
