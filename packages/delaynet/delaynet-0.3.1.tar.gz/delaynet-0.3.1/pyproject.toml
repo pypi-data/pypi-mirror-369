@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "delaynet"
+authors = [{ name = "Carlson Büth" }, { name = "Massimiliano Zanin" }]
+maintainers = [{ name = "Carlson Büth", email = "code@cbueth.de" }]
+description = "Delay Propagation in Transportation Networks"
+keywords = ["Delay Propagation", "Transportation Networks", "Information Flow", "Information Theory"]
+license = { text = "BSD-3-Clause" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+]
+dynamic = ["readme", "version"]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "scipy",
+    "statsmodels",
+    "scikit-learn",
+    "numba",
+    "infomeasure>=0.5.0",
+    "igraph",
+    "synthatdelays>=1.0.2",
+]
+
+[project.urls]
+Documentation = "https://delaynet.readthedocs.io/"
+Repository = "https://github.com/cbueth/delaynet"
+Issues = "https://github.com/cbueth/delaynet/issues"
+Changelog = "https://delaynet.readthedocs.io/en/latest/changelog/"
+
+[project.optional-dependencies]
+lint = ["pre-commit", "ruff"]
+test = ["pytest", "pytest-cov", "coverage"]
+doc = [
+    "sphinx",
+    "myst-nb",
+    "sphinx-design",
+    "sphinx-book-theme",
+    "sphinxcontrib-bibtex",
+    "matplotlib",
+]
+all = ["delaynet[lint,test,doc]"]
+
+[tool.setuptools.packages.find]
+exclude = [
+    "examples*",
+    "docs*",
+]
+namespaces = false
+
+[tool.setuptools.dynamic]
+readme = { file = ["README.md", "LICENSE"], content-type = "text/markdown" }
+version = { attr = "delaynet._version.__version__" }
+
+# --------------------------------------------------------------------------------------
+# Linting
+# --------------------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["NPY201"]
+
+# --------------------------------------------------------------------------------------
+# Testing
+# --------------------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["delaynet"]
+relative_files = true
