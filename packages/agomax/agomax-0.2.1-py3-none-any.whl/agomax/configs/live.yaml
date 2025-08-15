@@ -1,0 +1,14 @@
+# Live Mode configuration defaults
+source:
+  type: csv_replay  # csv_replay | udp_json | dronekit
+  csv_path: agomax/data/base.csv
+  rate_hz: 10  # rows per second for replay
+  udp_host: 0.0.0.0
+  udp_port: 14550
+  dronekit_conn: tcp:127.0.0.1:5760
+
+learn:
+  rows: 500
+  scale_features: false
+  threshold_mode: percentile  # percentile | mad
+  mad_k: 3.0
