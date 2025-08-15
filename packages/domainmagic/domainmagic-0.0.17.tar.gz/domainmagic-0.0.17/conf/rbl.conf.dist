@@ -1,0 +1,24 @@
+# format:
+# <lookuptype> <lookupdomain>[:<option>[:<option>...]] <bitmask>:<identifier>[:<filter>[:<filter>...]] [<bitmask>:<identifier> ...]
+# <lookuptype> is one of:
+#  * uri-bitmask for domain or ip lookups with bitmasked results, eg. uribl, surbl, ..
+#  * ip-bitmask for ip only lookups with bitmasked results
+#  * ip-fixed for ip only lookups with fixed results, eg. zen.spamhaus.org
+#  * domain-fixed for domain only lookups with fixed results, eg. spamhaus dbl
+#  * nsip-bitmask for ns ip lookups
+#  * nsname-bitmask for ns name lookups
+#  * a-bitmask for A record lookups
+#  * email-bitmask emailbl lookup (md5/hex, other formats can be defined by filters)
+#  * soaemail-bitmask SOA record email address lookup
+
+# <lookupdomain> is the rbl domain, eg. multi.uribl.com
+# <option> are domain specific options, e.g. ns=127.0.0.2,127.0.0.3
+# <bitmask> is the bitmask or in the case of 'domain-fixed' the fixed result
+# <identifer> is the identifier which should be returned to the client when the blacklist hits
+# <filter> is a filter definition specific to the lookup type
+
+# Examples
+# uri-bitmask multi.uribl.com 2:black.uribl.com
+# domain-fixed dbl.spamhaus.org 127.0.1.2:dbl.spamhaus.org(spam) 127.0.1.4:dbl.spamhaus.org(phish) 127.0.1.5:dbl.spamhaus.org(malware)
+
+uri-bitmask multi.uribl.com 2:black.uribl.com
