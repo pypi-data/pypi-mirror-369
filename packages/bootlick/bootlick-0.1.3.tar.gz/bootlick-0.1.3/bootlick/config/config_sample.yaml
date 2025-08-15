@@ -1,0 +1,445 @@
+nse_bm_api_endpoint: https://www.nseindia.com/api/corporate-board-meetings?index=equities
+nse_ca_api_endpoint: "https://www.nseindia.com/api/corporates-corporateActions?index=equities"
+
+
+#locations
+splits_file: splits.rds
+bm_file: boardmeetings.rds
+div_file: dividend.rds
+bhavcopy_folder: /bhavcopy
+symbolchange_file: symbolchange.rds
+static_downloads: static
+daily_prices: daily
+index_constituents_file:  index_constituents.rds
+extra_stock_info_folder: static/stock_extras
+extra_stock_info_file: stock_extras
+
+index_mapping: # maps index name from nse website to the name used in index_constitutents_file
+  "NIFTY 50": "NSENIFTY"
+  "SECURITIES IN F&O": "NSEEQUITYFNO"
+
+
+#emails:
+to_email_id:
+  - user@example.com
+from_email_id: sender@example.com
+from_email_password:
+
+
+# SETUP FOR SCREENER_METRICS.PY MODULE
+Balance Sheet:
+  Equity Capital -: CAPITAL
+  Reserves -: RESERVE
+  Borrowings -: TOT_BORROW
+  Long term Borrowings: LT_BORROW
+  Short term Borrowings: ST_BORROW
+  Lease Liabilities: LEASE_LIAB
+  Preference Capital: PREFERENCE
+  Other Borrowings: OTH_BORROW
+  Other Liabilities -: TOT_OTH_LIAB
+  Non controlling int: MINORITY_INT
+  Trade Payables: TRADE_PAYABLE
+  Advance from Customers: CUST_ADVANCE
+  Other liability items: OTH_LIAB
+  Total Liabilities -: TOT_LIAB
+  Fixed Assets -: FIXED_ASSET # this is net block
+  Land: LAND
+  Estates: ESTATE
+  Building: BUILDING
+  Plant Machinery: PM
+  Wind turbines: WIND_TURBINE
+  Equipments: EQUIPMENT
+  Computers: COMPUTER
+  Furniture n fittings: FURN_FITTINGS
+  Vehicles: VEHICLE
+  Railway sidings: RAILWAY_SIDING
+  Ships Vessels: SHIPS
+  Intangible Assets: INTANGIBLE_ASS # includes goodwill
+  Other fixed assets: OTH_FA
+  Gross Block: GROSS_BLOCK
+  Accumulated Depreciation: ACC_DEP
+  CWIP -: CWIP
+  Investments -: INVESTMENT
+  Other Assets -: TOT_OTH_ASSET
+  Inventories: INVENTORY
+  Trade receivables +: TRADE_REC
+  Trade receivables: TRADE_REC
+  Trade receivables -: TRADE_REC
+  Receivables over 6m: REC_OVER_6M
+  Receivables under 6m: REC_UNDER_6M
+  Prov for Doubtful: PROV_DOUBTFUL
+  Cash Equivalents: CASH
+  Loans n Advances: LOANADVANCE
+  Other asset items: OTH_ASSET 
+  Total Assets -: TOT_ASSET
+
+Profit & Loss:
+  Sales -: SALE
+  Revenue -: REVENUE
+  Expenses -: EXP
+  Material Cost % -: TOT_MAT_EXP_D
+  Raw material cost: RAW_MAT_EXP
+  Change in inventory: CHG_INVENTORY
+  Manufacturing Cost %: MANF_EXP_D
+  Employee Cost %: EMP_COST_D
+  Other Cost %: OTH_COST_D
+  Operating Profit -: OPER_PROFIT
+  Financing Profit -: FINANCING_PROFIT
+  Other Income -: TOT_OTH_INC
+  Exceptional items: EXCEP_INC
+  Other income normal: OTH_INC
+  Interest -: INTEREST
+  Depreciation -: DEPRECIATION
+  Profit before tax -: PBT
+  Tax % -: TAX_D
+  Net Profit -: TOT_PAT_PLUS_ASS
+  Profit after tax: PAT
+  Profit from Associates: ASS_PROFIT
+  Reported Net Profit: ""
+  Minority share: MINORITY_SHARE
+  Profit for EPS: EPS_PROFIT
+  Exceptional items AT: EXCEP_INC_SELF
+  Profit for PE: EPS_PROFIT_NRML
+  EPS in Rs -: EPS
+  Dividend Payout % -: DIV_PAYOUT_D
+
+Quarterly Results:
+  Sales -: SALE
+  Revenue -: REVENUE
+  YOY Sales Growth %: ""
+  Expenses -: EXP
+  Material Cost %: MAT_EXP_D
+  Employee Cost %: EMP_COST_D
+  Operating Profit -: OPER_PROFIT
+  Other Income -: TOT_OTH_INC
+  Exceptional items: EXCEP_INC
+  Other income normal: OTH_INC
+  Interest -: INTEREST
+  Depreciation -: DEPRECIATION
+  Profit before tax -: PBT
+  Tax % -: TAX_D
+  Net Profit -: TOT_PAT_PLUS_ASS
+  Profit after tax: PAT
+  Reported Net Profit: ""
+  Profit from Associates: ASS_PROFIT
+  Minority share: MINORITY_SHARE
+  Profit for EPS: EPS_PROFIT
+  Exceptional items AT: EXCEP_INC_SELF
+  Profit for PE: EPS_PROFIT_NRML
+  YOY Profit Growth %: ""
+  EPS in Rs -: EPS
+  Raw PDF -: ""
+  Gross NPA % -: GNPA
+  Net NPA % -: NNPA
+
+Cash Flows:
+  Cash from Operating Activity -: TOT_CFO
+  Profit from operations: CFO_PROFIT
+  Receivables: CFO_RECEIVABLES
+  Leased assets: CFO_LEASED_ASSETS
+  Inventory: CFO_INVENTORY
+  Payables: CFO_PAYABLES
+  Bills purchased: CFO_BILLS_PURCHASED
+  Interest paid: CFO_INTEREST_PAID
+  Other WC items: CFO_OTH_WC
+  Working capital changes: CFO_WC
+  Direct taxes: CFO_DIRECTTAX
+  Advance tax: CFO_ADVANCETAX
+  Loans Advances: CFO_LOAN_ADVANCES
+  Operating investments: CFO_OPER_INVESTMENTS
+  Operating borrowings: CFO_OPER_BORROWINGS
+  Deposits: CFO_DEPOSITS
+  Other operating items: CFO_OTH_OPER
+  Exceptional CF items: CFO_EXCEP_CF
+  Cash from Investing Activity -: TOT_CFI
+  Fixed assets purchased: CFI_FIXEDASSET_PURCHASE
+  Capital WIP: CFI_CAP_WIP
+  Invest in subsidiaries: CFI_INVEST_SUBS
+  Loans to subsidiaries: CFI_LOAN_SUBS
+  Fixed assets sold: CFI_FIXEDASSET_SOLD
+  Investments purchased: CFI_INVESTMENT_PUR
+  Investments sold: CFI_INVESTMENT_SLD
+  Interest received: CFI_INTEREST_RECD
+  Dividends received: CFI_DIV_RECD
+  Investment income: CFI_INVESTMENT_INCOME
+  Investment in group cos: CFI_INVESTMENT_GRP
+  Redemp n Canc of Shares: CFI_SHARE_REDEMPTION
+  Acquisition of companies: CFI_ACQUISITION
+  Issue of shares on acq: CFI_ISSUE_SHARES_ACQ
+  Inter corporate deposits: CFI_INTERCORP_DEPOSITS
+  Other investing items: CFI_OTH_INVESTING
+  Subsidy received: CFI_SUBSIDY_RECD
+  Cash from Financing Activity -: TOT_CFF
+  Proceeds from shares: CFF_SHARE_PROCEEDS
+  Share application money: CFF_SHARE_APP_MONEY
+  Proceeds from debentures: CFF_DEBENTURE_PROCEEDS
+  Proceeds from deposits: CFF_DEPOSITS_PROCEEDS
+  Proceeds from borrowings: CFF_BORROWING
+  Repayment of borrowings: CFF_BORROWING_REPAY
+  Interest paid fin: CFF_INTEREST_PAUD
+  Dividends paid: CFF_DIV_PAID
+  Financial liabilities: CFF_FINANCING_LIAB
+  Investment subsidy: CFF_INVESTMENT_SUBSIDY
+  Other financing items: CFF_OTH_FINANCING
+  Redemption of debentures: CFF_REDEEM_DEBENTURES
+  Application money refund: CFF_APPL_MONEY_REFUND
+  Corporate loans: CFF_CORPORATE_LOANS
+  Shelter assistance reserve: CFF_SHELTER_ASSIST_RESERVE
+  Net Cash Flow -: TOT_CF
+
+
+equity:  
+  add_coa_codes:
+    - CAPITAL
+    - RESERVE
+    - MINORITY_INT
+  sub_coa_codes: []
+preference:
+  add_coa_codes:
+    - PREFERENCE
+  sub_coa_codes: []
+lt_borrowings:
+  add_coa_codes:
+    - LT_BORROW
+    - OTH_BORROW
+  sub_coa_codes: []
+st_borrowings:  
+  add_coa_codes:
+    - ST_BORROW
+  sub_coa_codes: []
+lease_liabilities:  
+  add_coa_codes:
+    - LEASE_LIAB
+  sub_coa_codes: [] 
+ebit:
+  add_coa_codes:
+    - REVENUE
+    - SALE
+    - OTH_INC
+  sub_coa_codes:
+    - EXP
+    - DEPRECIATION
+ebitda:
+  add_coa_codes:
+    - REVENUE
+    - SALE
+  sub_coa_codes:
+    - EXP
+sales:
+  add_coa_codes:
+    - REVENUE
+    - SALE
+    - OTH_INC
+  sub_coa_codes:  []
+net_block:
+  add_coa_codes:
+    - FIXED_ASSET
+  sub_coa_codes:
+    - INTANGIBLE_ASS
+gross_block:
+  add_coa_codes:
+    - net_block
+    - ACC_DEP
+  sub_coa_codes: []
+cwip:
+  add_coa_codes:
+    - CWIP
+  sub_coa_codes: []
+intangibles:
+  add_coa_codes: 
+    - INTANGIBLE_ASS
+  sub_coa_codes: []
+cash:
+  add_coa_codes:
+    - CASH
+  sub_coa_codes: []
+non_operating_assets:
+  add_coa_codes:
+    - INVESTMENT
+    - 0.5*OTH_ASSET
+    - cash
+    - cwip
+  sub_coa_codes: 
+    - oper_cash
+non_operating_non_financial_liabilities:
+  add_coa_codes:
+    - OTH_LIAB
+  sub_coa_codes: []
+cwip:
+  add_coa_codes:
+    - CWIP
+  sub_coa_codes: []
+capital_employed:
+  add_coa_codes:
+    - CAPITAL
+    - PREFERENCE
+    - RESERVE
+    - LT_BORROW
+    - ST_BORROW
+    - LEASE_LIAB
+    - OTH_BORROW
+    - MINORITY_INT
+  sub_coa_codes: []
+working_capital:
+  add_coa_codes:
+    - TRADE_REC
+    - INVENTORY
+    - LOANADVANCE
+    - oper_cash
+    - 0.5*OTH_ASSET
+  sub_coa_codes:
+    - TRADE_PAYABLE
+    - CUST_ADVANCE
+oper_cash:
+  add_coa_codes:
+    - 0.0833 * EXP
+  sub_coa_codes: []
+invested_capital:
+  add_coa_codes:
+    - working_capital
+    - FIXED_ASSET
+    - ACC_DEP
+  sub_coa_codes: []
+fcf:
+  add_coa_codes:
+    - TOT_CFO
+  sub_coa_codes: []
+depreciation:
+  add_coa_codes: []
+  sub_coa_codes: 
+    - ACC_DEP
+asset_formation:
+  add_coa_codes:
+    - CFI_CAP_WIP
+    - CFI_INVEST_SUBS
+    - CFI_FIXEDASSET_PURCHASE
+  sub_coa_codes: []
+debt:
+  add_coa_codes:
+    - LT_BORROW
+    - ST_BORROW
+    - LEASE_LIAB
+    - OTH_BORROW
+  sub_coa_codes: []
+tax_per:
+  add_coa_codes:
+    - TAX_D
+  sub_coa_codes: []
+pbt:
+  add_coa_codes:
+    - PBT
+  sub_coa_codes: []
+oper_investments: # negative value => investment in business
+  add_coa_codes:
+  - CFO_RECEIVABLES
+  - CFO_LEASED_ASSETS
+  - CFO_INVENTORY
+  - CFO_PAYABLES
+  - CFO_BILLS_PURCHASED
+  - CFO_OTH_WC
+  - CFO_WC
+  - CFO_LOAN_ADVANCES
+  - CFO_OPER_INVESTMENTS
+  - CFO_OPER_BORROWINGS
+  - CFO_DEPOSITS
+  - CFO_OTH_OPER
+  - CFI_FIXEDASSET_PURCHASE
+  - CFI_INVEST_SUBS
+  - CFI_LOAN_SUBS
+  - CFI_FIXEDASSET_SOLD
+  - CFI_ACQUISITION
+  - CFI_ISSUE_SHARES_ACQ
+  - CFI_SUBSIDY_RECD
+  sub_coa_codes: []
+cap_investments: # new investments, negative value => new investments
+  add_coa_codes:
+  - CFI_CAP_WIP
+  sub_coa_codes: []
+
+# Custom indicators for financial analysis
+custom_indicators:
+  tax_rate_ebitda:
+    formula: 0.01* tax_per * pbt / ebitda
+    description: tax rate on ebitda
+  tax_rate_ebit:
+    formula: 0.01* tax_per * pbt / ebitda
+    description: tax rate on ebit
+  roce:
+    formula: "ebit / avg(capital_employed,2)"
+    description: "Return on Capital Employed (ROCE)"
+  nopat:
+    formula: ebitda *(1-avg(tax_rate_ebitda,2))
+    description: nopat
+  roic:
+    formula: "ebitda * (1-avg(tax_rate_ebitda,2)) / avg(invested_capital,2)"
+    description: "Return on Invested Capital (ROIC)"
+  oper_investment_rate:
+    formula: "oper_investments / (ebitda * (1-avg(tax_rate_ebitda,2)))"
+    description: "Investment Rate for valuation"
+  cap_investment_rate:
+    formula: "cap_investments / (ebitda * (1-avg(tax_rate_ebitda,2)))"
+    description: "New capacity creation rate"
+  fcf_yield:
+    formula: "fcf * 100 / avg(capital_employed,2)"
+    description: "Free Cash Flow Yield"
+  investment_intensity:
+    formula: "-1* asset_formation / fcf"
+    description: "Investment Intensity"
+  replacement_intensity:
+    formula: "asset_formation / depreciation"
+    description: "Replacement Intensity"
+  debt_equity_ratio:
+    formula: "debt / equity"
+    description: "Debt Equity Ratio"
+  ir_accounting:
+    formula: diff_percent(invested_capital,2)
+    description: "Investment Rate from change in invested capital. ignoring cash flows for modelling"
+  g:
+    # formula: -1 * (oper_investment_rate) * roic
+    formula: diff_percent(invested_capital,2) * roic
+    description: percent expected growth in nopat# Add path to the base folder containing data files
+# following subfolders are allowed: daily, persecond, permin,tick,static
+datapath : /home/psharma/onedrive/rfiles/data/financials
+
+# SETUP FOR SCREENER.PY
+credentials:
+  username: "gg06588@gmail.com"
+  password: "@Screener123"
+symbols:  # If provided, these symbols will be used directly
+  - 
+
+
+# Fiscal year exceptions for specific symbols
+fiscal_year_exceptions: # from date onwards: month end for fiscal year
+  SIEMENS:
+    "2011-09-29": "September"
+  HEXT:
+    "2011-12-29": "December"
+  VBL:
+    "2011-12-29": "December"
+  NESTLEIND:
+    "2011-12-29": "December"
+    "2024-03-30": "March"
+  SCHAEFFLER:
+    "2011-12-29": "December"
+  CIEINDIA:
+    "2011-03-30": "March"
+    "2015-12-29": "December"
+  RAIN:
+    "2011-12-29": "December"
+  ACC:
+    "2011-12-29": "December"
+    "2023-03-30": "March"
+  AMBUJACEM:
+    "2011-12-29": "December"
+    "2023-03-30": "March"
+
+# if temp folder is specified, consolidate section process uses files in temp_folder. Provide complete path to temp folder
+temp_folder: #'/home/psharma/onedrive/rfiles/data/financials/2024q3'
+
+flags:
+  first_run: false  # Whether this is the first run of the script
+  refresh: true # Whether to re-run already processed symbols
+  incomplete_check: true # Whether to check for incomplete data in already processed symbols and re-run incomplete
+  consolidate_sections: true # Whether to consolidate sections into a single file
+  final_merge: true # Whether to perform the final merge of all sections
