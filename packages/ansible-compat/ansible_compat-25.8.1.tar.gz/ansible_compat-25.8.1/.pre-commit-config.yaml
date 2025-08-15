@@ -1,0 +1,132 @@
+---
+ci:
+  # format compatible with commitlint
+  autoupdate_commit_msg: "chore: pre-commit autoupdate"
+  autoupdate_schedule: monthly
+  autofix_commit_msg: "chore: auto fixes from pre-commit.com hooks"
+  skip:
+    # https://github.com/pre-commit-ci/issues/issues/55
+    - ccv
+    - pip-compile
+default_language_version:
+  # Needed in order to make pip-compile output predictable.
+  python: python3.10
+exclude: |
+  (?x)^(
+    test/assets/.*
+  )$
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.12.2"
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+  # https://github.com/pappasam/toml-sort/issues/69
+  # - repo: https://github.com/pappasam/toml-sort
+  #   rev: v0.23.1
+  #   hooks:
+  #     - id: toml-sort-fix
+  - repo: https://github.com/rbubley/mirrors-prettier
+    # keep it before yamllint
+    rev: "v3.6.2"
+    hooks:
+      - id: prettier
+        additional_dependencies:
+          - prettier
+          - prettier-plugin-toml
+          - prettier-plugin-sort-json
+  - repo: https://github.com/pre-commit/pre-commit-hooks.git
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: >
+          (?x)^(
+            examples/playbooks/(with-skip-tag-id|unicode).yml|
+            examples/playbooks/example.yml
+          )$
+      - id: mixed-line-ending
+      - id: fix-byte-order-marker
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: debug-statements
+        language_version: python3
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+  - repo: https://github.com/jsh9/pydoclint
+    rev: 0.6.7
+    hooks:
+      - id: pydoclint
+        # This allows automatic reduction of the baseline file when needed.
+        entry: sh -ec "pydoclint . && pydoclint --generate-baseline=1 ."
+        pass_filenames: false
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        files: \.(yaml|yml)$
+        types: [file, yaml]
+        entry: yamllint --strict
+  - repo: https://github.com/pappasam/toml-sort
+    rev: v0.24.2
+    hooks:
+      - id: toml-sort-fix
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.16.1
+    hooks:
+      - id: mypy
+        # empty args needed in order to match mypy cli behavior
+        args: ["--strict"]
+        additional_dependencies:
+          - ansible-core>=2.16.0
+          - cached_property
+          - packaging
+          - pytest
+          - pytest-mock
+          - subprocess-tee>=0.4.1
+          - "typing-extensions>=4.5.0;python_version<'3.10'"
+          - types-PyYAML
+          - types-setuptools
+          - types-jsonschema>=4.4.9
+  - repo: https://github.com/pycqa/pylint
+    rev: v3.3.7
+    hooks:
+      - id: pylint
+        additional_dependencies:
+          - PyYAML
+          - pytest
+          - typing_extensions
+  # Keep last due to being considerably slower than the others:
+  - repo: local
+    hooks:
+      - id: pip-compile-upgrade
+        # To run it execute: `pre-commit run pip-compile-upgrade --hook-stage manual`
+        name: Upgrade constraints files and requirements
+        files: ^(pyproject\.toml|requirements\.txt)$
+        language: python
+        entry: python3 -m uv pip compile -q --all-extras --output-file=.config/constraints.txt pyproject.toml --upgrade
+        pass_filenames: false
+        stages:
+          - manual
+        additional_dependencies:
+          - uv>=0.4.3
+      - id: pip-compile
+        name: Check constraints files and requirements
+        files: ^(pyproject\.toml|requirements\.txt)$
+        language: python
+        entry: python3 -m uv pip compile -q --all-extras --output-file=.config/constraints.txt pyproject.toml
+        pass_filenames: false
+        additional_dependencies:
+          - uv>=0.4.3
+  - repo: https://github.com/mashi/codecov-validator
+    rev: "1.0.1"
+    hooks:
+      - id: ccv
+        name: codecov
