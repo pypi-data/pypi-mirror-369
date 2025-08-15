@@ -1,0 +1,56 @@
+[project]
+name = "philote-mdo"
+version = "0.7.0"
+description = "Python bindings that implement the Philote-MDO standard."
+license = {text = "Apache-2.0"}
+authors = [{name = "Christopher Lupp"}]
+readme = "README.md"
+keywords = ["mdo", "optimization", "rpc"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "grpcio~=1.66.0",
+    "protobuf~=5.29.0",
+    "numpy>=1.19.0",
+    "scipy>=1.10.0",
+]
+
+[project.urls]
+Homepage = "https://mdo-standards.github.io/Philote-Python/"
+Repository = "https://github.com/mdo-standards/Philote-Python"
+Documentation = "https://mdo-standards.github.io/Philote-Python/"
+
+[project.optional-dependencies]
+openmdao = ["openmdao>=3.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "grpcio-tools~=1.66.0",
+    "protoletariat>=3.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["philote_mdo*"]
+
+[tool.setuptools.package-data]
+"philote_mdo.generated" = ["*.py", "*.pyi"]
+"philote_mdo" = ["proto/*"]
