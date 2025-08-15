@@ -1,0 +1,41 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="vschart-python",
+    version="1.0.0",
+    description="Python client for VSChart extension",
+    long_description=open("README.md", "r").read(),
+    long_description_content_type="text/markdown",
+    author="yiwan2",
+    author_email="your.email@example.com",
+    url="https://github.com/yourusername/vschart",
+    project_urls={
+        "Bug Tracker": "https://github.com/yourusername/vschart/issues",
+        "Documentation": "https://github.com/yourusername/vschart/tree/main/vschart-python/docs",
+        "Source Code": "https://github.com/yourusername/vschart",
+    },
+    packages=find_packages(),
+    install_requires=[
+        "websocket-client>=1.6.0",
+        "numpy>=1.21.0",
+        "pandas>=1.3.0",
+        "rich>=10.0.0",
+    ],
+    python_requires=">=3.7",
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Financial and Insurance Industry",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Office/Business :: Financial",
+    ],
+    keywords="vscode, chart, trading, finance, visualization, tradingview",
+)
