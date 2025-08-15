@@ -1,0 +1,32 @@
+[project]
+name = "mcp-ts"
+version = "0.1.0"
+description = "一个简单的MCP加法服务示例"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "CodeBuddy用户", email = "example@example.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "mcp[cli]>=1.13.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/mcp-ts"
+"Bug Tracker" = "https://github.com/yourusername/mcp-ts/issues"
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["mcp_ts"]
+
+[project.scripts]
+mcp-ts = "mcp_ts.server:run"
