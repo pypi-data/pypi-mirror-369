@@ -1,0 +1,151 @@
+[build-system]
+requires = [
+    "pdm-backend",
+    "acres",
+    "pyyaml",
+]
+build-backend = "pdm.backend"
+
+[project]
+name = "bidsschematools"
+description = "Python tools for working with the BIDS schema."
+authors = [
+    { name = "bids-standard developers" },
+]
+maintainers = [
+    { name = "bids-standard developers", email = "bids.maintenance@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "acres",
+    "click",
+    "pyyaml",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dynamic = []
+version = "1.0.14"
+
+[project.license]
+text = "MIT"
+
+[project.optional-dependencies]
+validation = [
+    "jsonschema",
+]
+doc = [
+    "sphinx>=1.5.3",
+    "sphinx_rtd_theme",
+]
+dev = [
+    "bidsschematools[tests]",
+    "ruff",
+]
+render = [
+    "tabulate",
+    "pandas",
+    "markdown-it-py",
+]
+expressions = [
+    "pyparsing",
+]
+tests = [
+    "bidsschematools[validation,render,expressions]",
+    "codecov",
+    "coverage[toml]",
+    "pytest",
+    "pytest-cov",
+]
+all = [
+    "bidsschematools[doc,tests]",
+]
+
+[project.scripts]
+bst = "bidsschematools.__main__:cli"
+
+[project.urls]
+Homepage = "https://github.com/bids-standard/bids-specification"
+
+[tool.pdm.build]
+excludes = [
+    ".gitignore",
+    "**/.gitignore",
+]
+
+[tool.black]
+exclude = "*"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config"
+log_cli = true
+log_cli_level = "INFO"
+markers = [
+    "validate_schema: tests that validate the schema itself",
+]
+minversion = "6.0"
+xfail_strict = true
+
+[tool.coverage.paths]
+source = [
+    "src/bidsschematools",
+    "**/site-packages/bidsschematools",
+]
+
+[tool.coverage.run]
+parallel = true
+
+[tool.bumpversion]
+current_version = "1.0.14"
+parse = "(?x)\n    (?P<major>[0-9]+)\n    \\.(?P<minor>[0-9]+)\n    \\.(?P<patch>[0-9]+)\n    (?:-(?P<pre_label>dev))?\n"
+serialize = [
+    "{major}.{minor}.{patch}-{pre_label}",
+    "{major}.{minor}.{patch}",
+]
+commit = true
+message = "chore: Bump schema package to {new_version}"
+tag = false
+tag_name = "schema-{new_version}"
+tag_message = "Schema release {new_version}"
+files = [
+    { filename = "../../src/schema/SCHEMA_VERSION" },
+]
+
+[tool.bumpversion.parts.pre_label]
+values = [
+    "dev",
+    "final",
+]
+optional_value = "final"
+
+[tool.ruff]
+line-length = 99
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "PLE",
+    "I",
+    "LOG",
+    "G",
+    "Q",
+    "YTT",
+    "ISC",
+    "UP",
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"*/__init__.py" = [
+    "F401",
+]
