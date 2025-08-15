@@ -1,0 +1,2 @@
+{% for todo in todo_list %}[{% if todo.completed %}{{YELLOW}}✓{{RESET}}{% else %} {% endif %}] {{BLUE}}{{'%3d' % todo.percent}}%{{RESET}} {{todo.summary}}{% if show_uid %} - {{RED}}{{todo.uid}}{{RESET}}{% endif %}{% if show_description %}{{newline}}{{todo.description}}{% endif %}
+{% endfor %}
