@@ -1,0 +1,250 @@
+Metadata-Version: 2.4
+Name: easya2a
+Version: 0.2
+Summary: 🚀 快速将任何Agent包装为A2A协议服务 - 三步式API设计，一行代码启动
+Author-email: whillhill <ooooofish@126.com>
+Maintainer-email: whillhill <ooooofish@126.com>
+License: MIT
+Project-URL: Homepage, https://github.com/whillhill/easya2a
+Project-URL: Documentation, https://github.com/whillhill/easya2a#readme
+Project-URL: Repository, https://github.com/whillhill/easya2a.git
+Project-URL: Bug Tracker, https://github.com/whillhill/easya2a/issues
+Project-URL: Changelog, https://github.com/whillhill/easya2a/releases
+Project-URL: Source Code, https://github.com/whillhill/easya2a
+Keywords: a2a,agent,langchain,ai,wrapper,chatbot,assistant,api,microservice,openai,llm,nlp,automation
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+Classifier: Topic :: Communications :: Chat
+Classifier: Framework :: AsyncIO
+Classifier: Framework :: FastAPI
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: a2a-sdk>=0.3.0
+Requires-Dist: langchain>=0.1.0
+Requires-Dist: langchain-core>=0.1.0
+Requires-Dist: uvicorn[standard]>=0.20.0
+Requires-Dist: starlette>=0.20.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: typing-extensions>=4.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: pre-commit>=3.0.0; extra == "dev"
+Provides-Extra: langchain
+Requires-Dist: langchain-openai>=0.1.0; extra == "langchain"
+Requires-Dist: langchain-anthropic>=0.1.0; extra == "langchain"
+Requires-Dist: langchain-google-genai>=0.1.0; extra == "langchain"
+Provides-Extra: full
+Requires-Dist: easya2a[langchain]; extra == "full"
+Requires-Dist: fastapi>=0.100.0; extra == "full"
+Requires-Dist: httpx>=0.24.0; extra == "full"
+Requires-Dist: aiofiles>=23.0.0; extra == "full"
+Provides-Extra: examples
+Requires-Dist: easya2a[full]; extra == "examples"
+Requires-Dist: jupyter>=1.0.0; extra == "examples"
+Requires-Dist: notebook>=6.0.0; extra == "examples"
+Requires-Dist: mcpstore>=0.1.0; extra == "examples"
+Dynamic: license-file
+
+# EasyA2A - 快速将Agent包装为A2A协议服务
+
+🚀 **一行代码，让你的Agent支持A2A协议！**
+
+EasyA2A是一个强大而简洁的Python库，让你能够快速将任何LangChain Agent包装成符合A2A协议的服务。采用创新的三步式API设计，大幅简化配置过程，让Agent部署变得前所未有的简单。
+
+## ✨ 核心特性
+
+- 🎯 **三步式API** - 初始化 → 链式配置 → 一键启动
+- ⚡ **极简使用** - 一行代码即可启动A2A服务
+- 🔧 **灵活配置** - 支持技能、能力、提供商等全方位配置
+- 🛠️ **深度集成** - 完美支持LangChain生态
+- 📡 **自动生成** - 自动创建符合标准的Agent Card
+- 🌐 **即插即用** - 无需复杂配置，开箱即用
+
+## 🚀 快速开始
+
+### 安装
+
+```bash
+pip install easya2a
+```
+
+### 最简使用（一行代码）
+
+```python
+from easya2a import A2AAgentWrapper
+
+# 一行代码启动A2A服务
+A2AAgentWrapper.set_up(your_agent, "智能助手", "AI助手服务").run_a2a()
+```
+
+### 完整示例
+
+```python
+from easya2a import A2AAgentWrapper
+
+# 三步式API使用
+A2AAgentWrapper.set_up(
+    agent=your_langchain_agent,
+    name="天气助手", 
+    description="智能天气查询服务"
+).add_skill(
+    "weather_query", "天气查询",
+    description="查询全球城市天气信息",
+    examples=["北京天气怎么样？", "上海会下雨吗？"]
+).add_skill(
+    "weather_advice", "穿衣建议", 
+    examples=["今天穿什么？", "需要带伞吗？"]
+).set_provider(
+    "Weather AI Services"
+).enable_streaming(
+).run_a2a(port=10010)
+```
+
+## 🎯 三步式API设计
+
+### 第一步：初始化
+```python
+wrapper = A2AAgentWrapper.set_up(agent, name, description)
+```
+
+### 第二步：链式配置（可选）
+```python
+wrapper.add_skill("chat", "聊天功能") \
+       .set_provider("AI Services") \
+       .enable_streaming()
+```
+
+### 第三步：启动服务
+```python
+wrapper.run_a2a(port=10010, host="0.0.0.0")
+```
+
+## 📋 API参考
+
+### 核心方法
+
+| 方法 | 说明 | 示例 |
+|------|------|------|
+| `set_up(agent, name, desc)` | 初始化包装器 | `A2AAgentWrapper.set_up(agent, "助手", "AI服务")` |
+| `add_skill(id, name, ...)` | 添加技能 | `.add_skill("chat", "聊天", examples=["你好"])` |
+| `set_provider(org, url)` | 设置提供商 | `.set_provider("AI Corp", "https://ai.com")` |
+| `set_version(version)` | 设置版本 | `.set_version("2.0.0")` |
+| `enable_streaming()` | 启用流式 | `.enable_streaming()` |
+| `enable_history()` | 启用历史 | `.enable_history()` |
+| `enable_multimodal()` | 启用多模态 | `.enable_multimodal()` |
+| `run_a2a(port, host)` | 启动服务 | `.run_a2a(port=10010)` |
+
+### 配置选项
+
+```python
+# 技能配置
+.add_skill(
+    skill_id="weather",           # 技能ID
+    name="天气查询",              # 技能名称  
+    description="查询天气信息",    # 技能描述
+    examples=["今天天气"],        # 使用示例
+    tags=["weather", "query"]     # 技能标签
+)
+
+# 提供商配置
+.set_provider(
+    organization="AI Services",   # 组织名称
+    url="https://ai.example.com"  # 组织网站
+)
+
+# 输入输出模式
+.set_input_modes(["text", "json"])
+.set_output_modes(["text", "json"])
+```
+
+## 🌟 使用场景
+
+### 🤖 聊天机器人
+```python
+A2AAgentWrapper.set_up(chat_agent, "聊天助手", "智能对话服务") \
+               .add_skill("chat", "对话", examples=["你好"]) \
+               .run_a2a()
+```
+
+### 🌤️ 天气服务
+```python
+A2AAgentWrapper.set_up(weather_agent, "天气助手", "天气查询服务") \
+               .add_skill("weather", "天气查询", examples=["北京天气"]) \
+               .add_skill("advice", "穿衣建议", examples=["穿什么"]) \
+               .run_a2a()
+```
+
+### 🗺️ 地图服务
+```python
+A2AAgentWrapper.set_up(map_agent, "地图助手", "地理位置服务") \
+               .add_skill("search", "位置搜索", examples=["找餐厅"]) \
+               .add_skill("route", "路线规划", examples=["怎么走"]) \
+               .run_a2a()
+```
+
+## 📊 新旧API对比
+
+| 特性 | 旧API | 新API |
+|------|-------|-------|
+| 代码量 | ~50行 | ~15行 |
+| 配置复杂度 | 高 | 低 |
+| 学习成本 | 高 | 低 |
+| 嵌套层级 | 4-5层 | 1层 |
+| 导入语句 | 4个类 | 1个类 |
+
+### 旧API（复杂）
+```python
+config = AgentConfig(
+    name="助手",
+    skills=[AgentSkillConfig(...)],
+    capabilities=AgentCapabilityConfig(...),
+    # ... 大量配置
+)
+wrapper = A2AWrapper(agent, config)
+wrapper.run()
+```
+
+### 新API（简洁）
+```python
+A2AAgentWrapper.set_up(agent, "助手", "服务") \
+               .add_skill("chat", "聊天") \
+               .run_a2a()
+```
+
+## 🔗 相关链接
+
+- 📡 **A2A协议**: [A2A Protocol](https://a2a.ai)
+- 🦜 **LangChain**: [LangChain Documentation](https://langchain.com)
+- 📚 **技术文档**: [查看技术说明手册](./TECHNICAL_GUIDE.md)
+
+## 🤝 贡献
+
+欢迎提交Issue和Pull Request！
+
+## 📄 许可证
+
+MIT License
+
+---
+
+**让Agent部署变得简单，让A2A协议触手可及！** 🚀

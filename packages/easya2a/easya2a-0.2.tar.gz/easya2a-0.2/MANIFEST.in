@@ -1,0 +1,71 @@
+# MANIFEST.in - 控制哪些文件包含在源码分发中
+
+# 包含重要文档
+include README.md
+include LICENSE
+include CHANGELOG.md
+include 技术说明手册.md
+include TECHNICAL_GUIDE.md
+
+# 包含配置文件
+include pyproject.toml
+include requirements.txt
+
+# 包含类型信息
+include easya2a/py.typed
+
+# 包含模板和静态文件
+recursive-include easya2a/templates *
+recursive-include easya2a/static *
+
+# 包含配置文件
+recursive-include easya2a *.json
+recursive-include easya2a *.yaml
+recursive-include easya2a *.yml
+
+# 排除不需要的文件
+exclude .gitignore
+exclude .pre-commit-config.yaml
+exclude .github
+recursive-exclude . __pycache__
+recursive-exclude . *.py[co]
+recursive-exclude . *.pyo
+recursive-exclude . *.pyd
+recursive-exclude . .DS_Store
+recursive-exclude . *.so
+recursive-exclude . *.dylib
+
+# 排除测试和示例
+exclude tests
+recursive-exclude tests *
+exclude examples
+recursive-exclude examples *
+exclude docs
+recursive-exclude docs *
+
+# 排除构建产物
+exclude build
+recursive-exclude build *
+exclude dist
+recursive-exclude dist *
+exclude *.egg-info
+recursive-exclude *.egg-info *
+
+# 排除IDE文件
+exclude .vscode
+recursive-exclude .vscode *
+exclude .idea
+recursive-exclude .idea *
+exclude *.swp
+exclude *.swo
+exclude *~
+
+# 排除临时文件
+exclude .coverage
+exclude coverage.xml
+exclude htmlcov
+recursive-exclude htmlcov *
+exclude .pytest_cache
+recursive-exclude .pytest_cache *
+exclude .mypy_cache
+recursive-exclude .mypy_cache *
