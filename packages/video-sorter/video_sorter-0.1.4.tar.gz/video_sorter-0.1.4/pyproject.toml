@@ -1,0 +1,66 @@
+[build-system]
+requires = [
+  "setuptools",
+  "setuptools_scm[toml]>=3.4.3",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+  name = "video-sorter"
+  description = "A collection of small programs to work with lots of video files"
+  readme = "README.md"
+  authors = [
+    { name = "Joseph Areeda", email = "joe@areeda.com" },
+  ]
+  maintainers = [
+    { name = "Joseph Areeda", email = "joe@areeda.com" },
+  ]
+  classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia",
+  ]
+
+  # requirements
+  requires-python = ">=3.9"
+  dependencies = [
+    "flask",
+    "gunicorn",
+    "numpy",
+    "ja_webutils",
+    "psutil",
+  ]
+
+  # dynamic properties set by tools
+  dynamic = [
+    "version",
+  ]
+[tool.setuptools]
+license-files = [ "LICENSE" ]
+
+[tool.setuptools_scm]
+write_to = "vsorter/_version.py"
+
+[project.scripts]
+vsorter-blink-summary = "vsorter.blink_summary:main"
+vsorter-mkmp4 = "vsorter.mkmp4:main"
+vsorter-fix-times = "vsorter.fix_file_times:main"
+vsorter-load = "vsorter.vsorter_load:main"
+vsorter-movie2gif = "vsorter.movie2gif:main"
+vsorter-version-copy = "vsorter.version_copy:main"
+vsorter = "vsorter.vsorter:main"
