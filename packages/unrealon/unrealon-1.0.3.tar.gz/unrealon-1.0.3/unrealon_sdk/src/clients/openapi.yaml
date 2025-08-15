@@ -1,0 +1,3347 @@
+components:
+  schemas:
+    BaseModel:
+      properties: {}
+      title: BaseModel
+      type: object
+    BroadcastDeliveryStats:
+      description: Broadcast delivery statistics.
+      properties:
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: null
+          description: Optional response data
+          title: Data
+        delivered:
+          description: Successfully delivered count
+          minimum: 0.0
+          title: Delivered
+          type: integer
+        delivery_rate:
+          description: Delivery success rate percentage
+          maximum: 100.0
+          minimum: 0.0
+          title: Delivery Rate
+          type: number
+        failed:
+          description: Failed delivery count
+          minimum: 0.0
+          title: Failed
+          type: integer
+        message:
+          description: Success message
+          title: Message
+          type: string
+        pending:
+          description: Pending delivery count
+          minimum: 0.0
+          title: Pending
+          type: integer
+        request_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Original request tracking ID
+          title: Request Id
+        success:
+          default: true
+          description: Operation success status
+          title: Success
+          type: boolean
+        timestamp:
+          description: Response timestamp
+          format: date-time
+          title: Timestamp
+          type: string
+        total_targeted:
+          description: Total users targeted
+          minimum: 0.0
+          title: Total Targeted
+          type: integer
+      required:
+      - message
+      - total_targeted
+      - delivered
+      - failed
+      - pending
+      - delivery_rate
+      title: BroadcastDeliveryStats
+      type: object
+    BroadcastMessage:
+      description: Message to broadcast to a room.
+      properties:
+        data:
+          additionalProperties: true
+          title: Data
+          type: object
+        event:
+          default: message
+          title: Event
+          type: string
+      required:
+      - data
+      title: BroadcastMessage
+      type: object
+    BroadcastMessageRequest:
+      additionalProperties: false
+      description: Request to broadcast message to users.
+      properties:
+        admin_context:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: null
+          description: Admin context metadata
+          title: Admin Context
+        expires_at:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: null
+          description: Message expiration timestamp
+          title: Expires At
+        message:
+          description: Broadcast message content
+          maxLength: 2000
+          minLength: 1
+          title: Message
+          type: string
+        metadata:
+          additionalProperties: true
+          description: Additional message metadata
+          title: Metadata
+          type: object
+        persistent:
+          default: false
+          description: Whether message persists for offline users
+          title: Persistent
+          type: boolean
+        priority:
+          $ref: '#/components/schemas/BroadcastPriority'
+          default: normal
+          description: Message priority level
+        request_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Optional request tracking ID
+          title: Request Id
+        target:
+          $ref: '#/components/schemas/BroadcastTarget'
+          default: all_users
+          description: Broadcast target audience
+        target_room:
+          anyOf:
+          - maxLength: 100
+            type: string
+          - type: null
+          description: Specific room name (required if target=specific_room)
+          title: Target Room
+        target_users:
+          anyOf:
+          - items:
+              type: string
+            maxItems: 1000
+            type: array
+          - type: null
+          description: Specific user IDs (required if target=specific_users)
+          title: Target Users
+        title:
+          anyOf:
+          - maxLength: 200
+            type: string
+          - type: null
+          description: Optional message title
+          title: Title
+      required:
+      - message
+      title: BroadcastMessageRequest
+      type: object
+    BroadcastPriority:
+      description: Broadcast message priority levels.
+      enum:
+      - low
+      - normal
+      - high
+      - urgent
+      - critical
+      title: BroadcastPriority
+      type: string
+    BroadcastResponse:
+      description: Response model for broadcast operations.
+      example:
+        event: notification
+        message_sent: true
+        room: global
+        success: true
+      properties:
+        event:
+          description: Event type
+          title: Event
+          type: string
+        message_sent:
+          description: Whether message was sent
+          title: Message Sent
+          type: boolean
+        room:
+          description: Target room
+          title: Room
+          type: string
+        success:
+          description: Whether broadcast was successful
+          title: Success
+          type: boolean
+      required:
+      - success
+      - room
+      - event
+      - message_sent
+      title: BroadcastResponse
+      type: object
+    BroadcastResultResponse:
+      description: Response from broadcast operation.
+      properties:
+        broadcast_id:
+          description: Unique broadcast identifier
+          title: Broadcast Id
+          type: string
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: null
+          description: Optional response data
+          title: Data
+        delivery_stats:
+          $ref: '#/components/schemas/BroadcastDeliveryStats'
+          description: Delivery statistics
+        estimated_delivery_time:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: null
+          description: Estimated completion time for delivery
+          title: Estimated Delivery Time
+        message:
+          description: Success message
+          title: Message
+          type: string
+        request_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Original request tracking ID
+          title: Request Id
+        success:
+          default: true
+          description: Operation success status
+          title: Success
+          type: boolean
+        target_info:
+          additionalProperties: true
+          description: Target audience information
+          title: Target Info
+          type: object
+        timestamp:
+          description: Response timestamp
+          format: date-time
+          title: Timestamp
+          type: string
+      required:
+      - message
+      - broadcast_id
+      - delivery_stats
+      - target_info
+      title: BroadcastResultResponse
+      type: object
+    BroadcastTarget:
+      description: Broadcast target types.
+      enum:
+      - all_users
+      - admins_only
+      - developers_only
+      - parsers_only
+      - specific_room
+      - specific_users
+      title: BroadcastTarget
+      type: string
+    ConnectionStats:
+      description: Pydantic model for WebSocket connection statistics.
+      example:
+        active_rooms: 12
+        client_connections: 105
+        max_connections: 1000
+        metrics:
+          connections_closed: 1100
+          connections_opened: 1250
+          messages_received: 12300
+          messages_sent: 15450
+        parser_connections: 45
+        total_connections: 150
+      properties:
+        active_rooms:
+          description: Number of active rooms
+          title: Active Rooms
+          type: integer
+        client_connections:
+          description: Client connections
+          title: Client Connections
+          type: integer
+        max_connections:
+          description: Maximum allowed connections
+          title: Max Connections
+          type: integer
+        metrics:
+          $ref: '#/components/schemas/WebSocketMetrics'
+          description: Performance metrics
+        parser_connections:
+          description: Parser connections
+          title: Parser Connections
+          type: integer
+        total_connections:
+          description: Total active connections
+          title: Total Connections
+          type: integer
+      required:
+      - total_connections
+      - parser_connections
+      - client_connections
+      - active_rooms
+      - max_connections
+      title: ConnectionStats
+      type: object
+    ConnectionsResponse:
+      description: Response model for connections information.
+      example:
+        connected_developers:
+        - dev_123456
+        - dev_789012
+        connected_parsers:
+        - automotive_parser_001
+        - automotive_parser_002
+        total_developers: 2
+        total_parsers: 2
+      properties:
+        connected_developers:
+          description: List of connected developer IDs
+          items:
+            type: string
+          title: Connected Developers
+          type: array
+        connected_parsers:
+          description: List of connected parser IDs
+          items:
+            type: string
+          title: Connected Parsers
+          type: array
+        total_developers:
+          description: Total number of connected developers
+          title: Total Developers
+          type: integer
+        total_parsers:
+          description: Total number of connected parsers
+          title: Total Parsers
+          type: integer
+      required:
+      - connected_parsers
+      - connected_developers
+      - total_parsers
+      - total_developers
+      title: ConnectionsResponse
+      type: object
+    DeveloperMessageResponse:
+      description: Response model for developer message operations.
+      example:
+        developer_id: dev_123456
+        event: notification
+        message_sent: true
+        sessions_reached: 2
+        success: true
+      properties:
+        developer_id:
+          description: Target developer ID
+          title: Developer Id
+          type: string
+        event:
+          description: Event type
+          title: Event
+          type: string
+        message_sent:
+          description: Whether message was sent
+          title: Message Sent
+          type: boolean
+        sessions_reached:
+          description: Number of sessions reached
+          title: Sessions Reached
+          type: integer
+        success:
+          description: Whether message was sent
+          title: Success
+          type: boolean
+      required:
+      - success
+      - developer_id
+      - event
+      - sessions_reached
+      - message_sent
+      title: DeveloperMessageResponse
+      type: object
+    ErrorResponse:
+      description: Standard error response model.
+      example:
+        details:
+          api_key_format: Must start with 'up_'
+          min_length: 20
+        error: Invalid API key provided
+        error_code: AUTH_001
+        message: Authentication failed
+        success: false
+        timestamp: '2024-01-01T12:00:00Z'
+      properties:
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: null
+          description: Additional error details
+          title: Details
+        error:
+          description: Error message describing what went wrong
+          title: Error
+          type: string
+        error_code:
+          anyOf:
+          - type: string
+          - type: null
+          description: Machine-readable error code
+          title: Error Code
+        message:
+          anyOf:
+          - type: string
+          - type: null
+          description: Human-readable message about the operation
+          title: Message
+        success:
+          default: false
+          description: Always false for error responses
+          title: Success
+          type: boolean
+        timestamp:
+          anyOf:
+          - type: string
+          - type: null
+          description: ISO timestamp when response was generated
+          title: Timestamp
+      required:
+      - error
+      title: ErrorResponse
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    HealthResponse:
+      description: Health check response model.
+      example:
+        components:
+          database:
+            response_time_ms: 5
+            status: healthy
+          redis:
+            response_time_ms: 2
+            status: healthy
+          websocket:
+            active_connections: 42
+            status: healthy
+        service: unrealon-server
+        status: healthy
+        timestamp: '2024-01-01T12:00:00Z'
+        version: 3.0.0
+      properties:
+        components:
+          anyOf:
+          - additionalProperties:
+              additionalProperties: true
+              type: object
+            type: object
+          - type: null
+          description: Health status of individual components
+          title: Components
+        service:
+          description: Service name
+          examples:
+          - unrealon-server
+          title: Service
+          type: string
+        status:
+          description: Overall health status
+          examples:
+          - healthy
+          - unhealthy
+          title: Status
+          type: string
+        timestamp:
+          description: Health check timestamp
+          title: Timestamp
+          type: string
+        version:
+          description: Service version
+          examples:
+          - 3.0.0
+          title: Version
+          type: string
+      required:
+      - status
+      - service
+      - version
+      - timestamp
+      title: HealthResponse
+      type: object
+    HealthStatus:
+      description: Pydantic model for WebSocket service health status.
+      example:
+        active_connections: 150
+        active_rooms: 12
+        connected_developers: 105
+        connected_parsers: 45
+        max_connections: 1000
+        metrics:
+          connections_closed: 1100
+          connections_opened: 1250
+          messages_received: 12300
+          messages_sent: 15450
+        status: healthy
+        websocket_server: socket.io
+      properties:
+        active_connections:
+          description: Number of active connections
+          title: Active Connections
+          type: integer
+        active_rooms:
+          description: Number of active rooms
+          title: Active Rooms
+          type: integer
+        connected_developers:
+          description: Number of connected developers
+          title: Connected Developers
+          type: integer
+        connected_parsers:
+          description: Number of connected parsers
+          title: Connected Parsers
+          type: integer
+        error:
+          anyOf:
+          - type: string
+          - type: null
+          description: Error message if unhealthy
+          title: Error
+        max_connections:
+          description: Maximum allowed connections
+          title: Max Connections
+          type: integer
+        metrics:
+          $ref: '#/components/schemas/WebSocketMetrics'
+          description: Performance metrics
+        status:
+          description: Health status
+          title: Status
+          type: string
+        websocket_server:
+          default: socket.io
+          description: WebSocket server type
+          title: Websocket Server
+          type: string
+      required:
+      - status
+      - active_connections
+      - connected_parsers
+      - connected_developers
+      - active_rooms
+      - max_connections
+      title: HealthStatus
+      type: object
+    LogLevel:
+      description: Log level enumeration.
+      enum:
+      - debug
+      - info
+      - warning
+      - error
+      - critical
+      title: LogLevel
+      type: string
+    LoggingRequest:
+      description: Request for logging operation.
+      properties:
+        context:
+          additionalProperties: true
+          description: Additional context
+          title: Context
+          type: object
+        level:
+          $ref: '#/components/schemas/LogLevel'
+          description: Log level
+        message:
+          description: Log message
+          maxLength: 10000
+          minLength: 1
+          title: Message
+          type: string
+        session_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Session ID (auto-generated if not provided)
+          title: Session Id
+        source:
+          description: Source code location
+          title: Source
+          type: string
+        tags:
+          description: Log tags
+          items:
+            type: string
+          title: Tags
+          type: array
+      required:
+      - level
+      - message
+      - source
+      title: LoggingRequest
+      type: object
+    LoggingResponse:
+      description: Response from logging operation.
+      properties:
+        entry_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Log entry identifier
+          title: Entry Id
+        error:
+          anyOf:
+          - type: string
+          - type: null
+          description: Error message if failed
+          title: Error
+        message:
+          description: Response message
+          title: Message
+          type: string
+        session_id:
+          description: Session identifier
+          title: Session Id
+          type: string
+        success:
+          description: Operation success status
+          title: Success
+          type: boolean
+      required:
+      - success
+      - session_id
+      - message
+      title: LoggingResponse
+      type: object
+    MaintenanceMode:
+      description: Maintenance mode types.
+      enum:
+      - full_system
+      - read_only
+      - partial_service
+      - scheduled_restart
+      title: MaintenanceMode
+      type: string
+    MaintenanceModeRequest:
+      additionalProperties: false
+      description: Request to manage maintenance mode.
+      properties:
+        admin_context:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: null
+          description: Admin context metadata
+          title: Admin Context
+        affected_services:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: null
+          description: List of affected services (for partial maintenance)
+          title: Affected Services
+        enable:
+          description: Whether to enable or disable maintenance mode
+          title: Enable
+          type: boolean
+        estimated_duration_minutes:
+          anyOf:
+          - maximum: 1440.0
+            minimum: 1.0
+            type: integer
+          - type: null
+          description: Estimated maintenance duration
+          title: Estimated Duration Minutes
+        grace_period_minutes:
+          default: 5
+          description: Grace period before maintenance starts
+          maximum: 60.0
+          minimum: 0.0
+          title: Grace Period Minutes
+          type: integer
+        mode:
+          $ref: '#/components/schemas/MaintenanceMode'
+          default: full_system
+          description: Type of maintenance mode
+        notify_users:
+          default: true
+          description: Whether to notify users about maintenance
+          title: Notify Users
+          type: boolean
+        reason:
+          description: Reason for maintenance
+          maxLength: 500
+          minLength: 5
+          title: Reason
+          type: string
+        request_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Optional request tracking ID
+          title: Request Id
+      required:
+      - enable
+      - reason
+      title: MaintenanceModeRequest
+      type: object
+    MaintenanceStatusResponse:
+      description: Current maintenance status response.
+      properties:
+        affected_services:
+          description: Currently affected services
+          items:
+            type: string
+          title: Affected Services
+          type: array
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: null
+          description: Optional response data
+          title: Data
+        estimated_end:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: null
+          description: Estimated maintenance end time
+          title: Estimated End
+        grace_period_remaining:
+          anyOf:
+          - minimum: 0.0
+            type: integer
+          - type: null
+          description: Remaining grace period in seconds
+          title: Grace Period Remaining
+        maintenance_active:
+          description: Whether maintenance mode is currently active
+          title: Maintenance Active
+          type: boolean
+        message:
+          description: Success message
+          title: Message
+          type: string
+        mode:
+          anyOf:
+          - $ref: '#/components/schemas/MaintenanceMode'
+          - type: null
+          description: Current maintenance mode type
+        reason:
+          anyOf:
+          - type: string
+          - type: null
+          description: Current maintenance reason
+          title: Reason
+        request_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Original request tracking ID
+          title: Request Id
+        started_at:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: null
+          description: Maintenance start timestamp
+          title: Started At
+        success:
+          default: true
+          description: Operation success status
+          title: Success
+          type: boolean
+        timestamp:
+          description: Response timestamp
+          format: date-time
+          title: Timestamp
+          type: string
+      required:
+      - message
+      - maintenance_active
+      title: MaintenanceStatusResponse
+      type: object
+    ParserCommandRequest:
+      description: Request model for sending commands to parsers.
+      example:
+        callback_url: https://your-app.com/webhooks/parser-complete
+        command: scrape_listings
+        metadata:
+          request_id: req_12345
+          user_id: user_67890
+        parameters:
+          location: Seoul
+          make: Toyota
+          max_results: 50
+          model: Camry
+          year_from: 2020
+          year_to: 2024
+        priority: normal
+        timeout: 300
+      properties:
+        callback_url:
+          anyOf:
+          - type: string
+          - type: null
+          description: URL to receive command completion notification
+          title: Callback Url
+        command:
+          description: Command to execute
+          examples:
+          - scrape_listings
+          - get_car_details
+          - search_by_criteria
+          minLength: 1
+          title: Command
+          type: string
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: null
+          description: Additional metadata for the command
+          title: Metadata
+        parameters:
+          additionalProperties: true
+          description: Command parameters
+          title: Parameters
+          type: object
+        priority:
+          default: normal
+          description: Command priority
+          examples:
+          - low
+          - normal
+          - high
+          - urgent
+          title: Priority
+          type: string
+        timeout:
+          default: 300
+          description: Command timeout in seconds
+          maximum: 3600.0
+          minimum: 1.0
+          title: Timeout
+          type: integer
+      required:
+      - command
+      title: ParserCommandRequest
+      type: object
+    ParserMessageResponse:
+      description: Response model for parser message operations.
+      example:
+        event: command
+        message_sent: true
+        parser_id: automotive_parser_001
+        success: true
+      properties:
+        event:
+          description: Event type
+          title: Event
+          type: string
+        message_sent:
+          description: Whether message was sent
+          title: Message Sent
+          type: boolean
+        parser_id:
+          description: Target parser ID
+          title: Parser Id
+          type: string
+        success:
+          description: Whether message was sent
+          title: Success
+          type: boolean
+      required:
+      - success
+      - parser_id
+      - event
+      - message_sent
+      title: ParserMessageResponse
+      type: object
+    ParserRegistrationRequest:
+      description: Request DTO for parser registration.
+      properties:
+        api_key:
+          description: Developer API key for authentication
+          minLength: 20
+          title: Api Key
+          type: string
+        metadata:
+          additionalProperties: true
+          description: Additional parser metadata
+          title: Metadata
+          type: object
+        parser_id:
+          description: Unique parser identifier
+          maxLength: 100
+          minLength: 3
+          title: Parser Id
+          type: string
+        parser_name:
+          description: Human-readable parser name
+          maxLength: 200
+          minLength: 1
+          title: Parser Name
+          type: string
+        parser_type:
+          $ref: '#/components/schemas/ParserType'
+          description: Type of parser (encar, etc.)
+        services:
+          description: List of services to register
+          items:
+            $ref: '#/components/schemas/ServiceRegistrationDto'
+          title: Services
+          type: array
+      required:
+      - parser_id
+      - parser_name
+      - parser_type
+      - api_key
+      title: ParserRegistrationRequest
+      type: object
+    ParserRegistrationResponse:
+      description: Response DTO for parser registration.
+      properties:
+        developer_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Developer ID who registered the parser
+          title: Developer Id
+        error:
+          anyOf:
+          - type: string
+          - type: null
+          description: Error message if registration failed
+          title: Error
+        message:
+          default: ''
+          description: Success or informational message
+          title: Message
+          type: string
+        parser_id:
+          anyOf:
+          - type: string
+          - type: null
+          description: Parser ID if registration successful
+          title: Parser Id
+        registered_services:
+          description: List of successfully registered service IDs
+          items:
+            type: string
+          title: Registered Services
+          type: array
+        success:
+          description: Whether the registration was successful
+          title: Success
+          type: boolean
+      required:
+      - success
+      title: ParserRegistrationResponse
+      type: object
+    ParserType:
+      description: Types of parsers supported.
+      enum:
+      - encar
+      - mobile
+      - realestate
+      - custom
+      - general
+      title: ParserType
+      type: string
+    ProxyBlockRequest:
+      description: Request to report blocked proxy.
+      properties:
+        parser_id:
+          description: Parser reporting the block
+          title: Parser Id
+          type: string
+        proxy_id:
+          description: Blocked proxy identifier
+          title: Proxy Id
+          type: string
+        reason:
+          anyOf:
+          - type: string
+          - type: null
+          description: Reason for blocking
+          title: Reason
+      required:
+      - parser_id
+      - proxy_id
+      title: ProxyBlockRequest
+      type: object
+    ProxyEndpointResponse:
+      properties:
+        connection_string:
+          anyOf:
+          - type: string
+          - type: null
+          title: Connection String
+        host:
+          title: Host
+          type: string
+        port:
+          title: Port
+          type: integer
+        protocol:
+          title: Protocol
+          type: string
+      required:
+      - host
+      - port
+      - protocol
+      title: ProxyEndpointResponse
+      type: object
+    ProxyListResponse:
+      description: Response model for proxy list endpoint.
+      properties:
+        items:
+          description: List of proxy objects
+          items:
+            $ref: '#/components/schemas/ProxyResponse'
+          title: Items
+          type: array
+        total:
+          description: Total number of proxies
+          minimum: 0.0
+          title: Total
+          type: integer
+      required:
+      - items
+      - total
+      title: ProxyListResponse
+      type: object
+    ProxyProvider:
+      description: Supported proxy providers.
+      enum:
+      - proxy6
+      - proxy_cheap
+      - proxy_seller
+      - oxylabs
+      - bright_data
+      title: ProxyProvider
+      type: string
+    ProxyPurchaseRequest:
+      description: Request to purchase proxies.
+      properties:
+        count:
+          description: Number of proxies to purchase
+          maximum: 1000.0
+          minimum: 1.0
+          title: Count
+          type: integer
+        country:
+          description: Target country code
+          maxLength: 3
+          minLength: 2
+          title: Country
+          type: string
+        description:
+          anyOf:
+          - type: string
+          - type: null
+          description: Purchase description
+          title: Description
+        duration_days:
+          description: Proxy duration in days
+          maximum: 365.0
+          minimum: 1.0
+          title: Duration Days
+          type: integer
+        provider:
+          description: Proxy provider
+          title: Provider
+          type: string
+        shared:
+          default: false
+          description: Whether to purchase shared proxies
+          title: Shared
+          type: boolean
+      required:
+      - provider
+      - count
+      - duration_days
+      - country
+      title: ProxyPurchaseRequest
+      type: object
+    ProxyResponse:
+      properties:
+        city:
+          anyOf:
+          - type: string
+          - type: null
+          title: City
+        country:
+          anyOf:
+          - type: string
+          - type: null
+          title: Country
+        created_at:
+          format: date-time
+          title: Created At
+          type: string
+        display_name:
+          anyOf:
+          - type: string
+          - type: null
+          title: Display Name
+        endpoint:
+          $ref: '#/components/schemas/ProxyEndpointResponse'
+        expires_at:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: null
+          title: Expires At
+        is_expired:
+          anyOf:
+          - type: boolean
+          - type: null
+          title: Is Expired
+        is_healthy:
+          anyOf:
+          - type: boolean
+          - type: null
+          title: Is Healthy
+        metadata:
+          additionalProperties: true
+          default: {}
+          title: Metadata
+          type: object
+        provider:
+          title: Provider
+          type: string
+        provider_proxy_id:
+          anyOf:
+          - type: string
+          - type: null
+          title: Provider Proxy Id
+        proxy_id:
+          title: Proxy Id
+          type: string
+        region:
+          anyOf:
+          - type: string
+          - type: null
+          title: Region
+        status:
+          title: Status
+          type: string
+        tags:
+          default: []
+          items:
+            type: string
+          title: Tags
+          type: array
+        usage_stats:
+          $ref: '#/components/schemas/ProxyUsageStatsResponse'
+      required:
+      - proxy_id
+      - provider
+      - endpoint
+      - status
+      - usage_stats
+      - created_at
+      title: ProxyResponse
+      type: object
+    ProxyRotationRequest:
+      description: Request for proxy rotation via API.
+      properties:
+        country:
+          anyOf:
+          - type: string
+          - type: null
+          description: Preferred country code
+          title: Country
+        exclude_proxy_ids:
+          description: Proxy IDs to exclude
+          items:
+            type: string
+          title: Exclude Proxy Ids
+          type: array
+        force_rotation:
+          default: false
+          description: Force new proxy selection
+          title: Force Rotation
+          type: boolean
+        parser_id:
+          description: Parser requesting the proxy
+          title: Parser Id
+          type: string
+        strategy:
+          default: success_rate
+          description: Rotation strategy
+          title: Strategy
+          type: string
+      required:
+      - parser_id
+      title: ProxyRotationRequest
+      type: object
+    ProxyStatus:
+      description: Proxy status enumeration.
+      enum:
+      - active
+      - inactive
+      - expired
+      - blocked
+      - error
+      title: ProxyStatus
+      type: string
+    ProxyUsageRequest:
+      description: Request to record proxy usage.
+      properties:
+        error_reason:
+          anyOf:
+          - type: string
+          - type: null
+          description: Reason for failure if not successful
+          title: Error Reason
+        response_time_ms:
+          anyOf:
+          - type: number
+          - type: null
+          description: Response time in milliseconds
+          title: Response Time Ms
+        success:
+          description: Whether the request was successful
+          title: Success
+          type: boolean
+      required:
+      - success
+      title: ProxyUsageRequest
+      type: object
+    ProxyUsageStatsResponse:
+      properties:
+        avg_response_time_ms:
+          anyOf:
+          - minimum: 0.0
+            type: number
+          - type: null
+          title: Avg Response Time Ms
+        consecutive_failures:
+          minimum: 0.0
+          title: Consecutive Failures
+          type: integer
+        failed_requests:
+          minimum: 0.0
+          title: Failed Requests
+          type: integer
+        last_used_at:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: null
+          title: Last Used At
+        success_rate:
+          maximum: 100.0
+          minimum: 0.0
+          title: Success Rate
+          type: number
+        successful_requests:
+          minimum: 0.0
+          title: Successful Requests
+          type: integer
+        total_requests:
+          minimum: 0.0
+          title: Total Requests
+          type: integer
+      required:
+      - success_rate
+      - total_requests
+      - successful_requests
+      - failed_requests
+      - consecutive_failures
+      title: ProxyUsageStatsResponse
+      type: object
+    ServiceRegistrationDto:
+      description: DTO for service registration.
+      properties:
+        capabilities:
+          additionalProperties: true
+          description: Service capabilities configuration
+          title: Capabilities
+          type: object
+        config:
+          additionalProperties: true
+          description: Service configuration parameters
+          title: Config
+          type: object
+        service_id:
+          description: Unique service identifier
+          minLength: 1
+          title: Service Id
+          type: string
+        service_name:
+          description: Human-readable service name
+          minLength: 1
+          title: Service Name
+          type: string
+        service_type:
+          description: Type of service (scraper, processor, etc.)
+          minLength: 1
+          title: Service Type
+          type: string
+      required:
+      - service_id
+      - service_name
+      - service_type
+      title: ServiceRegistrationDto
+      type: object
+    ServiceStatsResponse:
+      description: Base model for service statistics responses.
+      properties:
+        additional_metrics:
+          additionalProperties: true
+          description: Additional service-specific metrics
+          title: Additional Metrics
+          type: object
+        error_rate:
+          default: 0.0
+          description: Error rate percentage
+          title: Error Rate
+          type: number
+        errors_encountered:
+          default: 0
+          description: Total errors encountered
+          title: Errors Encountered
+          type: integer
+        initialized:
+          description: Whether service is initialized
+          title: Initialized
+          type: boolean
+        last_operation:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: null
+          description: Timestamp of last operation
+          title: Last Operation
+        operations_performed:
+          default: 0
+          description: Total operations performed
+          title: Operations Performed
+          type: integer
+        service_name:
+          description: Name of the service
+          title: Service Name
+          type: string
+        status:
+          default: healthy
+          description: Service status
+          title: Status
+          type: string
+        uptime_seconds:
+          anyOf:
+          - type: number
+          - type: null
+          description: Service uptime in seconds
+          title: Uptime Seconds
+      required:
+      - service_name
+      - initialized
+      title: ServiceStatsResponse
+      type: object
+    SessionStartRequest:
+      description: Request to start a new logging session.
+      properties:
+        auto_expire:
+          default: true
+          description: Auto-expire session
+          title: Auto Expire
+          type: boolean
+        max_entries:
+          default: 1000
+          description: Maximum log entries
+          maximum: 10000.0
+          minimum: 1.0
+          title: Max Entries
+          type: integer
+        metadata:
+          additionalProperties: true
+          description: Session metadata
+          title: Metadata
+          type: object
+        retention_hours:
+          default: 24
+          description: Log retention hours
+          maximum: 168.0
+          minimum: 1.0
+          title: Retention Hours
+          type: integer
+        tags:
+          description: Session tags
+          items:
+            type: string
+          title: Tags
+          type: array
+      title: SessionStartRequest
+      type: object
+    SuccessResponse:
+      description: Standard success response model with automatic Pydantic object
+        serialization.
+      example:
+        data:
+          id: resource_123
+          status: active
+        message: Operation completed successfully
+        success: true
+        timestamp: '2024-01-01T12:00:00Z'
+      properties:
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - $ref: '#/components/schemas/BaseModel'
+          - items:
+              $ref: '#/components/schemas/BaseModel'
+            type: array
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: null
+          description: Response data payload (auto-serializes Pydantic objects)
+          title: Data
+        message:
+          anyOf:
+          - type: string
+          - type: null
+          description: Human-readable message about the operation
+          title: Message
+        success:
+          default: true
+          description: Always true for success responses
+          title: Success
+          type: boolean
+        timestamp:
+          anyOf:
+          - type: string
+          - type: null
+          description: ISO timestamp when response was generated
+          title: Timestamp
+      title: SuccessResponse
+      type: object
+    SystemNotificationResponse:
+      description: Response model for system notification broadcast.
+      example:
+        broadcasted: true
+        content: Scheduled maintenance will begin in 30 minutes
+        priority: high
+        success: true
+        title: System Maintenance
+      properties:
+        broadcasted:
+          description: Whether notification was broadcasted
+          title: Broadcasted
+          type: boolean
+        content:
+          description: Notification content
+          title: Content
+          type: string
+        priority:
+          description: Notification priority
+          title: Priority
+          type: string
+        success:
+          description: Whether notification was sent
+          title: Success
+          type: boolean
+        title:
+          description: Notification title
+          title: Title
+          type: string
+      required:
+      - success
+      - title
+      - content
+      - priority
+      - broadcasted
+      title: SystemNotificationResponse
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+    ValidationErrorResponse:
+      description: Validation error response for request validation failures.
+      example:
+        error: Validation failed
+        error_code: VALIDATION_ERROR
+        success: false
+        validation_errors:
+        - constraint: min_length=1
+          field: parser_name
+          input: ''
+          message: String too short
+        - constraint: pattern=^up_
+          field: api_key
+          input: invalid_key
+          message: API key must start with 'up_'
+      properties:
+        error:
+          default: Validation failed
+          description: Error message
+          title: Error
+          type: string
+        error_code:
+          default: VALIDATION_ERROR
+          description: Error code
+          title: Error Code
+          type: string
+        success:
+          default: false
+          description: Always false for validation errors
+          title: Success
+          type: boolean
+        validation_errors:
+          description: List of specific validation errors
+          items:
+            additionalProperties: true
+            type: object
+          title: Validation Errors
+          type: array
+      required:
+      - validation_errors
+      title: ValidationErrorResponse
+      type: object
+    WebSocketMetrics:
+      description: Pydantic model for WebSocket performance metrics.
+      example:
+        connections_closed: 1100
+        connections_opened: 1250
+        messages_received: 12300
+        messages_sent: 15450
+      properties:
+        connections_closed:
+          default: 0
+          description: Total connections closed
+          title: Connections Closed
+          type: integer
+        connections_opened:
+          default: 0
+          description: Total connections opened
+          title: Connections Opened
+          type: integer
+        messages_received:
+          default: 0
+          description: Total messages received
+          title: Messages Received
+          type: integer
+        messages_sent:
+          default: 0
+          description: Total messages sent
+          title: Messages Sent
+          type: integer
+      title: WebSocketMetrics
+      type: object
+info:
+  contact:
+    email: support@unrealon.com
+    name: UnrealOn Server Team
+    url: https://unrealon.com/contact
+  description: "\n        # \U0001F680 UnrealOn Server v3.0 - Enterprise Parser Orchestration\
+    \ Platform\n\n        **The most advanced real-time parsing orchestration platform\
+    \ built with Clean Architecture.**\n\n        ## \U0001F3AF Overview\n\n     \
+    \   UnrealOn Server provides a comprehensive platform for managing and orchestrating\
+    \ parsing services\n        across multiple data sources with real-time WebSocket\
+    \ communication, enterprise-grade security,\n        and horizontal scalability.\n\
+    \n        ## \u2728 Key Features\n\n        ### \U0001F504 Real-time Communication\n\
+    \        - **WebSocket Integration**: Bi-directional real-time communication\n\
+    \        - **Command Routing**: Intelligent command distribution to parsers\n\
+    \        - **Live Status Updates**: Real-time parser and command status\n    \
+    \    - **Event Broadcasting**: Multi-room notification system\n\n        ### \U0001F6E1\
+    \uFE0F Enterprise Security\n        - **API Key Authentication**: Secure access\
+    \ control with developer permissions\n        - **Rate Limiting**: Configurable\
+    \ request throttling\n        - **Input Validation**: Comprehensive request validation\
+    \ with Pydantic v2\n        - **Error Handling**: Detailed error responses with\
+    \ troubleshooting info\n\n        ### \U0001F4CA Parser Management\n        -\
+    \ **Dynamic Registration**: Self-service parser registration workflow\n      \
+    \  - **Health Monitoring**: Continuous parser health and performance tracking\n\
+    \        - **Load Balancing**: Intelligent command distribution across parser\
+    \ instances\n        - **Auto-scaling**: Dynamic parser scaling based on workload\n\
+    \n        ### \U0001F527 Developer Experience\n        - **OpenAPI Documentation**:\
+    \ Complete API documentation with examples\n        - **SDK Generation**: Auto-generated\
+    \ client SDKs for multiple languages\n        - **Testing Tools**: Built-in testing\
+    \ and debugging capabilities\n        - **Webhook Support**: Callback notifications\
+    \ for asynchronous operations\n\n        ## \U0001F3D7\uFE0F Architecture\n\n\
+    \        Built following **Clean Architecture** principles with:\n        - **Domain-Driven\
+    \ Design**: Pure business logic in domain layer\n        - **Dependency Injection**:\
+    \ Centralized composition root with type safety\n        - **CQRS Pattern**: Separate\
+    \ read/write operations for optimal performance\n        - **Event Sourcing**:\
+    \ Complete audit trail of all operations\n\n        ## \U0001F680 Getting Started\n\
+    \n        1. **Get API Key**: Register as developer to receive API key\n     \
+    \   2. **Register Parser**: Use `/api/v1/parsers/register` to register your parser\n\
+    \        3. **Connect WebSocket**: Establish WebSocket connection for real-time\
+    \ communication\n        4. **Execute Commands**: Send commands via HTTP or WebSocket\n\
+    \        5. **Monitor Status**: Track parser health and command execution\n\n\
+    \        ## \U0001F4DA API Endpoints\n\n        ### Parser Management\n      \
+    \  - `POST /api/v1/parsers/register` - Register new parser\n        - `GET /api/v1/parsers/`\
+    \ - List registered parsers\n        - `GET /api/v1/parsers/{id}` - Get parser\
+    \ details\n        - `POST /api/v1/parsers/{id}/commands` - Execute commands\n\
+    \        - `GET /api/v1/parsers/{id}/status` - Get parser status\n\n        ###\
+    \ WebSocket Communication (Socket.IO)\n        - **Socket.IO Connection**: `ws://localhost:8000/socket.io/`\
+    \ \n        - `GET /api/v1/ws/health` - WebSocket health check\n        - `GET\
+    \ /api/v1/ws/stats` - Connection statistics\n        - `POST /api/v1/ws/broadcast/{room}`\
+    \ - Broadcast to room\n        - `POST /api/v1/ws/send/parser/{parser_id}` - Send\
+    \ to parser\n        - `POST /api/v1/ws/send/developer/{developer_id}` - Send\
+    \ to developer\n        - `GET /api/v1/ws/connections` - Active connections\n\
+    \        - `POST /api/v1/ws/notification/system` - System notifications\n\n  \
+    \      ## \U0001F517 Resources\n\n        - **GitHub**: [UnrealOn Server Repository](https://github.com/unrealserver/unrealserver)\n\
+    \        - **Documentation**: [Complete Developer Guide](https://docs.unrealon.com)\n\
+    \        - **Support**: [Community Forum](https://community.unrealon.com)\n  \
+    \      - **Status**: [Service Status Page](https://status.unrealon.com)\n\n  \
+    \      ---\n        **\U0001F4B0 Built for Enterprise Performance - Quality Code\
+    \ that Scales! \U0001F4B0**\n        "
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  title: UnrealOn Server API
+  version: 3.0.0
+openapi: 3.0.3
+paths:
+  /:
+    get:
+      description: Root endpoint.
+      operationId: root__get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Root
+  /api/v1/admin/broadcast:
+    post:
+      description: "Broadcast administrative message to connected clients using AdminService\
+        \ v2.0.\n    \n    **Admin v2.0 Features:**\n    - Service-level events with\
+        \ AdminEventMiddleware\n    - Advanced targeting (all_users, admins_only,\
+        \ specific_room, etc.)\n    - Priority levels with intelligent delivery\n\
+        \    - Real-time delivery statistics\n    - Audit trail with proper event\
+        \ logging\n    \n    **New in v2.0:**\n    - Event-driven architecture (not\
+        \ database triggers)\n    - WebSocket room-based targeting  \n    - Comprehensive\
+        \ delivery tracking\n    - Admin event emission for monitoring"
+      operationId: broadcast_message_api_v1_admin_broadcast_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastMessageRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResultResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Broadcast Admin Message v2.0
+      tags:
+      - admin
+  /api/v1/admin/maintenance:
+    post:
+      description: "Enable or disable system maintenance mode using AdminService v2.0.\n\
+        \    \n    **Admin v2.0 Features:**\n    - Service-level event emission for\
+        \ maintenance state changes\n    - Advanced maintenance modes (full_system,\
+        \ read_only, partial_service)\n    - Grace period management with countdown\
+        \ notifications\n    - Affected services specification for partial maintenance\n\
+        \    - Automatic user broadcast notifications via AdminEventMiddleware\n \
+        \   \n    **New in v2.0:**\n    - Event-driven maintenance notifications\n\
+        \    - Comprehensive audit trail\n    - Real-time status tracking\n    - Clean\
+        \ Architecture compliance"
+      operationId: manage_maintenance_mode_api_v1_admin_maintenance_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaintenanceModeRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceStatusResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Manage Maintenance Mode v2.0
+      tags:
+      - admin
+  /api/v1/admin/maintenance/status:
+    get:
+      description: "Get current maintenance mode status using AdminService v2.0.\n\
+        \    \n    **Admin v2.0 Features:**\n    - Comprehensive maintenance state\
+        \ information\n    - Grace period countdown tracking\n    - Affected services\
+        \ enumeration\n    - Real-time status updates\n    - Event-driven status changes\n\
+        \    \n    **Returns:**\n    - Current maintenance mode status\n    - Maintenance\
+        \ timing and schedule\n    - Affected services and configurations\n    - Grace\
+        \ period remaining (if applicable)"
+      operationId: get_maintenance_status_api_v1_admin_maintenance_status_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceStatusResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Maintenance Status v2.0
+      tags:
+      - admin
+  /api/v1/admin/stats:
+    get:
+      description: "Get AdminService v2.0 statistics and operational metrics.\n  \
+        \  \n    **AdminService v2.0 Metrics:**\n    - Service uptime and initialization\
+        \ status\n    - Operations performed (broadcasts, maintenance, etc.)\n   \
+        \ - Event processing statistics\n    - Error rates and service health\n  \
+        \  - Admin-specific operational metrics\n    \n    **New in v2.0:**\n    -\
+        \ AdminEventMiddleware statistics\n    - WebSocket room management metrics\n\
+        \    - Service-level event processing stats\n    - Clean Architecture compliance\
+        \ metrics\n    \n    **Note:** For system-wide analytics, use specialized\
+        \ endpoints:\n    - `/api/v1/health/` - System health and metrics\n    - `/api/v1/logging/stats`\
+        \ - Logging service metrics"
+      operationId: get_admin_service_stats_api_v1_admin_stats_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceStatsResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get AdminService v2.0 Statistics
+      tags:
+      - admin
+  /api/v1/health/:
+    get:
+      description: "Comprehensive system health check with component status.\n   \
+        \ \n    Returns detailed health information for all system components including:\n\
+        \    \n    **Component Health:**\n    - Database connectivity and performance\n\
+        \    - Redis cache status and response times  \n    - WebSocket server status\
+        \ and connections\n    - Response times for all components\n    \n    **System\
+        \ Metrics:**\n    - CPU usage percentage\n    - Memory usage and availability\n\
+        \    - Disk usage statistics\n    - System load average\n    \n    **Service\
+        \ Information:**\n    - Service uptime since last restart\n    - Version information\n\
+        \    - Overall system status\n    \n    **Status Levels:**\n    - `healthy`:\
+        \ All components operational\n    - `degraded`: Some components have issues\
+        \ but system is functional\n    - `unhealthy`: Critical components are down\n\
+        \    - `timeout`: Health check took too long to complete\n    \n    **Response\
+        \ Codes:**\n    - 200: System is healthy or degraded but functional\n    -\
+        \ 503: System is unhealthy or timed out\n    \n    This endpoint is designed\
+        \ for:\n    - Load balancer health checks\n    - Monitoring system integration\n\
+        \    - Operational status verification\n    - Debugging system issues"
+      operationId: system_health_check_api_v1_health__get
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                components:
+                  cache:
+                    details:
+                      check_type: full_health_check
+                      hit_rate: 94.5
+                      memory_usage: 45.2MB
+                    response_time_ms: 2.1
+                    status: healthy
+                  database:
+                    details:
+                      check_type: full_health_check
+                      pool_active: 8
+                      pool_max: 10
+                    response_time_ms: 5.2
+                    status: healthy
+                  websocket:
+                    details:
+                      active_connections: 42
+                      max_connections: 1000
+                      messages_per_sec: 125.6
+                    response_time_ms: 1.8
+                    status: healthy
+                message: All systems operational
+                service: unrealon-server
+                status: healthy
+                system:
+                  cpu_usage: 23.5
+                  disk_usage: 67.2
+                  load_average: 0.8
+                  memory_usage: 512.8
+                timestamp: '2024-01-01T12:00:00Z'
+                uptime: 72h 35m 12s
+                version: 3.0.0
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+          description: System health check completed successfully
+        '503':
+          content:
+            application/json:
+              example:
+                components:
+                  cache:
+                    response_time_ms: 2.3
+                    status: healthy
+                  database:
+                    error: Connection timeout after 5 seconds
+                    status: unhealthy
+                error: Database connection failed
+                message: System experiencing critical issues
+                service: unrealon-server
+                status: unhealthy
+                timestamp: '2024-01-01T12:00:00Z'
+                version: 3.0.0
+          description: System is unhealthy or timed out
+      summary: System Health Check
+      tags:
+      - System Health
+  /api/v1/health/statistics:
+    get:
+      description: "Get health monitoring service statistics and metrics.\n    \n\
+        \    Returns information about the health monitoring system itself:\n    -\
+        \ Health check frequency and counts\n    - Service uptime and start time\n\
+        \    - Health check timeouts and configuration\n    - Performance metrics"
+      operationId: health_statistics_api_v1_health_statistics_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Health statistics retrieved successfully
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failed to get health statistics
+      summary: Health Service Statistics
+      tags:
+      - System Health
+  /api/v1/health/status:
+    get:
+      description: "Quick health status check for basic monitoring.\n    \n    Returns\
+        \ a simplified health status without detailed component checks.\n    This\
+        \ endpoint is optimized for:\n    - High-frequency health checks\n    - Load\
+        \ balancer health probes\n    - Simple monitoring systems\n    \n    **Response\
+        \ Format:**\n    - `status`: Overall system status (healthy/degraded/unhealthy)\n\
+        \    - `service`: Service name\n    - `timestamp`: Current timestamp\n   \
+        \ - `uptime`: Service uptime"
+      operationId: quick_health_status_api_v1_health_status_get
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                service: unrealon-server
+                status: healthy
+                timestamp: '2024-01-01T12:00:00Z'
+                uptime: 72h 35m 12s
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Quick status retrieved successfully
+      summary: Quick Health Status
+      tags:
+      - System Health
+  /api/v1/logging/log:
+    post:
+      description: "Add a log entry to an active logging session.\n    \n    **Log\
+        \ Levels:**\n    - `DEBUG`: Detailed debugging information\n    - `INFO`:\
+        \ General information messages\n    - `WARNING`: Warning messages for potential\
+        \ issues\n    - `ERROR`: Error messages for failures\n    - `CRITICAL`: Critical\
+        \ system failures\n    \n    **Log Fields:**\n    - `session_id`: Target session\
+        \ (auto-created if not provided)\n    - `level`: Log severity level\n    -\
+        \ `message`: Log message content (1-10,000 chars)\n    - `source`: Source\
+        \ code location or identifier\n    - `context`: Additional context data (JSON)\n\
+        \    - `tags`: Custom tags for filtering\n    \n    **Real-time Delivery:**\n\
+        \    - Logs are immediately sent to connected WebSocket clients\n    - Perfect\
+        \ for real-time debugging and monitoring"
+      operationId: add_log_entry_api_v1_logging_log_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoggingRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoggingResponse'
+          description: Log entry added successfully
+        '400':
+          description: Invalid log request
+        '401':
+          description: Authentication required
+        '404':
+          description: Session not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Add Log Entry
+      tags:
+      - Socket Logging
+  /api/v1/logging/sessions:
+    get:
+      description: "Get all logging sessions for the authenticated developer.\n  \
+        \  \n    **Returns:**\n    - List of all sessions (active, paused, terminated,\
+        \ expired)\n    - Session statistics and metadata\n    - Current status and\
+        \ configuration\n    - Creation and activity timestamps\n    \n    **Session\
+        \ Status Types:**\n    - `ACTIVE`: Currently accepting log entries\n    -\
+        \ `PAUSED`: Temporarily paused\n    - `TERMINATED`: Manually terminated\n\
+        \    - `EXPIRED`: Automatically expired\n    \n    **Use Cases:**\n    - Session\
+        \ management dashboard\n    - Historical session review\n    - Development\
+        \ session tracking"
+      operationId: list_developer_sessions_api_v1_logging_sessions_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Developer sessions retrieved successfully
+        '401':
+          description: Authentication required
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: List Developer Sessions
+      tags:
+      - Socket Logging
+  /api/v1/logging/sessions/start:
+    post:
+      description: "Start a new real-time logging session for development assistance.\n\
+        \    \n    **Features:**\n    - Real-time log streaming via WebSocket\n  \
+        \  - Configurable retention and limits\n    - Auto-expiration support\n  \
+        \  - Developer-specific sessions\n    \n    **Use Cases:**\n    - Debug parser\
+        \ development\n    - Monitor real-time operations\n    - Track code execution\
+        \ flow\n    - Development assistance\n    \n    **Session Configuration:**\n\
+        \    - `max_entries`: Maximum log entries (1-10,000)\n    - `retention_hours`:\
+        \ How long to keep logs (1-168 hours)\n    - `auto_expire`: Automatically\
+        \ expire session\n    - `tags`: Custom tags for organization\n    - `metadata`:\
+        \ Additional session metadata"
+      operationId: start_logging_session_api_v1_logging_sessions_start_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionStartRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoggingResponse'
+          description: Successful Response
+        '201':
+          description: Logging session started successfully
+        '400':
+          description: Invalid session configuration
+        '401':
+          description: Authentication required
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+        '429':
+          description: Session limit exceeded
+      summary: Start Logging Session
+      tags:
+      - Socket Logging
+  /api/v1/logging/sessions/{session_id}:
+    delete:
+      description: "Terminate an active logging session.\n    \n    **Actions Performed:**\n\
+        \    - Changes session status to TERMINATED\n    - Stops accepting new log\
+        \ entries\n    - Removes from active session pool\n    - Maintains session\
+        \ data for retention period\n    \n    **Access Control:**\n    - Only session\
+        \ owner can terminate\n    - Cannot terminate already terminated sessions\n\
+        \    \n    **Note:** Terminated sessions can still be accessed for\n    historical\
+        \ log retrieval until retention period expires."
+      operationId: terminate_session_api_v1_logging_sessions__session_id__delete
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        schema:
+          title: Session Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoggingResponse'
+          description: Session terminated successfully
+        '401':
+          description: Authentication required
+        '403':
+          description: Access denied - session belongs to different developer
+        '404':
+          description: Session not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Terminate Session
+      tags:
+      - Socket Logging
+  /api/v1/logging/sessions/{session_id}/logs:
+    get:
+      description: "Retrieve recent log entries from a specific logging session.\n\
+        \    \n    **Parameters:**\n    - `session_id`: Target session identifier\n\
+        \    - `count`: Number of recent entries to return (default: 100)\n    \n\
+        \    **Response Includes:**\n    - Recent log entries with full details\n\
+        \    - Session status and metadata\n    - Entry statistics by log level\n\
+        \    - Session configuration info\n    \n    **Access Control:**\n    - Only\
+        \ session owner can access logs\n    - Session must belong to authenticated\
+        \ developer"
+      operationId: get_session_logs_api_v1_logging_sessions__session_id__logs_get
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        schema:
+          title: Session Id
+          type: string
+      - in: query
+        name: count
+        required: false
+        schema:
+          default: 100
+          title: Count
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Session logs retrieved successfully
+        '401':
+          description: Authentication required
+        '403':
+          description: Access denied - session belongs to different developer
+        '404':
+          description: Session not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Session Logs
+      tags:
+      - Socket Logging
+  /api/v1/logging/stats:
+    get:
+      description: "Get socket logging service statistics and metrics.\n    \n   \
+        \ **Metrics Included:**\n    - Active sessions count\n    - Total developers\
+        \ using service\n    - Total sessions created\n    - Total log entries processed\n\
+        \    - Active WebSocket connections\n    - Service configuration details\n\
+        \    \n    **Admin Information:**\n    - Session limits and quotas\n    -\
+        \ Cleanup intervals\n    - Service health status"
+      operationId: get_logging_stats_api_v1_logging_stats_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Service statistics retrieved successfully
+        '401':
+          description: Authentication required
+      summary: Logging Service Statistics
+      tags:
+      - Socket Logging
+  /api/v1/parsers/:
+    get:
+      description: Get list of parsers for authenticated developer
+      operationId: list_parsers_api_v1_parsers__get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: List parsers
+      tags:
+      - Parser Management
+  /api/v1/parsers/register:
+    post:
+      description: "Register a new parser with the UnrealOn Server platform.\n   \
+        \ \n    This endpoint allows developers to register their parsing services\
+        \ with the platform,\n    enabling real-time communication and command routing\
+        \ capabilities.\n    \n    **Requirements:**\n    - Valid API key with parser:write\
+        \ permission\n    - Unique parser ID within the platform\n    - At least one\
+        \ service configuration\n    - Valid parser type (encar, autotrader, etc.)\n\
+        \    \n    **Process:**\n    1. Validates API key and developer permissions\n\
+        \    2. Checks parser ID uniqueness\n    3. Validates service configurations\n\
+        \    4. Creates parser entity in database\n    5. Establishes WebSocket communication\
+        \ channel\n    6. Returns registration confirmation with connection details"
+      operationId: register_parser_api_v1_parsers_register_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParserRegistrationRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParserRegistrationResponse'
+          description: Parser registered successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Registration failed due to validation error
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Parser ID already exists
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+          description: Invalid request data
+      summary: Register New Parser
+      tags:
+      - Parser Management
+      - Parser Registration
+  /api/v1/parsers/{parser_id}:
+    delete:
+      description: "Remove parser from the platform permanently.\n    \n    **Warning:**\
+        \ This operation is irreversible and will:\n    - Disconnect the parser from\
+        \ WebSocket\n    - Remove all associated data\n    - Cancel any pending commands\n\
+        \    - Revoke access tokens\n    \n    **Requirements:**\n    - Parser must\
+        \ be owned by authenticated developer\n    - No critical commands in progress\n\
+        \    - Proper cleanup of associated resources"
+      operationId: delete_parser_api_v1_parsers__parser_id__delete
+      parameters:
+      - in: path
+        name: parser_id
+        required: true
+        schema:
+          title: Parser Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '204':
+          description: Parser deleted successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Insufficient permissions
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Parser not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Parser has active commands
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Delete Parser
+      tags:
+      - Parser Management
+      - Parser Management
+    get:
+      description: Get detailed information about specific parser
+      operationId: get_parser_api_v1_parsers__parser_id__get
+      parameters:
+      - in: path
+        name: parser_id
+        required: true
+        schema:
+          title: Parser Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get parser details
+      tags:
+      - Parser Management
+  /api/v1/parsers/{parser_id}/commands:
+    post:
+      description: "Execute a command on the specified parser with real-time tracking.\n\
+        \    \n    This endpoint enables real-time command execution on connected\
+        \ parsers\n    through WebSocket communication with comprehensive error handling\
+        \ and timeout management.\n    \n    **Features:**\n    - Real-time command\
+        \ execution via WebSocket\n    - Command timeout and retry handling\n    -\
+        \ Priority-based command queuing\n    - Execution status tracking\n    - Response\
+        \ caching and persistence\n    \n    **Command Types:**\n    - `scrape_listings`:\
+        \ Scrape vehicle listings\n    - `get_car_details`: Get detailed vehicle information\n\
+        \    - `search_by_criteria`: Search with specific criteria\n    - `health_check`:\
+        \ Check parser health status\n    - `update_config`: Update parser configuration\n\
+        \    \n    **Process:**\n    1. Validates parser connection status\n    2.\
+        \ Creates unique command identifier\n    3. Routes command via WebSocket to\
+        \ parser\n    4. Tracks execution status in real-time\n    5. Returns command\
+        \ ID for status polling\n    6. Notifies completion via WebSocket/callback"
+      operationId: execute_parser_command_api_v1_parsers__parser_id__commands_post
+      parameters:
+      - in: path
+        name: parser_id
+        required: true
+        schema:
+          title: Parser Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParserCommandRequest'
+        required: true
+      responses:
+        '202':
+          content:
+            application/json:
+              example:
+                command_id: cmd_abc123def456
+                estimated_completion: '2024-01-01T12:05:00Z'
+                parser_id: automotive_parser_001
+                status: accepted
+                success: true
+                tracking_url: /api/v1/commands/cmd_abc123def456/status
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Command accepted and queued for execution
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid command or parameters
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Parser not found or not connected
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+          description: Invalid request data
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Parser temporarily unavailable
+      summary: Execute Command on Parser
+      tags:
+      - Parser Management
+      - Command Execution
+  /api/v1/parsers/{parser_id}/status:
+    get:
+      description: "Get comprehensive status information for the specified parser.\n\
+        \    \n    **Status Information:**\n    - Connection status (connected/disconnected)\n\
+        \    - Current activity and workload\n    - Performance metrics\n    - Recent\
+        \ command history\n    - Health indicators\n    - Configuration details"
+      operationId: get_parser_status_api_v1_parsers__parser_id__status_get
+      parameters:
+      - in: path
+        name: parser_id
+        required: true
+        schema:
+          title: Parser Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                capabilities:
+                  max_concurrent: 5
+                  rate_limit: 100
+                  supported_commands:
+                  - scrape_listings
+                  - get_car_details
+                connected: true
+                current_load:
+                  active_commands: 3
+                  cpu_usage: 45.2
+                  memory_usage: 67.8
+                  queued_commands: 1
+                last_seen: '2024-01-01T12:00:00Z'
+                metrics:
+                  avg_response_time_ms: 850
+                  commands_executed: 1247
+                  success_rate: 98.5
+                  uptime_hours: 72.5
+                parser_id: automotive_parser_001
+                status: active
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Parser status retrieved successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Parser not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Parser Status
+      tags:
+      - Parser Management
+      - Parser Status
+  /api/v1/proxies/:
+    get:
+      description: "Get list of proxies with optional filtering and pagination.\n\
+        \    \n    **Filters:**\n    - `status`: Filter by proxy status (active, inactive,\
+        \ expired, blocked)\n    - `country`: Filter by country code (US, KR, etc.)\n\
+        \    - `provider`: Filter by provider (proxy6, oxylabs, etc.)\n    - `healthy_only`:\
+        \ Show only healthy proxies with good performance\n    \n    **Pagination:**\n\
+        \    - `skip`: Number of records to skip\n    - `limit`: Maximum number of\
+        \ records to return\n    \n    **Response includes:**\n    - List of proxy\
+        \ objects with full details\n    - Total count for pagination\n    - Statistics\
+        \ summary"
+      operationId: list_proxies_api_v1_proxies__get
+      parameters:
+      - description: Filter by proxy status
+        in: query
+        name: status
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/ProxyStatus'
+          - type: null
+          description: Filter by proxy status
+          title: Status
+      - description: Filter by country code
+        in: query
+        name: country
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          description: Filter by country code
+          title: Country
+      - description: Filter by provider
+        in: query
+        name: provider
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/ProxyProvider'
+          - type: null
+          description: Filter by provider
+          title: Provider
+      - description: Show only healthy proxies
+        in: query
+        name: healthy_only
+        required: false
+        schema:
+          default: false
+          description: Show only healthy proxies
+          title: Healthy Only
+          type: boolean
+      - description: Number of records to skip
+        in: query
+        name: skip
+        required: false
+        schema:
+          default: 0
+          description: Number of records to skip
+          minimum: 0
+          title: Skip
+          type: integer
+      - description: Maximum records to return
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 50
+          description: Maximum records to return
+          maximum: 1000
+          minimum: 1
+          title: Limit
+          type: integer
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                data:
+                  limit: 50
+                  proxies:
+                  - country: US
+                    endpoint:
+                      host: 185.123.45.67
+                      port: 8080
+                      protocol: http
+                    expires_at: '2024-12-31T23:59:59Z'
+                    provider: proxy6
+                    proxy_id: proxy_proxy6_001234
+                    status: active
+                    usage_stats:
+                      consecutive_failures: 0
+                      success_rate: 95.5
+                      total_requests: 1500
+                  skip: 0
+                  total: 1
+                message: Proxies retrieved successfully
+                success: true
+              schema:
+                $ref: '#/components/schemas/ProxyListResponse'
+          description: Proxies retrieved successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      summary: List Proxies
+      tags:
+      - Proxy Management
+  /api/v1/proxies/maintenance/cleanup:
+    post:
+      description: "Perform maintenance cleanup of expired proxies.\n    \n    **Actions:**\n\
+        \    - Marks expired proxies as inactive\n    - Cleans up stale allocations\n\
+        \    - Updates proxy statistics\n    - Returns cleanup summary"
+      operationId: cleanup_expired_proxies_api_v1_proxies_maintenance_cleanup_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Cleanup completed successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Cleanup Expired Proxies
+      tags:
+      - Proxy Management
+  /api/v1/proxies/maintenance/sync:
+    get:
+      description: "Synchronize proxies with all configured providers.\n    \n   \
+        \ **Actions:**\n    - Fetches active proxies from each provider\n    - Updates\
+        \ local database with new proxies\n    - Updates status of existing proxies\n\
+        \    - Marks expired proxies\n    - Returns synchronization summary per provider"
+      operationId: sync_proxies_api_v1_proxies_maintenance_sync_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Synchronization completed successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Synchronize Proxies
+      tags:
+      - Proxy Management
+  /api/v1/proxies/procurement/purchase:
+    post:
+      description: "Purchase proxies from specified provider.\n    \n    **Request\
+        \ Body:**\n    - `provider`: Proxy provider (proxy6, oxylabs, etc.)\n    -\
+        \ `count`: Number of proxies to purchase\n    - `duration_days`: Proxy duration\
+        \ in days\n    - `country`: Target country code\n    - `description`: Purchase\
+        \ description (optional)\n    \n    **Response:**\n    - Purchase result with\
+        \ cost and proxy details\n    - List of purchased proxies\n    - Provider\
+        \ transaction information"
+      operationId: purchase_proxies_api_v1_proxies_procurement_purchase_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProxyPurchaseRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Proxies purchased successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid purchase request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Insufficient balance
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Purchase Proxies
+      tags:
+      - Proxy Management
+  /api/v1/proxies/rotation/block:
+    post:
+      description: "Report a proxy as blocked and trigger automatic rotation.\n  \
+        \  \n    **Request Body:**\n    - `parser_id`: Parser reporting the block\n\
+        \    - `proxy_id`: Blocked proxy identifier\n    - `reason`: Reason for blocking\
+        \ (optional)\n    \n    **Actions:**\n    - Marks proxy as blocked in statistics\n\
+        \    - Clears current allocation for parser\n    - Triggers automatic rotation\
+        \ on next request"
+      operationId: report_blocked_proxy_api_v1_proxies_rotation_block_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProxyBlockRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Blocked proxy reported successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Proxy not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Report Blocked Proxy
+      tags:
+      - Proxy Management
+  /api/v1/proxies/rotation/request:
+    post:
+      description: "Request a proxy for a parser using intelligent rotation strategies.\n\
+        \    \n    **Rotation Strategies:**\n    - `success_rate`: Select proxy with\
+        \ highest success rate\n    - `round_robin`: Equal distribution across all\
+        \ proxies\n    - `weighted_random`: Random selection weighted by performance\n\
+        \    - `least_failures`: Select proxy with fewest consecutive failures\n \
+        \   - `least_used`: Select least used proxy\n    \n    **Request Body:**\n\
+        \    - `parser_id`: Parser requesting the proxy\n    - `strategy`: Rotation\
+        \ strategy to use\n    - `country`: Preferred country (optional)\n    - `exclude_proxy_ids`:\
+        \ Proxy IDs to exclude (optional)\n    - `force_rotation`: Force new proxy\
+        \ selection (optional)"
+      operationId: request_proxy_rotation_api_v1_proxies_rotation_request_post
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProxyRotationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Proxy allocated successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid rotation request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No suitable proxies found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Request Proxy Rotation
+      tags:
+      - Proxy Management
+  /api/v1/proxies/statistics:
+    get:
+      description: "Get comprehensive proxy statistics and analytics.\n    \n    **Statistics\
+        \ Include:**\n    - Total proxy counts by status and provider\n    - Performance\
+        \ metrics and success rates\n    - Rotation statistics and allocation data\n\
+        \    - Procurement history and costs\n    - Health and usage analytics"
+      operationId: get_proxy_statistics_api_v1_proxies_statistics_get
+      parameters:
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                title: Response Get Proxy Statistics Api V1 Proxies Statistics Get
+                type: object
+          description: Statistics retrieved successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Proxy Statistics
+      tags:
+      - Proxy Management
+  /api/v1/proxies/{proxy_id}:
+    get:
+      description: "Get detailed information about a specific proxy.\n    \n    **Returns:**\n\
+        \    - Complete proxy information including usage statistics\n    - Connection\
+        \ details (without sensitive credentials)\n    - Performance metrics and health\
+        \ status\n    - Historical usage data"
+      operationId: get_proxy_details_api_v1_proxies__proxy_id__get
+      parameters:
+      - description: Proxy identifier
+        in: path
+        name: proxy_id
+        required: true
+        schema:
+          description: Proxy identifier
+          title: Proxy Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Proxy details retrieved successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Proxy not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Proxy Details
+      tags:
+      - Proxy Management
+  /api/v1/proxies/{proxy_id}/usage:
+    post:
+      description: "Record proxy usage statistics for performance tracking.\n    \n\
+        \    **Request Body:**\n    - `success`: Whether the request was successful\n\
+        \    - `response_time_ms`: Response time in milliseconds (optional)\n    -\
+        \ `error_reason`: Reason for failure if not successful (optional)\n    \n\
+        \    **Usage:**\n    This endpoint should be called by parsers after each\
+        \ proxy usage\n    to maintain accurate performance statistics for rotation\
+        \ algorithms."
+      operationId: record_proxy_usage_api_v1_proxies__proxy_id__usage_post
+      parameters:
+      - description: Proxy identifier
+        in: path
+        name: proxy_id
+        required: true
+        schema:
+          description: Proxy identifier
+          title: Proxy Id
+          type: string
+      - in: header
+        name: authorization
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: null
+          title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProxyUsageRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Usage recorded successfully
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid or missing API key
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Proxy not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Record Proxy Usage
+      tags:
+      - Proxy Management
+  /api/v1/ws/broadcast/{room}:
+    post:
+      description: "Broadcast message to a specific room via Socket.IO.\n\n**Room\
+        \ Examples:**\n- `global` - All connected clients\n- `parser:{parser_id}`\
+        \ - Specific parser\n- `developer:{developer_id}` - Specific developer\n-\
+        \ `admins` - Admin users only\n\n**Use Cases:**\n- System notifications\n\
+        - Parser status updates  \n- Emergency announcements\n- Real-time data updates"
+      operationId: broadcast_to_room_api_v1_ws_broadcast__room__post
+      parameters:
+      - in: path
+        name: room
+        required: true
+        schema:
+          title: Room
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastMessage'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Broadcast To Room
+      tags:
+      - WebSocket API
+  /api/v1/ws/connections:
+    get:
+      description: "Get detailed connection information.\n\nReturns:\n    Lists of\
+        \ connected parsers, developers, and active rooms"
+      operationId: get_connections_api_v1_ws_connections_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionsResponse'
+          description: Successful Response
+      summary: Get Connections
+      tags:
+      - WebSocket API
+  /api/v1/ws/health:
+    get:
+      description: "Health check endpoint for WebSocket service.\n\nReturns:\n   \
+        \ WebSocket manager health status and connection statistics"
+      operationId: websocket_health_check_api_v1_ws_health_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+          description: Successful Response
+      summary: Websocket Health Check
+      tags:
+      - WebSocket API
+  /api/v1/ws/notification/system:
+    post:
+      description: 'Broadcast system notification to all connected clients.
+
+
+        **Priority Levels:**
+
+        - `low` - Informational messages
+
+        - `normal` - Standard notifications (default)
+
+        - `high` - Important updates
+
+        - `urgent` - Critical alerts
+
+
+        **Use Cases:**
+
+        - System maintenance announcements
+
+        - Service updates
+
+        - Emergency alerts'
+      operationId: broadcast_system_notification_api_v1_ws_notification_system_post
+      parameters:
+      - in: query
+        name: title
+        required: true
+        schema:
+          title: Title
+          type: string
+      - in: query
+        name: content
+        required: true
+        schema:
+          title: Content
+          type: string
+      - in: query
+        name: priority
+        required: false
+        schema:
+          default: normal
+          title: Priority
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemNotificationResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Broadcast System Notification
+      tags:
+      - WebSocket API
+  /api/v1/ws/send/developer/{developer_id}:
+    post:
+      description: 'Send message directly to a specific developer.
+
+
+        **Use Cases:**
+
+        - Personal notifications
+
+        - Dashboard updates
+
+        - Direct developer communication'
+      operationId: send_to_developer_api_v1_ws_send_developer__developer_id__post
+      parameters:
+      - in: path
+        name: developer_id
+        required: true
+        schema:
+          title: Developer Id
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastMessage'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeveloperMessageResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Send To Developer
+      tags:
+      - WebSocket API
+  /api/v1/ws/send/parser/{parser_id}:
+    post:
+      description: 'Send message directly to a specific parser.
+
+
+        **Use Cases:**
+
+        - Command execution
+
+        - Configuration updates
+
+        - Direct parser communication'
+      operationId: send_to_parser_api_v1_ws_send_parser__parser_id__post
+      parameters:
+      - in: path
+        name: parser_id
+        required: true
+        schema:
+          title: Parser Id
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastMessage'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParserMessageResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Send To Parser
+      tags:
+      - WebSocket API
+  /api/v1/ws/stats:
+    get:
+      description: "Get WebSocket connection statistics.\n\nReturns:\n    Current\
+        \ connection counts, room information, and performance metrics"
+      operationId: websocket_stats_api_v1_ws_stats_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionStats'
+          description: Successful Response
+      summary: Websocket Stats
+      tags:
+      - WebSocket API
+  /health:
+    get:
+      description: "Legacy health check endpoint for backwards compatibility.\n  \
+        \      \n        **Note:** This endpoint is deprecated. Please use `/api/v1/health/`\
+        \ for comprehensive health checks.\n        \n        This simple endpoint\
+        \ returns basic service status for legacy monitoring systems."
+      operationId: legacy_health_check_health_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Service is running
+        '503':
+          description: Service unavailable
+      summary: Legacy Health Check
+      tags:
+      - System Health
+servers:
+- description: Production server
+  url: https://api.unrealon.com
+- description: Staging server
+  url: https://staging-api.unrealon.com
+- description: Local development server
+  url: http://localhost:8000
