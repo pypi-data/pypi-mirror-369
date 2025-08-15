@@ -1,0 +1,269 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-context-compressor"
+version = "0.1.0"
+description = "AI-powered text compression for RAG systems and API calls to reduce token usage and costs"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "AI Context Compressor Team", email = "hello@example.com"}
+]
+maintainers = [
+    {name = "AI Context Compressor Team", email = "hello@example.com"}
+]
+keywords = [
+    "ai",
+    "nlp", 
+    "text-compression",
+    "rag",
+    "tokens",
+    "api-optimization",
+    "semantic-compression",
+    "llm"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Linguistic"
+]
+dependencies = [
+    "numpy>=1.21.0",
+    "scikit-learn>=1.0.0",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0"
+]
+
+[project.optional-dependencies]
+# Core ML dependencies for advanced strategies
+ml = [
+    "torch>=1.9.0",
+    "transformers>=4.20.0",
+    "sentence-transformers>=2.2.0",
+    "datasets>=2.0.0"
+]
+
+# API and web service dependencies
+api = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.22.0",
+    "python-multipart>=0.0.6"
+]
+
+# Integration dependencies
+integrations = [
+    "langchain>=0.0.200",
+    "openai>=1.0.0",
+    "anthropic>=0.3.0",
+    "tiktoken>=0.4.0"
+]
+
+# NLP processing enhancements
+nlp = [
+    "spacy>=3.4.0",
+    "nltk>=3.8.0",
+    "textstat>=0.7.0"
+]
+
+# Development and testing
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0"
+]
+
+# Documentation
+docs = [
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+    "sphinxcontrib-napoleon>=0.7",
+    "myst-parser>=1.0.0"
+]
+
+# All optional dependencies
+all = [
+    "ai-context-compressor[ml,api,integrations,nlp]"
+]
+
+# Full development environment
+full = [
+    "ai-context-compressor[all,dev,docs]"
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/ai-context-compressor"
+Documentation = "https://github.com/yourusername/ai-context-compressor#readme"
+Repository = "https://github.com/yourusername/ai-context-compressor.git"
+"Bug Tracker" = "https://github.com/yourusername/ai-context-compressor/issues"
+Changelog = "https://github.com/yourusername/ai-context-compressor/blob/main/CHANGELOG.md"
+
+[project.scripts]
+context-compressor = "context_compressor.cli:main"
+
+[project.entry-points."context_compressor.strategies"]
+extractive = "context_compressor.strategies.extractive:ExtractiveStrategy"
+# abstractive = "context_compressor.strategies.abstractive:AbstractiveStrategy"
+# semantic = "context_compressor.strategies.semantic:SemanticStrategy"
+# hybrid = "context_compressor.strategies.hybrid:HybridStrategy"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["context_compressor*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+context_compressor = ["py.typed"]
+
+# Black formatting configuration
+[tool.black]
+line-length = 88
+target-version = ["py38", "py39", "py310", "py311", "py312"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# isort configuration
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["context_compressor"]
+known_third_party = [
+    "numpy",
+    "sklearn",
+    "torch",
+    "transformers",
+    "fastapi",
+    "pydantic",
+    "pytest"
+]
+
+# Flake8 configuration (in setup.cfg since flake8 doesn't support pyproject.toml)
+[tool.flake8]
+max-line-length = 88
+extend-ignore = [
+    "E203",  # whitespace before ':'
+    "E501",  # line too long (handled by black)
+    "W503",  # line break before binary operator
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    ".tox"
+]
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sklearn.*",
+    "transformers.*",
+    "sentence_transformers.*",
+    "torch.*",
+    "spacy.*",
+    "nltk.*"
+]
+ignore_missing_imports = true
+
+# Pytest configuration
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+    "--cov=context_compressor",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-fail-under=80"
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "ml: marks tests that require ML dependencies"
+]
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning"
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src/context_compressor"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/conftest.py",
+    "*/__main__.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod"
+]
