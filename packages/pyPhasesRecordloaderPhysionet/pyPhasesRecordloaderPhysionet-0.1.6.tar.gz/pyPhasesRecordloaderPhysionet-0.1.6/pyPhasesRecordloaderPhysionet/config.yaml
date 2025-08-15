@@ -1,0 +1,57 @@
+loader:
+  physionet: &physio
+    dataBase: PhysioNet2018
+    dataBaseVersion: 1.0.0
+    filePath: ./datasets/physio2018
+    dataIsFinal: True
+
+    dataset:
+      name: physio2018-trainonly
+      loaderName: RecordLoaderPhysio
+      fromFiles: False
+      downloader:
+        type: onlineRecordList
+        list: https://physionet.org/static/published-projects/challenge-2018/1.0.0/RECORDS
+        listFilter: training/*
+        idPattern: .*/(.[^-]*?-.[^-]*?).mat
+        basePath: https://physionet.org/static/published-projects/challenge-2018/1.0.0
+        # basePath: gs://challenge-2018-1.0.0.physionet.org
+        extensions: [.mat, .hea]
+        extensionsOptional: [-arousal.mat, .arousal]
+        force: True
+        bucket: challenge-2018-1.0.0.physionet.org
+      filePattern: "*.mat" # if there is
+      recordPattern: "^.[^-]*?-.[^-]*?$"
+
+    sourceChannels:
+      - name: F3-M2
+        type: eeg
+      - name: F4-M1
+        type: eeg
+      - name: C3-M2
+        type: eeg
+      - name: C4-M1
+        type: eeg
+      - name: O1-M2
+        type: eeg
+      - name: O2-M1
+        type: eeg
+      - name: E1-M2
+        type: eog
+      - name: Chin1-Chin2
+        type: emg
+      - name: ABD
+        type: effort
+      - name: CHEST
+        type: effort
+      - name: AIRFLOW
+        type: flow
+      - name: SaO2
+        type: sao2
+      - name: ECG
+        type: ecg
+
+    combineChannels: []
+
+useLoader: physionet
+physionet-path: ./datasets/physio2018
