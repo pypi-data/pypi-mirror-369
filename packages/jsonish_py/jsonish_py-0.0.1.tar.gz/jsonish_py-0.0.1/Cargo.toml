@@ -1,0 +1,15 @@
+[package]
+name = "jsonish_rust"
+version = "0.1.0"
+edition = "2021"
+readme = "README.md"
+
+[lib]
+name = "jsonish_rust"
+crate-type = ["cdylib"]
+path = "src/rust/lib.rs"
+
+[dependencies]
+pyo3 = { version = "0.22", features = ["extension-module"] }
+baml-jsonish = { git = "https://github.com/BoundaryML/baml", branch = "canary", package = "jsonish" }
+serde_json = "1.0"

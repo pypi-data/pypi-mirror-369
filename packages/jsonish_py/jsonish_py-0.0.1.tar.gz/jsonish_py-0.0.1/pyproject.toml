@@ -1,0 +1,23 @@
+[project]
+name = "jsonish_py"
+version = "0.0.1"
+description = "Wrapper around `jsonish` from BAML"
+readme = "README.md"
+authors = [{ name = "Noam Finkelstein", email = "noam.finkelstein@liquid.ai" }]
+requires-python = ">=3.10"
+dependencies = ["pydantic>=2.0.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.4.1"]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+python-source = "src"
+module-name = "jsonish_py._rust"
+features = ["pyo3/extension-module"]
+
+[dependency-groups]
+dev = ["pytest>=8.4.1"]
