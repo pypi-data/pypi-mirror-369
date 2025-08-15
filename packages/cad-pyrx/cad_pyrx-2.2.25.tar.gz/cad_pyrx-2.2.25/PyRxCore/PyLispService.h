@@ -1,0 +1,18 @@
+#pragma once
+class PyLispService
+{
+public:
+    static int execLispFunc();
+    bool tryAddFunc(const std::filesystem::path& fpath, const AcString& pythonFuncName, PyObject* method);
+    void On_kLoadDwgMsg();
+
+    using funcode = int;
+    using CmdNameMap = std::map<AcString, funcode>;
+    using CmdLispMap = std::map<funcode, PyObject*>;
+
+    void cleanup();
+
+    CmdNameMap lispFuncs;
+    CmdLispMap lispFuncCodes;
+};
+

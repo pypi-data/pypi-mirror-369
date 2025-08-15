@@ -1,0 +1,30 @@
+    class AbstractViewTableRecord(PyDb.SymbolTableRecord):
+# (...) #
+        def __init__(self, id: PyDb.ObjectId, mode: PyDb.OpenMode = PyDb.OpenMode.kForRead, erased: bool=False, /) -> None:
+            """
+            This class is the base class for the AcDbViewTableRecord and AcDbViewportTableRecord
+            classes.
+            """
+# (...) #
+        def __reduce__(self, /) -> Any: ...
+# (...) #
+        def brightness(self, /) -> float:
+            """
+            Returns the brightness factor for this viewport.
+            """
+# (...) #
+        @staticmethod
+        def className() -> str: ...
+# (...) #
+        @overload
+        def setUcs(self, origin: PyGe.Point3d, xAxis: PyGe.Vector3d, yAxis : PyGe.Vector3d, /) -> None: ...
+        @overload
+        def setUcs(self, view: PyDb.OrthographicView, /) -> None: ...
+        @overload
+        def setUcs(self, ucsId: PyDb.ObjectId, /) -> None: ...
+        @overload
+        def setUcs(self, *args) -> None:
+            """
+            This function sets the UCS for the view or viewport table record. The new UCS will be
+            unnamed and is defined by origin, xAxis, and yAxis.
+            """
