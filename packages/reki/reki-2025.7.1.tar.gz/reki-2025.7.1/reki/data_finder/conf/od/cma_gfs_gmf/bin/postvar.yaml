@@ -1,0 +1,34 @@
+query:
+  system: cma_gfs_gmf
+  stream: oper
+  type: bin
+  name: postvar
+
+{% set start_time_string = time_vars.year ~ time_vars.month ~ time_vars.day ~ time_vars.hour %}
+
+file_name: 'postvar{{ start_time_string }}_{{ time_vars.forecast_hour }}'
+
+paths:
+  # HPC2023
+  - type: local
+    level: archive
+    path: '/g3/COMMONDATA/OPER/CEMC/GFS_GMF/Fcst-long/{{ start_time_string }}'
+
+  # CMA-PI
+  - type: local
+    level: archive
+    path: '/g1/COMMONDATA/OPER/NWPC/GRAPES_GFS_GMF/Fcst-long/{{ start_time_string }}'
+
+  # CMA Storage
+  - type: local
+    level: storage
+    path: '/sstorage/COMMONDATA/OPER/CEMC/GFS_GMF/Fcst-long/{{ start_time_string }}'
+
+  - type: local
+    level: storage
+    path: '/sstorage1/COMMONDATA/OPER/NWPC/GRAPES_GFS_GMF/Fcst-long/{{ start_time_string }}'
+
+  # CEMC Storage
+  - type: local
+    level: storage
+    path: '{{ query_vars.storage_base }}/GRAPES_GFS_GMF/Fcst-long/{{ start_time_string }}'
