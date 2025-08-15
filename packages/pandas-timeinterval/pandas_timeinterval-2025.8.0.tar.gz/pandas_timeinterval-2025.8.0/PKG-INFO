@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: pandas_timeinterval
+Version: 2025.8.0
+Summary: A package to trim datetime indexed DataFrames and Series in pandas.
+Author-email: Jarrett Bullion <jjrreett@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 jjrreett
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/jjrreett/pandas-timeinterval
+Keywords: pandas,datetime,intervals,dataframes
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.0
+Provides-Extra: dev
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Dynamic: license-file
+
+# pandas-timeinterval
+
+A package to trim datetime-indexed DataFrames and Series in pandas. This package is useful for analyzing sparse DataFrames. It provides functionalities to generate Intervals objects using boolean Series, modify these Intervals using various methods (such as expand, contract), and combine them via set operations. The resulting Intervals can be used to trim any DataFrame using the `.trim` method.
+
+## Features
+
+- **Union and Intersection**: Perform union and intersection operations on interval objects.
+- **Trim**: Trim DataFrame/Series to only include data within specified intervals.
+- **Adjust**: Adjust intervals by a specified timedelta.
+- **Normalize**: Merge overlapping intervals into a single interval.
+- **Flexible Interval Creation**: Create intervals from boolean Series.
+
+## Installation
+
+```bash
+pip install pandas-timeinterval
+```
+
+## Usage
+
+## Union and Intersection Example
+```python
+import pandas as pd
+from pandas_timeinterval import Intervals
+
+# Create two Intervals objects with datetime ranges
+intervals1 = Intervals([(pd.Timestamp("2024-01-01"), pd.Timestamp("2024-01-02"))])
+intervals2 = Intervals([(pd.Timestamp("2024-01-03"), pd.Timestamp("2024-01-04"))])
+
+# Perform union operation
+union_intervals = intervals1.union(intervals2)
+print(union_intervals)
+
+# Perform intersection operation
+intersection_intervals = intervals1.intersection(intervals2)
+print(intersection_intervals)
+```
+
+### Trim Example
+
+```python
+import pandas as pd
+from pandas_timeinterval import Intervals, Interval
+
+# Create a sample DataFrame
+sample_data = pd.Series(
+    [1, 2, 3, 4, 5], index=pd.date_range(start="2021-01-01", periods=5, freq="D")
+)
+
+# Create an Intervals object
+intervals = Intervals([(pd.Timestamp("2021-01-02"), pd.Timestamp("2021-01-03"))])
+
+# Trim the data
+trimmed_data = intervals.trim(sample_data)
+
+print(trimmed_data)
+```
+
+### Adjust Example
+
+```python
+import pandas as pd
+from pandas_timeinterval import Intervals, Interval
+
+# Create Intervals object
+intervals = Intervals(
+    [Interval(pd.Timestamp("2021-01-01"), pd.Timestamp("2021-01-03")),
+     Interval(pd.Timestamp("2021-01-02"), pd.Timestamp("2021-01-04"))]
+)
+
+# Adjust intervals by adding one day
+adjusted_intervals = intervals.adjust(pd.Timedelta(days=1))
+print(adjusted_intervals)
+
+# Normalize intervals to merge overlapping intervals
+normalized_intervals = intervals.normalize()
+print(normalized_intervals)
+```
