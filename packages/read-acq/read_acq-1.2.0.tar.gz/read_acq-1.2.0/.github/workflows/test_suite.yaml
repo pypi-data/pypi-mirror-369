@@ -1,0 +1,128 @@
+name: Tests
+
+# Test on all pushes, except when the push is literally just a tag (because we
+# tag automatically via CI, and therefore there's no extra code in that push).
+on:
+  push:
+    tags-ignore:
+      - 'v*'
+  pull_request:
+
+jobs:
+  tests:
+    env:
+      ENV_NAME: tests
+      PYTHON: ${{ matrix.python-version }}
+      OS: ${{ matrix.os }}
+    name: Testing
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: set PY
+        run: echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_ENV
+      - name: Setup Environment
+        run: |
+          pip install -U coverage
+          pip install .[dev]
+      - name: Run Tests
+        run: |
+          coverage run --parallel-mode -m pytest
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data-tests-${{ matrix.os }}-${{ matrix.python-version }}
+          path: ".coverage.*"
+          if-no-files-found: error
+          include-hidden-files: true
+
+  downstream:
+    env:
+      PYTHON: 3.11
+      OS: ubuntu-latest
+    name: Downstream
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ['edges-io', 'edges-cal','edges-analysis']
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON }}
+      - name: set PY
+        run: echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_ENV
+      - name: Setup Environment
+        run: |
+          pip install -U coverage
+          pip install .[dev]
+      - name: Get downstream package
+        run: |
+          cd ..
+          git clone https://github.com/edges-collab/${{ matrix.package }}
+          cd ${{ matrix.package }}
+          pip install .[dev]
+      - name: Install ipykernel
+        if: matrix.package == 'edges-cal'
+        run: python -m ipykernel install --user --name edges --display-name "edges"
+      - name: Print Versions
+        run: pip freeze | grep -E "edges-|read_acq"
+
+      - name: Run Tests
+        run: |
+          coverage run --parallel-mode -m pytest ../${{ matrix.package}}
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data-downstream-${{ matrix.package }}
+          path: ".coverage.*"
+          if-no-files-found: error
+          include-hidden-files: true
+
+  codecov:
+    needs: [downstream, tests]
+    name: Codecov Reporting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download coverage data.
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-data-*
+          merge-multiple: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install coverage
+        run: pip install coverage
+
+      - run: pip install .[dev]
+
+      - name: Combine/Report
+        run: |
+          coverage combine
+          coverage xml
+
+      - uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          verbose: true
+          files: "./coverage.xml"
+          token: ${{ secrets.CODECOV_TOKEN }}
