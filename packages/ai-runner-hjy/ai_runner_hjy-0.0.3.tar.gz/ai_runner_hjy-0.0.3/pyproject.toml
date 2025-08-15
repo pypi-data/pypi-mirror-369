@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-runner-hjy"
+version = "0.0.3"
+description = "DB-config driven OpenAI-compatible AI runner with auditing, CLI + importable API"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "hjy" }
+]
+keywords = ["openai", "chat", "audit", "mysql", "ai", "runner"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+  "pydantic>=2.0,<3",
+  "pydantic-settings>=2.2,<3",
+  "httpx>=0.27,<1",
+  "loguru>=0.7,<1",
+  "mysql-connector-python>=8.3,<9",
+  "cryptography>=41,<43",
+  "oss2>=2.18,<3",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=7",
+  "pytest-cov>=4",
+]
+web = [
+  "fastapi>=0.111",
+  "uvicorn>=0.30",
+]
+
+[project.urls]
+Homepage = "https://example.com"
+
+[project.scripts]
+ai-runner = "ai_runner_hjy.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ai_runner_hjy*"]
+exclude = ["tests*"]
+
+ 
