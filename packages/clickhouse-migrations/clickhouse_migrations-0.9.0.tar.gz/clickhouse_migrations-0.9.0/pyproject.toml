@@ -1,0 +1,61 @@
+[project]
+name = "clickhouse-migrations"
+description = "Simple file-based migrations for clickhouse"
+authors = [
+    {name = "Aleh Strakachuk", email = "zifter.ai+clickhouse.migrations@gmail.com"},
+]
+
+urls.Homepage = "https://github.com/zifter/clickhouse-migrations"
+urls.Source = "https://github.com/zifter/clickhouse-migrations"
+urls.Tracker = "https://github.com/zifter/clickhouse-migrations/issues"
+urls.Changelog = "https://github.com/zifter/clickhouse-migrations/blob/main/CHANGELOG.md"
+
+requires-python = ">=3.9, <4"
+keywords = [
+    "clickhouse",
+    "migrations",
+]
+license = {text = "MIT"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "clickhouse-driver>=0.2.2",
+]
+optional-dependencies.testing = [
+    "pytest==8.4.1",
+    "pytest-cov==6.2.1",
+]
+dynamic =["version", "readme"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
+version = {attr = "clickhouse_migrations.__version__"}
+
+[tool.setuptools]
+package-dir = { "clickhouse_migrations" = "src/clickhouse_migrations", "tests" = "src/tests" }
+packages = [
+    "clickhouse_migrations"
+]
+
+[tool.distutils.bdist_wheel]
+universal = true
+
+[tool.isort]
+profile = "black"
+
+[tool.hatch.version]
+source = "vcs"
+
+[project.scripts]
+clickhouse-migrations = "clickhouse_migrations.command_line:main"
