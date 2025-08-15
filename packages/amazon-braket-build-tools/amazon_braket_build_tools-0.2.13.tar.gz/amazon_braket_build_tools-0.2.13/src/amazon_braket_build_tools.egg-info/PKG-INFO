@@ -1,0 +1,98 @@
+Metadata-Version: 2.4
+Name: amazon-braket-build-tools
+Version: 0.2.13
+Summary: A set of build tools for Amazon Braket
+Home-page: https://github.com/aws/amazon-braket-build-tools
+Author: Amazon Web Services
+License: Apache License 2.0
+Keywords: Amazon AWS Quantum
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >= 3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: NOTICE
+Requires-Dist: flake8
+Provides-Extra: test
+Requires-Dist: black; extra == "test"
+Requires-Dist: coverage; extra == "test"
+Requires-Dist: isort; extra == "test"
+Requires-Dist: pre-commit; extra == "test"
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-benchmark; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: pytest-rerunfailures; extra == "test"
+Requires-Dist: pytest-xdist; extra == "test"
+Requires-Dist: sphinx; extra == "test"
+Requires-Dist: sphinx-rtd-theme; extra == "test"
+Requires-Dist: sphinxcontrib-apidoc; extra == "test"
+Requires-Dist: tox; extra == "test"
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+## Braket Build Tools
+
+## Installing the Amazon Braket Build Tools
+
+The Amazon Braket Build Tools can be installed with pip as follows:
+
+```bash
+pip install amazon-braket-build-tools
+```
+
+You can also install from source by cloning this repository and running a pip install command in the root directory of the repository:
+
+```bash
+git clone https://github.com/aws/amazon-braket-build-tools.git
+cd amazon-braket-build-tools
+pip install .
+```
+
+### Flake8 Checkstyle Plugin
+
+This tool checks python source code for Braket checkstyle standards as a Flake8 plugin.
+Installing amazon-braket-build-tools automatically registers this plugin with flake8 and
+will be run by default whenever flake8 is used.
+
+#### Testing The Installation
+To test if the extension has been installed run:
+```bash
+flake8 --enable-extensions=BCS --help
+```
+At the bottom of the output you should see braket checkstyle among your installed plugins:
+```
+Installed plugins: braket.flake8_plugins.braket_checkstyle_plugin: 0.1.0
+```
+
+#### Running
+To run with the extension enabled, just run flake8 on the module of your choice.
+For example:
+```bash
+flake8 --enable-extensions=BCS src
+```
+
+
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+## License
+
+This project is licensed under the Apache-2.0 License.
+
