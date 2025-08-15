@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# This file is part of the Torii ILA project
+# https://github.com/shrine-maiden-heavy-industries/torii-ila
+
+ACTION!="add|change|bind",GOTO="torii_ila_rules_end"
+
+SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="6190", GROUP="plugdev", MODE="0660", TAG+="uaccess"
+
+LABEL="torii_ila_rules_end"
