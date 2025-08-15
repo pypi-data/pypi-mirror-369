@@ -1,0 +1,202 @@
+Metadata-Version: 2.4
+Name: wetest-uiautomator2
+Version: 1.7.10
+Author: Tencent WeTest
+Author-email: WeTest@wetest.net
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: adbutils
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+
+# Wetest UIAutomator2 Python Client
+
+**Wetest UIAutomator2 Python Client** 是一款轻量化的 Python 客户端框架，对于 [**Wetest Appium Server**](https://git.woa.com/CloudTesting/UDT/appium-uiautomator2-server) 提供了完整的 API 支持。在 Wetest UIAutomator2 Python Client 的帮助下，您可以较为容易地跨平台编写和运行安卓 UI 自动化脚本。
+
+Wetest UIAutomator2 Python Client 提供了 **AndroidDriver，ServerRunner 和 Installer 三大组件**（以下简称 driver，runner 和 installer）和 **utils 工具库**：
+
+* **AndroidDriver** 对 Wetest Appium Server 提供了完整的 API 支持，创建 driver 后即可使用它进行**自动化控制**；
+* **ServerRunner** 能够在自动地在安卓设备端**自动启动和停止 server**；
+* **Installer** 对多种机型进行了适配，能够提供**自动化的弹窗解决方案**；
+* **utils** 工具库集成了便捷的**大文件夹推送，权限设置，端口转发等功能**。
+
+## 使用
+
+### 安装
+
+使用以下命令可以直接从腾讯 Pypi 源进行安装，或在仓库 release 中下载 `.whl` 包进行安装。
+
+```shell
+pip install wetest-uiautomator2 --upgrade --extra-index-url https://mirrors.tencent.com/repository/pypi/tencent_pypi/simple
+```
+
+### API 说明文档
+
+**文档链接：**[**Wetest UIAutomator2 Python Client API 说明文档**](https://udt.woa.com/v1/docs/uiautomator2-python-client/py-modindex.html)
+
+此外，项目的 HTML 文档也可以在仓库 `./docs/build/html/index.html` 中找到，拉取项目到本地后通过浏览器打开。
+
+### 样例
+
+项目的基本框架可以在仓库 `./example.py` 中找到。
+
+基于 Pytest 的样例可以在仓库目录 `./wetest_uiautomator2/test/` 下找到，可以通过命令行运行：
+
+```shell
+pytest -s ./test/test_android_getter.py
+pytest -s ./test/test_android_poster.py
+```
+
+### Startup
+
+通过 adb 命令将 [Appium Server](https://git.woa.com/CloudTesting/UDT/appium-uiautomator2-server) 包推送到手机内：
+
+```shell
+# ServerRunner 同样提供了推包能力，但更推荐在初次连接手机时进行手动配置，避免重复推包和 adb 不稳定造成的 bug
+adb push ./appium-uiautomator2.apk /data/local/tmp/udt/uia2.jar  
+```
+
+在 Python 编写自动化流程的基本框架：
+
+```python
+from adbutils import adb
+from wetest.uiautomator2 import AndroidDriver, ServerRunner, Installer, utils
+
+d = adb.device()  # 获取目标设备
+
+# 创建 runner, 拉起 Appium server
+runner = ServerRunner(d)
+# 创建 driver, 开始自动化流程
+driver = AndroidDriver(d, timeout=1000, debug=False, traceback=True)
+# 通过 runner 和 driver 创建 installer
+installer = Installer(runner, driver)
+```
+
+#### 1. 使用 ServerRunner 和 AndroidDriver
+
+* driver 和 runner 都是依赖 AdbDevice 存在的实例，可以较为容易地进行多设备管理；
+* driver 在 server 启动后即可直接创建并使用，driver 中集成了丰富的 api 以供自动化使用；
+* runner 本质上是一个设备端 Appium server 的自动管理器，通过实例化 runner 来提供 driver 的启动环境。如有需要，也可以自行手动启动 server；
+* 本框架和 [WeAutomator 2.0](https://git.woa.com/CloudTesting/UDT/weautomator-vscode) **共享了相同后端**，在启动 WeAutomator 页面后，您甚至可以**省却 runner 直接实例化 driver**。
+
+```python
+with ServerRunner(d) as runner:  # 推荐使用 with 管理其生命周期
+    driver = AndroidDriver(d, timeout=1000, debug=True)
+    # 查找并点击元素
+    element = driver.find(text="startup", retry=10, interval=2000)
+    element.click()
+```
+
+driver 支持丰富的元素查找能力，除基本属性之外，还提供了强大且灵活的正则匹配接口：
+
+```python
+""" driver.finds(${prefix}${suffix} = value)
+
+* ${prefix} 可为 ['text', 'classname', 'package', 'id', 'content_desc'] 参数中的任意一个
+* ${suffix} 可为 ['_contains', '_matches', '_startswith', '_endswith'] 其中任意一个
+* find(), finds(), inspect() 接口的任意参数都可以进行一种或多种正则匹配
+* 参数支持传入列表，列表内各搜索条件为 or 关系（取并集）
+"""
+
+elements = driver.finds(text="text", package="com.tencent.pkg")
+
+elements = driver.finds(
+    id_startswith="prefix",
+    text_endswith=["suffixA", "suffixB"],
+    package_contains="keyword",
+    classname_matches="\w*regular_expression*",
+)
+```
+
+driver 支持常用的自动化API、强大的自动化手势操作和高级 API，请通过 [API 文档](https://udt.woa.com/v1/docs/uiautomator2-python-client/py-modindex.html) 了解和查阅：
+
+```python
+print(driver.page_source())
+decoded_bytes = driver.screenshot(save_path="./screenshot.png")
+
+driver.tap(x=1000, y=500)  # 点击
+driver.long_press(x=1000, y=500, duration_ms=1000)  # 长按
+driver.appium_pinch_in(percent=0.5, area=(100, 100, 100, 100), speed=100)  # 手指捏合
+
+driver.press_back()  # 返回键
+driver.accept_alert(button_label="Accept")  # 通过点击标签为 "Accept" 的选项接受弹窗
+driver.schedule_action(
+    name="popup", steps=[ScheduledStep(type="source", name="fetchPageSourceStep", payload={"subtype": "xml"})]
+)  # 规划 Actions
+```
+
+driver 提供了灵活的错误处理器 `expect()`，以供编写简洁优雅的函数式自动化流程：
+
+```python
+# Usage: driver.expect().method(*args, **kwargs)
+
+# 直接跳过错误，替代了传统的 try-catch-pass 流程
+driver.expect().finds(text=["settings", "设置"]) 
+
+# expect 的高级使用
+def err_handler(exception, callback_info):  # 如果回调函数包含 'exception' 参数名，则会自动捕获到的错误本身
+    print(f"handling exception {exception.__class__.__name__} : {callback_info}")
+
+driver.expect(
+    handler=err_handler,  # 回调函数
+    msg="some message",   # 捕获错误时打印自定义信息
+    show_log=True,        # 是否打印错误信息    
+
+    # 余下所有参数都会传入回调函数，请确保参数名正确
+    callback_info="some information",
+).find(
+    retry=1,
+    interval=1,
+    text="不存在的元素",
+).click()  # 通过函数式的链式调用，简化自动化流程中的错误处理
+
+""" outputs:
+$ expect().find() raises AppiumAndroidException: An element could not be located on the page
+$ some message
+$ handling exception AppiumAndroidException : some information
+$ ignores a method call: click
+"""
+```
+
+#### 2. 通过 Installer 进行免弹窗安装
+
+* 此外，installer 是通过集成和封装 driver、runner 能力而形成的免弹窗解决方案。
+* 目前支持了 OPPO、VIVO、小米等应用安装自动化较为复杂的设备厂商。
+
+```python
+with ServerRunner(d) as runner:
+    driver = AndroidDriver(d, timeout=1000, debug=True)
+    installer = Installer(runner=runner, driver=driver)
+    installer.install(package_path, package_name)  # 安装 APK
+```
+
+#### 3. 通过 utils 工具实现 abd 相关操作
+
+utils 工具封装了部分常用的 abd 相关功能，包括镜像推送完整目录、端口转发、设置权限等。
+
+```python
+from wetest.uiautomator2 import utils
+
+serial = adb.device().serial
+
+utils.adb_forward(serial, local=8000, remote=8000)
+utils.adb_forward_remove(serial, local=8000)
+utils.push_dir(serial, source="./source", target="/data/local/tmp", filters=[".*\.txt", "([^/]+\.(?:jpg|png))"])
+utils.set_permission(serial, "com.tencent.qq").readwrite()
+```
+
+## 作者信息 & 致谢
+
+[**Tencent WeTest Team**](https://wetest.qq.com)
+
+<xiutongmu@tencent.com>
+
+感谢以下开源项目的启发：
+
+* <https://github.com/SonicCloudOrg/sonic-uiautomator2-python-client>
+* <https://github.com/appium/appium-uiautomator2-server>
+* <https://github.com/openatx/facebook-wda>
