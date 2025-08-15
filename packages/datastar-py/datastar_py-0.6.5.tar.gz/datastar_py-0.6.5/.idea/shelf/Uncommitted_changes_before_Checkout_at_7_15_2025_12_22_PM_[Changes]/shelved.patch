@@ -1,0 +1,19 @@
+Index: .github/workflows/sdk-adr.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>name: SDK Tests\n\non:\n  push:\n    branches: [ main, develop ]\n  pull_request:\n    branches: [ main, develop ]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Install uv\n        uses: astral-sh/setup-uv@v6\n        with:\n          version: \"0.7.21\"\n\n      - name: \"Set up Python\"\n        uses: actions/setup-python@v5\n        with:\n          python-version: \"3.13\"\n\n      - name: Run SDK test server\n        run: uv run sdk-test.py &\n\n      - name: Checkout datastar repository\n        uses: actions/checkout@v4\n        with:\n          repository: gazpachoking/datastar\n          ref: fix-go-sdk-tests\n          path: datastar\n\n      - name: Set up Go\n        uses: actions/setup-go@v5\n        with:\n          go-version: '1.22'\n          cache-dependency-path: datastar/sdk/tests\n\n      - name: Run SDK tests against test server\n        working-directory: datastar/sdk/tests\n        run: go run ./cmd/datastar-sdk-tests -server http://localhost:8000
+===================================================================
+diff --git a/.github/workflows/sdk-adr.yaml b/.github/workflows/sdk-adr.yaml
+--- a/.github/workflows/sdk-adr.yaml	(revision 52268261c4254033b7a8e1cb2cb37f3c360e0932)
++++ b/.github/workflows/sdk-adr.yaml	(date 1752594808394)
+@@ -29,8 +29,8 @@
+       - name: Checkout datastar repository
+         uses: actions/checkout@v4
+         with:
+-          repository: gazpachoking/datastar
+-          ref: fix-go-sdk-tests
++          repository: starfederation/datastar
++          ref: develop
+           path: datastar
+ 
+       - name: Set up Go
