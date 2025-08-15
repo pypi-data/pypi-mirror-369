@@ -1,0 +1,29 @@
+[project]
+name = "cap-naive-bayes"
+version = "0.1.3"
+description = "A lightweight implementation of a multinomial Naive Bayes classifier for Annotation Transfer of single-cell data."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.0.0",
+    "pandas>=2.0.0",
+    "pyarrow>=21.0.0",
+    "scipy>=1.16.0",
+]
+
+[build-system]
+requires = ["hatchling >= 1.27"]
+build-backend = "hatchling.build"
+
+
+[dependency-groups]
+dev = [
+    "anndata>=0.11.4",
+    "cap-anndata>=0.5.0",
+    "pytest>=8.4.1",
+    "zarr>=2.18.3",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+env = ["LOG_LEVEL = DEBUG" ]
