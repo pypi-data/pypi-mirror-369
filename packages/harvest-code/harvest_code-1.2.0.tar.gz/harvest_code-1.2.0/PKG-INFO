@@ -1,0 +1,30 @@
+Metadata-Version: 2.4
+Name: harvest-code
+Version: 1.2.0
+Summary: Harvest codebases into portable JSON + chunks for RAG and tooling
+Author-email: veyorokon <veyorokon@users.noreply.github.com>
+License-Expression: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Environment :: Console
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# code-harvest
+
+Harvest codebases into portable JSON + chunks for search, RAG, and tooling.
+
+## Install
+```bash
+pipx install harvest-code
+```
+
+## Quick start
+```bash
+harvest reap . -o out.harvest.json
+harvest query out.harvest.json --entity chunks --public true --path-glob 'src/**'
+harvest serve out.harvest.json
+```
+
+Visit http://localhost:8787 to browse your harvested codebase.
