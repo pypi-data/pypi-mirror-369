@@ -1,0 +1,124 @@
+Metadata-Version: 2.4
+Name: air-convert
+Version: 0.3.0
+Summary: Utility for converting HTML to Air Tags
+Author-email: "Audrey M. Roy Greenfeld" <audrey@feldroy.com>, Daniel Roy Greenfeld <daniel@feldroy.com>
+Maintainer-email: "Audrey M. Roy Greenfeld" <audrey@feldroy.com>, Daniel Roy Greenfeld <daniel@feldroy.com>
+License: Apache 2
+Project-URL: bugs, https://github.com/feldroy/air-convert/issues
+Project-URL: changelog, https://github.com/feldroy/air-convert/blob/master/changelog.md
+Project-URL: homepage, https://github.com/feldroy/air-convert
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development
+Classifier: Typing :: Typed
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Web Environment
+Classifier: Framework :: FastAPI
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: air>=0.23.0
+Requires-Dist: beautifulsoup4>=4.13.4
+Requires-Dist: typer
+Requires-Dist: lxml
+Provides-Extra: dev
+Requires-Dist: rust-just; extra == "dev"
+Provides-Extra: test
+Requires-Dist: coverage; extra == "test"
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: ruff; extra == "test"
+Requires-Dist: ty; extra == "test"
+Requires-Dist: ipdb; extra == "test"
+Requires-Dist: rust-just; extra == "test"
+Dynamic: license-file
+
+# air-convert
+
+![PyPI version](https://img.shields.io/pypi/v/air-convert.svg)
+
+Utility for converting HTML to Air Tags
+
+* PyPI package: https://pypi.org/project/air-convert/
+* Free software: MIT License
+* Documentation: https://github.com/feldroy/air_convert
+
+## Installation
+
+Pip:
+
+```sh
+pip install air-covert
+```
+
+UV:
+
+```sh
+uv add air-covert
+```
+
+
+## Usage from the command line
+
+```sh
+air-convert local/path/to/my/page.html
+```
+
+When combined with curl or wget:
+
+```sh
+curl -o page.html https://example.com && air-convert page.html
+```
+
+```sh
+wget -O page.html https://example.com && air-convert page.html
+```
+
+
+
+## Programmatic usage
+
+
+```python
+from air_convert import html_to_airtags
+html_to_airtags("""
+<main>
+    <article class="prose">
+        <h1>Hello, world</h1>
+        <p>Let's soar into the air!</p>
+    </article>
+</main>
+""")
+```
+
+Generates:
+
+```python
+air.Main(
+    air.Article(
+        air.H1("Hello, world"),
+        air.P("Let\'s soar into the air!"),
+        class_="prose"
+    )
+)
+```
+
+## Credits
+
+- This package was created with the awesome [Cookiecutter](https://github.com/audreyfeldroy/cookiecutter) and the [audreyfeldroy/cookiecutter-pypackage](https://github.com/audreyfeldroy/cookiecutter-pypackage) project template.
+- Uses the elegant Typer framework to provide a CLI interface
+- Relies on BeautifulSoup4 for parsing of HTML
+- Formatting of generated code provided by Ruff
+
