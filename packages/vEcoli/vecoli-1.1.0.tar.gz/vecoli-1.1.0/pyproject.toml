@@ -1,0 +1,111 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+    "Cython",
+    "numpy"
+]
+build-backend = "setuptools.build_meta"
+# build-backend = "maturin"
+
+[project]
+name = "vEcoli"
+version = "1.1.0"
+description = "Whole Cell E. coli Model"
+requires-python = "==3.12.9"
+dependencies = [
+    "numpy",
+    "scipy",
+    "biopython",
+    "cvxpy",
+    "cython",
+    "dill",
+    "duckdb",
+    "gcsfs",
+    "pyarrow",
+    "ipdb",
+    "ipython",
+    "line-profiler",
+    "altair",
+    "numba>=0.58.0",
+    "orjson",
+    # Constraint can be removed once cvxpy supports newer ortools
+    # than 9.12, need 9.11 to support newer protobuf (see gh-326)
+    "ortools<9.11",
+    "pandas",
+    "polars",
+    "pymunk",
+    "scikit-image",
+    "scikit-learn",
+    "seaborn",
+    "swiglpk",
+    "sympy",
+    "tqdm",
+    "unum",
+    "vivarium-core",
+    "imageio[ffmpeg]",
+    "statsmodels",
+    "ecos",
+    "matplotlib",
+    "iteround",
+    "stochastic-arrow",
+    "autograd",
+    "xmltodict",
+    # Required to save Altair charts as PNG
+    "vl-convert-python",
+    "ijson"
+    
+]
+# "periodictable",
+#     "pyscf",
+#     "openfermion",
+#     "jax",
+#     "optax",
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "mypy",
+    "ruff",
+    "pre-commit",
+    "jupyter",
+    "marimo[sql,lsp]"
+]
+docs = [
+    "Sphinx",
+    "sphinx-rtd-theme",
+    "nbsphinx"
+]
+
+[tool.setuptools]
+packages = [
+    "configs",
+    "ecoli",
+    "reconstruction",
+    "runscripts",
+    "validation",
+    "wholecell",
+    "app"
+]
+
+[dependency-groups]
+app = [
+    "fastapi>=0.116.1",
+    "marimo[lsp,sql]>=0.14.7",
+    "polars-lts-cpu>=1.31.0",
+    "pydantic>=2.11.7",
+    "uvicorn>=0.34.3",
+    "pydantic-settings>=2.10.1",
+    "requests>=2.32.4",
+    "python-multipart>=0.0.20",
+
+]
+inference = [
+    "ray[data,default,serve,train,tune]>=2.48.0",
+    "dask[complete]>=2025.7.0",
+    "torch[opt-einsum,optree]>=2.7.1",
+    "xgboost>=3.0.3",
+    "lightgbm>=4.6.0",
+    "pennylane>=0.42.1",
+    "rdkit>=2025.3.5",
+]
