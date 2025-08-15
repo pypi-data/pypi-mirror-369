@@ -1,0 +1,22 @@
+default namespace = ""
+datatypes xs = 'http://www.w3.org/2001/XMLSchema-datatypes'
+
+grammar {
+start = barcodes | barcode | python
+barcodes = element barcodes { (python | barcode)* }
+barcode =
+  element barcode {
+    attribute type { text },
+    attribute code { text },
+    attribute file { text }?,
+    attribute size { text }?,
+    attribute hideinfo { text }?,
+    attribute height { text }?,
+    attribute width { text }?,
+    attribute textxy { text }?,
+    attribute color { text }?,
+    attribute imgoutlib { text }?,
+    empty
+  }
+python = element python { text }
+}
