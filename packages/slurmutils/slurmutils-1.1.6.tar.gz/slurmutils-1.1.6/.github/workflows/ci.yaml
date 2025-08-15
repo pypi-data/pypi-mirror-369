@@ -1,0 +1,108 @@
+# Copyright 2023-2025 Canonical Ltd.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License version 3 as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name: slurmutils tests
+on:
+  workflow_call:
+  pull_request:
+
+jobs:
+  inclusive-naming-check:
+    name: Inclusive naming check
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run tests
+        uses: get-woke/woke-action@v0
+        with:
+          fail-on-error: true
+
+  commitlint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install commitlint
+        run: npm install -D @commitlint/cli @commitlint/config-conventional
+      - name: Validate PR commits with commitlint
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Just
+        uses: extractions/setup-just@v2
+        with:
+          just-version: 1.39.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: 0.5.8
+      - name: Run linters
+        run: just lint
+
+  typecheck:
+    name: Static type checking
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Just
+        uses: extractions/setup-just@v2
+        with:
+          just-version: 1.39.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: 0.5.8
+      - name: Run tests
+        run: just typecheck
+
+  unit-test:
+    name: Unit tests
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Just
+        uses: extractions/setup-just@v2
+        with:
+          just-version: 1.39.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: 0.5.8
+      - name: Run tests
+        run: just unit
