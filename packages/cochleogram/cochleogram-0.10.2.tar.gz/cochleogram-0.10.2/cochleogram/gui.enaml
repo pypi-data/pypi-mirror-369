@@ -1,0 +1,823 @@
+import logging
+log = logging.getLogger(__name__)
+
+from importlib import resources
+from pathlib import Path
+import re
+import urllib.request
+
+from enaml.application import deferred_call
+from enaml.core.api import Conditional, Looper
+from enaml.icon import Icon, IconImage
+from enaml.image import Image
+from enaml.layout.api import align, hbox, InsertTab, RemoveItem, spacer, TabLayout, vbox
+from enaml.stdlib.fields import FloatField
+from enaml.stdlib.message_box import critical, information, question
+from enaml.qt.QtCore import Qt
+from enaml.widgets.api import (Action, ActionGroup, ButtonGroup, CheckBox,
+                               Container, DockArea, DockItem, DualSlider,
+                               Feature, FileDialogEx, Form, HGroup, Html,
+                               Label, MainWindow, Menu, MenuBar, MPLCanvas,
+                               ObjectCombo, PopupView, ProgressBar, PushButton,
+                               Slider, VGroup, Window)
+
+
+from ndimage_enaml.gui import bind_focus, DisplayConfig, NDImageCanvas
+
+from cochleogram import plot, util
+from cochleogram.model import Cochlea
+from cochleogram.presenter import CochleogramPresenter, CellCountPresenter
+from cochleogram import readers
+
+
+def load_icon(name):
+    data = resources.files('cochleogram.icons').joinpath(f'{name}.png').read_bytes()
+    icg = IconImage(image=Image(data=data))
+    return Icon(images=[icg])
+
+
+################################################################################
+# Cochlea reader functions 
+################################################################################
+def open_cochlea_dataset(window, reader, pathtype):
+    # Check for unsaved changes
+    if any(p.unsaved_changes for p in window.presenters):
+        q = 'There are unsaved changes. Your current analysis will be lost. Are you sure?'
+        button = question(None, 'Confirm action', q)
+        if button is None or button.text == 'No':
+            return
+
+    if pathtype == 'dir':
+        fn = FileDialogEx.get_existing_directory
+    elif pathtype == 'file':
+        fn = FileDialogEx.get_open_file_name
+    path = fn(window, current_path=str(window.current_path))
+    if path:
+        load_cochlea_dataset(path, window, reader)
+
+
+def open_processed_cochlea_dir(window):
+    return open_cochlea_dataset(window, readers.ProcessedCochleaReader, 'dir')
+
+
+def open_lif_cochlea_file(window):
+    return open_cochlea_dataset(window, readers.LIFCochleaReader, 'file')
+
+
+def open_czi_cochlea_dir(window):
+    return open_cochlea_dataset(window, readers.CZICochleaReader, 'dir')
+
+
+def load_cochlea_dataset(path, window, reader_class=None):
+    path = Path(path)
+    if reader_class is None:
+        if path.is_dir():
+            reader_class = readers.CZICochleaReader
+        elif path.suffix.lower() == '.lif':
+            reader_class = readers.LIFCochleaReader
+        else:
+            raise ValueError(f'Unrecognized format for {path}')
+
+    # First, make sure we can load the data
+    reader = reader_class(path)
+    if len(collection := reader.load_collection(False)) == 0:
+        raise ValueError('No data found')
+    window.collection = collection
+
+    workspace = window.find('dock_area')
+    for p in window.presenters:
+        remove_dock_item(workspace, p)
+
+    # Now, load new region
+    window.current_path = path
+    window.reader = reader
+    window.presenters = [CochleogramPresenter(p, reader) for p in window.collection]
+    for p in window.presenters:
+        target = add_dock_item(workspace, p, 'help', CochleogramDockItem)
+
+
+################################################################################
+# 63x functions (i.e., cochleogram counts)
+################################################################################
+def open_folder_for_HC_counts(window, reader, pathtype):
+    # Check for unsaved changes
+    if any(p.unsaved_changes for p in window.presenters):
+        q = 'There are unsaved changes. Your current analysis will be lost. Are you sure?'
+        button = question(None, 'Confirm action', q)
+        if button is None or button.text == 'No':
+            return
+
+    if pathtype == 'dir':
+        fn = FileDialogEx.get_existing_directory
+    elif pathtype == 'file':
+        fn = FileDialogEx.get_open_file_name
+    path = fn(window, current_path=str(window.current_path))
+    if path:
+        load_tile_dataset(path, window, reader)
+
+
+def open_lif_file_for_HC_counts(window):
+    return open_folder_for_HC_counts(window, readers.LIFTileReader, 'file')
+
+
+def open_czi_folder_for_HC_counts(window):
+    return open_folder_for_HC_counts(window, readers.CZITileReader, 'dir')
+
+
+def load_tile_dataset(path, window, reader_class=None):
+    path = Path(path)
+    if reader_class is None:
+        if path.suffix.lower() == '.lif':
+            reader_class = readers.LIFTileReader
+        elif path.is_dir():
+            reader_class = readers.CZITileReader
+        else:
+            raise ValueError(f'Unrecognized format for {path}')
+
+    # First, make sure we can load the data
+    reader = reader_class(path)
+    if len(collection := reader.load_collection(False)) == 0:
+        raise ValueError('No data found')
+    window.collection = collection
+
+    # Remove existing cochlea
+    workspace = window.find('dock_area')
+    for p in window.presenters:
+        remove_dock_item(workspace, p)
+
+    # Now, show region collection
+    window.current_path = path
+    window.reader = reader
+    window.presenters = [CellCountPresenter(t, reader) for t in window.collection]
+    for p in window.presenters:
+        target = add_dock_item(workspace, p, 'help', TileDockItem)
+
+
+################################################################################
+# Supporting functions
+################################################################################
+def load_dataset(path, window, reader_class=None):
+    path = Path(path)
+    if '63x' in path.stem:
+        return load_tile_dataset(path, window, reader_class)
+    else:
+        return load_cochlea_dataset(path, window, reader_class)
+
+
+def add_dock_item(dock_area, presenter, target, dock_item_class):
+    item = dock_item_class(dock_area, name=f'dock_piece_{presenter.obj}', presenter=presenter)
+    op = InsertTab(item=item.name, target=target)
+    dock_area.update_layout(op)
+    return item.name
+
+
+def remove_dock_item(dock_area, presenter):
+    op = RemoveItem(item=f'dock_piece_{presenter.obj}')
+    dock_area.update_layout(op)
+
+
+def save_state(parent, presenters):
+    q = 'Your previous analysis will be overwritten. Are you sure?'
+    button = question(parent, 'Confirm action', q)
+    if button is not None and button.text == 'Yes':
+        for presenter in presenters:
+            presenter.save_state()
+        information(parent, 'Analysis saved', 'Analysis has been saved.')
+
+
+def load_state(parent, presenters):
+    if any(p.unsaved_changes for p in presenters):
+        q = 'There are unsaved changes. Your current analysis will be lost. Are you sure?'
+        button = question(parent, 'Confirm action', q)
+        if button is None or button.text == 'No':
+            return
+    for presenter in presenters:
+        try:
+            presenter.load_state()
+            information(parent, 'Analysis loaded', 'Analysis has been loaded.')
+        except Exception as e:
+            log.exception(e)
+            information(parent, 'Error', str(e))
+
+
+################################################################################
+# Shared widgets
+################################################################################
+enamldef PBActionClearSpiral(PushButton):
+    attr presenter
+    attr is_copy = False
+
+    text = 'Clear spiral'
+    enabled << (presenter.current_spiral_artist is not None) \
+        and presenter.current_spiral_artist.has_nodes and not is_copy
+    clicked ::
+        button = question(self, 'Confirm action', 'Are you sure you want to remove the current spiral?')
+        if button is not None and button.text == 'Yes':
+            presenter.action_clear_spiral()
+
+
+enamldef PBActionClearCells(PushButton):
+    attr presenter
+    attr is_copy = False
+
+    text = 'Clear all cells'
+    enabled << (presenter.current_cells_artist is not None) \
+        and presenter.current_cells_artist.has_nodes \
+        and not is_copy
+    clicked ::
+        button = question(self, 'Confirm action', 'Are you sure you want to remove the current cells?')
+        if button is not None and button.text == 'Yes':
+            try:
+                presenter.action_clear_cells()
+            except Exception as e:
+                log.exception(e)
+                information(self, 'Error', str(e))
+
+
+enamldef ActionGuessCells(HGroup):
+    attr presenter
+    attr is_copy = False
+
+    constraints = [
+        guess_width.width == 50,
+        guess_spacing.width == 50,
+    ]
+
+    padding = 0
+    align_widths = False
+    share_layout = True
+    trailing_spacer = spacer(0)
+    enabled << (presenter.current_spiral_artist is not None) \
+        and presenter.current_spiral_artist.has_spline
+    Label:
+        text = 'Find cells within'
+    FloatField: guess_width:
+        value := presenter.guess_width
+    Label:
+        text = 'μm of spline with a spacing of'
+    FloatField: guess_spacing:
+        value := presenter.guess_spacing
+    Label:
+        text = 'μm using'
+    ObjectCombo: guess_channel:
+        items = presenter.obj.channel_names
+        selected := presenter.guess_channel
+
+    PushButton:
+        text = 'Count'
+        clicked ::
+            button = question(self, 'Confirm action', f'Are you sure you want to overwrite the existing cells?')
+            if button is not None and button.text == 'Yes':
+                try:
+                    n = presenter.action_guess_cells()
+                    information(self, 'Info', f'Found {n} cells')
+                except Exception as e:
+                    log.exception(e)
+                    information(self, 'Error', str(e))
+
+
+def get_tile_di_title(unsaved_changes, obj):
+    pre = '*' if unsaved_changes else ''
+    if obj.frequency is not None:
+        return f'{pre}{obj.frequency} kHz - {obj.name}'
+    return f'{pre}{obj.name}'
+
+
+enamldef TileDockItem(DockItem): dock_item:
+
+    title << get_tile_di_title(presenter.unsaved_changes, presenter.obj)
+
+    attr presenter
+    closable = False
+
+    initialized ::
+        bind_focus(container.children, canvas.set_focus)
+        deferred_call(canvas.set_focus)
+
+    Container: container:
+        constraints = [
+            vbox(
+                dc,
+                hbox(tool_label, mode_buttons, action_clear_spiral, action_clear_cells, spacer, spacing=0),
+                hbox(action_guess_cells, spacer, load_analysis, save_analysis, spacing=0),
+                canvas,
+            ),
+            align('v_center', tool_label, mode_buttons, action_clear_spiral, action_clear_cells),
+            align('left', tool_label, dc.children[0]),
+            align('left', dc.children[1], mode_buttons),
+        ]
+
+        DisplayConfig: dc:
+            presenter << dock_item.presenter
+
+        PushButton: load_analysis:
+            text = 'Load'
+            clicked ::
+                load_state(self, [presenter])
+
+        PushButton: save_analysis:
+            text = 'Save'
+            clicked ::
+                save_state(self, [presenter])
+
+        ButtonGroup: tool_group:
+            pass
+
+        Label: tool_label:
+            text = 'Tool'
+
+        HGroup: mode_buttons:
+            padding = 0
+            spacing = 0
+            align_widths = False
+            trailing_spacer = spacer(0)
+
+            ObjectCombo:
+                items << list(presenter.available_cells)
+                selected << presenter.cells
+                selected ::
+                    presenter.set_interaction_mode(cells=selected)
+                tool_tip = "Press ~, 1, 2, 3, and 4 to switch between the cell types"
+
+            Looper:
+                iterable = ['spiral', 'cells']
+                PushButton:
+                    icon = load_icon(loop_item)
+                    icon_size = (20, 20)
+                    enabled << not (presenter.cells == 'Extra' and loop_item != 'cells')
+                    group = tool_group
+                    checkable = True
+                    checked << loop_item == presenter.tool
+                    toggled ::
+                        if self.checked:
+                            presenter.tool = loop_item
+                    tool_tip = "Press shift+s to select spiral tool, shift+c to select cell tool"
+
+        PBActionClearSpiral: action_clear_spiral:
+            presenter << dock_item.presenter
+
+        PBActionClearCells: action_clear_cells:
+            presenter << dock_item.presenter
+
+        ActionGuessCells: action_guess_cells:
+            presenter << dock_item.presenter
+
+        NDImageCanvas: canvas:
+            figure << presenter.figure
+
+
+enamldef CochleogramDockItem(DockItem): dock_item:
+
+    title << '{}Piece {}'.format('*' if presenter.unsaved_changes else '', presenter.obj.piece)
+
+    attr presenter
+    closable = False
+
+    initialized ::
+        bind_focus(container.children, canvas.set_focus)
+        deferred_call(canvas.set_focus)
+
+    Container: container:
+        constraints = [
+            vbox(
+                hbox(dc, display_apply, highlight_selected),
+                hbox(tool_label, mode_buttons, spacer, load_analysis, save_analysis),
+                hbox(action_label, action_auto_align_tiles,
+                     action_clear_spiral, action_clear_cells,
+                     action_simplify_exclusions, action_merge_ohc_exclusions,
+                     spacer, spacing=0),
+                action_guess_cells,
+                action_copy_exclusion,
+                canvas,
+            ),
+            align('v_center', dc.children[0], display_apply, highlight_selected),
+            align('v_center', tool_label, mode_buttons),
+            align('v_center', action_label, action_auto_align_tiles,
+                  action_clear_spiral, action_clear_cells,
+                  action_simplify_exclusions, action_merge_ohc_exclusions),
+            align('left', dc.children[0], tool_label, action_label),
+            align('left', mode_buttons, action_auto_align_tiles,
+                  action_guess_cells, action_copy_exclusion),
+        ]
+
+        DisplayConfig: dc:
+            presenter << dock_item.presenter
+            padding = 0
+
+        PushButton: display_apply:
+            text = 'Apply to all tiles'
+            checkable = True
+            checked = True
+            clicked ::
+                if checked:
+                    presenter.set_display_mode(dc.display_mode, True)
+
+        PushButton: highlight_selected:
+            text = 'Highlight selected'
+            checkable = True
+            checked := presenter.highlight_selected
+
+        ButtonGroup: tool_group:
+            pass
+
+        Label: tool_label:
+            text = 'Tool'
+
+        HGroup: mode_buttons:
+            padding = 0
+            spacing = 0
+            align_widths = False
+            trailing_spacer = spacer(0)
+
+            PushButton:
+                icon = load_icon('tile')
+                icon_size = (20, 20)
+                tool_tip = 'tile'
+                group = tool_group
+                checkable = True
+                checked << presenter.tool == 'tile'
+                toggled ::
+                    if self.checked:
+                        presenter.tool = 'tile'
+
+            ObjectCombo:
+                items << ['IHC'] if presenter.obj.is_copy else list(presenter.available_cells)
+                selected := presenter.cells
+
+            Looper:
+                iterable = ['spiral', 'exclude', 'cells']
+                PushButton:
+                    icon = load_icon(loop_item)
+                    icon_size = (20, 20)
+                    tool_tip = loop_item
+                    enabled << not (presenter.obj.is_copy and loop_item != 'spiral') \
+                        and not (presenter.cells == 'Extra' and loop_item != 'cells')
+                    group = tool_group
+                    checkable = True
+                    checked << loop_item == presenter.tool
+                    toggled ::
+                        if self.checked:
+                            presenter.tool = loop_item
+
+        Label: action_label:
+            text = 'Actions'
+
+        PushButton: action_auto_align_tiles:
+            text = 'Align tiles'
+            clicked ::
+                button = question(self, 'Confirm action', 'Are you sure you want to update alignment of tiles?')
+                if button is not None and button.text == 'Yes':
+                    presenter.action_auto_align_tiles()
+
+        PBActionClearSpiral: action_clear_spiral:
+            presenter << dock_item.presenter
+            is_copy << dock_item.presenter.obj.is_copy
+
+        PBActionClearCells: action_clear_cells:
+            presenter << dock_item.presenter
+            is_copy << dock_item.presenter.obj.is_copy
+
+        ActionGuessCells: action_guess_cells:
+            presenter << dock_item.presenter
+            is_copy << dock_item.presenter.obj.is_copy
+
+        PushButton: action_simplify_exclusions:
+            text = 'Simplify exclusions'
+            enabled << (presenter.current_spiral_artist is not None) \
+                and presenter.current_spiral_artist.has_exclusion \
+                and not presenter.obj.is_copy
+            clicked ::
+                m = f'Are you sure you want to simplify the excluded regions?'
+                button = question(self, 'Confirm action', m)
+                if button is not None and button.text == 'Yes':
+                    try:
+                        presenter.action_simplify_exclusion(presenter.cells)
+                    except Exception as e:
+                        log.exception(e)
+                        information(self, 'Error', str(e))
+
+        PushButton: action_merge_ohc_exclusions:
+            text = 'Combine OHC exclusions'
+            enabled << presenter.point_artists['OHC1', 'spiral'].has_spline \
+                and not presenter.obj.is_copy \
+                and presenter.point_artists['OHC2', 'spiral'].has_spline \
+                and presenter.point_artists['OHC3', 'spiral'].has_spline \
+                and (
+                    presenter.point_artists['OHC1', 'spiral'].has_exclusion \
+                    or presenter.point_artists['OHC2', 'spiral'].has_exclusion \
+                    or presenter.point_artists['OHC3', 'spiral'].has_exclusion \
+                )
+            clicked ::
+                m = f'Are you sure you want to merge all OHC excluded regions together?\n' \
+                    'This will also simplify the excluded regions.'
+                button = question(self, 'Confirm action', m)
+                if button is not None and button.text == 'Yes':
+                    try:
+                        presenter.action_merge_exclusion('OHC1', 'OHC2', 'OHC3')
+                    except Exception as e:
+                        log.exception(e)
+                        information(self, 'Error', str(e))
+
+        PushButton: load_analysis:
+            text = 'Load'
+            clicked ::
+                load_state(self, [presenter])
+
+        PushButton: save_analysis:
+            text = 'Save'
+            clicked ::
+                save_state(self, [presenter])
+
+        HGroup: action_copy_exclusion:
+            padding = 0
+            align_widths = False
+            trailing_spacer = spacer(0)
+            enabled << presenter.current_spiral_artist is not None and presenter.current_spiral_artist.has_exclusion
+            Label:
+                text = 'Copy excluded regions to'
+            ObjectCombo: copy_exclusion_to:
+                items << [c for c in presenter.available_cells if c != presenter.cells]
+            PushButton:
+                text = 'Copy'
+                clicked ::
+                    m = f'Are you sure you want to copy the excluded regions to {copy_exclusion_to.selected}?\n' \
+                        f'The exclusion regions will be merged with any already-defined regions on {copy_exclusion_to.selected}.'
+                    button = question(self, 'Confirm action', m)
+                    if button is not None and button.text == 'Yes':
+                        try:
+                            presenter.action_copy_exclusion(copy_exclusion_to.selected)
+                        except Exception as e:
+                            log.exception(e)
+                            information(self, 'Error', str(e))
+
+        NDImageCanvas: canvas:
+            figure << presenter.figure
+
+
+enamldef ProgressWindow(Window): window:
+
+    title = 'Processing ...'
+    modality = 'application_modal'
+    always_on_top = True
+    alias progress: pb.value
+
+    Container:
+        ProgressBar: pb:
+            pass
+
+        PushButton:
+            text = 'Ok'
+            enabled << (pb.value == pb.maximum)
+            clicked ::
+                window.close()
+
+
+enamldef CompositeWindow(Window):
+
+    modality = 'application_modal'
+    title = 'Generate Composite'
+    attr reader
+    attr cochlea
+    attr channels = cochlea.channel_names
+
+    Container:
+        HGroup: freq_map:
+            padding = 0
+            align_widths = False
+            visible << cochlea.ihc_spiral_complete()
+            Label:
+                text = 'Frequency map'
+            ObjectCombo: freq_map_species:
+                items = [None, 'mouse', 'gerbil']
+                enabled << cochlea.ihc_spiral_complete()
+            HGroup:
+                padding = 0
+                align_widths = False
+                constraints = [
+                    freq_start.width == 35,
+                    freq_end.width == 35,
+                    freq_step.width == 35,
+                ]
+                FloatField: freq_start:
+                    value = 4.0
+                Label:
+                    text = 'to'
+                FloatField: freq_end:
+                    value = 64.0
+                Label:
+                    text = 'kHz in'
+                FloatField: freq_step:
+                    value = 0.5
+                Label:
+                    text = 'octave steps'
+
+        Label:
+            text = 'Cannot include frequency map because the IHC spiral is incomplete.'
+            visible << not freq_map.visible
+        Label:
+            text = 'Channels to include'
+        Looper:
+            iterable << cochlea.channel_names
+            CheckBox:
+                text = loop_item
+                checked = True
+                checked ::
+                    if checked:
+                        channels.append(loop_item)
+                    else:
+                        channels.remove(loop_item)
+
+        PushButton:
+            text = 'Generate'
+            enabled << len(channels) != 0
+            clicked ::
+                try:
+                    if freq_map_species.selected is not None:
+                        freq_map = {
+                            'species': freq_map_species.selected,
+                            'freq_start': freq_start.value,
+                            'freq_end': freq_end.value,
+                            'freq_step': freq_step.value,
+                        }
+                    else:
+                        freq_map = None
+
+                    fig = plot.plot_composite(cochlea, freq_map=freq_map,
+                                              channels=channels)
+                    title = reader.get_name()
+                    if freq_map_species.selected is not None:
+                        title = f'{title}\n{freq_map_species.selected} map'
+                    fig.suptitle(title)
+                    reader.save_figure(fig, 'frequency_map')
+                    information(self, 'Plotting', 'Composite has been generated.')
+                except Exception as e:
+                    log.exception(e)
+                    critical(self, 'Plotting', str(e))
+
+
+def get_title(reader):
+    if reader is None:
+        return 'Cochleogram'
+    else:
+        return f'Cochleogram :: {reader.get_name()}'
+
+
+enamldef CochleogramWindow(MainWindow): window:
+
+    initial_size = (900, 900)
+    title << get_title(reader)
+    icon = load_icon('main-icon')
+
+    attr reader
+    attr collection
+    attr presenters = []
+    attr current_path = ''
+
+    MenuBar:
+        Menu:
+            title = '&File'
+
+            Menu:
+                title = 'Full cochlea scan'
+                Action:
+                    text = 'Processed directory'
+                    triggered ::
+                        try:
+                            open_processed_cochlea_dir(window)
+                        except Exception as e:
+                            log.exception(e)
+                            critical(window, 'Load', str(e))
+                Action:
+                    text = 'LIF file'
+                    triggered ::
+                        try:
+                            open_lif_cochlea_file(window)
+                        except Exception as e:
+                            log.exception(e)
+                            critical(window, 'Load', str(e))
+                Action:
+                    text = 'CZI folder'
+                    triggered ::
+                        try:
+                            open_czi_cochlea_dir(window)
+                        except Exception as e:
+                            log.exception(e)
+                            critical(window, 'Load', str(e))
+            Menu:
+                title = 'ROI scans'
+                Action:
+                    text = 'LIF file'
+                    triggered ::
+                        try:
+                            open_lif_file_for_HC_counts(window)
+                        except Exception as e:
+                            log.exception(e)
+                            critical(window, 'Load', str(e))
+                Action:
+                    text = 'CZI folder'
+                    triggered ::
+                        try:
+                            open_czi_folder_for_HC_counts(window)
+                        except Exception as e:
+                            log.exception(e)
+                            critical(window, 'Load', str(e))
+
+            Action:
+                separator = True
+
+            Menu:
+                title = 'Convert to Imaris'
+                Action:
+                    text = 'LIF file'
+                    triggered ::
+                        path = FileDialogEx.get_open_file_name(window, current_path=str(window.current_path))
+                        if path:
+                            pp = ProgressWindow()
+                            pp.show()
+                            cb = lambda x, pp=pp: setattr(pp, 'progress', x)
+                            deferred_call(util.lif_to_ims, path, reprocess=True, cb=cb)
+                Action:
+                    text = 'CZI folder'
+                    triggered ::
+                        path = FileDialogEx.get_existing_directory(window, current_path=str(window.current_path))
+                        if path:
+                            pp = ProgressWindow()
+                            pp.show()
+                            cb = lambda x, pp=pp: setattr(pp, 'progress', x)
+                            deferred_call(util.czi_to_ims, path, reprocess=True, cb=cb)
+
+            Action:
+                separator = True
+
+            Action:
+                text = 'Save analysis'
+                triggered ::
+                    save_state(window, window.presenters)
+            Action:
+                text = 'Load analysis'
+                triggered ::
+                    load_state(window, window.presenters)
+
+            Action:
+                separator = True
+
+            Action:
+                text = 'Generate composite (frequency map)\tCtrl+F'
+                enabled << collection is not None
+                triggered ::
+                    window = CompositeWindow(cochlea=collection, reader=reader)
+                    window.show()
+
+            Action:
+                text = 'Generate slide map'
+                enabled << collection is not None
+                triggered ::
+                    try:
+                        fig = plot.plot_slide_layout(collection)
+                        fig.suptitle(reader.get_name())
+                        reader.save_figure(fig, 'slide_map')
+                        information(window, 'Plotting', 'Slide map has been generated.')
+                    except Exception as e:
+                        log.exception(e)
+                        critical(window, 'Plotting', str(e))
+
+    initialized ::
+        for presenter in presenters:
+            deferred_call(add_dock_item, workspace, presenter)
+
+    closing ::
+        if any(p.unsaved_changes for p in presenters):
+            button = question(window, 'Question', 'There are unsaved changes. Are you sure you want to exit?')
+            if button is None or button.text == 'No':
+                change['value'].ignore()
+
+    Container:
+        DockArea: workspace:
+            name = 'dock_area'
+            features = Feature.DropEnabled
+            layout = TabLayout('help')
+
+            drag_enter => (event):
+                if event.mime_data().has_format('text/uri-list'):
+                    event.accept_proposed_action()
+
+            drop => (event):
+                text = event.mime_data().data('text/uri-list').decode('utf-8')
+                filenames = []
+                for t in text.strip().split('\n'):
+                    t = urllib.parse.unquote(t).strip()
+                    fragments = urllib.parse.urlsplit(t)
+                    path = Path(urllib.request.url2pathname(fragments.path))
+                    filenames.append(path)
+                load_dataset(filenames[0], window)
+
+            DockItem:
+                name = 'help'
+                title = 'Help'
+                closable = False
+
+                Container:
+                    Html:
+                        source = resources.files('cochleogram') \
+                            .joinpath('instructions.html') \
+                            .read_text()
