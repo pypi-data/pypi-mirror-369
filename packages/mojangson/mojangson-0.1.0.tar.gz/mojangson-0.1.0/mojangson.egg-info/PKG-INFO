@@ -1,0 +1,68 @@
+Metadata-Version: 2.4
+Name: mojangson
+Version: 0.1.0
+Summary: Python MojangSON (NBT) parser
+Home-page: https://github.com/LunaticYouth/mojangson
+Author: lunaticyouthie
+Author-email: lunatic.youthie@gmail.com
+Project-URL: GitHub, https://github.com/LunaticYouth/mojangson
+Keywords: json mojang nbt parser
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: lark>=1.2.2
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# mojangson
+
+A small Python library for parsing, stringifying, simplifying, and normalizing [Mojangson](https://minecraft.fandom.com/wiki/NBT_format#Mojangson) - the textual representation of Minecraft's NBT (Named Binary Tag) data.
+
+## Installation
+
+```bash
+pip install mojangson
+```
+
+## API
+`parse` - Parse Mojangson text into a typed dict representation.
+
+`stringify` - Convert a typed Mojangson dict back to a Mojangson string.
+
+`simplify` - Simplify a typed Mojangson dict into a regular Python dict/list/primitive values, stripping Minecraft-specific type suffixes.
+
+`normalize` - Normalize Mojangson text by parsing and then stringifying it - ensures consistent formatting and ordering.
+
+## Usage example
+```py
+from mojangson import parse, stringify, simplify, normalize
+
+mojangson_string = '{key:value}'
+
+mojangson_parsed = parse(mojangson_string)
+print(mojangson_parsed)
+# {'type': 'compound', 'value': {'key': {'type': 'string', 'value': 'value'}}}
+
+print(simplify(mojangson_parsed))
+# {'key': 'value'}
+
+mojangson_stringified = stringify(mojangson_parsed)
+print(mojangson_stringified)
+# {key:value}
+
+print(normalize(mojangson_string) == mojangson_stringified)
+# True
+```
