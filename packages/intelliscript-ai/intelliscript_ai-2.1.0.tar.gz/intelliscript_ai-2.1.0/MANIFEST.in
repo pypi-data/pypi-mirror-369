@@ -1,0 +1,45 @@
+# IntelliScript Package Manifest
+# Include additional files in the Python package
+
+# Documentation
+include README.md
+include LICENSE
+include CHANGELOG_v2.1.md
+
+# Configuration files
+include config/*.toml
+include config/*.example
+
+# Examples and documentation
+recursive-include examples *.md *.json *.py *.toml
+recursive-include docs *.md *.rst *.txt
+
+# Templates and schemas
+recursive-include src/intelliscript/templates *.html *.jinja2
+recursive-include src/intelliscript/schemas *.json
+
+# Type hints
+recursive-include src/intelliscript *.pyi
+include src/intelliscript/py.typed
+
+# Exclude development and build files
+exclude .gitignore
+exclude .pre-commit-config.yaml
+exclude tox.ini
+exclude Makefile
+exclude *.bat
+
+# Exclude test files
+recursive-exclude tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .pytest_cache
+
+# Exclude development directories
+prune .git
+prune .github
+prune .vscode
+prune .idea
+prune build
+prune dist
+prune *.egg-info
