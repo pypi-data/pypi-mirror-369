@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <title>Directory listing for {{the_path}}</title>
+    </head>
+    <style>
+        body {
+            font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .file{
+            color: green;
+        }
+        .dir{
+            color: blue;
+        }
+        .progress-container {
+            margin-top: 10px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+    <body>
+        <h1><a href="/">Home</a> <a href="{{ parent_path }}">ParentDir</a> Directory listing for {{the_path}}</h1>
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>Permissions</th>
+                <th>Owner</th>
+                <th>Group</th>
+                <th>Size</th>
+                <th>Last Modified</th>
+                <th>Name</th>
+            </tr>
+            {% for item in data %}
+            <tr class="{{ item.type }}">
+                <td>{{ item.type }}</td>
+                <td>{{ item.permissions }}</td>
+                <td>{{ item.owner }}</td>
+                <td>{{ item.group }}</td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.mtime }}</td>
+                <td>
+                    {% if item.href.startswith('/view/') %}
+                        <a href="{{ item.href }}" class="{{ item.type }}" target="_blank">{{ item.name }}</a>
+                    {% else %}
+                        <a href="{{ item.href }}" class="{{ item.type }}">{{ item.name }}</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+        <form id="uploadForm" enctype=multipart/form-data>
+        <input type=file name=file id="fileInput" onchange="updateFileInfo();">
+        <input type=button value=Upload onclick="uploadFile();" id="uploadBtn">
+        </form>
+        <div id="fileInfo" style="margin-top: 5px; font-size: 12px; color: #666;"></div>
+        <div style="margin-top: 5px; font-size: 11px; color: #999;">最大文件大小: 2000MB</div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">准备上传...</div>
+        </div>
+        <div id="messages"></div>
+        <div id="uploadingMessage" style="display:none;">Uploading...</div>
+    </body>
+    <script type="text/javascript">
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            if (!fileInput.files.length) {
+                alert('请先选择文件');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // 显示进度条
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('uploadingMessage').style.display = 'block';
+            uploadBtn.disabled = true;
+            uploadBtn.value = '上传中...';
+            
+            const xhr = new XMLHttpRequest();
+            
+            // 监听上传进度
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    updateProgress(percentComplete);
+                }
+            });
+            
+            // 监听上传完成
+            xhr.addEventListener('load', function() {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200 && response.success) {
+                        showSuccess(response.message);
+                        // 刷新页面以显示新上传的文件
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        showError(response.message || '上传失败');
+                    }
+                } catch (e) {
+                    if (xhr.status === 413) {
+                        showError('文件过大，最大支持2000MB');
+                    } else {
+                        showError('上传失败，HTTP状态码: ' + xhr.status);
+                    }
+                }
+                
+                // 重置界面
+                resetUploadUI();
+            });
+            
+            // 监听上传错误
+            xhr.addEventListener('error', function() {
+                showError('网络错误，上传失败');
+                resetUploadUI();
+            });
+            
+            // 监听上传中止
+            xhr.addEventListener('abort', function() {
+                showError('上传被取消');
+                resetUploadUI();
+            });
+            
+            // 发送请求
+            xhr.open('POST', '/upload_ajax?path={{req_path}}');
+            xhr.send(formData);
+        }
+
+        function updateProgress(percent) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.width = percent + '%';
+            progressText.textContent = `上传中... ${Math.round(percent)}%`;
+        }
+
+        function showSuccess(message) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.width = '100%';
+            progressText.textContent = '上传完成!';
+            
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += '<p style="color: green;">✓ ' + message + '</p>';
+        }
+
+        function showError(message) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.backgroundColor = '#f44336';
+            progressText.textContent = '上传失败';
+            
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += '<p style="color: red;">✗ ' + message + '</p>';
+        }
+
+        function resetUploadUI() {
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressFill = document.getElementById('progressFill');
+            
+            uploadBtn.disabled = false;
+            uploadBtn.value = 'Upload';
+            document.getElementById('uploadingMessage').style.display = 'none';
+            
+            // 3秒后隐藏进度条
+            setTimeout(() => {
+                document.getElementById('progressContainer').style.display = 'none';
+                progressFill.style.width = '0%';
+                progressFill.style.backgroundColor = '#4CAF50';
+                document.getElementById('progressText').textContent = '准备上传...';
+            }, 3000);
+        }
+
+        function updateFileInfo() {
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const size = formatFileSize(file.size);
+                fileInfo.innerHTML = `<span style="color: green;">✓ 已选择文件: ${file.name} (${size})</span>`;
+                uploadBtn.disabled = false;
+                uploadBtn.value = 'Upload';
+            } else {
+                fileInfo.textContent = '';
+                uploadBtn.disabled = false;
+                uploadBtn.value = 'Upload';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit {{ filename }}</title>
+    <style>
+        /* 重置默认边距 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        
+        /* 文本域样式 */
+        .full-width-textarea {
+            width: 99.5%;          /* 100% 父容器宽度 */
+            min-height: 100px;    /* 最小高度 */
+            box-sizing: border-box; /* 包含padding和border */
+            margin:0 auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-family: inherit;
+            font-size: 16px;
+            min-height: 66.67vh;
+            height: auto;
+            max-height: 90vh;  /* 防止过高 */
+            overflow-y: auto;  /* 必要时显示滚动条 */
+        }
+    </style>
+</head>
+<body>
+    <h1>Editing {{ filename }}</h1>
+    <input type="hidden" id="filename" value="{{ filename }}">
+    <input type="hidden" id="content" value="{{ content }}">
+
+    <form method="post" target="hidden_iframe" id="edit-form" >
+        <a href="/">Home</a>
+        <a href="{{ parent_path }}">ParentDir</a>
+        <a href="/download/{{ filename }}">download</a>
+        <button type="submit">Save</button>
+        <!-- 提示消息 -->
+        <span id="save-message" style="color: red; display: none;">已保存</span>
+        <br>
+        <textarea name="content" class="full-width-textarea" id="editor-container">{{ content }}</textarea>
+    </form>
+    <!-- 隐藏的iframe -->
+    <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+    <script>
+
+        // 自动调整高度
+        const textarea = document.getElementById('editor-container');
+        
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto'; // 先重置高度
+            this.style.height = (this.scrollHeight) + 'px'; // 设置新高度
+        });
+        
+        // 初始化时设置合适高度
+        textarea.dispatchEvent(new Event('input'));
+
+        // 在提交后显示保存消息
+        document.getElementById('edit-form').addEventListener('submit', function() {
+            const saveMessage = document.getElementById('save-message');
+            saveMessage.style.display = 'inline'; // 显示消息
+            setTimeout(() => {
+                saveMessage.style.display = 'none'; // 2秒后隐藏消息
+            }, 2000);
+        });
+    </script>
+ 
+</body>
+</html>
