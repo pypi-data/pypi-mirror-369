@@ -1,0 +1,50 @@
+[project]
+name = "gitflow_manager"
+dynamic = ["version"]
+description = "This package contains the Anacision Git Manager."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "gitpython>=3.1.24",
+    "pystache>=0.6.0",
+    "requests>=2.27.1",
+    "toml>=0.10.2"
+]
+
+[project.scripts]
+gfm = "gitflow_manager.start:main"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
+    "ruff==0.6.9",
+    "setuptools>=75.3.0",
+    "twine>=6.0.1",
+]
+
+[tool.setuptools]
+# Automatically finds the packages and includes them
+packages = { find = {} }
+
+[tool.setuptools.dynamic]
+version = { attr = "gitflow_manager.__version__" }
+
+[tool.ruff]
+line-length = 120
+target-version="1.1.1"
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle
+    "W", # pycodestyle
+    "F", # pyflakes
+    "PL", # pylint
+    "I", # isort
+    "UP", # pyupgrade
+]
+ignore = ["E203", "F403", "F405", "F821"]
+
+[tool.uv]
+package = true
+
+
