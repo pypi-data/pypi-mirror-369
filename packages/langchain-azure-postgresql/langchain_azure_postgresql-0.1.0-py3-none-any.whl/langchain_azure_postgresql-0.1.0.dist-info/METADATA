@@ -1,0 +1,179 @@
+Metadata-Version: 2.4
+Name: langchain-azure-postgresql
+Version: 0.1.0
+Summary: LangChain VectorStore integrations for Azure Database for PostgreSQL
+Project-URL: repository, https://github.com/langchain-ai/langchain-azure
+Project-URL: Source Code, https://github.com/langchain-ai/langchain-azure/tree/main/libs/azure-postgresql
+Project-URL: Release Notes, https://github.com/langchain-ai/langchain-azure/releases
+Author-email: Arda Aytekin <8845951+aytekinar@users.noreply.github.com>
+Maintainer-email: Arda Aytekin <8845951+aytekinar@users.noreply.github.com>, Orhan Kislal <kislalorhan@microsoft.com>
+License: MIT License
+        
+        Copyright (c) 2025 Microsoft Corporation
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: azure,database,langchain,postgresql,vectorstore
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: AsyncIO
+Classifier: Framework :: Pydantic :: 2
+Classifier: Framework :: tox
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Database
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Text Processing
+Requires-Python: ~=3.10
+Requires-Dist: aiohttp~=3.0
+Requires-Dist: azure-identity~=1.0
+Requires-Dist: langchain-core~=0.3.0
+Requires-Dist: numpy~=2.0
+Requires-Dist: pgvector~=0.4.0
+Requires-Dist: psycopg[binary,pool]~=3.0
+Requires-Dist: pydantic~=2.0
+Requires-Dist: simsimd~=6.0
+Requires-Dist: typing-extensions~=4.0; python_version < '3.12'
+Description-Content-Type: text/markdown
+
+# langchain-azure-postgresql
+
+`langchain-azure-postgresql` is a Python package that implements both asynchronous
+and synchronous `VectorStore` support for Azure Database for PostgreSQL. Specifically,
+this package adds support for
+
+1. Microsoft Entra ID (formerly Azure AD) authentication when connecting to your
+   Azure Database for PostgreSQL instances, and,
+1. DiskANN indexing algorithm when indexing your (semantic) vectors.
+
+This way, you can leverage your Azure Database for PostgreSQL instances as secure
+and fast vector stores for your LangChain workflows.
+
+> [!NOTE]
+> `langchain-azure-postgresql` currently supports Python 3.10 and above.
+
+## Installation
+
+To install `langchain-azure-postgresql`, you need to install the necessary Python
+packages:
+
+```cmd
+$ python3 -m pip install langchain langchain-azure-postgresql langchain-openai
+# logs stripped for brevity
+```
+
+## Usage
+
+Once the packages are installed, you can use Azure Database for PostgreSQL instances
+as vector stores:
+
+```python
+import os
+
+from langchain_core.documents import Document
+from langchain_openai import OpenAIEmbeddings
+
+from langchain_azure_postgresql.common import AzurePGConnectionPool, ConnectionInfo
+from langchain_azure_postgresql.langchain import AzurePGVectorStore
+
+documents = [
+    Document(
+        page_content="Dogs are great companions, known for their loyalty and friendliness.",
+        metadata={"source": "mammal-pets-doc"},
+    ),
+    Document(
+        page_content="Cats are independent pets that often enjoy their own space.",
+        metadata={"source": "mammal-pets-doc"},
+    ),
+]
+
+host = os.getenv("PGHOST", "localhost")
+connection_pool = AzurePGConnectionPool(azure_conn_info=ConnectionInfo(host=host))
+
+embedding = OpenAIEmbeddings(model="text-embedding-3-small")
+
+vector_store = AzurePGVectorStore(connection_pool=connection_pool, embedding=embedding)
+
+vector_store.add_documents(documents)
+```
+
+The code snippet above will try to connect to your PostgreSQL `host`, as defined
+by the environment variable `PGHOST`, and fall back to connecting to `localhost`
+if the environment variable is not defined. By default, `ConnectionInfo` objects
+try to use Microsoft Entra ID to login to the PostgreSQL instances/hosts.
+
+Please see the documentation for more details on configuring various classes
+provided by `langchain-azure-postgresql`.
+
+## Development
+
+The development environment for this package is managed by [`uv`][uv-link], an
+up-and-coming and versatile Python package and project manager.
+
+To create the development environment, you first need to install `uv` in your
+development environment (unless you are using the development container setup
+as provided by this repository). Once `uv` is properly installed and set up,
+you can run the following commands to synchronize and activate the development
+environment:
+
+```cmd
+$ uv sync --all-extras # synchronize the development environment from uv.lock
+# logs stripped for brevity
+$ source .venv/bin/activate # or, as appropriate for your shell, e.g., fish
+```
+
+Once the development environment is synchronized and activated, you can start
+contributing changes to the package. For test automation, the package leverages
+[`tox`][tox-link], a test automation and standardization framework in Python.
+
+There are some pre-defined test environments and labels managed by `tox`:
+
+```cmd
+$ tox list
+default environments:
+lint    -> Run lint checks on the code base
+package -> Run packaging checks on the code base
+type    -> Run type checks on the code base
+3.10    -> Run tests under Python 3.10
+3.11    -> Run tests under Python 3.11
+3.12    -> Run tests under Python 3.12
+3.13    -> Run tests under Python 3.13
+```
+
+The default environments are for running lint checks, packaging checks, type
+checks, and end-to-end tests for different Python versions, respectively. You
+can selectively run an environment via, e.g., `tox run -e lint`, or, otherwise,
+run the full suite of tests via `tox`. There is a special label called `test`,
+which will run _only_ the end-to-end tests for all the supported Python versions
+and can be run via the following:
+
+```cmd
+$ PGHOST=<host>.postgres.database.azure.com PGPASSWORD='your_password' tox run -m test
+# logs stripped for brevity
+```
+
+For more information on the supported test flags and environment variables, please
+check the output of `pytest --help`.
+
+[uv-link]: https://docs.astral.sh/uv/
+[tox-link]: https://tox.wiki/
