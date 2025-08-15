@@ -1,0 +1,83 @@
+[project]
+name = "qwq-tag"
+version = "0.1.0"
+description = "QwQ Tag for parsing xml"
+authors = [
+    { name = "yanli", email = "mail@yanli.one" },
+]
+dependencies = [
+    "lxml>=6.0.0",
+    "pydantic>=2.11.7",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+
+[project.license]
+text = "MIT"
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.scripts.fix]
+shell = "ruff check --fix && ruff format"
+
+[tool.pdm.scripts.check]
+shell = "ruff check && ruff format --check"
+
+[tool.pdm.scripts.test]
+shell = "pdm run pytest"
+
+[tool.pyright]
+venvPath = ".venv"
+
+[tool.ruff]
+target-version = "py310"
+exclude = [
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "G",
+    "B",
+    "I",
+    "SIM",
+    "TID",
+    "PL",
+    "RUF",
+]
+ignore = [
+    "RUF001",
+    "RUF003",
+    "E501",
+    "E402",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "PLR2004",
+    "SIM105",
+    "SIM102",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "qwq_tag",
+]
+
+[tool.pytest.ini_options]
+log_cli_level = "INFO"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "ruff>=0.12.8",
+]
