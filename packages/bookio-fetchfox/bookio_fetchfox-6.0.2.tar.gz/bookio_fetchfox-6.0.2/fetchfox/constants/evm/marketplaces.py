@@ -1,0 +1,4 @@
+OPENSEA_IO_ADDRESS = "0x00000000000000adc04c56bf30ac9d3c0aaf14dc"
+
+OPENSEA_IO = "opensea.io"
+RARIBLE_COM = "rarible.com"
