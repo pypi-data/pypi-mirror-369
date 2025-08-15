@@ -1,0 +1,43 @@
+################################################################################
+# MVA Pipeline Configuration                                                  #
+# Fill in / override any value here. All keys are optional.                    #
+################################################################################
+
+# SQLAlchemy-compatible database URL. Example for Postgres:
+# postgresql+psycopg2://user:password@host:port/dbname
+# When running inside k8s, you can point at the service DNS name.
+
+db_url: "postgresql+psycopg2://postgres:Password!234@postgresql.postgres/document_ai"
+
+# List of column names considered as *link keys* between tables (batch id etc.)
+link_keys:
+  - doc_id
+
+# The column that represents yield in the final batch matrix (case-sensitive)
+yield_column: public.bprv53_yield_report__actual_yield_r0
+
+# Optional JSON file that stores hard / soft process constraints.
+constraint_file: manufacturing_constraints.json
+
+# Maximum number of rows per table per batch to flatten into separate columns.
+# Set to 0 to disable flattening (keep as sequence feature).
+max_rows_flatten: 10
+
+# Directory where raw parquet files and derived datasets will be written.
+output_dir: /home/ubuntu/litewave-ml-models/yield_data_analysis/mva_pipeline/outputs
+
+# Regex patterns (ignore-case) to keep / drop columns before modelling
+feature_whitelist: "(temperature|pressure|vacuum|weight|wt|quantity|volume|kg|mm_hg|density|test|results|specification|assay|ph|qc|material|usage|issued|indented|actual_quantity|standard_quantity|measuring|reading|value|actual_yield)"
+feature_blacklist: "(page_no|format_no|revision_no|description|remarks|reference|prepared_by|reviewed_by|approved_by|compiled_by|checked_by|requested_by|stores_incharge|department_name|sign_date|effective_date|review_date|title|ihb_no|mfr_ref_no|serial_no|sno|_date$|expected_yield_range|product)"
+
+# Synthetic anomaly injection
+inject_synthetic_anomalies: true
+synthetic_anomaly_rate: 0.02
+
+# Redis configuration for external agent access
+redis_url: "redis://localhost:6379/0"
+enable_redis_storage: true
+
+# State management for pipeline caching
+state_store: redis  # Options: redis, file
+state_file: ".mva_state.json"  # Fallback file location (relative to raw_dir) 
