@@ -1,0 +1,54 @@
+[project]
+name = "CLI_Cleaner"
+version = "1.1"
+description = "A command-line tool for safely cleaning files and directories using customizable rules and dry-run preview"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "DasKaroWow" }]
+dependencies = [
+    "platformdirs>=4.3.8",
+    "rich>=14.1.0",
+    "typer>=0.16.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/DasKaroWow/cli_cleaner"
+Source = "https://github.com/DasKaroWow/cli_cleaner"
+Issues = "https://github.com/DasKaroWow/cli_cleaner/issues"
+
+[project.scripts]
+cleaner = "cli_cleaner.cli:app"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.8",
+    "taskipy>=1.14.1",
+]
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["."]
+exclude = ["migrations", ".venv", "__pycache__"]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "ANN", "ASYNC", "I"]
+ignore = ["E501", "E701"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "native"
+docstring-code-format = true
+skip-magic-trailing-comma = false
+
+[tool.taskipy.tasks]
+lint = "ruff check --no-cache --fix ."
+format = "ruff format --no-cache ."
+precommit = "task format && task lint"
