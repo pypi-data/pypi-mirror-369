@@ -1,0 +1,150 @@
+Metadata-Version: 2.4
+Name: goodman_pipeline
+Version: 1.3.13
+Summary: Pipeline for reducing Goodman HTS data.
+Author-email: Simón Torres <simon.torres@noirlab.edu>, Bruno Quint <bruno.quint@noirlab.edu>, César Briceño <cesar.briceno@noirlab.edu>, David Sanmartim <dsanmartim@lsst.org>
+Maintainer-email: Simón Torres <simon.torres@noirlab.edu>
+License: BSD 3-Clause License
+        
+        Copyright (c) 2018, SOAR Telescope
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        * Redistributions of source code must retain the above copyright notice, this
+          list of conditions and the following disclaimer.
+        
+        * Redistributions in binary form must reproduce the above copyright notice,
+          this list of conditions and the following disclaimer in the documentation
+          and/or other materials provided with the distribution.
+        
+        * Neither the name of the copyright holder nor the names of its
+          contributors may be used to endorse or promote products derived from
+          this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Homepage, https://soardocs.readthedocs.io/projects/goodman-pipeline/en/latest/
+Project-URL: Bug Reports, https://github.com/soar-telescope/goodman_pipeline/issues
+Project-URL: Source, https://github.com/soar-telescope/goodman_pipeline
+Keywords: soar,pipelines,astronomy,images,spectroscopy
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Natural Language :: English
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: POSIX :: Other
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: astropy
+Requires-Dist: astroplan
+Requires-Dist: ccdproc
+Requires-Dist: cython
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: packaging
+Requires-Dist: pandas
+Requires-Dist: requests
+Requires-Dist: scipy
+Provides-Extra: test
+Requires-Dist: mock; extra == "test"
+Dynamic: license-file
+
+# Goodman High Throughput Spectrograph Data Reduction Pipeline
+
+![Goodman Pipeline](https://github.com/soar-telescope/goodman_pipeline/actions/workflows/python-package.yml/badge.svg)
+[![codecov](https://codecov.io/gh/soar-telescope/goodman_pipeline/graph/badge.svg?token=1z2Zkl5I0n)](https://codecov.io/gh/soar-telescope/goodman_pipeline)
+[![Documentation Status](https://readthedocs.org/projects/goodman/badge/?version=latest)](http://goodman.readthedocs.io/en/latest/?badge=latest)
+[![pypi](https://img.shields.io/pypi/v/goodman_pipeline.svg?style=flat)](https://pypi.org/project/goodman-pipeline/)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
+
+
+![Upload to PYPI](https://github.com/soar-telescope/goodman_pipeline/workflows/Upload%20to%20PYPI/badge.svg)
+
+
+## Overview
+The Goodman High Throughput Spectrograph (Goodman HTS) Data-Reduction Pipeline
+is the SOAR Telescope's official data reduction pipeline for *Goodman HTS*.
+
+It has been fully developed in Python and uses mostly astropy affiliated packages
+with the exception of [dcr](http://users.camk.edu.pl/pych/DCR/) which is an external tool
+that does cosmic ray identification and correction. The reason for using it
+instead of LACosmic is that it works very well for spectroscopic data and the
+results are evidently superior. Some of the negative aspects of using this
+external (meaning outside of Python domains) software were: The integration into
+the pipeline's workflow and the use of an external `dcr.par` parameter file.
+ Such parameters have to be changed by hand and can't be integrated into the
+ pipeline's workflow itself. In particular for binning 2x2 and custom ROI those
+ parameters contained in _dcr.par_ has to be specifically tuned.
+
+## Documentation
+
+You will find a user manual on [goodman.readthedocs.org](http://goodman.readthedocs.io/en/latest/)
+
+If you wish to know more about the instrument please check the 
+[SOAR website](http://www.ctio.noao.edu/soar/content/goodman-high-throughput-spectrograph)
+
+## Having trouble?
+
+If you are having trouble operating the Goodman Pipeline we suggest the following
+procedure.
+
+* Check [existing issues](https://github.com/soar-telescope/goodman_pipeline/issues) or 
+open a [new Issue](https://github.com/soar-telescope/goodman_pipeline/issues/new) on GitHub.
+
+## Development Team
+
+- [Simón Torres](https://github.com/simontorres) (NOIRLab Software Engineer - main code developer)
+- [César Briceño](https://github.com/cbaorion) (SOAR Telescope Scientist - team lead)
+- [Bruno Quint](https://github.com/b1quint) (Brazil Support Astronomer - code development adviser)
+
+
+## Acknowledgements
+
+We acknowledge the important contribution of  [David Sanmartim](https://github.com/dsanmartim), who developed
+the initial incarnation of the redccd module. We thank [Tina Armond](https://github.com/tarmond) for her
+invaluable help in adding calibrated comparison lamps to the [library](https://goodman.readthedocs.io/projects/lamps/en/latest/) of
+reference comparison lamps for wavelength solution.
+
+Our work would not be possible without the friendly work atmosphere at CTIO
+headquarters in La Serena, were we can interact with our SOAR and CTIO
+colleagues in lively and useful discussions that have been important in making
+the Goodman pipeline possible.  We also acknowledge fruitful discussions and
+suggestions from our colleagues Bart Dunlop, Chris Clemens, and Erik Dennihy,
+at University of North Carolina at Chapel Hill.
+  
+## Citations:
+  This pipeline makes extensive use of Astropy therefore you should cite as suggested
+  on [Astropy Citation Page](https://github.com/astropy/astropy/blob/master/CITATION) as follows:
+  
+    This research made use of Astropy, a community-developed core Python package
+    for Astronomy (Astropy Collaboration, 2013, 2018).
+    
+  It also uses [DCR](http://users.camk.edu.pl/pych/DCR/) for cosmic rays identification
+  and removal. You should cite [this paper](http://adsabs.harvard.edu/abs/2004PASP..116..148P)
+  
+     Pych, W., 2004, PASP, 116, 148
+
