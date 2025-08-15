@@ -1,0 +1,99 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "matpower"
+description = 'matpower-pip: A Python Package for Easy Access to MATPOWER Power System Simulation Package'
+readme = "README.md"
+requires-python = ">=3.8.1"
+keywords = []
+authors = [
+  {name = "Muhammad Yasirroni", email = "muhammadyasirroni@gmail.com"},
+]
+maintainers = [
+  {name = "Muhammad Yasirroni", email = "muhammadyasirroni@gmail.com"}
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.optional-dependencies]
+octave = [
+  "oct2py>=5.7.0",
+]
+dev = [
+  "jupyter>=1.0.0",
+  "matplotlib>=3.5.3",
+  "matpowercaseframes>=1.0.7",
+  "nbmake>=1.3.5",
+  "numpy>=1.21.6",
+  "oct2py>=5.7.0",
+  "openpyxl>=3.1.2",
+  "pandas>=1.3.5",
+  "pypglib>=0.0.1",
+  "pytest>=7.2.0",
+  "pytest-cov>=4.1.0",
+  "pytest-xdist>=3.1.0",
+  "pre-commit>=2.21.0",
+  "ruff>=0.0.254",
+  "setuptools>=68.0.0"
+]
+
+[project.urls]
+Documentation = "https://github.com/yasirroni/matpower-pip#readme"
+Issues = "https://github.com/yasirroni/matpower-pip/issues"
+Source = "https://github.com/yasirroni/matpower-pip"
+
+[tool.setuptools]
+packages = ["matpower"]
+
+[tool.ruff]
+fix = true
+line-length = 88
+lint.select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+lint.ignore = [
+    "B90",  # support <3.10
+    "E402",  # temporarily due to nbqa did not support [tool.ruff.per-file-ignores]
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_core_functionality.py" = ["E501"]
+"notebooks/add_new_row.ipynb" = ["E402"]
+"notebooks/inspect_mpc.ipynb" = ["E402"]
+"notebooks/makeYbus.ipynb" = ["E402"]
+"notebooks/plot_cost_curve.ipynb" = ["E402"]
+"notebooks/remove_tap.ipynb" = ["E402"]
+"notebooks/runpf.ipynb" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "notebooks"]
+norecursedirs = ["hooks", "*.egg", ".eggs", "dist", "build", "docs", ".tox", ".git", "__pycache__", ".ipynb_checkpoints"]
+
+[tool.coverage.run]
+source = ["tests", "notebooks"]
+
+[coverage.paths]
+source = "matpower"
+
+[coverage.run]
+branch = true
+
+[coverage.report]
+show_missing = true
