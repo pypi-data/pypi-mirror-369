@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit: {{ filename }}</title>
+    <style>
+        body { background-color: white; color: black; font-family: monospace; }
+        .header { border-bottom: 2px solid black; padding: 10px 0; margin-bottom: 10px; }
+        .breadcrumb a { color: black; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        button { display: inline-flex; align-items: center; padding: 3px 8px; background-color: white; color: black; text-decoration: none; border-radius: 4px; font-size: 12px; margin-left: 5px; border: 1px solid black; font-family: monospace; }
+        button:hover { background-color: #f0f0f0; }
+        #editor-container { display: flex; height: 70vh; }
+        #line-numbers-editor { width: 40px; padding: 5px 5px 5px 2px; text-align: right; background-color: #f0f0f0; color: #999; border: 1px solid #ccc; border-right: none; overflow-y: hidden; resize: none; font-family: monospace; font-size: 1em; line-height: 1.2em; }
+        #editor { width: calc(100% - 40px); height: 100%; border: 1px solid #ccc; resize: none; font-family: monospace; font-size: 1em; line-height: 1.2em; padding: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="breadcrumb">
+            <a href="/files/">🏠 Home</a>
+            &nbsp;/&nbsp;
+            <a href="/files/{{ path }}">{{ filename }}</a>
+            &nbsp;/&nbsp;
+            <span>Edit</span>
+        </div>
+    </div>
+    <h2>Editing: {{ filename }}</h2>
+    <button id="save-btn">Save</button>
+    <button id="cancel-btn">Cancel</button>
+    <span style="margin-left: 10px; color: #666;">Total Lines: {{ total_lines }}</span>
+
+    <div id="editor-container">
+        <textarea id="line-numbers-editor" readonly></textarea>
+        <textarea id="editor">{{ full_file_content }}</textarea>
+    </div>
+
+    <script>
+    const editor = document.getElementById('editor');
+    const lineNumbersEditor = document.getElementById('line-numbers-editor');
+    const saveBtn = document.getElementById('save-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    function updateLineNumbers() {
+        const lineCount = editor.value.split('\n').length;
+        const lines = Array.from({ length: lineCount }, (_, i) => i + 1).join('\n');
+        lineNumbersEditor.value = lines;
+        lineNumbersEditor.scrollTop = editor.scrollTop;
+    }
+
+    editor.addEventListener('scroll', () => {
+        lineNumbersEditor.scrollTop = editor.scrollTop;
+    });
+    editor.addEventListener('input', updateLineNumbers);
+
+    saveBtn.onclick = function() {
+        const content = editor.value;
+        fetch('/edit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `path={{ path }}&content=${encodeURIComponent(content)}`
+        })
+        .then(r => r.text())
+        .then(msg => {
+            alert(msg);
+            if (msg === 'File saved successfully.') {
+                window.location.href = `/files/{{ path }}`;
+            }
+        })
+        .catch(err => { alert('Error saving file'); console.error(err); });
+    };
+
+    cancelBtn.onclick = function() {
+        window.location.href = `/files/{{ path }}`;
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateLineNumbers();
+    });
+    </script>
+</body>
+</html>
