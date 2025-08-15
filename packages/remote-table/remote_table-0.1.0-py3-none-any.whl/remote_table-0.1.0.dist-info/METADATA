@@ -1,0 +1,47 @@
+Metadata-Version: 2.4
+Name: remote-table
+Version: 0.1.0
+Summary: A Python port of the remote_table Ruby gem. Reads tabular data from local and remote sources.
+Author: Derek Willis
+Author-email: Derek Willis <dwillis@gmail.com>
+License-Expression: MIT
+Requires-Dist: pandas>=2.3.0
+Requires-Dist: numpy>=1.25.0
+Requires-Dist: requests
+Requires-Dist: openpyxl
+Requires-Dist: pyyaml
+Requires-Dist: beautifulsoup4
+Requires-Dist: lxml
+Requires-Dist: odfpy
+Requires-Dist: build>=1.3.0
+Requires-Python: >=3.12
+Project-URL: Homepage, https://github.com/dwillis/remote_table
+Description-Content-Type: text/markdown
+
+# Remote Table Python Library
+
+A Python port of the Ruby gem 'remote_table'.
+
+## Installation
+
+```bash
+uv pip install .
+```
+
+## Usage
+
+```python
+from remote_table import RemoteTable
+
+table = RemoteTable('path_or_url_to_file')
+for row in table:
+    print(row)
+```
+
+## Features
+- Read delimited (CSV/TSV), fixed-width, HTML, JSON, XML, YAML, ODS, XLS, XLSX files
+- Local and remote file support
+- Auto-detect format
+
+## License
+MIT
