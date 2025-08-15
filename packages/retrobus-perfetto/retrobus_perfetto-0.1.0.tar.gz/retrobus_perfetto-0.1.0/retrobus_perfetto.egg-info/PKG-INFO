@@ -1,0 +1,79 @@
+Metadata-Version: 2.4
+Name: retrobus-perfetto
+Version: 0.1.0
+Summary: A minimal Perfetto trace generation library for retrocomputer emulators
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Project-URL: Bug Reports, https://github.com/yourusername/retrobus-perfetto/issues
+Project-URL: Source, https://github.com/yourusername/retrobus-perfetto
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Debuggers
+Classifier: Topic :: System :: Emulators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: protobuf<5.0.0,>=3.20.0
+Provides-Extra: dev
+Requires-Dist: grpcio-tools>=1.48.0; extra == "dev"
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=3.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: types-protobuf>=4.24.0; extra == "dev"
+Requires-Dist: build>=0.10.0; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+
+# retrobus-perfetto Python Implementation
+
+This directory contains the Python implementation of retrobus-perfetto.
+
+## Installation
+
+From the `py/` directory:
+
+```bash
+# For development
+pip install -e ".[dev]"
+
+# For regular use
+pip install .
+```
+
+## Development
+
+### Running Tests
+```bash
+pytest
+```
+
+### Running Linter
+```bash
+ruff check .
+```
+
+### Running Type Checker
+```bash
+mypy retrobus_perfetto --config-file mypy.ini
+```
+
+### Building Package
+```bash
+python -m build
+```
+
+## Project Structure
+
+- `retrobus_perfetto/` - Main package source code
+  - `builder.py` - Main trace builder class
+  - `annotations.py` - Annotation helper classes
+  - `proto/` - Generated protobuf files (created during build)
+- `tests/` - Unit tests
+- `example.py` - Example usage
+- `pyproject.toml` - Package configuration
