@@ -1,0 +1,1 @@
+-- MS SQL dialect introduced after 0->1 upgrade, so nothing to do here.
