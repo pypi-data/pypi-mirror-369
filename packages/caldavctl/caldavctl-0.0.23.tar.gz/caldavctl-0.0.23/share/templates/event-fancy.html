@@ -1,0 +1,105 @@
+{% if event_list %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #212529;
+        margin: 2rem auto;
+        max-width: 800px;
+        padding: 1rem;
+    }
+
+    .event-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .event {
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-left: 5px solid #0d6efd;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .event-header {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #0d6efd;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-detail {
+        margin: 0.2rem 0;
+    }
+
+    .event-label {
+        font-weight: 500;
+        color: #6c757d;
+    }
+
+    .event-description {
+        margin-top: 0.5rem;
+        font-style: italic;
+        color: #495057;
+        border-left: 2px solid #0d6efd;
+        padding-left: 0.5rem;
+    }
+
+    .event-categories {
+        margin-top: 0.25rem;
+        font-size: 0.9rem;
+        color: #198754;
+    }
+
+    .event-uid {
+        margin-top: 0.25rem;
+        font-size: 0.85rem;
+        color: #adb5bd;
+        word-break: break-all;
+    }
+</style>
+<ul class="event-list">
+{%- for event in event_list %}
+    <li class="event">
+        <div class="event-header">{{ event.summary }}</div>
+
+        <div class="event-detail">
+            <span class="event-label">Start:</span> {{ event.start_date }}
+        </div>
+
+        {% if event.end_date %}
+        <div class="event-detail">
+            <span class="event-label">End:</span> {{ event.end_date }}
+        </div>
+        {% endif %}
+
+        {% if event.location %}
+        <div class="event-detail">
+            <span class="event-label">Location:</span> {{ event.location }}
+        </div>
+        {% endif %}
+
+        {% if event.categories %}
+        <div class="event-categories">
+            Categories: {{ event.categories | join(', ') }}
+        </div>
+        {% endif %}
+
+        {% if show_description and event.description %}
+        <div class="event-description">
+            {{ event.description|markdown }}
+        </div>
+        {% endif %}
+
+        {% if show_uid %}
+        <div class="event-uid">
+            UID: {{ event.uid }}
+        </div>
+        {% endif %}
+    </li>
+{%- endfor %}
+</ul>
+{% endif %}
