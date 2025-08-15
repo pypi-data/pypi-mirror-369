@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools", "wheel", "cython"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "as3lib-miniAMF"
+version = "1"
+authors = [{name = "ajdelguidice", email = "ajdelguidice@gmail.com"}]
+description = "A fork of Mini-AMF using up to date dependencies."
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "MIT"
+license-files = ["LICENSE.txt"]
+keywords = ["amf", "amf0", "amf3", "actionscript", "air", "flash", "flashplayer", "bytearray", "recordset", "decoder", "encoder", "sharedobject", "lso", "sol"]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Utilities"
+]
+requires-python = ">=3.11"
+dependencies = [
+    "defusedxml"
+]
+
+[project.urls]
+Homepage = "https://github.com/ajdelguidice/as3lib-miniAMF"
+
+[pyproject.optional-dependencies]
+docs = ["sphinx >= 1.5"]
+
+[tool.setuptools]
+packages=["miniamf", "miniamf._accel", "miniamf.adapters", "miniamf.util"]
+ext-modules = [
+    {name = "miniamf._accel.util", sources = ["miniamf/_accel/util.pyx"]},
+    {name = "miniamf._accel.codec", sources = ["miniamf/_accel/codec.pyx"]},
+    {name = "miniamf._accel.amf3", sources = ["miniamf/_accel/amf3.pyx"]},
+    {name = "miniamf._accel.amf0", sources = ["miniamf/_accel/amf0.pyx"]}
+]
+
+[tool.tox]
+requires = ["tox"]
+env_list = ["py3","py13","py12","py11"]
+skip_missing_interpreters = true
+
+[tool.tox.env_run_base]
+runner = "uv-venv-runner"
+deps = ["flake8","cython","defusedxml"]
+commands = [["python","-m","unittest","discover","miniamf/tests"]]
+
+[tool.tox.env.py3]
+commands = [["-","flake8"],["python","-m","unittest","discover","miniamf/tests"]]
