@@ -1,0 +1,47 @@
+# SCENE environ_to_yaml
+# ---------------------
+# Description: 
+
+# Nodes section: overall list of nodes to be created
+nodes:
+- BasicIf_1:
+    class_name: BasicIf
+    x_pos: -679
+    y_pos: -38
+- EnvironToYmlCtx_1:
+    class_name: EnvironToYmlCtx
+    x_pos: -1528
+    y_pos: -278
+- OPEN_FILE:
+    class_name: BoolInput
+    node_attributes:
+      internal_bool: false
+    x_pos: -1279
+    y_pos: -70
+- PrintToConsole_1:
+    class_name: PrintToConsole
+    x_pos: -128
+    y_pos: -117
+- StartFile_1:
+    class_name: StartFile
+    x_pos: -126
+    y_pos: -265
+- StringPreview_1:
+    class_name: StringPreview
+    x_pos: -1076
+    y_pos: -406
+
+# Connections section: connections to be done between nodes
+connections:
+- BasicIf_1.path_1 -> StartFile_1.START
+- BasicIf_1.path_2 -> PrintToConsole_1.START
+- EnvironToYmlCtx_1.COMPLETED -> StringPreview_1.START
+- EnvironToYmlCtx_1.yaml_filepath -> PrintToConsole_1.in_object_0
+- EnvironToYmlCtx_1.yaml_filepath -> StartFile_1.file_path
+- EnvironToYmlCtx_1.yaml_filepath -> StringPreview_1.in_str
+- OPEN_FILE.out_bool -> BasicIf_1.in_bool
+- StringPreview_1.COMPLETED -> BasicIf_1.START
+
+
+# Scene modified at: 2024-04-24 15:57:36.743853
+# Modified by: jaime.rvq
