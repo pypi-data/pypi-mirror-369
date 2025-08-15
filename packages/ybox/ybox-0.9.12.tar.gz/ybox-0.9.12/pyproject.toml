@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ybox"
+dynamic = ["version"]
+authors = [
+    { name = "Sumedh Wale", email = "sumwale@yahoo.com" },
+    { name = "Vishal Rao", email = "vishalrao@gmail.com" },
+]
+description = "Securely run Linux distribution inside a container"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = [
+    "packaging",
+    "simple-term-menu",
+    "tabulate>=0.9.0"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+keywords = ["Linux in container", "toolbox", "distrobox"]
+
+[project.urls]
+Homepage = "https://github.com/sumwale/ybox"
+Issues = "https://github.com/sumwale/ybox/issues"
+
+[project.scripts]
+ybox-cmd = "ybox.run.cmd:main"
+ybox-control = "ybox.run.control:main"
+ybox-create = "ybox.run.create:main"
+ybox-destroy = "ybox.run.destroy:main"
+ybox-logs = "ybox.run.logs:main"
+ybox-ls = "ybox.run.ls:main"
+ybox-pkg = "ybox.run.pkg:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "ybox.__version__" }
