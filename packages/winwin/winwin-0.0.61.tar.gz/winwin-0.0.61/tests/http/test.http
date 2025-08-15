@@ -1,0 +1,23 @@
+@host = http://127.0.0.1:4001
+
+GET {{host}}/status
+
+###
+POST {{host}}/batch_infer/add
+Content-Type: application/json
+
+{
+  "input": "/Users/zbmain/workspace/hooks/winwin/tests/resource/data.jsonl"
+}
+
+
+###
+POST {{host}}/batch_infer/jobs/status
+Content-Type: application/json
+
+{
+  "job_ids": [
+    "bi-20250430181705-b8skv",
+    "bi-20250430152549-66tvr"
+  ]
+}
