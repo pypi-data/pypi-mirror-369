@@ -1,0 +1,148 @@
+{
+    "globals": {
+        "project": "Segment OXPET segmentation",
+        "author": "Marc",
+        "parent": "segment_pets_keys.json"
+    },
+    "transforms": {
+        "resize_and_pad_bilinear": [
+            {
+                "ResizeMaxDimPad": {
+                    "max_dim": 256,
+                    "interpol_mode": "bilinear"
+                }
+            }
+        ],
+        "resize_and_pad_nearest": [
+            {
+                "ResizeMaxDimPad": {
+                    "max_dim": 256,
+                    "interpol_mode": "nearest"
+                }
+            }
+        ]
+    },
+    "data": {
+        "OXPET": {
+            "processor": "~/dev/fonduecaquelon/experiment_templates/segment_pets/oxfordpet_preparator.py",
+            "args": {
+                "base_path": "~/data/ML_data/oxford_pets/",
+                "subset_train": 0.8,
+                "subset_val": 0.8,
+                "subset_test": 0.8,
+                "pin_memory": true,
+                "num_workers": 4,
+                "train_batch_size": 48,
+                "val_batch_size": 48,
+                "test_batch_size": 1,
+                "shuffle_train": true,
+                "shuffle_val": false,
+                "shuffle_test": false
+            }
+        }
+    },
+    "models": {
+        "ccUNET": {
+            "class_name": "chuchichaestli.models.unet.unet.UNet",
+            "args": {
+                "dimensions": 2,
+                "in_channels": 3,
+                "out_channels": 3,
+                "down_block_types": [
+                    "DownBlock",
+                    "DownBlock"
+                ],
+                "up_block_types": [
+                    "UpBlock",
+                    "UpBlock"
+                ],
+                "block_out_channel_mults": [
+                    1,
+                    2
+                ],
+                "time_embedding": false
+            },
+            "optimizer": {
+                "class_name": "torch.optim.Adam",
+                "args": {
+                    "lr": 0.001
+                }
+            },
+            "lr_scheduler": {
+                "class_name": "torch.optim.lr_scheduler.StepLR",
+                "args": {
+                    "step_size": 2,
+                    "gamma": 0.95
+                }
+            }
+        }
+    },
+    "train": {
+        "path": "~/dev/fonduecaquelon/experiment_templates/segment_pets/train_oxpets.py",
+        "args": {
+            "epochs": 30,
+            "use_GPU": true,
+            "use_AMP": false,
+            "accumulate_grad_batches": 1,
+            "early_stop_val_loss": 500,
+            "early_stop_train_loss": 500,
+            "early_stop_nan": 5
+        }
+    },
+    "losses": {
+        "cross_ent": {
+            "class_name": "torch.nn.CrossEntropyLoss",
+            "args": {
+                "reduction": "mean"
+            }
+        }
+    },
+    "store": {
+        "results_path": "~/data/ML_data/results",
+        "img_exp_nb": 4,
+        "save_last_model": true,
+        "save_best_val_model": true,
+        "save_best_train_model": true,
+        "checkpoint_frequency": 2,
+        "use_tensorboard": true,
+        "use_wandb": true,
+        "wandb_project": "ox_pet_test",
+        "wandb_entity": "stmd"
+    },
+    "test": {
+        "processor": "~/dev/fonduecaquelon/experiment_templates/segment_pets/oxpets_test.py",
+        "test_model": "best",
+        "args": {
+            "metrics": {
+                "nb_test_samples": "10"
+            }
+        }
+    },
+    "slurm_cluster": {
+        "fdq_test_repo": false,
+        "fdq_version": "0.0.64",
+        "python_env_module": "python/3.12.4",
+        "uv_env_module": "uv/0.6.12",
+        "scratch_results_path": "/scratch/fdq_results/",
+        "scratch_data_path": "/scratch/fdq_data/",
+        "log_path": "~/dev/fonduecaquelon/slurm_log",
+        "job_time": 10,
+        "stop_grace_time": 3,
+        "cpus_per_task": 8,
+        "cpus_per_task_test": 8,
+        "gres": "gpu:1",
+        "gres_test": "gpu:1",
+        "mem": "20G",
+        "mem_test": "20G",
+        "partition": "gpu",
+        "account": "cai_ivs",
+        "run_train": true,
+        "run_test": true,
+        "auto_resubmit": true,
+        "world_size": 1,
+        "resume_chpt_path": null,
+        "additional_pip_packages": [
+            "chuchichaestli==0.2.12"
+        ]
+    }
+}
