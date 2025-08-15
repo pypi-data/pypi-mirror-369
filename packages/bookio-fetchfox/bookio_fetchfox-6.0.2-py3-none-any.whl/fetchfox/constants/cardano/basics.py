@@ -1,0 +1,2 @@
+CARDANO = "cardano"
+ADA = "ADA"

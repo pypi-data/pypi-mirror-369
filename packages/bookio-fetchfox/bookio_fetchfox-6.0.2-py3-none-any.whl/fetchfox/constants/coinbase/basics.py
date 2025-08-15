@@ -1,0 +1,2 @@
+COINBASE = "base"
+BASE = "BASE"
