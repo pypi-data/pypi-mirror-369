@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: pytest-stepthrough
+Version: 0.1.0
+Summary: Pause and wait for Enter after each test with --step
+Author: Your Name
+License: MIT
+Project-URL: Homepage, https://github.com/greg-baker-public/pytest-stepthrough
+Project-URL: Repository, https://github.com/greg-baker-public/pytest-stepthrough
+Project-URL: Issues, https://github.com/greg-baker-public/pytest-stepthrough/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Framework :: Pytest
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# pytest-stepthrough
+
+Pause after each test and wait for Enter — useful for hardware/integration
+flows where you want to observe output or reset something between tests.
+
+## Install (dev)
+```bash
+pip install -e .
+```
+
+## Usage
+
+```bash
+pytest                 # normal run
+pytest --step          # pause after each test (no need for -s)
+pytest -q --step       # works with -q too
+```
+
+## Notes
+
+* Works with pytest 6+ (tested on 6.2.5).
+* We temporarily suspend output capture around the prompt, so `-s` is **not** required.
+* The prompt appears **after** pytest prints PASSED/FAILED/XPASS/XFAIL.
+
