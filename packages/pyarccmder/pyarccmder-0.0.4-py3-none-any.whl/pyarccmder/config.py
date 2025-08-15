@@ -1,0 +1,13 @@
+tabNumerique = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+tabNumerique = list(map(lambda x: str(x), tabNumerique))
+tabAlphabetique = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+tabAlphabetique = list(map(lambda x: x.lower(), tabAlphabetique))
+tabAlphabetiqueInsensitive = tabAlphabetique + list(map(lambda x: x.upper(), tabAlphabetique))
+tabAlphanumerique = tabNumerique + tabAlphabetique
+tabAlphanumeriqueInsensitive = tabNumerique + tabAlphabetiqueInsensitive
+DEBUG: bool = False
+dateTimeFormatInitial = '%Y-%m-%dT%H:%M:%S.%fZ%z'
+dateTime2FormatInitial = '%Y-%m-%dT%H:%M:%S.%f'
+dateFormatInitial = '%Y-%m-%d'
+timeFormatInitial = '%H:%M:%S.%fZ%z'
+time2FormatInitial = '%H:%M:%S.%f'
