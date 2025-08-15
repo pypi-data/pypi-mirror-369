@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "seqkan"
+version = "0.8.1"
+description = "seqKAN, a KAN architecture for sequence processing."
+authors = [ "Tatiana Boura <tatianabou@iit.demokritos.gr>",
+	    "Stasinos Konstantopoulos <konstant@iit.demokritos.gr>" ]
+readme = "README.md"
+packages = [ {include = "seqkan"}, {include = "testcases"} ]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyyaml = "^6.0.2"
+pandas = "^2.2.3"
+matplotlib = "^3.10.0"
+tqdm = "^4.67.1"
+sympy = "^1.13.1"
+scikit-learn = "^1.7.1"
+torch = "^2.6.0"
+#torch = {version = "^2.6.0+cpu", source = "pytorch_cpu"}
+
+[[tool.poetry.source]]
+name = "pytorch_cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
