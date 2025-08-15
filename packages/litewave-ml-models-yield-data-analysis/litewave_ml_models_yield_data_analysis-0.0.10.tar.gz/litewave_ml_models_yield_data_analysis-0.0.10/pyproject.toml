@@ -1,0 +1,135 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "litewave-ml-models-yield-data-analysis"
+version = "0.0.10"
+description = "Multivariate analytics pipeline for pharmaceutical manufacturing yield optimization"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "LitewaveAI", email = "yash@litewave.ai"}
+]
+maintainers = [
+    {name = "LitewaveAI", email = "yash@litewave.ai"}
+]
+keywords = [
+    "manufacturing", 
+    "analytics", 
+    "pca", 
+    "shap", 
+    "anomaly-detection", 
+    "yield-optimization", 
+    "pharmaceutical"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "lightgbm>=4.1",
+    "shap>=0.43",
+    "pyod>=1.1",
+    "dtw-python>=1.4",
+    "tqdm>=4.66",
+    "matplotlib>=3.8",
+    "jinja2>=3.1",
+    "PyYAML>=6.0",
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "openai>=1.3",
+    "python-dotenv>=1.0",
+    "redis>=5.0",
+    "pyarrow>=10.0",
+    "pytest>=7.0",
+]
+dynamic = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy",
+    "isort",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+llm = [
+    "langchain-core>=0.1",
+    "langchain-openai>=0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/aiorch/litewave-ml-models/tree/main/yield_data_analysis"
+Documentation = "https://github.com/aiorch/litewave-ml-models/blob/main/yield_data_analysis/README.md"
+Repository = "https://github.com/aiorch/litewave-ml-models/tree/main/yield_data_analysis"
+"Bug Tracker" = "https://github.com/aiorch/litewave-ml-models/tree/main/yield_data_analysis/issues"
+
+[project.scripts]
+mva-pipeline = "mva_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mva_pipeline*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+mva_pipeline = ["config.yaml", "*.yaml", "*.yml"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.mypy]
+python_version = "0.0.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[[tool.mypy.overrides]]
+module = [
+    "pyod.*",
+    "lightgbm.*",
+    "shap.*",
+    "sklearn.*",
+]
+ignore_missing_imports = true 
