@@ -1,0 +1,254 @@
+# Batch Tamarin Execution Report
+
+**Execution results from**: {{ results_directory }}
+**Executed**: {{ batch_execution_date.strftime('%Y-%m-%d %H:%M:%S') }}
+
+## Table of Contents
+
+- [Overview](#overview)
+  - [Configuration](#configuration)
+  - [Global Summary](#global-summary)
+  - [Global Results](#global-results)
+  - [Global Timeline](#global-timeline)
+- [Task Details](#task-details)
+  {% for task in report_data.tasks %}- [{{ task.name }}](#task-{{ task.name|replace(' ', '-')|lower }})
+  {% endfor %}
+- [Errors](#errors)
+
+## Overview
+
+### Configuration
+
+#### Global Settings
+| Setting | Value |
+|---------|-------|
+| Max cores | {{ report_data.config.global_max_cores or 'Not specified' }} |
+| Max memory | {{ report_data.config.global_max_memory or 'Not specified' }}GB |
+| Default timeout | {{ report_data.config.default_timeout or 'Not specified' }}s |
+
+#### Tamarin Versions
+| Alias | Path | Version |
+|-------|------|---------|
+{% for alias, info in report_data.config.tamarin_versions.items() %}| {{ alias }} | `{{ info.path }}` | {{ info.version }} |
+{% endfor %}
+
+### Global Summary
+
+#### Global Statistics
+| Metric | Value |
+|--------|-------|
+| Total Executed Lemmas | {{ report_data.statistics.total_lemmas }} |
+| Verified Lemmas | {{ report_data.statistics.verified_lemmas }} ({{ "%.1f"|format(report_data.statistics.verified_percentage) }}%) |
+| Falsified Lemmas | {{ report_data.statistics.falsified_lemmas }} ({{ "%.1f"|format(report_data.statistics.falsified_percentage) }}%) |
+| Unterminated Lemmas | {{ report_data.statistics.unterminated_lemmas }} ({{ "%.1f"|format(report_data.statistics.unterminated_percentage) }}%) |
+| Failed Executions | {{ report_data.statistics.failed_lemmas }} ({{ "%.1f"|format(report_data.statistics.failed_percentage) }}%) |
+| Lemmas killed by timeout | {{ report_data.statistics.timeout_lemmas }} ({{ "%.1f"|format(report_data.statistics.timeout_percentage) }}%) |
+| Lemmas killed for memory limit | {{ report_data.statistics.memory_limit_lemmas }} ({{ "%.1f"|format(report_data.statistics.memory_limit_percentage) }}%) |
+| Total runtime | {{ "%.1f"|format(report_data.statistics.total_runtime) }}s |
+| Total peak memory used | {{ "%.1f"|format(report_data.statistics.total_memory_usage / 1024) }}GB |
+| Max peak memory used | {{ "%.1f"|format(report_data.statistics.max_memory_usage / 1024) }}GB |
+| Freshly executed tasks | {{ report_data.statistics.fresh_executions }} ({{ "%.1f"|format(report_data.statistics.fresh_percentage) }}%) |
+| Cache hits | {{ report_data.statistics.cache_hits }} ({{ "%.1f"|format(report_data.statistics.cache_hit_percentage) }}%) |
+
+**Success Rate**:
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'pie1': '#534FBD', 'pie2': '#6C6ACF', 'pie3': '#8B8AE0', 'pie4': '#B3B2F2', 'pie5': '#D7D6FB', 'pie6': '#ECECFF'}}}%%
+pie title Success Rate
+{% if report_data.statistics.verified_percentage > 0 %}"Verified": {{ "%.1f"|format(report_data.statistics.verified_percentage) }}
+{% endif %}{% if report_data.statistics.falsified_percentage > 0 %}"Falsified": {{ "%.1f"|format(report_data.statistics.falsified_percentage) }}
+{% endif %}{% if report_data.statistics.unterminated_percentage > 0 %}"Unterminated": {{ "%.1f"|format(report_data.statistics.unterminated_percentage) }}
+{% endif %}{% if report_data.statistics.failed_percentage > 0 %}"Failed": {{ "%.1f"|format(report_data.statistics.failed_percentage) }}
+{% endif %}{% if report_data.statistics.timeout_percentage > 0 %}"Timeout": {{ "%.1f"|format(report_data.statistics.timeout_percentage) }}
+{% endif %}{% if report_data.statistics.memory_limit_percentage > 0 %}"Memory Limit": {{ "%.1f"|format(report_data.statistics.memory_limit_percentage) }}
+{% endif %}
+```
+
+**Cache Performance**:
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'pie1': '#8B8AE0', 'pie2': '#ECECFF'}}}%%
+pie title Cache Performance
+"Cache Hit": {{ "%.1f"|format(report_data.statistics.cache_hit_percentage) }}
+"Freshly Executed": {{ "%.1f"|format(report_data.statistics.fresh_percentage) }}
+```
+
+**Runtime per Task**:
+```mermaid
+---
+config:
+    xyChart:
+        width: 600
+        height: 400
+        xAxis:
+            labelFontSize: 10
+        yAxis:
+            labelFontSize: 12
+---
+xychart-beta horizontal
+    title "Runtime per Task"
+    x-axis [{% for task in report_data.tasks %}"{{ task.name[-30:] }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+    y-axis "seconds"
+    bar [{% for task in report_data.tasks %}{{ "%.1f"|format(task.total_runtime) }}{% if not loop.last %}, {% endif %}{% endfor %}]
+```
+
+**Memory Usage per Task**:
+```mermaid
+---
+config:
+    xyChart:
+        width: 600
+        height: 400
+        xAxis:
+            labelFontSize: 10
+        yAxis:
+            labelFontSize: 12
+---
+xychart-beta horizontal
+    title "Memory Usage per Task"
+    x-axis [{% for task in report_data.tasks %}"{{ task.name[-30:] }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+    y-axis "MB"
+    bar [{% for task in report_data.tasks %}{{ "%.1f"|format(task.peak_memory) }}{% if not loop.last %}, {% endif %}{% endfor %}]
+```
+
+### Global Results
+| Task | Extracted lemma | Tamarin Version | Status | Runtime | Peak Memory Used | Cache Hit |
+|------|-----------------|-----------------|--------|---------|------------------|-----------|
+{% for task in report_data.tasks %}{% for lemma_group in task.lemma_groups %}{% for result in lemma_group.results %}| **{{ task.name }}**<br><small style="color: #6c757d;">{{ task.theory_file }}</small> | {{ lemma_group.lemma }} | {{ result.tamarin_version }} | {% if result.status == 'verified' %}✅ Verified{% elif result.status == 'falsified' %}❗ Falsified{% elif result.status == 'unterminated' %}🚧 Unterminated{% elif result.status == 'timeout' %}⏳ Timed Out{% elif result.status == 'memory_limit' %}🧠 Memory Limit{% else %}❌ Error{% endif %} | {{ "%.1f"|format(result.runtime) }}s | {{ "%.1f"|format(result.peak_memory) }}MB | {% if result.cache_hit %}💾 Yes{% else %}💾 No{% endif %} |
+{% endfor %}{% endfor %}{% endfor %}
+
+### Global Timeline
+```mermaid
+gantt
+title Global Execution Timeline
+dateFormat X
+axisFormat %H:%M:%S
+{% for task in report_data.tasks %}{% if task.execution_timeline %}section {{ task.name }}
+{% for item in task.execution_timeline %}{{ item.label }} : {{ item.start }}, {{ item.end }}
+{% endfor %}{% endif %}{% endfor %}
+```
+
+## Task Details
+
+{% for task in report_data.tasks %}
+### Task: {{ task.name }}
+
+#### Execution Summary
+| Lemma | Resources config | Options | Preprocessor | Tamarin Version | Status | Runtime | Peak Memory Used | Cache Hit |
+|-------|------------------|---------|--------------|-----------------|--------|---------|------------------|-----------|
+{% for lemma_group in task.lemma_groups %}{% for result in lemma_group.results %}| {{ lemma_group.lemma }} | {{ result.cores }}c / {{ result.memory }}GB / {{ result.timeout }}s | {{ result.options or "None" }} | {{ result.preprocessor or "None" }} | {{ result.tamarin_version }} | {% if result.status == 'verified' %}✅ Verified{% elif result.status == 'falsified' %}❗ Falsified{% elif result.status == 'unterminated' %}🚧 Unterminated{% elif result.status == 'timeout' %}⏳ Timed Out{% elif result.status == 'memory_limit' %}🧠 Memory Limit{% else %}❌ Error{% endif %} | {{ "%.2f"|format(result.runtime) }}s | {{ "%.2f"|format(result.peak_memory) }}MB | {% if result.cache_hit %}💾 Yes{% else %}💻 No{% endif %} |
+{% endfor %}{% endfor %}
+
+{% if task.has_version_comparisons %}
+**Runtime by Version for {{ task.name }}**:
+```mermaid
+---
+config:
+    xyChart:
+        width: 600
+        height: 400
+        xAxis:
+            labelFontSize: 10
+        yAxis:
+            labelFontSize: 12
+---
+xychart-beta horizontal
+    title "Runtime by Version for {{ task.name }}"
+    x-axis [{% for comparison in task.version_comparisons %}"{{ comparison.label[-30:] }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+    y-axis "Runtime (seconds)"
+    bar [{% for comparison in task.version_comparisons %}{{ "%.2f"|format(comparison.runtime) }}{% if not loop.last %}, {% endif %}{% endfor %}]
+```
+
+**Memory Usage by Version for {{ task.name }}**:
+```mermaid
+---
+config:
+    xyChart:
+        width: 600
+        height: 400
+        xAxis:
+            labelFontSize: 10
+        yAxis:
+            labelFontSize: 12
+---
+xychart-beta horizontal
+    title "Memory Usage by Version for {{ task.name }}"
+    x-axis [{% for comparison in task.version_comparisons %}"{{ comparison.label[-30:] }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+    y-axis "Memory (MB)"
+    bar [{% for comparison in task.version_comparisons %}{{ "%.2f"|format(comparison.memory) }}{% if not loop.last %}, {% endif %}{% endfor %}]
+```
+{% endif %}
+
+{% if task.execution_timeline %}
+**Execution Timeline for {{ task.name }}**:
+```mermaid
+gantt
+title Execution Timeline for {{ task.name }}
+dateFormat X
+axisFormat %H:%M:%S
+section {{ task.name }}
+{% for execution in task.execution_timeline %}{{ execution.label }} : {{ execution.start }}, {{ execution.end }}
+{% endfor %}
+```
+{% endif %}
+
+{% set task_traces = report_data.traces|filter_traces_by_task(task)|list %}
+{% if task_traces %}
+#### Traces
+{% for trace in task_traces %}
+**{{ trace.lemma }}** ({{ trace.tamarin_version }}):
+- **JSON File**: [{{ trace.json_file|relative_from_report }}]({{ trace.json_file|relative_from_report }})
+{% if trace.dot_file %}- **DOT File**: [{{ trace.dot_file|relative_from_report }}]({{ trace.dot_file|relative_from_report }})
+{% endif %}
+{% if trace.dot_file %}
+**Trace Visualization**:
+![{{ trace.lemma }}_trace]({{ trace.dot_file|replace('.dot', '.svg')|relative_from_report }})
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+
+## Errors
+
+{% if report_data.has_errors %}
+
+**Error Types**:
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'pie1': '#6C6ACF', 'pie2': '#8B8AE0', 'pie3': '#B3B2F2', 'pie4': '#D7D6FB', 'pie5': '#ECECFF'}}}%%
+pie title Error Types
+{% for error_type in report_data.error_type_distribution %}"{{ error_type.name }}": {{ "%.1f"|format(error_type.percentage) }}
+{% endfor %}
+```
+
+### Error Summary
+| Task | Lemma | Resources config | Options | Preprocessor | Tamarin Version | Error | Runtime | Peak Memory Used | Description |
+|------|-------|------------------|---------|--------------|-----------------|-------|---------|------------------|-------------|
+{% for error in report_data.error_summary %}{% for lemma_error in error.lemma_errors %}{% for result in lemma_error.results %}| {{ error.task_name }} | {{ lemma_error.lemma }} | {{ result.cores }}c / {{ result.memory }}GB / {{ result.timeout }}s | {{ result.options or "None" }} | {{ result.preprocessor or "None" }} | {{ result.tamarin_version }} | {% if result.error_type == 'tamarin_error' %}❌ Tamarin Error{% elif result.error_type == 'timeout' %}⏳ Timeout{% elif result.error_type == 'memory_limit' %}🧠 Memory Limit{% else %}❌ Error{% endif %} | {{ "%.2f"|format(result.runtime) }}s | {{ "%.2f"|format(result.peak_memory) }}MB | {{ result.description }} |
+{% endfor %}{% endfor %}{% endfor %}
+
+### Detailed Error Information
+{% for error in report_data.detailed_errors %}
+**{% if error.type == 'tamarin_error' %}❌ TAMARIN ERROR{% elif error.type == 'timeout' %}⏳ TIMED OUT{% elif error.type == 'memory_limit' %}🧠 MEMORY LIMIT{% else %}❌ UNEXPECTED ERROR{% endif %}: {{ error.task_name }}**
+
+**On lemma**: {{ error.lemma }}, **with tamarin-prover**: {{ error.tamarin_version }}
+
+{{ error.description }}
+
+{% if error.stderr_output %}
+```bash
+{{ error.stderr_output }}
+```
+{% endif %}
+
+---
+{% endfor %}
+
+**Rerun file**: [{{ report_data.rerun_file|relative_from_report }}]({{ report_data.rerun_file|relative_from_report }})
+{% else %}
+**✅ No errors encountered in this run**
+
+All tasks completed successfully without any failures, timeouts, or memory limit issues.
+{% endif %}
+
+---
+
+*Report generated by Batch Tamarin v{{ version or 'unknown' }} on {{ report_data.generation_date.strftime('%Y-%m-%d at %H:%M:%S') }}*
