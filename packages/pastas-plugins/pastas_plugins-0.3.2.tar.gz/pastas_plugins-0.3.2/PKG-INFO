@@ -1,0 +1,142 @@
+Metadata-Version: 2.4
+Name: pastas_plugins
+Version: 0.3.2
+Summary: Repository containing plugins to further enhance your pastas experience.
+Author: Pastas Developers Team
+Maintainer-email: "D.A. Brakenhoff" <d.brakenhoff@artesia-water.nl>, "M.A. Vonk" <m.vonk@artesia-water.nl>, "M. Bakker" <markbak@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024-2025 D. Brakenhoff, M.A. Vonk & M. Bakker
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: homepage, https://pastas.dev
+Project-URL: repository, https://github.com/pastas/pastas-plugins
+Project-URL: documentation, https://pastas.readthedocs.io
+Keywords: hydrology,groundwater,timeseries,analysis
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Other Audience
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Hydrology
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pastas
+Provides-Extra: all
+Requires-Dist: pastas_plugins[crosscorrelation,modflow,pest]; extra == "all"
+Provides-Extra: crosscorrelation
+Requires-Dist: statsmodels; extra == "crosscorrelation"
+Provides-Extra: modflow
+Requires-Dist: flopy; extra == "modflow"
+Provides-Extra: pest
+Requires-Dist: pyemu>=1.3.8; extra == "pest"
+Provides-Extra: reservoirs
+Requires-Dist: pastas_plugins; extra == "reservoirs"
+Provides-Extra: responses
+Requires-Dist: pastas_plugins; extra == "responses"
+Provides-Extra: ruffing
+Requires-Dist: ruff; extra == "ruffing"
+Provides-Extra: pytesting
+Requires-Dist: pytest>=7; extra == "pytesting"
+Requires-Dist: pytest-cov; extra == "pytesting"
+Requires-Dist: pytest-sugar; extra == "pytesting"
+Provides-Extra: ci
+Requires-Dist: coverage; extra == "ci"
+Provides-Extra: rtd
+Requires-Dist: pastas_plugins[all]; extra == "rtd"
+Requires-Dist: sphinx_rtd_theme; extra == "rtd"
+Requires-Dist: myst_nb; extra == "rtd"
+Requires-Dist: numpydoc; extra == "rtd"
+Requires-Dist: sphinx_design; extra == "rtd"
+Requires-Dist: tqdm; extra == "rtd"
+Dynamic: license-file
+
+# pastas-plugins
+
+Welcome to the pastas-plugins repository, your one-stop-shop for customized
+cutting-edge additions to Pastas.
+
+
+## Current plugins
+
+The following plugins are now available:
+
+- **`cross_correlation`**: analyze and visualize the cross-correlation between two time series.
+- **`modflow`**: use modflow models as response functions.
+- **`reservoirs`**: use reservoir models to simulate time series.
+- **`responses`**: custom response functions for Pastas.
+- **`pest`**: PEST(++) solver for Pastas.
+
+## Installation
+
+<!-- TODO: add repo to PYPI so this becomes true: -->
+Install `pastas-plugins` with:
+
+```bash
+pip install pastas_plugins
+```
+
+If you want to use a specific plugin and want to ensure you install all the requisite
+dependencies, you can use the following command:
+
+```bash
+pip install pastas-plugins[<name of plugin>]
+```
+
+If you want to install them all:
+```bash
+pip install pastas-plugins[all]
+```
+
+## Usage
+
+Import the pastas-plugins module with:
+
+```python
+import pastas_plugins as pp
+```
+
+This gives you access to the following functions:
+
+```python
+pp.list_plugins()         # list of all plugins
+pp.show_plugin_versions() # show plugin versions
+```
+
+The function `pp.show_plugin_versions()` will indicate if any dependencies are missing
+for a particular plugin. See the [Installation](#installation) section above for tips
+on how to install dependencies for a particular plugin.
+
+To use a particular plugin, you'll have to import it explicitly, e.g.:
+
+```python
+from pastas_plugins import responses
+
+rfunc = responses.Theis()
+```
+
+Separate plugins are each stored in a separate submodule within the pastas-plugins
+package. You do not need to install the dependencies for each plugin if you're only
+interested in one particular plugin.
