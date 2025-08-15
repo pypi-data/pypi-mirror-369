@@ -1,0 +1,2 @@
+ETHEREUM = "ethereum"
+ETH = "ETH"
