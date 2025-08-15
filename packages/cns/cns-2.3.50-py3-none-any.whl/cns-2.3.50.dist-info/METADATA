@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: cns
+Version: 2.3.50
+Summary: cns工具包
+Author-email: Rambo <6566666@qq.com>
+Maintainer-email: Rmbo <6566666@qq.com>
+License: MIT License
+Project-URL: home, https://cns.ink/example
+Keywords: cns,工具包,特定功能关键词
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Topic :: Utilities
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: python-dateutil>=2.9.0
+Requires-Dist: cryptography>=44.0.2
+
+## cns
+cns常用的工具包, 内置大量常用工具, 正在不断增加中......
+
+
+## 安装方法
+pip install cns
+
+
+## 使用方法
+```python代码
+import cns
+
+if __name__ == "__main__":
+
+    dfx  = cns.DateTimeX()  # 可初始化 "2023-05-28 23:23:51"
+
+    print("初始时间:", dfx)
+
+    print("昨天的本月区间:", dfx.get("{[年-月-初||复位-1日]}~{[年-月-日]}"))
+
+    print("昨天的去年本月区间:", dfx.get("{[年-月-初||复位-1日-1年]}~{[年-月-末]}"))
+
+    print("昨天的上月区间:", dfx.get("{[年-月-初||复位-1日-1月]}~{[年-月-末]}"))
+
+    print("昨天的近35天区间:", dfx.get("{[年-月-日||复位-35日]}~{[年-月-日||复位-1日]}"))
+
+    print("前35天的日期:", dfx.get("{[年-月-日||复位-35日]}"))
+
+    print("昨天的月1号:", dfx.get("{[年-月-初||复位-1日]}"))
+
+    print("昨天的本月:", dfx.get("{[年-月||复位-1日]}"))
+
+
+'''
+# 说明：
+1、分隔符“||” 左侧是获取的时间格式，右侧是时间计算的指令；
+2、左左侧的字符串中通包含年、月、日、时、分、秒、初、末，用来获取时间和格式，其中“初”是获数字1，“末”最后一天的日期；
+3、右侧是时间计算的指令支持年、月、日、时、分、秒、复位，用来对当前的时间进行加和减的计算，其中“复位”代表恢复到初始时间；
+
+目前支持WINDOWS下 Python 3.10
+联系作者：6566666@qq.com
+'''
