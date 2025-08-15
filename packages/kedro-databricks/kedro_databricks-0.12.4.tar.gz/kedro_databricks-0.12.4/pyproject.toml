@@ -1,0 +1,139 @@
+[project]
+name = "kedro-databricks"
+version = "0.12.4"
+description = "A plugin to run Kedro pipelines on Databricks."
+authors = [{ name = "Jens Peder Meldgaard", email = "jenspederm@gmail.com" }]
+readme = "README.md"
+requires-python = ">= 3.10"
+
+dependencies = [
+    "kedro>=0.19.8",
+    "tomlkit>=0.13.0",
+    "databricks-sdk>=0.36.0",
+    "python-dotenv>=1.0.1",
+    "packaging>=21.2",
+]
+[dependency-groups]
+dev = [
+    "pytest>=8.3.3",
+    "pytest-cov>=6.0.0",
+    "pre-commit>=4.0.1",
+    "ruff>=0.7.2",
+    "commitizen>=3.30.0",
+]
+test = [
+    "ipython>=8.10",
+    "jupyterlab>=3.0",
+    "notebook",
+    "kedro-datasets[spark, pandas, spark.SparkDataset, pandas.ParquetDataset]>=3.0",
+    "numpy~=1.21",
+]
+docs = [
+    "mkdocs-awesome-nav>=3.1.2",
+    "mkdocs-click>=0.9.0",
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-material>=9.6.14",
+    "mkdocstrings[python]>=0.29.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/jenspederm/kedro-databricks"
+Issues = "https://github.com/jenspederm/kedro-databricks/issues"
+
+[project.entry-points."kedro.project_commands"]
+databricks = "kedro_databricks.plugin:commands"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kedro_databricks"]
+
+[tool.pytest.ini_options]
+addopts = [
+    '--log-format="%(asctime)s %(levelname)s %(message)s"',
+    '--log-date-format="%Y-%m-%d %H:%M:%S"',
+    '--cov-report=xml:coverage.xml',
+    '--cov-report=term-missing',
+    '--cov=kedro_databricks',
+    '--no-cov-on-fail',
+    '--cov-fail-under=70',
+    '--ignore-glob="develop-eggs/*"',
+    '-ra',
+    '-vv',
+]
+
+
+[tool.black]
+exclude = ".*template.py"
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+omit = ["tests/*"]
+exclude_also = ["raise NotImplementedError"]
+
+[tool.ruff]
+line-length = 88
+show-fixes = true
+lint.select = [
+    "F",    # Pyflakes
+    "W",    # pycodestyle
+    "E",    # pycodestyle
+    "I",    # isort
+    "UP",   # pyupgrade
+    "PL",   # Pylint
+    "T201", # Print Statement
+]
+lint.ignore = ["E501", "PLR0913"] # Black takes care of line-too-long
+
+[tool.ruff.lint.per-file-ignores]
+"{tests,features}/*" = ["T201", "PLR2004", "PLR0915", "PLW1510"]
+
+[tool.commitizen]
+name = "cz_customize"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "pep621"
+update_changelog_on_bump = true
+major_version_zero = true
+template = "scripts/CHANGELOG.md.j2"
+version_files = ["pyproject.toml", "src/kedro_databricks/__init__.py"]
+
+
+[tool.commitizen.customize]
+message_template = "{{change_type}}:{% if show_message %} {{message}}{% endif %}"
+bump_pattern = "^(break|feat|new|fix|hotfix)"
+bump_map = { "break" = "MAJOR", "new" = "MINOR", "feat" = "MINOR", "fix" = "PATCH", "hotfix" = "PATCH" }
+change_type_order = [
+    "BREAKING CHANGE",
+    "feat",
+    "fix",
+    "refactor",
+    "perf",
+    "docs",
+    "ci",
+    "chore",
+    "style",
+    "test",
+]
+commit_parser = "^(?P<change_type>feat|feature|bug fix|fix|hotfix|refactor|docs|ci|bundle|build|project|chore|Merge pull request)(:| #(?P<issue>\\d+) from)(?P<message>.*)?"
+
+[tool.commitizen.customize.change_type_map]
+"Merge pull request" = "Pull Requests"
+"feature" = " Feat"
+"feat" = " Feat"
+"bug fix" = "  Fix"
+"fix" = "  Fix"
+"hotfix" = "  Fix"
+"refactor" = "   Refactor"
+"refact" = "   Refactor"
+"docs" = "     Other Changes"
+"ci" = "     Other Changes"
+"build" = "     Other Changes"
+"project" = "     Other Changes"
+"chore" = "     Other Changes"

@@ -1,0 +1,33 @@
+---
+repos:
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.30.0
+    hooks:
+      - id: commitizen
+  - repo: local
+    hooks:
+      - id: validate-codecov
+        name: Validate Codecov
+        language: system
+        entry: bash ./scripts/validate_codecov.sh
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args:
+          - --fix=lf
+  - repo: local
+    hooks:
+      - id: lint-code
+        name: Lint code
+        language: system
+        entry: bash ./scripts/run_lint.sh
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.21.0
+    hooks:
+      - id: yamllint
+        args: [--format, parsable, -d, relaxed]

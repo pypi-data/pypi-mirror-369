@@ -1,0 +1,182 @@
+from kedro.pipeline import Pipeline, node
+
+from kedro_databricks.cli.deploy.get_deployed_resources import get_deployed_resources
+from kedro_databricks.constants import DEFAULT_TARGET
+from kedro_databricks.plugin import commands
+from tests.utils import reset_init
+
+
+def identity(arg):
+    return arg
+
+
+pipeline = Pipeline(
+    [
+        node(
+            identity,
+            ["input"],
+            ["intermediate"],
+            name="node0",
+            tags=["tag0", "tag1"],
+        ),
+        node(identity, ["intermediate"], ["output"], name="node1"),
+        node(identity, ["intermediate"], ["output2"], name="node2", tags=["tag0"]),
+        node(
+            identity,
+            ["intermediate"],
+            ["output3"],
+            name="node3",
+            tags=["tag1", "tag2"],
+        ),
+        node(identity, ["intermediate"], ["output4"], name="node4", tags=["tag2"]),
+        node(
+            identity,
+            ["intermediate"],
+            ["outputs.output_1.output_1_1"],
+            name="outputs.output_1.output_1_1",
+        ),
+        node(
+            identity,
+            ["intermediate"],
+            ["outputs.output_1.output_1_2"],
+            name="outputs.output_1.output_1_2",
+        ),
+        node(identity, ["intermediate"], ["outputs.output_2"], name="outputs.output_2"),
+    ],
+    tags="pipeline0",
+)
+
+pipelines = {
+    "__default__": pipeline,
+    "ds": pipeline,
+    "namespaced.pipeline": pipeline,
+}
+
+
+def test_deploy(cli_runner, metadata, custom_username, custom_provider):
+    """Test the `deploy` command"""
+    reset_init(metadata)
+    deploy_fail = ["databricks", "deploy"]
+    result = cli_runner.invoke(commands, deploy_fail, obj=metadata)
+    assert result.exit_code == 1, (result.exit_code, result.stdout, result.exception)
+
+    init_cmd = ["databricks", "init", "--provider", custom_provider]
+    result = cli_runner.invoke(commands, init_cmd, obj=metadata)
+    override_path = metadata.project_path / "conf" / DEFAULT_TARGET / "databricks.yml"
+    assert result.exit_code == 0, (result.exit_code, result.stdout, result.exception)
+    assert metadata.project_path.exists(), "Project path not created"
+    assert metadata.project_path.is_dir(), "Project path is not a directory"
+    assert override_path.exists(), "Override file not created"
+
+    deploy_cmd = ["databricks", "deploy", "--bundle"]
+    result = cli_runner.invoke(commands, deploy_cmd, obj=metadata)
+    assert result.exit_code == 0 and "Deployment complete!" in result.stdout, (
+        result.exit_code,
+        result.stdout,
+        result.exception,
+    )
+
+    resources = get_deployed_resources(
+        metadata, pipelines, only_dev=True, _custom_username=custom_username
+    )
+    assert len(resources) > 0, f"There are no resources: {resources}"
+    assert all(
+        metadata.package_name in p.name for p in resources
+    ), f"Package name not in resource: {[p.name for p in resources if metadata.package_name not in p.name]}"
+    destroy_cmd = ["databricks", "destroy", "--auto-approve"]
+    result = cli_runner.invoke(commands, destroy_cmd, obj=metadata)
+    assert result.exit_code == 0, (result.exit_code, result.stdout, result.exception)
+
+
+def test_deploy_prod(cli_runner, metadata, custom_username, custom_provider):
+    """Test the `deploy` command"""
+    reset_init(metadata)
+    deploy_fail = ["databricks", "deploy"]
+    result = cli_runner.invoke(commands, deploy_fail, obj=metadata)
+    assert result.exit_code == 1, (result.exit_code, result.stdout, result.exception)
+
+    init_cmd = ["databricks", "init", "--provider", custom_provider]
+    result = cli_runner.invoke(commands, init_cmd, obj=metadata)
+    override_path = metadata.project_path / "conf" / "prod" / "databricks.yml"
+    assert result.exit_code == 0, (result.exit_code, result.stdout, result.exception)
+    assert metadata.project_path.exists(), "Project path not created"
+    assert metadata.project_path.is_dir(), "Project path is not a directory"
+    assert override_path.exists(), "Override file not created"
+
+    deploy_cmd = [
+        "databricks",
+        "deploy",
+        "--env",
+        "prod",
+        "--bundle",
+        "--target",
+        "prod",
+    ]
+    result = cli_runner.invoke(commands, deploy_cmd, obj=metadata)
+    assert result.exit_code == 0 and "Deployment complete!" in result.stdout, (
+        result.exit_code,
+        result.stdout,
+        result.exception,
+    )
+
+    resources = get_deployed_resources(
+        metadata, pipelines, _custom_username=custom_username
+    )
+    assert len(resources) > 0, f"There are no resources: {resources}"
+    assert all(
+        metadata.package_name in p.name for p in resources
+    ), f"Package name not in resource: {[p.name for p in resources if metadata.package_name not in p.name]}"
+    destroy_cmd = ["databricks", "destroy", "--target", "prod", "--auto-approve"]
+    result = cli_runner.invoke(commands, destroy_cmd, obj=metadata)
+    assert result.exit_code == 0, (result.exit_code, result.stdout, result.exception)
+
+
+def test_deploy_with_conf(cli_runner, metadata, custom_provider):
+    """Test the `deploy` command"""
+    reset_init(metadata)
+    deploy_fail = ["databricks", "deploy"]
+    result = cli_runner.invoke(commands, deploy_fail, obj=metadata)
+    assert result.exit_code == 1, (result.exit_code, result.stdout, result.exception)
+
+    CONF_KEY = "custom_conf"
+
+    init_cmd = ["databricks", "init", "--provider", custom_provider]
+    result = cli_runner.invoke(commands, init_cmd, obj=metadata)
+    override_path = metadata.project_path / CONF_KEY / DEFAULT_TARGET / "databricks.yml"
+    override_path.parent.mkdir(parents=True, exist_ok=True)
+    override_path.write_text(
+        """
+        default:
+            job_clusters:
+                - job_cluster_key: default
+                new_cluster:
+                    spark_version: 14.3.x-scala2.12
+                    node_type_id: Standard_DS3_v2
+                    num_workers: 1
+                    spark_env_vars:
+                        KEDRO_LOGGING_CONFIG: "/dbfs/FileStore/develop_eggs/conf/logging.yml"
+            tasks:
+                - task_key: default
+                job_cluster_key: default
+        """
+    )
+    assert result.exit_code == 0, (result.exit_code, result.stdout, result.exception)
+    assert metadata.project_path.exists(), "Project path not created"
+    assert metadata.project_path.is_dir(), "Project path is not a directory"
+
+    settings = metadata.project_path / "src" / metadata.package_name / "settings.py"
+    original_settings = settings.read_text()
+    with open(settings, "a"):
+        settings.write_text(f"CONF_SOURCE = '{CONF_KEY}'")
+
+    deploy_cmd = ["databricks", "deploy", "--bundle", f"--conf-source={CONF_KEY}"]
+    result = cli_runner.invoke(commands, deploy_cmd, obj=metadata)
+    assert result.exit_code == 0 and "Deployment complete!" in result.stdout, (
+        result.exit_code,
+        result.stdout,
+        result.exception,
+    )
+    settings.write_text(original_settings)
+    destroy_cmd = ["databricks", "destroy", "--auto-approve"]
+    result = cli_runner.invoke(commands, destroy_cmd, obj=metadata)
+    assert result.exit_code == 0, (result.exit_code, result.stdout, result.exception)
