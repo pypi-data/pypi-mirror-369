@@ -1,0 +1,63 @@
+# 1151-py SDK
+
+Minimal Python SDK exposing a client with an `exchange` method.
+
+## Quickstart
+
+1. Create and activate a virtualenv (recommended):
+   
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate  # Windows: .venv\Scripts\activate
+   ```
+
+2. Install in editable mode with dev tools you need:
+   
+   ```bash
+   pip install -e .
+   # Optional: pytest for running tests
+   pip install pytest
+   ```
+
+3. Run tests:
+   
+   ```bash
+   pytest
+   ```
+
+4. Use the SDK:
+   
+   ```python
+   from m1151 import Client
+
+   client = Client(api_key="YOUR_API_KEY")
+   res = client.exchange(
+       amount=1.23,
+       in_return="BTC",
+       you_give="ETH",
+       receive_wallet="YOUR_WALLET_ADDRESS",
+   )
+   print(res)
+   ```
+
+## Project layout
+
+```
+pyproject.toml
+pytest.ini
+src/
+  m1151/
+    __init__.py
+    client.py
+  sample_pkg/  # legacy sample remains for tests
+    __init__.py
+    core.py
+    cli.py
+tests/
+  test_core.py
+```
+
+## Notes
+- SDK client is available as `m1151.Client`.
+- Base URL defaults to a hardcoded `https://api.1151.app`. Override by passing `base_url` to `Client(...)` if needed.
+- The `exchange` call sends a POST to `{base_url}/exchange` with the API key in the JSON body.
