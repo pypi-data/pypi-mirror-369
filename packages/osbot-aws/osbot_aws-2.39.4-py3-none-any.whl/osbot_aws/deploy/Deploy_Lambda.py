@@ -1,0 +1,180 @@
+from osbot_aws.aws.lambda_.Lambda                               import DEFAULT__LAMBDA__EPHEMERAL_STORAGE, DEFAULT__LAMBDA__MEMORY_SIZE
+from osbot_utils.type_safe.Type_Safe                            import Type_Safe
+from osbot_aws.aws.lambda_                                      import boto3__lambda
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe  import type_safe
+from osbot_utils.utils.Env                                      import load_dotenv
+from osbot_aws.apis.shell.Shell_Client                          import Shell_Client
+from osbot_aws.helpers.Lambda_Layer_Create                      import Lambda_Layer_Create
+from osbot_aws.OSBot_Setup                                      import OSBot_Setup
+from osbot_aws.apis.test_helpers.Temp_Aws_Roles                 import Temp_Aws_Roles
+from osbot_aws.helpers.Lambda_Package                           import Lambda_Package
+
+# todo: refactor lambda_name to be a Type_Safe variable, but that will clash with the current lambda_name() function (which is used in other projects)
+#       stage and the other self.* vars set in the __init__ should also be Type_Safe variables
+
+class Deploy_Lambda(Type_Safe):
+    stage            : str = None
+    ephemeral_storage: int = DEFAULT__LAMBDA__EPHEMERAL_STORAGE
+    memory_size      : int = DEFAULT__LAMBDA__MEMORY_SIZE
+
+    def __init__(self, handler, lambda_name=None, **kwargs):
+        super().__init__(**kwargs)
+        load_dotenv()
+        self.osbot_setup          = OSBot_Setup()
+        self.aws_config           = self.osbot_setup.aws_config
+        if type(handler) is str:
+            self.handler          = None
+            self.module_name      = handler
+        else:
+            self.handler          = handler
+            self.module_name      = handler.__module__
+
+        self.role_arn             = Temp_Aws_Roles().for_lambda_invocation__role_arn()
+
+        self.package              = self.get_package()
+
+        if lambda_name:                                        # if we have provided a name, use it internally
+            if self.stage:                                      # todo: review this logic of setting lambda function name (with stage) and syncing it with others like module_name (which is quite messy at the moment)
+                lambda_name += f'__{self.stage}'
+            self.package.lambda_name     = lambda_name
+            self.package.aws_lambda.name = lambda_name
+            self.module_name             = lambda_name
+
+        if len(self.lambda_name()) > 64:
+            raise ValueError(f'Lambda name too long, it was f{len(self.lambda_name())} and the max is 64: {self.lambda_name()}')
+
+    def __enter__(self                        ): return self
+    def __exit__ (self, type, value, traceback): pass
+
+    def add_function_source_code(self):
+        root_module_name = self.handler.__module__.split(".").pop(0)
+        self.package.add_module(root_module_name)
+        return self
+
+    def add_file(self, file_path, folder=None):
+        self.package.add_file(source=file_path, folder=folder)
+        return self
+
+
+    def add_file__boto3__lambda(self):
+        folder = 'osbot_aws.aws.lambda_'.replace('.','/')
+        self.add_file(file_path = boto3__lambda.__file__, folder=folder)
+        return self
+
+    def add_folder(self, source, ignore=None):
+        self.package.add_folder(source=source, ignore=ignore)
+        return self
+
+    def add_layer(self, layer_arn):
+        self.package.add_layer(layer_arn)
+        return self
+
+    @type_safe
+    def add_layers(self, layers_arn: list):
+        for layer_arn in layers_arn:
+            self.package.add_layer(layer_arn)
+        return self
+
+    def add_module(self, module_name):
+        self.package.add_module(module_name)
+        return self
+
+    def add_modules(self, module_names):
+        for module_name in module_names:
+            self.package.add_module(module_name)
+        return self
+
+    def add_osbot_aws    (self):    self.package.add_osbot_aws    () ; return self
+    def add_osbot_browser(self):    self.package.add_osbot_browser() ; return self
+    def add_osbot_utils  (self):    self.package.add_osbot_utils  () ; return self
+    def add_osbot_elastic(self):    self.package.add_osbot_elastic() ; return self
+
+    def delete(self):
+        return self.lambda_function().delete()
+
+    def deploy(self):
+        return self.update() == 'Successful'
+
+    def exists(self):
+        return self.package.aws_lambda.exists()
+
+    def info(self):
+        return self.lambda_function().info()
+
+    def invoke(self, params=None):
+        return self.lambda_function().invoke(params)
+
+    def invoke_async(self, params=None):
+        return self.lambda_function().invoke_async(params)
+
+    def invoke_return_logs(self, params=None):
+        return self.lambda_function().invoke_return_logs(params)
+
+    def files(self):
+        return self.package.get_files()
+
+    def function_url(self):
+        return self.lambda_function().function_url()
+
+    def get_package(self):
+        package = Lambda_Package(self.lambda_name())
+        with package.aws_lambda as _:
+            _.set_s3_bucket(self.osbot_setup.s3_bucket_lambdas)
+            _.set_role(self.role_arn)
+            _.ephemeral_storage = self.ephemeral_storage
+            _.memory_size       = self.memory_size
+        return package
+
+    def lambda_name(self):
+        return self.module_name
+        # if self.stage is None:
+        #     return self.module_name
+        # return f"{self.module_name}__{self.stage}"          # breaking change was "-" , and now it is "__" (which is a beter separator)
+
+    def lambda_function(self):
+        return self.package.aws_lambda
+
+    def lambda_shell(self):
+        return Shell_Client(self.lambda_function())
+
+    def update(self, wait_for_update=True):
+        if self.uses_container_image() is False:
+            self.add_function_source_code()
+            if len(self.package.get_files()) == 0:                       # todo: add this check to the package.update()  method
+                raise Exception("There are not files to deploy")
+        update_result= self.package.update()
+        if update_result.get('status') == 'ok':
+            if wait_for_update:
+                return self.lambda_function().wait_for_function_update_to_complete()
+        return update_result
+
+    def set_container_image(self, image_uri):
+        self.package.set_image_uri(image_uri)
+
+    def set_handler(self, handler):
+        self.package.set_handler(handler)
+        return self
+
+    def set_layers(self, layers):
+        self.package.set_layers(layers)
+
+    def set_packages_using_layer(self, packages, skip_layer_creation_if_exists=True):
+        layer_name          = f'layer_for__{self.lambda_name()}'
+        lambda_layer_create = Lambda_Layer_Create(layer_name)
+        lambda_layer_create.add_packages(packages)
+        layer_arn           = lambda_layer_create.create(skip_if_exists=skip_layer_creation_if_exists)
+        self.lambda_function().add_layer(layer_arn)
+        return lambda_layer_create
+
+    def set_env_variable(self, key, value):
+        self.package.set_env_variable(key, value)
+        return self
+
+    def set_env_variables(self, env_variables):
+        self.package.set_env_variables(env_variables)
+
+    def uses_container_image(self):
+        return self.package.uses_image_uri()
+
+# legacy methods
+Deploy_Lambda.lambda_invoke = Deploy_Lambda.invoke
