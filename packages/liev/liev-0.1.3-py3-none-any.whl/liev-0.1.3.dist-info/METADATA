@@ -1,0 +1,251 @@
+Metadata-Version: 2.4
+Name: liev
+Version: 0.1.3
+Summary: Liev LLM Dispatcher client
+Home-page: https://liev.ai
+Author: Liev.ai
+Author-email: gabriel.penna@inmetrics.com.br
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.TXT
+Requires-Dist: requests>=2.32.4
+Requires-Dist: openai>=1.92.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Liev Client Library
+
+A powerful Python client for interacting with the Liev AI API platform, providing seamless access to advanced language and multimodal AI capabilities.
+
+---
+
+## Installation
+
+```
+pip install liev
+```
+
+## Features
+- Multiple AI Model Access: Connect to GPT-4o, Claude, and more through a unified API
+- Multi-modal Capabilities: Text completion, image generation, and vision tasks
+- Streaming Responses: Get real-time responses with token streaming
+- Failover Mechanism: Automatic fallback to alternative models
+- OpenAI-Compatible Interface: Use familiar OpenAI SDK patterns
+
+## Quick Start
+
+```
+from liev import Liev
+
+# Initialize the client with your API key
+liev = Liev(api_key='your-api-key')
+
+# Simple text completion
+response = liev.ask('What is the capital of Bulgaria?')
+print(response)
+
+# Generate an image
+from PIL import Image
+img_bytes = liev.ask('Generate a photo of a horse running', function='image')
+if img_bytes:
+    Image.open(img_bytes).save('horse.png')
+Core Methods
+Initialization
+
+liev = Liev(
+    api_key='your-api-key',  # Optional, if not provided will look for LIEV_API_KEY environment variable
+    base_url='https://another.liev.ai/'  # Optional, defaults to Liev api endpoint
+)
+
+```
+
+# Model Information
+
+## List available models
+
+```
+models = liev.get_llms()
+```
+
+## Get models and their types
+
+```
+models_and_types = liev.get_llms_and_types()
+```
+
+## Optionally filter by type
+
+```
+text_models = liev.get_llms_and_types(type='text')
+```
+
+# Asking Questions
+
+## Basic text response with automatic prompt detection
+
+```
+response = liev.ask('How many moons does Saturn have?')
+```
+
+## Explicitly specify function type and model
+
+```
+response = liev.ask(
+    'Explain quantum computing',
+    function='text',  # Options: 'text', 'code', 'image', 'embeddings', etc.
+    llm_name='gpt4o',  # Specific model to use
+    try_next_on_failure=True  # Automatic failover if specified model fails
+)
+```
+
+## Using the OpenAI-compatible format with messages
+
+```
+messages = [
+    {"role": "system", "content": "You are a physics teacher."},
+    {"role": "user", "content": "Why do objects fall?"}
+]
+response = liev.ask(messages=messages, function="text")
+
+# Get results from all available models of a specific type
+response = liev.ask('What is the meaning of life?', function='text', llm_name='all')
+Streaming Responses
+
+# Stream responses for real-time output
+for chunk in liev.ask_stream('Tell the story of Mowgli', client_username="user123"):
+    print(chunk, end="")
+
+```
+
+## Vision Capabilities
+
+```
+import base64
+import requests
+
+# Load an image and encode it to base64
+image_url = "https://example.com/dog.jpg"
+base64_image = base64.b64encode(requests.get(image_url).content).decode()
+
+# Create messages with image and text
+messages = [{
+    "role": "user",
+    "content": [
+        {
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": "image/jpg",
+                "data": base64_image
+            }
+        },             
+        {
+            "type": "text",
+            "text": "What is in this image?"
+        }
+    ]
+}]
+```
+
+### Send the request
+
+```
+response = liev.ask(messages=messages, function="text", llm_name='claude37')
+print(response)
+```
+
+## OpenAI-Compatible Interface
+
+```
+# Get an OpenAI-compatible client
+openai = liev.get_openai_client(client_username="user123")  # Optional username to identify the client
+
+# Use familiar OpenAI patterns
+messages = [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "What is the capital of Bulgaria?"}
+]
+
+response = openai.chat.completions.create(
+    model="gpt4o", 
+    messages=messages,
+    max_tokens=400,
+    extra_headers={
+        "x-liev-try-next-on-failure": "false",
+        "x-liev-type-failover": "code"
+    }
+)
+
+
+print(response.choices[0].message.content)
+
+```
+
+## Usage Information and Metadata
+### You can access information about the last API call made:
+
+```
+liev.ask('What is the capital of France?')
+call_info = liev.get_last_call_info()
+print(f"Model used: {call_info['model']}")
+print(f"Consumption info: {call_info['consumption_info']}")
+print(f"Failover response: {call_info['is_failover_response']}")
+print(f"Failed models: {call_info['response_failed_models']}")
+```
+
+## Advanced Configuration
+### The ask method supports several parameters for fine-tuning your requests:
+
+```
+response = liev.ask(
+    instruction="Explain the concept of quantum entanglement",
+    input=None,  # Additional input data (instruction is ignored if this is provided)
+    messages=None,  # List of message objects (instruction is ignored if this is provided)
+    function=None,  # Specific function type to call (text, code, image, etc.)
+    system_msg="You are a quantum physics expert",  # System message for context
+    max_new_tokens=1000,  # Maximum tokens to generate
+    temperature=0.1,  # Sampling temperature (0.0 = deterministic, higher = more random)
+    timeout=120,  # Request timeout in seconds
+    llm_name=None,  # Specific model to use
+    try_next_on_failure=True,  # Whether to try alternative models on failure
+    client_username="user123",  # Username to identify the client making the request
+    **kwargs  # Additional parameters to be included in the request payload
+)
+```
+
+## Error Handling
+### The library throws exceptions with detailed messages for various error conditions:
+
+Authentication errors (401)
+Access denied (403)
+Endpoint not found (404)
+Connection errors
+Timeout errors
+JSON decode errors
+Other HTTP and request errors
+
+Example:
+
+```
+try:
+    response = liev.ask('What is quantum computing?')
+    print(response)
+except Exception as e:
+    print(f"Error: {e}")
+```
+
+## Limitations
+
+The OpenAI-compatible interface is in alpha preview and doesn't have all functionalities
+Some models may have specific restrictions or requirements
+API rate limits may apply depending on your account tier
