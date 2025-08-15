@@ -1,0 +1,117 @@
+site_name: LLMBuilder Documentation
+site_description: A comprehensive toolkit for building, training, and deploying language models
+site_author: Qub△se
+site_url: https://qubasehq.github.io/llmbuilder-package/
+
+repo_name: Qubasehq/llmbuilder-package
+repo_url: https://github.com/Qubasehq/llmbuilder-package
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: blue
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_root_toc_entry: false
+            merge_init_into_class: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+      enable_git_follow: false
+
+# Exclude files that conflict with navigation
+exclude_docs: |
+  README.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - First Model: getting-started/first-model.md
+  - User Guide:
+    - Configuration: user-guide/configuration.md
+    - Data Processing: user-guide/data-processing.md
+    - Tokenization: user-guide/tokenization.md
+    - Model Training: user-guide/training.md
+    - Fine-tuning: user-guide/fine-tuning.md
+    - Text Generation: user-guide/generation.md
+    - Model Export: user-guide/export.md
+  - CLI Reference:
+    - Overview: cli/overview.md
+  - Python API:
+    - Core API: api/core.md
+  - Examples:
+    - Basic Training: examples/basic-training.md
+  - Reference:
+    - Migration Guide: reference/migration.md
+    - FAQ: reference/faq.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Qubasehq/llmbuilder-package
+    - icon: fontawesome/solid/globe
+      link: https://qubase.in
+  version:
+    provider: mike
