@@ -1,0 +1,61 @@
+# ==============================================================================
+#  构建系统配置 (Build System Configuration)
+#  【建议】直接复制，通常不需要修改。
+# ==============================================================================
+[build-system]
+requires = ["setuptools>=61.0"]  # 声明构建项目需要 setuptools 工具
+build-backend = "setuptools.build_meta"
+
+# ==============================================================================
+#  项目元数据 (Project Metadata)
+#  【核心】这部分需要您根据自己的信息进行修改。
+# ==============================================================================
+[project]
+# --- 基础信息 ---
+name = "pyptzcontroller"                # 【修改】您库的名字，pip install 就用这个
+version = "0.1.1"                        # 【修改】初始版本号，每次更新都要增加
+authors = [                              # 【修改】您的作者信息
+    { name = 'yuyu', email = 'jin2686641273@gmail.com' }
+]
+description = "一个简单易用的 Pelco-D 协议云台控制库" # 【修改】一句话描述您的库
+
+# --- 详细描述和许可证 ---
+readme = "README.md"                     # 【保留】指定 README 文件名
+requires-python = ">=3.7"                # 【保留或修改】支持的最低 Python 版本
+license = { text = "MIT License" }       # 【修改】推荐使用 "MIT License"，更简单开放
+
+# --- PyPI 分类和关键词 ---
+keywords = [                             # 【修改】方便别人搜索到您的库
+    'ptz',
+    'pelco-d',
+    'serial control',
+    'camera control',
+    'rs485'
+]
+classifiers = [                          # 【保留】这是标准的分类信息
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+    'Topic :: System :: Hardware',
+]
+
+# --- 依赖项 ---
+dependencies = [                         # 【修改】您的库正常运行所需要的其他库
+    'pyserial'                           # 您的代码用到了 serial，所以必须声明
+]
+
+# ==============================================================================
+
+# ==============================================================================
+#  包查找配置 (Package Discovery Configuration) - (可选但推荐)
+# ==============================================================================
+[tool.setuptools.packages.find]
+# 告诉 setuptools 在哪里寻找你的 Python 包（代码）
+# 我们在项目根目录下寻找
+where = ["."]
+# 明确包含你的库文件夹
+include = ["ptz_control_lib*"]
+# 排除不需要打包的文件或文件夹
+exclude = ["tests*", "*.egg-info"]
