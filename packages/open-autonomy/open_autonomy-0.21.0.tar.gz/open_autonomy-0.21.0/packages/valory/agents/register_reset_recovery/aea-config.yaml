@@ -1,0 +1,104 @@
+agent_name: register_reset_recovery
+author: valory
+version: 0.1.0
+license: Apache-2.0
+description: Agent to showcase hard reset as a recovery mechanism.
+aea_version: '>=2.0.0, <3.0.0'
+fingerprint:
+  README.md: bafybeicocdojplie5z4kbs7cn7apunfydbxui2nigp6ci2osuvv3mybzfm
+  __init__.py: bafybeihgxrmmp63exxkdmvlu565kehvuucg4iivnejwutaehb2p7xzxu4q
+  tests/__init__.py: bafybeigkkq3hon4wuyrazwnt5tiu23idpelf6a7kzbmawty7zfrpqnmnhi
+  tests/base.py: bafybeib3dxji2jtaixoyl7xdywpntsva3t4dgzticcskqfr3qvqynbx7im
+  tests/test_register_reset_recovery.py: bafybeigvlr6e27qxx65ikn72h4wq5pluu5xfxqyubnj3jo7pcdt75ngqu4
+fingerprint_ignore_patterns: []
+connections:
+- valory/abci:0.1.0:bafybeif4cbgocm427e5fhnmyzntnzwpaheo66gwdwftwy5j42stm2rcuke
+- valory/http_client:0.23.0:bafybeidmlazrjbnn5mw4wxrrj7lfnci7amt5alke2ahb3yirac6qudxuwm
+- valory/ipfs:0.1.0:bafybeiceqtxb7qc54ibiwkpv6sv6rp4tz7wmnygovku7d2uh5noy276ldq
+- valory/ledger:0.19.0:bafybeicoc67atvjzld5e7qzbdkc7c2fj5jrtuj77nx6igxcdxqqqwxiduy
+- valory/p2p_libp2p_client:0.1.0:bafybeihiulggi4jz3i7qdjicztbvlrkesyb7paiovfcmw22xvovpweeq7y
+contracts: []
+protocols:
+- open_aea/signing:1.0.0:bafybeierdeo55vv7nxdag3s2kk6gh4essmeeqpa7vperbw3wn3ypzmtcdm
+- valory/abci:0.1.0:bafybeigdi6wsbdn2nv7clzhnuhki3taywgiiajwawdaat57o5ntlgqj2qe
+- valory/http:1.0.0:bafybeia43es3r7haqhdcx4f3uwfcreeytyk4zadczsafwyc5dzwr7lu2jq
+- valory/ipfs:0.1.0:bafybeib7jhgyocjwdq3r5wzq3z4qeubj3dwi3aqjn2uxzuwnjp5fhvafcu
+skills:
+- valory/abstract_abci:0.1.0:bafybeidt75m2qxctuxi6bd3yhtpvsti4jfp6af65z656t5ncdvb7bgppqi
+- valory/abstract_round_abci:0.1.0:bafybeihsb42bzpbnspjhkbju6rf4rqoqctp5fnlf6sw3tl46naen3lxo4y
+- valory/register_reset_recovery_abci:0.1.0:bafybeibf4njtwf5nfuvtnj3bbubebm2cptwms53aiu4od7ks632f4d2fia
+- valory/registration_abci:0.1.0:bafybeidnvoxerpinmn7t4eolqxgypvtmsrl6wjri5guosc2v5vhcaz3pu4
+default_ledger: ethereum
+required_ledgers:
+- ethereum
+- cosmos
+default_routing: {}
+connection_private_key_paths: {}
+private_key_paths: {}
+logging_config:
+  version: 1
+  disable_existing_loggers: false
+  formatters:
+    standard:
+      format: '[%(asctime)s] [%(levelname)s] %(message)s'
+  handlers:
+    logfile:
+      class: logging.FileHandler
+      formatter: standard
+      filename: ${LOG_FILE:str:log.txt}
+      level: INFO
+    console:
+      class: logging.StreamHandler
+      formatter: standard
+      stream: ext://sys.stdout
+  loggers:
+    aea:
+      handlers:
+      - console
+      - logfile
+      propagate: true
+dependencies:
+  open-aea-ledger-cosmos:
+    version: ==2.0.4
+  open-aea-ledger-ethereum:
+    version: ==2.0.4
+  open-aea-test-autonomy:
+    version: ==0.21.0
+skill_exception_policy: stop_and_exit
+customs: []
+default_connection: null
+---
+public_id: valory/abci:0.1.0
+type: connection
+config:
+  target_skill_id: valory/register_reset_recovery_abci:0.1.0
+  host: ${ABCI_HOST:str:localhost}
+  port: ${ABCI_PORT:int:26658}
+  use_tendermint: ${ABCI_USE_TENDERMINT:bool:false}
+---
+public_id: valory/register_reset_recovery_abci:0.1.0
+type: skill
+models:
+  benchmark_tool:
+    args:
+      log_dir: ${SKILL_REGISTER_RESET_ABCI_MODELS_BENCHMARK_TOOL_ARGS_LOG_DIR:str:/benchmarks}
+  params:
+    args:
+      tendermint_url: ${str:http://localhost:26657}
+      tendermint_com_url: ${str:http://localhost:8080}
+---
+public_id: valory/p2p_libp2p_client:0.1.0
+type: connection
+config:
+  nodes:
+  - uri: ${P2P_URI:str:localhost:11000}
+    public_key: ${P2P_PUBLIC_KEY:str:03c74dbfbe7bbc1b42429f78778017a3cd7eaf9d59d1634c9505a3f7c1a9350e71}
+cert_requests:
+- identifier: acn
+  ledger_id: ethereum
+  message_format: '{public_key}'
+  not_after: '2025-01-01'
+  not_before: '2024-01-01'
+  public_key: ${P2P_PUBLIC_KEY:str:03c74dbfbe7bbc1b42429f78778017a3cd7eaf9d59d1634c9505a3f7c1a9350e71}
+  save_path: .certs/acn_cosmos_11000.txt
+is_abstract: false
