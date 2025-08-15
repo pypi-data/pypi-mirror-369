@@ -1,0 +1,202 @@
+Metadata-Version: 2.1
+Name: wowool-portal
+Version: 1.2.2
+Summary: Wowool Portal Client
+Home-page: https://www.wowool.com/
+Author: Wowool
+Author-email: info@wowool.com
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: wowool-common
+Requires-Dist: requests
+Requires-Dist: jsonpath-ng
+Requires-Dist: unidecode
+Requires-Dist: rich
+
+# Wowool Portal
+
+Python client for the [Wowool Portal](https://www.wowool.com), an NLP toolkit built for modern AI.
+
+## Introduction
+
+Wowool is a powerful and flexible Natural Language Processing (NLP) technology built for modern AI featuring advanced NLP capabilities which can easily be integrated. It provides flexible pipelines for processing text data that perform syntactic and semantic analysis including tokenization, named entity recognition (NER), anonymization, semantic chunking, topic identification and many other types of analysis.
+
+This library, Wowool Portal, is the client for the SaaS version of the Wowool NLP engine and it is designed to be user-friendly and efficient, making it an ideal choice for developers and data scientists looking to enhance their applications with state-of-the-art NLP features.
+
+## Usage
+
+### Installation
+
+```bash
+pip install wowool-portal
+```
+
+### Configuration
+
+First, [create an API key](https://www.wowool.com/settings/api-keys). Next, set the `WOWOOL_PORTAL_API_KEY` environment variable:
+
+```bash
+export WOWOOL_PORTAL_API_KEY="***"
+```
+
+### NLP using pipelines
+
+Natural language processing using Wowool revolves around the use of a pipeline. Each instance of a pipeline represents a sequence of steps that sequentially processes the document.
+
+#### Named entity recognition and sentiment analysis using the CLI
+
+To quickly extract named entities (NER) and sentiments from a text you can use the `wow` CLI with the appropriate modules and input text. Here is an example:
+
+```bash
+wow -p "english,entity,sentiment,sentiments.app" -i "John Smith worked for IBM. He is a nice person."
+```
+
+This command will process the input text *"John Smith worked for IBM. He is a nice person."* and return detailed annotations, including entities and sentiments. The output will look like:
+
+```
+app='wowool_analysis'
+S:(  0, 26)
+ E:(  0, 26): Sentence
+ E:(  0, 10): Person,@(canonical='John Smith' family='Smith' gender='male' given='John' )
+ T:(  0,  4): John,{+giv, +init-cap, +init-token},[John:Prop-Std]
+ T:(  5, 10): Smith,{+fam, +init-cap},[Smith:Prop-Std]
+ T:( 11, 17): worked,[work:V-Past]
+ T:( 18, 21): for,[for:Prep-Std]
+ E:( 22, 25): Company,@(canonical='IBM' country='USA' sector='it' )
+ T:( 22, 25): IBM,{+all-cap},[IBM:Prop-Std]
+ T:( 25, 26): .,[.:Punct-Sent]
+S:( 27, 47)
+ E:( 27, 47): Sentence
+ E:( 27, 46): PositiveSentiment
+ E:( 27, 29): SentimentObject
+ E:( 27, 29): Person,@(canonical='John Smith' family='Smith' gender='male' given='John' )
+ T:( 27, 29): He,{+3p, +init-cap, +init-token, +nom, +sg},[he:Pron-Pers]
+ T:( 30, 32): is,[be:V-Pres-Sg-be]
+ T:( 33, 34): a,[a:Det-Indef]
+ T:( 35, 39): nice,{+inf},[nice:Adj-Std]
+ T:( 40, 46): person,{+person},[person:Nn-Sg]
+ T:( 46, 47): .,[.:Punct-Sent]
+
+app='wowool_sentiments'
+{
+  "positive": 100.0,
+  "negative": 0.0,
+  "sentiments": [
+    {
+      "polarity": "positive",
+      "text": "John Smith be a nice person",
+      "begin_offset": 27,
+      "end_offset": 46,
+      "object": "John Smith"
+    }
+  ]
+}
+```
+
+In this output, we see:
+
+* **S** denotes a sentence.
+* **E** denotes a entity, such as `Person` or `Company`
+* **T** denotes a token, such as a word or punctuation mark.
+* **PositiveSentiment** indicates a positive sentiment associated with the sentence.
+* **SentimentObject** indicates the object of the sentiment.
+
+This detailed level of annotation helps you understand the structure and meaning of the text, making it easier to extract valuable insights. Also note that *he* has been resolved to its referent *John Smith*. 
+
+#### Named entity recognition and sentiment analysis using the API
+
+To extract named entities (NER) and sentiments from a text programmatically, you can use the following:
+
+```python
+from wowool.portal import Pipeline
+
+pipeline = Pipeline("english,entity")
+doc = pipeline("John Smith worked for IBM. He is a nice person.")
+print(doc)
+
+print("-" * 80)
+# Visit all the entities in the document
+for entity in doc.entities
+    print(annotation)
+
+print("-" * 80)
+# Visit all annotations in the document
+for annotation in doc.sentences:
+    print(annotation)
+
+# Visit all the sentences and then all annotations for each sentence
+print("-" * 80)
+for sentence in doc.sentences:
+    for annotation in sentence:
+        if annotation.is_concept:
+            print(annotation.uri, annotation.text, annotation.begin_offset, annotation.end_offset)
+
+```
+
+#### Topic identification
+
+```python
+
+from wowool.portal import Pipeline
+
+pipeline = Pipeline("english,entity,topics.app")
+doc = pipeline("Van Kerkhove, who specializes in respiratory diseases, said that, while it was confirmed that this was a “new” coronavirus, it was still being investigated whether it was transmitted from an animal.")
+print(doc.topics)
+```
+
+#### Sentiment analysis
+
+```python
+from wowool.portal import Pipeline
+import json
+
+pipeline = Pipeline("english,entity,sentiment,sentiments.app")
+doc = pipeline("John Smith worked for IBM. He is a nice person.")
+sentiments = doc.results("wowool_sentiments")
+print(json.dumps(sentiments, indent=2))
+```
+
+Example output:
+
+```json
+{
+  "positive": 100.0,
+  "negative": 0.0,
+  "sentiments": [
+    {
+      "polarity": "positive",
+      "text": "John Smith be a nice person",
+      "begin_offset": 27,
+      "end_offset": 46,
+      "object": "John Smith"
+    }
+  ]
+}
+```
+
+#### Extracting categories/themes
+
+```python
+from wowool.portal import Pipeline
+
+pipeline = Pipeline("english,entity,semantic-themes,themes.app")
+doc = pipeline("Van Kerkhove, who specializes in respiratory diseases, said that, while it was confirmed that this was a “new” coronavirus, it was still being investigated whether it was transmitted from an animal.")
+print(doc.themes)
+```
+
+#### Quick CLI samples
+
+```
+wow -p english,topics.app \
+    -i "NFT scams, toxic mines and lost life savings: the cryptocurrency dream is fading fast"
+```
+
+```
+wow -p english,semantic-theme,topics.app,themes.app \
+    -i "Supermassive black hole at centre of Milky Way seen for first time"
+```
+
+```
+wow -p "english,entity,snippet( rule: {'kill' (Prop)+}=Assassination; ).app" \
+    -i "John Doe killed John Smith"
+```
