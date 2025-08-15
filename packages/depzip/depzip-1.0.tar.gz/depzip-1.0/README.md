@@ -1,0 +1,48 @@
+This library can be used for zipping Python application dependencies.
+
+This library uses the [modulefinder](https://docs.python.org/3/library/modulefinder.html) and [dllist](https://github.com/wardbrian/dllist) libraries to obtain a list of files required for dependencies.
+
+## Installation
+
+This library can be installed using `pip`:
+```
+python -m pip install depzip
+```
+
+## Usage
+
+Here is a Python script showing how to use `depzip` to copy the dependencies of a Python application using `matplotlib`, `numpy`, and `PySide6` into a file called `bundle.zip`:
+```
+import depzip
+
+depzip.bundle(
+    modules=[
+        "matplotlib.backends.backend_qtagg",
+        "mpl_toolkits.mplot3d",
+        "numpy",
+        "PySide6.QtCore",
+        "PySide6.QtGui",
+        "PySide6.QtNetwork",
+        "PySide6.QtUiTools",
+        "PySide6.QtWidgets",
+    ],
+    includes=[
+        "Lib\\site-packages\\depzip\\import.exe",
+        "Lib\\site-packages\\matplotlib\\mpl-data",
+        "Lib\\site-packages\\PySide6\\plugins\\platforms\\qwindows.dll",
+        "Lib\\site-packages\\PySide6\\plugins\\styles\\qmodernwindowsstyle.dll",
+        "Lib\\site-packages\\PySide6\\uic.exe",
+    ],
+    excludes=[
+        "python.exe",
+        "pythonw.exe",
+    ],
+    output="bundle.zip",
+)
+```
+
+The source code of this script can be found in [examples/bundle.py](https://github.com/pavel-demin/depzip/tree/main/examples/bundle.py).
+
+The provided executable file `import.exe` can be used to run a Python application. It starts Python and imports a module with the same name as the executable file. For example, to run a Python file named `app.py`, the executable file `import.exe` should be renamed to `app.exe`.
+
+The source code of the executable file `import.exe` can be found in [examples/import.c](https://github.com/pavel-demin/depzip/tree/main/examples/import.c).
