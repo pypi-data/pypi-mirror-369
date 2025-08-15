@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Documenting Scripts &#8212; AsyncClick Documentation (8.x)</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/click.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/tabs.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/click-icon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Complex Applications" href="complex.html" />
+    <link rel="prev" title="User Input Prompts" href="prompts.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="complex.html" title="Complex Applications"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="prompts.html" title="User Input Prompts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AsyncClick Documentation (8.x)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Documenting Scripts</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="documenting-scripts">
+<h1>Documenting Scripts<a class="headerlink" href="#documenting-scripts" title="Permalink to this headline">¶</a></h1>
+<p>Click makes it very easy to document your command line tools.  First of
+all, it automatically generates help pages for you.  While these are
+currently not customizable in terms of their layout, all of the text
+can be changed.</p>
+<div class="section" id="help-texts">
+<h2>Help Texts<a class="headerlink" href="#help-texts" title="Permalink to this headline">¶</a></h2>
+<p>Commands and options accept help arguments.  In the case of commands, the
+docstring of the function is automatically used if provided.</p>
+<p>Simple example:</p>
+<p>And what it looks like:</p>
+<div class="section" id="documenting-arguments">
+<span id="id1"></span><h3>Documenting Arguments<a class="headerlink" href="#documenting-arguments" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">click.argument()</span></code> does not take a <code class="docutils literal notranslate"><span class="pre">help</span></code> parameter. This is to
+follow the general convention of Unix tools of using arguments for only
+the most necessary things, and to document them in the command help text
+by referring to them by name.</p>
+<p>You might prefer to reference the argument in the description:</p>
+<p>And what it looks like:</p>
+<p>Or you might prefer to explicitly provide a description of the argument:</p>
+<p>And what it looks like:</p>
+<p>For more examples, see the examples in <a class="reference internal" href="arguments.html"><span class="doc">Arguments</span></a>.</p>
+</div>
+</div>
+<div class="section" id="preventing-rewrapping">
+<h2>Preventing Rewrapping<a class="headerlink" href="#preventing-rewrapping" title="Permalink to this headline">¶</a></h2>
+<p>The default behavior of Click is to rewrap text based on the width of the
+terminal.  In some circumstances, this can become a problem. The main issue
+is when showing code examples, where newlines are significant.</p>
+<p>Rewrapping can be disabled on a per-paragraph basis by adding a line with
+solely the <code class="docutils literal notranslate"><span class="pre">\b</span></code> escape marker in it.  This line will be removed from the
+help text and rewrapping will be disabled.</p>
+<p>Example:</p>
+<p>And what it looks like:</p>
+</div>
+<div class="section" id="truncating-help-texts">
+<span id="doc-meta-variables"></span><h2>Truncating Help Texts<a class="headerlink" href="#truncating-help-texts" title="Permalink to this headline">¶</a></h2>
+<p>Click gets command help text from function docstrings.  However if you
+already use docstrings to document function arguments you may not want
+to see :param: and :return: lines in your help text.</p>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">\f</span></code> escape marker to have Click truncate the help text
+after the marker.</p>
+<p>Example:</p>
+<p>And what it looks like:</p>
+</div>
+<div class="section" id="meta-variables">
+<h2>Meta Variables<a class="headerlink" href="#meta-variables" title="Permalink to this headline">¶</a></h2>
+<p>Options and parameters accept a <code class="docutils literal notranslate"><span class="pre">metavar</span></code> argument that can change the
+meta variable in the help page.  The default version is the parameter name
+in uppercase with underscores, but can be annotated differently if
+desired.  This can be customized at all levels:</p>
+<p>Example:</p>
+</div>
+<div class="section" id="command-short-help">
+<h2>Command Short Help<a class="headerlink" href="#command-short-help" title="Permalink to this headline">¶</a></h2>
+<p>For commands, a short help snippet is generated.  By default, it’s the first
+sentence of the help message of the command, unless it’s too long.  This can
+also be overridden:</p>
+<p>And what it looks like:</p>
+</div>
+<div class="section" id="help-parameter-customization">
+<h2>Help Parameter Customization<a class="headerlink" href="#help-parameter-customization" title="Permalink to this headline">¶</a></h2>
+<details class="changelog">
+<summary>Changelog</summary><div class="versionadded">
+<p><span class="versionmodified added">New in version 2.0.</span></p>
+</div>
+</details><p>The help parameter is implemented in Click in a very special manner.
+Unlike regular parameters it’s automatically added by Click for any
+command and it performs automatic conflict resolution.  By default it’s
+called <code class="docutils literal notranslate"><span class="pre">--help</span></code>, but this can be changed.  If a command itself implements
+a parameter with the same name, the default help parameter stops accepting
+it.  There is a context setting that can be used to override the names of
+the help parameters called <code class="xref py py-attr docutils literal notranslate"><span class="pre">help_option_names</span></code>.</p>
+<p>This example changes the default parameters to <code class="docutils literal notranslate"><span class="pre">-h</span></code> and <code class="docutils literal notranslate"><span class="pre">--help</span></code>
+instead of just <code class="docutils literal notranslate"><span class="pre">--help</span></code>:</p>
+<p>And what it looks like:</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/click-logo-sidebar.png" alt="Logo"/>
+            </a></p>
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Documenting Scripts</a><ul>
+<li><a class="reference internal" href="#help-texts">Help Texts</a><ul>
+<li><a class="reference internal" href="#documenting-arguments">Documenting Arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#preventing-rewrapping">Preventing Rewrapping</a></li>
+<li><a class="reference internal" href="#truncating-help-texts">Truncating Help Texts</a></li>
+<li><a class="reference internal" href="#meta-variables">Meta Variables</a></li>
+<li><a class="reference internal" href="#command-short-help">Command Short Help</a></li>
+<li><a class="reference internal" href="#help-parameter-customization">Help Parameter Customization</a></li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="prompts.html" title="previous chapter">User Input Prompts</a>
+          <li>Next: <a href="complex.html" title="next chapter">Complex Applications</a>
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014 Pallets, 2019 Matthias Urlichs.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  <script src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>
