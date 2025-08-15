@@ -1,0 +1,249 @@
+Metadata-Version: 2.4
+Name: snakyscraper
+Version: 1.0.0
+Summary: SnakyScraper is a lightweight and Pythonic web scraping toolkit built on top of BeautifulSoup and Requests. It provides an elegant interface for extracting structured HTML and metadata from websites with clean, direct outputs.
+Home-page: https://github.com/riodevnet/snakyscraper
+Author: Rio Dev
+Author-email: my.riodev.net@gmail.com
+License: MIT
+Keywords: snakyscraper,scraping,scraper
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: beautifulsoup4
+Requires-Dist: lxml
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+
+# 🐍 SnakyScraper
+
+**SnakyScraper** is a lightweight and Pythonic web scraping toolkit built on top of BeautifulSoup and Requests. It provides an elegant interface for extracting structured HTML and metadata from websites with clean, direct outputs.
+
+> Fast. Accurate. Snake-style scraping. 🐍🎯
+
+---
+
+## 🚀 Features
+
+- ✅ Extract metadata: title, description, keywords, author, and more
+- ✅ Built-in support for Open Graph, Twitter Card, canonical, and CSRF tags
+- ✅ Extract HTML structures: `h1`–`h6`, `p`, `ul`, `ol`, `img`, links
+- ✅ Powerful `filter()` method with class, ID, and tag-based selectors
+- ✅ `return_html` toggle to return clean text or raw HTML
+- ✅ Simple return values: string, list, or dictionary
+- ✅ Powered by BeautifulSoup4 and Requests
+
+---
+
+## 📦 Installation
+
+```bash
+pip install snakyscraper
+```
+
+> Requires Python 3.7 or later
+
+---
+
+## 🛠️ Basic Usage
+
+```python
+from snakyscraper import SnakyScraper
+
+scraper = SnakyScraper("https://example.com")
+
+# Get the page title
+print(scraper.title())  # "Welcome to Example.com"
+
+# Get meta description
+print(scraper.description())  # "This is the example meta description."
+
+# Get all <h1> elements
+print(scraper.h1())  # ["Welcome", "Latest News"]
+
+# Extract Open Graph metadata
+print(scraper.open_graph())  # {"og:title": "...", "og:description": "...", ...}
+
+# Custom filter: find all div.card elements and extract child tags
+print(scraper.filter(
+    element="div",
+    attributes={"class": "card"},
+    multiple=True,
+    extract=["h1", "p", ".title", "#desc"]
+))
+```
+
+---
+
+## 🧪 Available Methods
+
+### 🔹 Page Metadata
+
+```python
+scraper.title()
+scraper.description()
+scraper.keywords()
+scraper.keyword_string()
+scraper.charset()
+scraper.canonical()
+scraper.content_type()
+scraper.author()
+scraper.csrf_token()
+scraper.image()
+```
+
+### 🔹 Open Graph & Twitter Card
+
+```python
+scraper.open_graph()
+scraper.open_graph("og:title")
+
+scraper.twitter_card()
+scraper.twitter_card("twitter:title")
+```
+
+### 🔹 Headings & Text
+
+```python
+scraper.h1()
+scraper.h2()
+scraper.h3()
+scraper.h4()
+scraper.h5()
+scraper.h6()
+scraper.p()
+```
+
+### 🔹 Lists
+
+```python
+scraper.ul()
+scraper.ol()
+```
+
+### 🔹 Images
+
+```python
+scraper.images()
+scraper.image_details()
+```
+
+### 🔹 Links
+
+```python
+scraper.links()
+scraper.link_details()
+```
+
+---
+
+## 🔍 Custom DOM Filtering
+
+Use `filter()` to target specific DOM elements and extract nested content.
+
+#### ▸ Single element
+
+```python
+scraper.filter(
+    element="div",
+    attributes={"id": "main"},
+    multiple=False,
+    extract=[".title", "#description", "p"]
+)
+```
+
+#### ▸ Multiple elements
+
+```python
+scraper.filter(
+    element="div",
+    attributes={"class": "card"},
+    multiple=True,
+    extract=["h1", ".subtitle", "#meta"]
+)
+```
+
+> The `extract` argument accepts tag names, class selectors (e.g., `.title`), or ID selectors (e.g., `#meta`).  
+> Output keys are automatically normalized:  
+> `.title` → `class__title`, `#meta` → `id__meta`
+
+#### ▸ Clean Text Output
+
+You can also disable raw HTML output:
+
+```python
+scraper.filter(
+    element="p",
+    attributes={"class": "dark-text"},
+    multiple=True,
+    return_html=False
+)
+```
+
+---
+
+## 📦 Output Example
+
+```python
+scraper.title()
+# "Welcome to Example.com"
+
+scraper.h1()
+# ["Main Heading", "Another Title"]
+
+scraper.open_graph("og:title")
+# "Example OG Title"
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!  
+Found a bug or want to request a feature? Please open an [issue](https://github.com/riodevnet/snakyscraper/issues) or submit a pull request.
+
+---
+
+## 📄 License
+
+MIT License © 2025 — SnakyScraper
+
+---
+
+## 🔗 Related Projects
+
+- [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
+- [Requests](https://docs.python-requests.org/)
+- [lxml](https://lxml.de/)
+
+---
+
+## 💡 Why SnakyScraper?
+
+> Think of it as your Pythonic sniper — targeting HTML content with precision and elegance.
