@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "treespec"
+version = "0.1.0"
+description = "A deeplearning pipeline to classify tree species in terrestrial panorama pictures."
+authors = [
+    { name = "Ingmar Vogel", email = "ingmar.vogel@student.hpi.uni-potsdam.de" }
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["images", "deep learning"]
+
+dependencies = [
+    "torch",
+    "torchvision",
+    "pytorch-lightning",
+    "opencv-python",
+    "dataclasses",
+    "py360convert",
+    "scikit-image",
+    "imageio",
+    "scipy",
+    "pyshp",
+
+]
+[project.optional-dependencies]
+dev = [
+    "black",
+    "mypy",
+    "pylint",
+    "pytest",
+    "pytest-cov",
+]
+docs = [
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-design",
+    "sphinx-docsearch",
+    "sphinxawesome-theme",
+    "sphinx-sitemap",
+    "sphinxcontrib-jsmath",
+    "sphinxcontrib-katex",
+    "sphinxcontrib-napoleon",
+    "sphinx_mdinclude",
+]
+
+[project.urls]
+Homepage = "https://github.com/vogelingmar/treespec"
+
+[tool.bumpver]
+current_version = "1.0.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message  = "Bump version {old_version} -> {new_version}"
+commit          = true
+tag             = true
+push            = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
