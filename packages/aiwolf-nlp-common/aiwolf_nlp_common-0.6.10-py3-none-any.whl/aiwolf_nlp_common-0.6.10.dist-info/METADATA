@@ -1,0 +1,95 @@
+Metadata-Version: 2.4
+Name: aiwolf-nlp-common
+Version: 0.6.10
+Summary: aiwolf-nlp-common
+Project-URL: Homepage, https://aiwolfdial.github.io/aiwolf-nlp/
+Author-email: aiwolfdial <aiwolf@kanolab.net>, nwatanabe <nwatanabe@kanolab.net>, ysahashi <ysahashi@kanolab.net>
+Maintainer-email: aiwolfdial <aiwolf@kanolab.net>, nwatanabe <nwatanabe@kanolab.net>, ysahashi <ysahashi@kanolab.net>
+License: MIT License
+        
+        Copyright (c) 2024 Kano Laboratory
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: aiwolf
+Requires-Python: >=3.11
+Requires-Dist: websocket-client>=1.8.0
+Description-Content-Type: text/markdown
+
+# aiwolf-nlp-common
+
+人狼知能コンテスト（自然言語部門） のエージェント向けの共通パッケージです。\
+ゲームサーバから送信されるJSON形式のデータをオブジェクトに変換するためのパッケージです。
+
+```python
+import json
+
+from aiwolf_nlp_common.packet import Packet
+
+value = json.loads(
+    """{"request":"INITIALIZE"}""",
+)
+packet = Packet.from_dict(value)
+
+print(packet.request) # Request.INITIALIZE
+```
+
+詳細については下記のプロトコルの説明やゲームサーバのソースコードを参考にしてください。\
+[プロトコルの実装について](https://github.com/aiwolfdial/aiwolf-nlp-server/blob/main/doc/ja/config.md)
+
+## インストール方法
+
+```bash
+python -m pip install aiwolf-nlp-common
+```
+
+## 運営向け
+
+パッケージ管理ツールとしてuvの使用を推奨します。
+
+```bash
+git clone https://github.com/aiwolfdial/aiwolf-nlp-common.git
+cd aiwolf-nlp-common
+uv venv
+uv sync
+```
+
+### パッケージのビルド
+
+```bash
+pyright --createstub aiwolf_nlp_common
+uv build
+```
+
+### パッケージの配布
+
+#### PyPI
+
+```bash
+uv publish --token <PyPIのアクセストークン>
+```
+
+#### TestPyPI
+
+```bash
+uv publish --publish-url https://test.pypi.org/legacy/ --token <TestPyPIのアクセストークン>
+```
+
+uvを使用しない場合については、パッケージ化と配布については下記のページを参考にしてください。\
+[Packaging and distributing projects](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/)
