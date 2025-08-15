@@ -1,0 +1,61 @@
+=====================================
+配置 browser-use-mcp-console 到 Claude Code
+=====================================
+
+【全局配置命令（所有项目可用）】
+=====================================
+
+一行命令直接复制使用：
+
+claude mcp add browser-use --scope user --env OPENROUTER_API_KEY=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 -- uvx browser-use-mcp-console
+
+
+【管理命令】
+------------
+# 查看所有MCP配置
+claude mcp list
+
+# 查看特定MCP详情
+claude mcp get browser-use
+
+# 删除MCP配置
+claude mcp remove browser-use
+
+# 在Claude Code中检查MCP状态（在Claude Code内部使用）
+/mcp
+
+
+【版本验证】
+------------
+# 检查PyPI上的最新版本
+curl -s https://pypi.org/pypi/browser-use-mcp-console/json | findstr version
+
+# 通过uvx查看使用的版本（会显示下载的版本信息）
+uvx --verbose browser-use-mcp-console --version
+
+
+【更新到最新版本】
+------------------
+1. 删除旧配置：claude mcp remove browser-use
+2. 清除uvx缓存：uvx --no-cache browser-use-mcp-console --version
+3. 重新添加配置：执行上面的全局配置命令
+
+
+【前置要求】
+------------
+需要先安装 Playwright 浏览器（只需执行一次）：
+playwright install chromium
+
+
+【故障排查】
+------------
+- 版本0.1.2已自动检测系统Playwright浏览器路径
+- 如果仍出现"[WinError 2] 系统找不到指定的文件"错误，请先执行：playwright install chromium
+- 使用 uvx --no-cache 强制重新下载最新版本
+
+【说明】
+--------
+- 使用 --scope user 参数使配置在所有项目中可用
+- API密钥只会传递给 browser-use-mcp-console
+- 不会影响系统环境变量
+- 自动检测并使用系统已安装的Playwright浏览器
