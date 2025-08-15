@@ -1,0 +1,89 @@
+Metadata-Version: 2.4
+Name: autochange
+Version: 0.1.0
+Summary: Lightweight semantic version + changelog manager
+Author: MJ Anglin
+License: MIT
+Project-URL: Changelog, https://github.com/clxrityy/autochange/blob/main/CHANGELOG.md
+Project-URL: Homepage, https://github.com/clxrityy/autochange
+Project-URL: Issues, https://github.com/clxrityy/autochange/issues
+Project-URL: Repository, https://github.com/clxrityy/autochange.git
+Keywords: changelog,semantic versioning,release,automation
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer>=0.9.0
+Requires-Dist: rich>=13.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Provides-Extra: release
+Requires-Dist: build; extra == "release"
+Requires-Dist: twine; extra == "release"
+Dynamic: license-file
+
+# autochange
+
+Lightweight semantic version + changelog manager.
+
+## Features
+
+- Maintain a markdown `CHANGELOG.md` with sections: Added, Changed, Deprecated, Removed, Fixed, Security.
+- Add unreleased changes quickly.
+- Release and automatically stamp date + version.
+- Compute next semantic version via bump parts (major/minor/patch) or explicit version.
+
+## Install
+
+```
+pip install autochange
+```
+
+#### Development dependencies
+
+```
+git clone https://github.com/clxrityy/autochange.git
+cd autochange
+pip install -e .[dev]
+```
+
+## Usage
+
+```
+autochange init               # create CHANGELOG.md
+autochange add -t added "New feature" --scope api
+autochange add -t fixed "Bug in parser"
+autochange release minor      # bumps minor based on last release
+```
+
+## Changelog Format
+
+Subset of Keep a Changelog. Example:
+
+```
+# Changelog
+
+## Unreleased - UNRELEASED
+### Added
+- (api) New feature
+
+## 0.1.0 - 2025-08-13
+### Fixed
+- Parser bug
+```
+
+## Roadmap
+
+- Conventional commit parser integration.
+- Auto-detect bump type from unreleased changes.
+- Git tag creation helper.
+- Export JSON.
