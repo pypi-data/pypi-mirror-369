@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=62", "setuptools-scm[toml]>=8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyaerial"
+dynamic = ["version"]
+description = "An implementation of the Aerial neurosymbolic association rule mining algorithm from tabular datasets."
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    { name = "Erkan Karabulut", email = "e.karabulut@uva.nl" }
+]
+license-files = ["LICENSE"]
+
+dependencies = [
+    "torch~=2.7.0",
+    "numpy~=2.0.0",
+    "joblib~=1.4.2",
+    "setuptools~=80.9.0",
+    "pytest~=8.3.5",
+    "pandas~=2.2.3"
+]
+requires-python = ">=3.7"
+
+[tool.setuptools_scm]
+# Optionally write a version file your package can import:
+write_to = "aerial/_version.py"
+
+[tool.setuptools.packages.find]
+include = ["aerial"]
+
+[project.urls]
+Homepage = "https://github.com/DiTEC-project/pyaerial"
+Documentation = "https://github.com/DiTEC-project/pyaerial"
+Source = "https://github.com/DiTEC-project/pyaerial"
+Tracker = "https://github.com/DiTEC-project/pyaerial/issues"
