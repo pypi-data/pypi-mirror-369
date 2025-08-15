@@ -1,0 +1,53 @@
+Metadata-Version: 2.4
+Name: kickscore
+Version: 0.2.0
+Summary: A dynamic skill rating system.
+Keywords: elo,ranking,skill,score,rating,strength,game,comparison,match
+Author: Lucas Maystre
+Author-email: Lucas Maystre <lucas@maystre.ch>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Games/Entertainment
+Classifier: Programming Language :: Python :: 3
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: numba
+Requires-Dist: matplotlib ; extra == 'all'
+Requires-Dist: notebook ; extra == 'all'
+Requires-Python: >=3.10
+Project-URL: Homepage, https://github.com/lucasmaystre/kickscore
+Project-URL: Issues, https://github.com/lucasmaystre/kickscore/issues
+Project-URL: Repository, https://github.com/lucasmaystre/kickscore.git
+Provides-Extra: all
+Description-Content-Type: text/markdown
+
+# kickscore
+
+[![Build package](https://github.com/lucasmaystre/kickscore/actions/workflows/build.yml/badge.svg)](https://github.com/lucasmaystre/kickscore/actions/workflows/build.yml)
+[![Code coverage](https://codecov.io/gh/lucasmaystre/kickscore/branch/master/graph/badge.svg)](https://codecov.io/gh/lucasmaystre/kickscore)
+
+`kickscore` is the dynamic skill rating system powering [Kickoff.ai](https://kickoff.ai/).
+
+In short, `kickscore` can be used to understand & visualize the skill of players (or teams) competing in pairwise matches, and to predict outcomes of future matches. It extends the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) and [TrueSkill](https://en.wikipedia.org/wiki/TrueSkill).
+
+![evolution of NBA teams\' skill over history](https://lum-public.s3-eu-west-1.amazonaws.com/kickscore-nba-history.svg)
+
+## Getting started
+
+To install the latest release directly from PyPI, simply type:
+
+    pip install kickscore
+
+To get started, you might want to explore one of these notebooks:
+
+- [Basic example illustrating the API](examples/kickscore-basics.ipynb) ([interactive version](https://colab.research.google.com/github/lucasmaystre/kickscore/blob/master/examples/kickscore-basics.ipynb))
+- [Visualizing the history of the NBA](examples/nba-history.ipynb) ([interactive version](https://colab.research.google.com/github/lucasmaystre/kickscore/blob/master/examples/nba-history.ipynb))
+
+## References
+
+- Lucas Maystre, Victor Kristof, Matthias Grossglauser, [Pairwise Comparisons with Flexible Time-Dynamics](https://arxiv.org/abs/1903.07746), KDD 2019

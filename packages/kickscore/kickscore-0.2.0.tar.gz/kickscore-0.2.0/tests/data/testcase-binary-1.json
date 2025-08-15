@@ -1,0 +1,30 @@
+// A basic test case for the binary model.
+// Ground-truth computed using kickscore at revision `8aa2fa70a15c`.
+{
+    "model_class": "BinaryModel",
+    "items": [
+        {"name": "audrey", "kernel_class": "Matern52", "kernel_args": {"var": 1.0, "lscale": 2.0}},
+        {"name": "benjamin", "kernel_class": "Matern52", "kernel_args": {"var": 1.0, "lscale": 2.0}}
+    ],
+    "observations": [
+        {"winners": ["audrey"], "losers": ["benjamin"], "t": 0.0},
+        {"winners": ["audrey"], "losers": ["benjamin"], "t": 1.0},
+        {"winners": ["audrey"], "losers": ["benjamin"], "t": 2.0},
+        {"winners": {"audrey": 1.0}, "losers": {"benjamin": 1.0}, "t": 3.0},
+        {"winners": ["benjamin"], "losers": ["audrey"], "t": 4.0},
+        {"winners": ["benjamin"], "losers": ["audrey"], "t": 5.0},
+        {"winners": ["benjamin"], "losers": ["audrey"], "t": 6.0},
+        {"winners": ["benjamin"], "losers": ["audrey"], "t": 7.0}
+    ],
+    "scores": {
+        "audrey": {
+            "mean": [0.69786064, 0.79615486, 0.68190075, 0.28650045, -0.28650045, -0.68190075, -0.79615486, -0.69786064],
+            "var": [0.71292553, 0.635242, 0.58662484, 0.54659518, 0.54659518, 0.58662484, 0.635242, 0.71292553]
+        },
+        "benjamin": {
+            "mean": [-0.69786064, -0.79615486, -0.68190075, -0.28650045, 0.28650045, 0.68190075, 0.79615486, 0.69786064],
+            "var": [0.71292553, 0.635242, 0.58662484, 0.54659518, 0.54659518, 0.58662484, 0.635242, 0.71292553]
+        }
+    },
+    "log_likelihood": -4.3223397734984728
+}
