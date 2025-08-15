@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "burp-frame"
+version = "1.0.0"
+authors = [
+  { name = "Gashaw Kidanu", email = "kidanugashaw@gmail.com" }
+]
+description = "A unified Android penetration testing framework with certificate installation, proxy configuration, Frida instrumentation, and universal bypasses."
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT License" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: System Administrators",
+  "Topic :: Security",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities"
+]
+keywords = [
+  "android", "burpsuite", "certificate", "installer", "root",
+  "magisk", "interception", "security", "frida", "ssl-pinning",
+  "bypass", "universal-bypass", "mobile-security", "pentesting"
+]
+dependencies = [
+  "requests",
+  "colorama",
+  "frida"
+]
+
+[project.urls]
+Homepage = "https://github.com/Gashaw512/burp-frame"
+"Bug Tracker" = "https://github.com/Gashaw512/burp-frame/issues"
+
+[project.scripts]
+burp-frame = "burp_frame.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["burp_frame*"]
+
+[tool.setuptools.package-data]
+"burp_frame" = ["requirements.txt"]
