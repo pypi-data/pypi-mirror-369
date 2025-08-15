@@ -1,0 +1,42 @@
+
+package:
+  name: cc
+
+  tasks:
+  - name: SharedLib
+    desc: Builds a shared library from source
+    consumes:
+    - filetype: cSource
+    - filetype: cppSource
+    - filetype: objFile
+    shell: pytask
+    run: dv_flow.libcc.shared_lib.SharedLib
+    with:
+      cc:
+        type: str
+        value: gcc
+      cxx:
+        type: str
+        value: g++
+      libname: 
+        type: str 
+        desc: Basename of the shared library
+
+  - name: Exe
+    desc: Builds an executable
+    consumes:
+    - filetype: cSource
+    - filetype: cppSource
+    - filetype: objFile
+    shell: pytask
+    run: dv_flow.libcc.exe.Exe
+    with:
+      cc:
+        type: str
+        value: gcc
+      cxx:
+        type: str
+        value: g++
+      libname: 
+        type: str 
+        desc: Basename of the executable
