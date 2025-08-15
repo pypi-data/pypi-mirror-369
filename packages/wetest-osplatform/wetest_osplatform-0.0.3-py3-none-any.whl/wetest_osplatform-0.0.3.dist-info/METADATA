@@ -1,0 +1,92 @@
+Metadata-Version: 2.4
+Name: wetest-osplatform
+Version: 0.0.3
+Author: Tencent WeTest
+Author-email: WeTest@wetest.net
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: adbutils
+Requires-Dist: tidevice
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+
+# Wetest OS Platform
+![Group WeTest](https://img.shields.io/badge/group-Wetest-blue.svg) 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://git.woa.com/CloudTesting/automation/os-platform/-/merge_requests) 
+![python>=3.7](https://img.shields.io/badge/python-%3E%3D3.7-green.svg?logo=python) 
+[![release (latest version)](https://img.shields.io/badge/release-skyblue.svg)](https://mirrors.tencent.com/#/private/pypi/detail?repo_id=155&project_name=wetest-osplatform)
+
+
+## 简介
+**Wetest OS Platform**是一种创建跨设备连接的轻量化python框架，目前支持Android和iOS设备。在Wetest OS Platform的帮助下，您无需再手动管理设备到本机的端口资源，可以有效避免端口冲突、端口被清理等情况。
+
+可以轻松与Wetest的其他仓库联合使用：
+* [Wetest GAutomator3 Python Client](https://git.woa.com/CloudTesting/automation/gautomator3-python-client)
+* [Wetest GAutomator2 Python Client](https://git.woa.com/CloudTesting/automation/gautomator2-python-client)
+* [Wetest Scrcpy Python Client](https://git.woa.com/CloudTesting/automation/scrcpy-python-client)
+* [Wetest UIAutomator2 Python Client](https://git.woa.com/CloudTesting/automation/uiautomator2-python-client)
+
+## 使用
+### 安装
+1. 直接从公网pypi进行安装
+```shell
+pip install --upgrade wetest-osplatform
+```
+
+2. 使用以下命令可以直接从腾讯内部Pypi源进行安装
+```shell
+pip3 install wetest-osplatform --upgrade --extra-index-url https://mirrors.tencent.com/repository/pypi/tencent_pypi/simple
+```
+
+### Android连接
+```python
+# 以往与Android设备连接，需要使用adb forward进行端口映射
+$ adb forward tcp:<port> tcp:<port>
+sock = socket.socket()
+sock.connect(("127.0.0.1", port))
+
+# 本项目的连接无需进行端口映射
+from wetest.osplatform import android_conn
+sock = android_conn(addr=port)
+```
+
+### iOS连接
+```python
+# 以往与iOS设备连接，需要使用tidevice relay进行端口映射
+$ tidevice relay <port> <port>
+sock = socket.socket()
+sock.connect(("127.0.0.1", port))
+
+# 本项目的连接无需进行端口映射
+from wetest.osplatform import ios_conn
+sock = ios_conn(port=port)
+```
+
+### 更多示例
+更多示例请参考[测试文件](tests/test.py)
+```shell
+pytest -s ./tests/test.py
+```
+
+## 项目结构
+```
+os-platform
+├── tests
+│   └── test.py             # test cases
+└── wetest
+    └── osplatform
+        ├── __init__.py
+        └── conn.py         # Android/iOS/local connection
+```
+
+## 版本记录
+本项目的版本变更记录详见[CHANGELOG](CHANGELOG.md)
+
+## 作者信息&致谢
+### [**Tencent WeTest Team**](wetest.qq.com)
+特别感谢以下开源项目的启发:
+* <https://github.com/openatx/wdapy>
