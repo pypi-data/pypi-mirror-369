@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "twitch-bot-plus"
+version = "1.1.0"
+description = "A modular Twitch chat bot framework."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "Bearium", email = "ContactMe@bearium.dev" }
+]
+keywords = ["twitch", "bot", "irc", "chat"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent"
+]
+dependencies = [
+  "python-dotenv>=1.0",
+  "requests>=2.32"
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.exclude-package-data]
+TwitchBotPlus = ["tests*", "*.pyc", "__pycache__"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["TwitchBotPlus*"]
