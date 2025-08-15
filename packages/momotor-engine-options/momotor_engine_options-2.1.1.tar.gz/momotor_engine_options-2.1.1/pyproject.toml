@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "momotor-engine-options"
+authors = [
+    { name = "Erik Scheffers", email = "e.t.j.scheffers@tue.nl" }
+]
+description = "Momotor Engine Options Library"
+requires-python = ">=3.9"
+dynamic = ["version", "readme"]
+license = { text="GNU Lesser General Public License v3 (LGPLv3)" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only"
+]
+dependencies = [
+    'momotor-bundles~=8.0',
+    "typing-extensions; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+test = [
+    'pytest~=8.1',
+    'pytest-cov',
+    'pytest-doctestplus',
+]
+docs = [
+    'momotor-engine-options[test]',
+    'Sphinx',
+    'sphinx-autodoc-typehints!=1.14.0',
+    'furo',
+]
+dev = [
+    'momotor-engine-options[docs]',
+    'docutils-stubs',
+]
+build = [
+    'momotor-engine-options[dev]',
+    'setuptools',
+    'setuptools-scm',
+    'build[virtualenv]',
+    'python-semantic-release~=9.0',
+]
+
+[project.urls]
+Homepage = "https://momotor.org"
+Documentation = "https://momotor.org/doc/engine/momotor-engine-options/"
+Repository = "https://gitlab.tue.nl/momotor/engine-py3/momotor-engine-options/"
+Tracker = 'https://gitlab.tue.nl/momotor/engine-py3/momotor-engine-options/issues'
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["momotor.*"]
+
+[tool.setuptools.package-data]
+"momotor.bundles.schema" = ["*.xsd"]
+
+[tool.setuptools.dynamic]
+readme = { file = ["README.md"], content-type = "text/markdown" }
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+required_plugins = ["pytest-doctestplus"]
+norecursedirs = [".git", "files"]
+pythonpath = "src"
+addopts = "--cov=src --doctest-plus --doctest-rst --doctest-modules -p no:asyncio -p no:django -p pytest_doctestplus"
+xfail_strict = true
+
+[tool.semantic_release]
+version_toml = ["version.toml:semantic_release.version"]
+commit_message = 'chore: bump version number'
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = ["^Merge branch ", "^ci\\s*[:(]", "^build\\s*[:(]"]
+
+[tool.semantic_release.release]
+upload_to_vcs_release = false
+
+[tool.semantic_release.remote]
+type = "gitlab"
+
+[tool.semantic_release.branches.master]
+match = "master"
+prerelease = false
+
+[tool.semantic_release.branches.other]
+match = ".*"
+prerelease = true
+prerelease-token = "rc"
