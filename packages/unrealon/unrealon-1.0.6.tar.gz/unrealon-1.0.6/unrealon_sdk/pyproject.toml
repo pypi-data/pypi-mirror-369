@@ -1,0 +1,231 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "unrealon-sdk"
+version = "1.0.0"
+description = "UnrealOn SDK Core - WebSocket, enterprise services, auto-generated models"
+authors = ["UnrealOn SDK Team <sdk@unrealon.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/unrealon/unrealon-sdk"
+repository = "https://github.com/unrealon/unrealon-sdk"
+documentation = "https://docs.unrealon.com/sdk"
+keywords = ["websocket", "enterprise", "sdk", "parsing", "automation"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Networking",
+    "Topic :: Internet :: WWW/HTTP",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11", 
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+packages = [{include = "*", from = "src"}]
+
+[tool.poetry.dependencies]
+# CORE SDK DEPENDENCIES
+python = "^3.9"
+
+# Core Pydantic v2 requirement (MANDATORY)
+pydantic = "^2.0.0"
+pydantic-settings = "^2.0.0"
+
+# WebSocket and Network Core
+python-socketio = "^5.0"
+websockets = "^12.0"
+aiohttp = "^3.8.0"
+httpx = ">=0.23.0,<0.24.0"
+
+# Type System
+typing-extensions = "^4.0"
+
+# Configuration and Data
+PyYAML = "^6.0"
+python-dateutil = "^2.8"
+
+[tool.poetry.group.dev.dependencies]
+# Testing Framework (SDK Core)
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.11.0"
+pytest-benchmark = "^4.0.0"
+pytest-html = "^4.0.0"
+pytest-xdist = "^3.3.0"
+pytest-timeout = "^2.1.0"
+
+# Type Checking (SDK Core)
+mypy = "^1.5.0"
+types-PyYAML = "^6.0"
+types-python-dateutil = "^2.8"
+
+# Security Testing
+bandit = "^1.7.5"
+safety = "^2.3.0"
+
+# Code Quality
+black = "^23.7.0"
+isort = "^5.12.0"
+flake8 = "^6.0.0"
+pylint = "^2.17.0"
+
+# Performance Testing
+locust = "^2.0.0"
+
+# Mock and Test Utilities
+responses = "^0.23.0"
+aioresponses = "^0.7.4"
+
+[tool.poetry.scripts]
+# SDK CLI entry points (when used standalone)
+unrealon-sdk = "unrealon_sdk.cli.main:cli"
+
+# SDK management utilities
+sdk-health = "unrealon_sdk.cli.commands.health:main"
+sdk-benchmark = "unrealon_sdk.cli.commands.benchmark:main"
+sdk-diagnostics = "unrealon_sdk.cli.commands.diagnostics:main"
+sdk-integration = "unrealon_sdk.cli.commands.integration:main"
+sdk-security = "unrealon_sdk.cli.commands.security:main"
+sdk-server = "unrealon_sdk.cli.commands.server:main"
+
+[tool.mypy]
+# SDK Core type checking (Strictest)
+python_version = "3.9"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "socketio.*",
+    "aiohttp.*",
+    "locust.*",
+    "responses.*",
+    "aioresponses.*",
+]
+ignore_missing_imports = true
+
+[tool.black]
+# SDK Core formatting
+line-length = 100
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+# SDK Core import sorting
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+known_first_party = ["unrealon_sdk"]
+known_third_party = ["socketio", "aiohttp", "httpx", "pydantic", "yaml"]
+
+[tool.pytest.ini_options]
+# SDK Core testing (Strictest requirements)
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=unrealon_sdk",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov_sdk",
+    "--cov-report=xml:coverage_sdk.xml",
+    "--cov-fail-under=100",  # SDK requires 100% coverage
+    "--cov-branch",
+    "--benchmark-disable",
+    "--timeout=30",
+    "-v",
+    "-ra",
+]
+markers = [
+    "unit: Unit tests (fast, no external dependencies)",
+    "integration: Integration tests (slower, external dependencies)",
+    "websocket: WebSocket communication tests",
+    "enterprise: Enterprise features tests",
+    "performance: Performance and benchmark tests",
+    "security: Security and vulnerability tests",
+    "slow: Slow tests (> 5 seconds)",
+    "network: Tests requiring network access",
+]
+asyncio_mode = "auto"
+timeout = 30
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+# SDK Core coverage (100% requirement)
+source = ["unrealon_sdk"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/examples/*",
+]
+
+[tool.coverage.report]
+# SDK Core coverage reporting
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+# SDK Core security scanning
+exclude_dirs = ["tests", "examples"]
+skips = ["B101", "B601"]
+
+[tool.pylint.messages_control]
+# SDK Core code quality
+disable = [
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-instance-attributes", 
+    "line-too-long",
+    "missing-docstring",
+]
+
+[tool.pylint.format]
+max-line-length = 100
