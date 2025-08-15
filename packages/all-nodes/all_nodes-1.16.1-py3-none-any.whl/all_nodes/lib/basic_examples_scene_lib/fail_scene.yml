@@ -1,0 +1,73 @@
+# SCENE fail_scene
+# ----------------
+# Description: 
+
+# Nodes section: overall list of nodes to be created
+nodes:
+- EmptyNode_1:
+    class_name: EmptyNode
+    x_pos: -1201
+    y_pos: -461
+- EmptyNode_2:
+    active: false
+    class_name: EmptyNode
+    x_pos: -646
+    y_pos: -197
+- ErrorNode_1:
+    class_name: ErrorNode
+    x_pos: -350
+    y_pos: -563
+- FailAndErrorNode_1:
+    class_name: FailAndErrorNode
+    x_pos: -672
+    y_pos: -404
+- FailAndErrorNode_2:
+    class_name: FailAndErrorNode
+    x_pos: -240
+    y_pos: -188
+- FloatInput_1:
+    class_name: FloatInput
+    node_attributes:
+      internal_float: 5.0
+    x_pos: -1273
+    y_pos: -691
+- GetEnvVariable_1:
+    class_name: GetEnvVariable
+    x_pos: -1194
+    y_pos: -242
+- StrInput_1:
+    class_name: StrInput
+    node_attributes:
+      internal_str: DUMMY_FAKE_ENV_VAR
+    x_pos: -1609
+    y_pos: -357
+- TimedNode_1:
+    class_name: TimedNode
+    x_pos: -805
+    y_pos: -601
+
+# Connections section: connections to be done between nodes
+connections:
+- EmptyNode_1.COMPLETED -> EmptyNode_2.START
+- EmptyNode_1.COMPLETED -> FailAndErrorNode_1.START
+- EmptyNode_1.COMPLETED -> TimedNode_1.START
+- EmptyNode_2.COMPLETED -> FailAndErrorNode_2.START
+- FloatInput_1.out_float -> TimedNode_1.sleep_time
+- StrInput_1.out_str -> GetEnvVariable_1.env_variable_name
+- TimedNode_1.COMPLETED -> ErrorNode_1.START
+
+# Annotations section: list of annotations in the scene
+annotations:
+- annotation_type: hand
+  x_pos: -675
+  y_pos: -124
+- annotation_type: notepad
+  text: '
+
+    This var we know that should not work, we will have an error in the next node.'
+  x_pos: -1822
+  y_pos: -409
+
+
+# Scene modified at: 2025-07-25 17:39:30.209542
+# Modified by: jaime.rvq

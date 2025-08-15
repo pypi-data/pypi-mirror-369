@@ -1,0 +1,54 @@
+# CONTEXT EnvironToYmlCtx
+# -----------------------
+# Description: 
+
+# Nodes section: overall list of nodes to be created
+nodes:
+- CreateTempFile_1:
+    class_name: CreateTempFile
+    x_pos: -1014
+    y_pos: -135
+- DictToYaml_1:
+    class_name: DictToYaml
+    x_pos: -637
+    y_pos: -333
+- GetEntireEnviron_1:
+    class_name: GetEntireEnviron
+    x_pos: -1149
+    y_pos: -367
+- SetStrOutputToCtx_1:
+    class_name: SetStrOutputToCtx
+    x_pos: -57
+    y_pos: -34
+- StrInput_2:
+    class_name: StrInput
+    node_attributes:
+      internal_str: yaml_filepath
+    x_pos: -846
+    y_pos: 175
+- TextFileExtensionSelect_2:
+    class_name: TextFileExtensionSelect
+    node_attributes:
+      internal_str: .yml
+    x_pos: -1441
+    y_pos: -55
+
+# Connections section: connections to be done between nodes
+connections:
+- CreateTempFile_1.tempfile_path -> DictToYaml_1.yaml_filepath_to_write
+- CreateTempFile_1.tempfile_path -> SetStrOutputToCtx_1.out_parent_attr_value
+- DictToYaml_1.COMPLETED -> SetStrOutputToCtx_1.START
+- GetEntireEnviron_1.environ_dict -> DictToYaml_1.in_dict
+- StrInput_2.out_str -> SetStrOutputToCtx_1.out_parent_attr_name
+- TextFileExtensionSelect_2.out_str -> CreateTempFile_1.suffix
+
+# Annotations section: list of annotations in the scene
+annotations:
+- annotation_type: short_tag
+  text: OUTPUTS
+  x_pos: -77
+  y_pos: 62
+
+
+# Context modified at: 2024-07-24 13:28:38.903619
+# Modified by: jaime.rvq
