@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "bookio-fetchfox"
+version = "6.0.0"
+description = "Collection of API services to fetch information from several blockchains."
+documentation = "https://github.com/book-io/fetchfox/blob/main/README.md"
+homepage = "https://github.com/book-io/fetchfox"
+license = "MIT"
+readme = "README.md"
+
+authors = [
+    "Fede <fede@book.io>"
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = [
+    "book.io",
+    "stuff.io",
+    "blockchain",
+    "crypto",
+    "algorand",
+    "cardano",
+    "coinbase",
+    "ethereum",
+    "polygon",
+]
+packages = [
+  { include = "fetchfox" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+backoff = "^2.2.1"
+asyncio = "^3.4.3"
+aiohttp = "^3.12.11"
+cachetools = "^6.0.0"
+certifi = "^2025.4.26"
+pydantic = "^2.11.5"
+pytz = "^2025.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+coverage = "^7.2.7"
+ddt = "^1.7.1"
+
+[tool.black]
+line-length = 150
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

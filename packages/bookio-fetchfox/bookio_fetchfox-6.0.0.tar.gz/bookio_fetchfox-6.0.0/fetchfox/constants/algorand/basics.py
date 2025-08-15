@@ -1,0 +1,2 @@
+ALGORAND = "algorand"
+ALGO = "ALGO"
