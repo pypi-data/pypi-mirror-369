@@ -1,0 +1,26 @@
+[project]
+name = "adnan-project1"
+version = "0.1.0"
+description = "A Python project using Poetry for dependency management"
+authors = [
+    {name = "Adnan",email = "adnanmunir1160@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests (>=2.32.4,<3.0.0)",
+    "pytest (>=8.4.1,<9.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "project1", from = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.4.1,<9.0.0"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

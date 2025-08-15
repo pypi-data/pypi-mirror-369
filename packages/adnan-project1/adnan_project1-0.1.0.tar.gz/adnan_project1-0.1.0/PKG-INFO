@@ -1,0 +1,114 @@
+Metadata-Version: 2.3
+Name: adnan-project1
+Version: 0.1.0
+Summary: A Python project using Poetry for dependency management
+Author: Adnan
+Author-email: adnanmunir1160@gmail.com
+Requires-Python: >=3.13
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: pytest (>=8.4.1,<9.0.0)
+Requires-Dist: requests (>=2.32.4,<3.0.0)
+Description-Content-Type: text/markdown
+
+# Project1
+
+A Python project using Poetry for dependency management.
+
+## Basic Poetry Commands
+
+```bash
+# Check Poetry version
+poetry --version
+
+# Create a new project
+poetry new project1
+
+# Check Python version
+poetry run python --version
+
+# Add a package dependency
+poetry add PACKAGE_NAME
+# Example: poetry add requests
+
+# Run a Python file
+poetry run python FILE_PATH
+# Example: poetry run python ./src/project1/main.py
+
+# Run tests
+poetry run pytest
+
+# Build the package
+poetry build
+
+# Publish to PyPI
+poetry publish
+```
+
+## Publishing to PyPI
+
+### Prerequisites
+1. Create a PyPI account at [PyPI.org](https://pypi.org/account/register/)
+2. Generate an API token in your PyPI account settings
+
+### Configuration
+```bash
+# Configure your PyPI token
+poetry config pypi-token.pypi YOUR_API_TOKEN_HERE
+
+# Or use environment variable
+export POETRY_PYPI_TOKEN_PYPI="your_token_here"
+```
+
+### Publishing Steps
+```bash
+# 1. Build the package
+poetry build
+
+# 2. Publish to PyPI
+poetry publish
+
+# 3. Verify your package is published
+# Check https://pypi.org/project/project1/
+```
+
+### Testing with TestPyPI (Recommended for first-time publishers)
+```bash
+# Add TestPyPI repository
+poetry config repositories.testpypi https://test.pypi.org/legacy/
+
+# Configure TestPyPI token
+poetry config pypi-token.testpypi YOUR_TESTPYPI_TOKEN_HERE
+
+# Publish to TestPyPI first
+poetry publish --repository testpypi
+```
+
+## Development
+
+```bash
+# Install dependencies
+poetry install
+
+# Activate virtual environment
+poetry shell
+
+# Add development dependencies
+poetry add --group dev pytest
+
+# Run tests
+poetry run pytest
+```
+
+## Project Structure
+```
+project1/
+├── pyproject.toml      # Project configuration and dependencies
+├── poetry.lock         # Locked dependency versions
+├── src/
+│   └── project1/      # Source code
+│       ├── __init__.py
+│       └── main.py
+└── tests/              # Test files
+    └── test_project1.py
+```
