@@ -1,0 +1,210 @@
+Metadata-Version: 2.4
+Name: jettask
+Version: 0.1.6
+Summary: A high-performance distributed task queue system with web monitoring
+Home-page: https://github.com/yourusername/jettask
+Author: JetTask Team
+Author-email: JetTask Team <support@jettask.io>
+Project-URL: Homepage, https://github.com/yourusername/jettask
+Project-URL: Bug Tracker, https://github.com/yourusername/jettask/issues
+Project-URL: Documentation, https://jettask.readthedocs.io
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Distributed Computing
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: redis>=4.5.0
+Requires-Dist: watchdog>=3.0.0
+Requires-Dist: uvloop>=0.17.0
+Requires-Dist: ujson>=5.6.0
+Requires-Dist: fastapi>=0.100.0
+Requires-Dist: uvicorn>=0.23.0
+Requires-Dist: websockets>=11.0
+Requires-Dist: sqlalchemy[asyncio]>=2.0.0
+Requires-Dist: psycopg[binary,pool]>=3.1.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-multipart>=0.0.6
+Requires-Dist: click>=8.1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: flake8>=6.0; extra == "dev"
+Requires-Dist: mypy>=1.4.0; extra == "dev"
+Requires-Dist: coverage>=7.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# JetTask
+
+高性能分布式任务队列系统，带有实时 Web 监控界面。
+
+## 特性
+
+- 🚀 **高性能**: 基于 Redis 和异步 IO 的高性能任务处理
+- 📊 **实时监控**: 美观的 Web UI 实时监控任务状态
+- 🔄 **分布式**: 支持多队列、多 Worker 的分布式架构
+- 📈 **数据可视化**: 任务处理趋势图表和统计分析
+- 🎯 **灵活配置**: 支持多种任务类型和处理策略
+- 🔍 **任务追踪**: 完整的任务生命周期追踪
+
+## 安装
+
+### 使用 pip 安装
+
+```bash
+pip install jettask
+```
+
+### 从源码安装
+
+```bash
+git clone https://github.com/yourusername/jettask.git
+cd jettask
+pip install -e .
+```
+
+## 快速开始
+
+### 1. 初始化系统
+
+```bash
+jettask init
+```
+
+### 2. 启动 Web UI
+
+```bash
+jettask webui
+# 或指定端口
+jettask webui --port 8080
+```
+
+访问 http://localhost:8001 查看监控界面
+
+### 3. 启动 Worker
+
+```bash
+jettask worker main:app --queues default --concurrency 4
+```
+
+### 4. 检查系统状态
+
+```bash
+jettask status
+```
+
+## 系统要求
+
+- Python 3.8+
+- Redis 6.0+
+- PostgreSQL 12+
+
+## 环境配置
+
+创建 `.env` 文件配置系统参数：
+
+```env
+# Redis 配置
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+
+# PostgreSQL 配置
+JETTASK_PG_HOST=localhost
+JETTASK_PG_PORT=5432
+JETTASK_PG_DB=jettask
+JETTASK_PG_USER=jettask
+JETTASK_PG_PASSWORD=123456
+```
+
+## 命令行工具
+
+JetTask 提供了丰富的命令行工具：
+
+```bash
+# 查看帮助
+jettask --help
+
+# 启动 Web UI
+jettask webui
+
+# 启动 Worker
+jettask worker app:tasks --queues queue1,queue2
+
+# 启动 WebUI 数据消费者
+jettask webui-consumer
+
+# 启动监控器
+jettask monitor
+
+# 初始化数据库
+jettask init
+
+# 查看系统状态
+jettask status
+```
+
+## 开发
+
+### 安装开发依赖
+
+```bash
+pip install -e ".[dev]"
+```
+
+### 运行测试
+
+```bash
+pytest
+```
+
+### 代码格式化
+
+```bash
+black jettask/
+```
+
+## 架构
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Producer  │────▶│    Redis    │◀────│   Worker    │
+└─────────────┘     └─────────────┘     └─────────────┘
+                           │                     │
+                           ▼                     ▼
+                    ┌─────────────┐     ┌─────────────┐
+                    │ PostgreSQL  │     │  Monitoring │
+                    └─────────────┘     └─────────────┘
+                           │                     │
+                           └──────────┬──────────┘
+                                      ▼
+                              ┌─────────────┐
+                              │   Web UI    │
+                              └─────────────┘
+```
+
+## 许可证
+
+MIT License
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 支持
+
+- 文档: https://jettask.readthedocs.io
+- Issue: https://github.com/yourusername/jettask/issues
+- 邮箱: support@jettask.io
