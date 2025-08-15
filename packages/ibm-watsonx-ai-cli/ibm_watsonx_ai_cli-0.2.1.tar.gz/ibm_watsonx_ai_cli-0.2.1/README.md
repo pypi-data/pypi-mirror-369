@@ -1,0 +1,453 @@
+# ibm-watsonx-ai-cli
+
+CLI tool that enables developers to deploy AI services to watsonx.ai directly from their local environment.
+
+# IBM watsonx.ai CLI for Agents
+
+Repository containing source code for `ibm-watsonx-ai-cli` package.
+
+## Contact info
+
+### Maintainers
+
+- **Łukasz Ćmielowski** - [lukasz.cmielowski@pl.ibm.com](mailto:lukasz.cmielowski@pl.ibm.com)
+- **Daniel Ryszka** – [daniel.ryszka@pl.ibm.com](mailto:daniel.ryszka@pl.ibm.com)
+- **Mateusz Szewczyk** – [mateusz.szewczyk@ibm.com](mailto:mateusz.szewczyk@ibm.com)
+- **Mateusz Świtała** – [mateusz.switala@ibm.com](mailto:mateusz.switala@ibm.com)
+
+## Installation
+
+```commandline
+pip install -U ibm-watsonx-ai-cli
+```
+
+> [!WARNING]
+> The `ibm_watsonx_ai_cli` package requires `poetry` to be installed.
+> To install Poetry, follow the instructions on the [Poetry installation page](https://python-poetry.org/docs/#installation).
+
+## Usage
+
+### Run CLI
+
+```console
+$ watsonx-ai [OPTIONS] COMMAND [ARGS]...
+```
+
+[OPTIONS]
+```console
+--version  -v           Print the current CLI version.
+--help                  Show this message and exit.
+```
+
+COMMAND
+```console
+- template              Explore, download and try-out the template.
+- service               Work with deployed templates.
+- app                   Build & run an UI playground.
+```
+
+`TEMPLATE`
+```console
+- list                  List all available templates.
+- new                   Creates a selected template in a local env.  [ARGS: name, target]
+- invoke                Executes the template code locally with demo data.  [OPTIONAL ARGS: query]
+- eval                  Evaluates the agent locally using the provided metrics and input data. [REQUIRED ARGS: --tests, --metrics, OPTIONAL ARG: --evaluator]
+```
+
+`SERVICE`
+```console
+- list                   List all deployed AI services.
+- new                    Create & deploy a new ai service from a root template directory. [OPTIONAL ARGS: name]
+- get                    Get service details. [OPTIONAL ARGS: deployment_id (deployment_id)]
+- delete                 Deletes ai service. [ARGS: deployment_id]
+- invoke                 Calls the service by providing the test record. [OPTIONAL ARGS: deployment_id, query]
+```
+
+`APP`
+```console
+- list                  List playground app samples.
+- new                   Creates a demo playground app for the service.  [OPTIONAL ARGS: name, target_dir]
+- run                   Start the playground app.  [OPTIONAL ARGS: target_dir]
+```
+
+
+---
+
+### Template
+
+#### `watsonx-ai template list`
+
+List all available templates.
+
+__Usage:__
+
+```console
+$ watsonx-ai template list [OPTIONS]
+```
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+#### `watsonx-ai template new`
+
+Creates a selected template in a local env.
+
+__Usage:__
+
+```console
+$ watsonx-ai template new [OPTIONS] name target
+```
+
+__Arguments:__
+
+ - `name`: Name of the template to download or its index in the list of available templates.
+ - `target`: Target directory where template will be saved.
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+#### `watsonx-ai template invoke`
+
+Executes the template code locally with demo data.
+
+__Usage:__
+
+```console
+$ watsonx-ai template invoke [OPTIONS] query
+```
+
+__Arguments:__
+
+ - `query`:[Optional] Input query for template code. If not specified, searches for the `cli.options.payload_path` file to be specified in config.toml. Content of `cli.options.payload_path` will be directly send to the AI service and should agree with AI service request schema.
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+#### `watsonx-ai template eval`
+
+Evaluates the agent locally using the provided metrics and input data.
+
+__Usage:__
+
+```console
+$ watsonx-ai template eval --tests test.jsonl --metrics answer_similarity,answer_relevance --evaluator llm_as_judge
+```
+
+__Options:__
+ - `--help`: Show this message and exit.
+ - `--tests`: [Required] one or more input data files (in jsonl format) for evaluation
+ - `--metrics`: [Required] one or more evaluation metric
+ - `--evaluator`: [Optional]  Only `llm_as_judge` is allowed. If not provided, metrics are computed using the method 'token_recall'.
+
+__Types of metrics:__
+- `answer_similarity`: Measures the similarity between the generated text and the ground truth. By default, it uses token_recall. If the `--evaluator llm_as_judge` flag is set, is uses llm_as_judge
+- `answer_relevance`: Measures the relevance of the generated text to the given input query. By default, it uses token_recall. If the `--evaluator llm_as_judge` flag is set, is uses llm_as_judge
+- `text_reading_ease`: Measures how readable the text is. Although the `--evaluator llm_as_judge` flag can be passed, this metric always uses a rule-based method and ignores the evaluator setting.
+- `unsuccessful_request_metric`: Measures whether the agent answered the request successfully or not by comparing the generated text against the list of unsuccessful phrases. Although the `--evaluator llm_as_judge` flag can be passed, this metric always uses a rule-based method and ignores the evaluator setting.
+- `text_grade_level`: The Text Grade Level metric measures the approximate reading US grade level of a text. Although the `--evaluator llm_as_judge` flag can be passed, this metric always uses a rule-based method and ignores the evaluator setting.
+
+
+### Service
+
+#### `watsonx-ai service list`
+
+List all deployed AI services.
+
+__Usage:__
+
+```console
+$ watsonx-ai service list [OPTIONS]
+```
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+#### `watsonx-ai service new`
+
+Create & deploy a new AI service from a root template directory. After successful deployment creation the `deployment_id` will be saved automatically in section `[deployment]` in  `config.toml`.
+
+When running this command a package distribution with implemented agent will be created in folder `dist`. Warning! If `dist` already exists, distribution creation is skipped.
+
+__Usage:__
+
+```console
+$ watsonx-ai service new [OPTIONS] name
+```
+__Arguments:__
+
+ - `name`:[Optional] Name for the deployed AI service. If not provided, name for the deployment will be the same as name of current directory.
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+
+#### `watsonx-ai service get`
+
+Get deployed service details.
+
+__Usage:__
+
+```console
+$ watsonx-ai service get [OPTIONS] deployment_id
+```
+__Arguments:__
+
+ - `deployment_id`: Id of the deployed AI service.
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+
+#### `watsonx-ai service delete`
+
+Deletes ai service.
+
+__Usage:__
+
+```console
+$ watsonx-ai service delete [OPTIONS] deployment_id
+```
+__Arguments:__
+
+ - `deployment_id`: Id of the deployed AI service.
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+
+#### `watsonx-ai service invoke`
+
+Calls the service by providing the test record.
+
+__Usage:__
+
+```console
+$ watsonx-ai service invoke [OPTIONS] query
+```
+__Arguments:__
+
+ - `query`:[Optional] Test data to send to deployed AI service. If not specified, searches for the `cli.options.payload_path` file to be specified in config.toml. Content of `cli.options.payload_path` will be directly send to the deployed AI service and should agree with AI service request schema.
+
+__Options:__
+
+ - `--deployment_id`:[Optional] Id of a deployed AI service. If not provided, taken from `deployment.deployment_id` field from `config.toml`.
+ - `--help`: Show this message and exit.
+
+### App
+
+#### `watsonx-ai app list`
+
+List playground app samples.
+
+__Usage:__
+
+```console
+$ watsonx-ai app list [OPTIONS]
+```
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+#### `watsonx-ai app new`
+
+Creates a demo playground app for the service.
+
+__Usage:__
+
+```console
+$ watsonx-ai app new [OPTIONS] name target_dir
+```
+__Arguments:__
+
+ - `name`:[Optional] The name of the app to use. If not provided, the user will be prompted to choose one.
+ - `target_dir`:[Optional] The target folder where the app will be downloaded. If not provided, the user will be prompted to enter one.
+
+__Options:__
+ - `--help`: Show this message and exit.
+
+#### `watsonx-ai app run`
+
+Start the playground app.
+
+__Usage:__
+
+```console
+$ watsonx-ai app run [OPTIONS] target_dir
+```
+__Arguments:__
+
+ - `target_dir`:[Optional] The directory to the app.
+
+__Options:__
+ - `--help`: Show this message and exit.
+ - `--dev | -d`:[Optional] A flag indicating either app should be deployed in developer mode.
+
+
+## Secrets
+
+### Environment Variables for IBM watsonx.ai for IBM Cloud
+For security reasons, it's recommended to not hard-code your API key or other secrets directly in your scripts or `config.toml`. Instead, set it up as an environment variable. Below variables will be used to authenticate to watsonx.ai APIs if analogous ones not provided in configuration file.
+
+```python
+import os
+
+WATSONX_URL = os.environ.get("WATSONX_URL", "")
+WATSONX_APIKEY = os.environ.get("WATSONX_APIKEY", "")
+WATSONX_TOKEN = os.environ.get("WATSONX_TOKEN", "")
+WATSONX_SPACE_ID = os.environ.get("WATSONX_SPACE_ID", "")
+WATSONX_PROJECT_ID = os.environ.get("WATSONX_PROJECT_ID", "")
+```
+
+### Config file (`config.toml`)
+`config.toml` is an optional file that can be defined in template's directory. Please note, that some templates will require a correctly prepared `config.toml` since template's content may depends on some of the available configuration options. If a downloaded template has `config.toml` with placeholders, please read its description carefully and fill in required fields.
+
+#### Available configuration options
+
+Below are all the sections and options you can have in your `config.toml`
+
+[cli.options]
+```yaml
+[cli.options]
+  # If true, cli `invoke` command is trying to use `ai_service.generate_stream` function for local tests, and `ai_service.generate` otherwise.
+  # Default: true
+  stream = true
+
+  # Path to json file with a complete payload that will be send to proper AI service generate function.
+  # Note that, the payload file will be only used when no `query` is provided when running `invoke ` command
+  # Default: None
+  payload_path = ""
+
+```
+
+
+[deployment]
+
+If present, its fields will be used for authentication to watsonx.ai APIs.
+```yaml
+[deployment]
+  # One of the below is required.
+  # To determine your `api_key`, refer to `IBM Cloud console API keys <https://cloud.ibm.com/iam/apikeys>`_.
+  watsonx_apikey = "PLACEHOLDER FOR YOUR APIKEY"
+  watsonx_token = "PLACEHOLDER FOR YOUR TOKEN"
+
+  # should follow the format: `https://{REGION}.ml.cloud.ibm.com`
+  watsonx_url = ""
+
+  # Deployment space id is required to create deployment with AI service content.
+  space_id = "PLACEHOLDER FOR YOUR SPACE ID"
+
+  # variable, that is populated with last created deployment_id every time when command `watsonx-ai service new` finish successfully
+  deployment_id = ""
+
+```
+
+[deployment.online.parameters]
+
+This section is recommended for users of IBM watsonx.ai for IBM Cloud and when some additional parameters need to be passed to the AI service function during deployment creation. When creating a deployment, additional parameters can be passed inside the `ONLINE.PARAMETERS` object to further reference in the content of the AI service function. The exact set of parameters may depend on the template used.
+```yaml
+[deployment.online.parameters]
+
+# Example set of parameters that must be passed during deployment creation of particular template to guarantee its correct functioning
+  url = ""  # should follow the format: `https://{REGION}.ml.cloud.ibm.com`
+  space_id = "PLACEHOLDER FOR YOUR SPACE ID"
+  model_id = "mistralai/mistral-large"  # underlying model for inference
+```
+
+[deployment.software_specification]
+
+During deployment creation, the custom software specification with template package distribution is stored for use when running AI service inference. For more details about software specifications you can find in _IBM watsonx.ai Runtime Supported frameworks and software specifications_ [documentation](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/pm_service_supported_frameworks.html?context=wx&audience=wdp) and _Customizing deployment runtimes_ [documentation](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-customize.html?context=wx&audience=wdp).
+```yaml
+[deployment.software_specification]
+  # Name for derived software specification. If not provided, default one is used that will be build based on the package name: "{pkg_name}-sw-spec"
+  name = ""
+
+  # Whether to overwrite (delete existing and create new with the same name) watsonx derived software specification
+  # Default: false
+  overwrite = false
+
+  # The base software specification used to deploy the AI service. The template dependencies will be installed based on the packages included in the selected base software specification
+  # Default: "runtime-24.1-py3.11"
+  base_sw_spec = "runtime-24.1-py3.11"
+```
+
+## Sample flow
+1. List available templates
+   ```console
+   watsonx-ai template list
+   ```
+2. Create the template in my IDE
+   ```console
+   watsonx-ai template new "base/langgraph-react-agent" "langgraph-react-agent"
+   ```
+3. Go into template directory
+   ```console
+   cd langgraph-react-agent
+   cp config.toml.example config.toml
+   ```
+4. Customize the template code and `config.toml` to my needs
+5. Test the template code by calling invoke:
+   ```console
+   watsonx-ai template invoke "question"
+   ```
+6. Create a service
+   ```console
+   watsonx-ai service new
+   ```
+7. Test the service
+   ```console
+   watsonx-ai service invoke "question"
+   ```
+8. List available apps
+   ```console
+   watsonx-ai app list
+   ```
+9. Create an app in my IDE
+   ```console
+   watsonx-ai app new "base/nextjs-chat-with-ai-service" "chat-with-ai-service_app"
+   ```
+10. Go into app directory and copy your environment variable file.
+   ```console
+   cd chat-with-ai-service_app
+   cp template.env .env
+   ```
+11. Update `.env` file with your credentials
+12. Start the playground app.
+   ```console
+   watsonx-ai app run
+   ```
+
+## Support for Forks or Copies of `watsonx-developer-hub`
+
+You can now configure the CLI to retrieve agent templates from a forked or mirrored version of the official `watsonx-developer-hub` repository.
+To do this, set the following environment variables before invoking any commands:
+
+### `TEMPLATE_REPO_URL`
+- **Description**: URL of the Git repository containing your customized agent templates.
+- **Default**: https://github.com/IBM/watsonx-developer-hub
+- **Example**:
+  ```console
+  export TEMPLATE_REPO_URL="https://github.com/your-org/your-forked-repo"
+  ```
+
+### `TEMPLATE_REPO_BRANCH`
+- **Description**: Branch name within the repository where the agent templates reside.
+- **Default**: main
+- **Example**:
+  ```console
+  export TEMPLATE_REPO_BRANCH="development"
+  ```
+
+### `TEMPLATE_REPO_TOKEN`
+- **Description**: Personal access token (PAT) or other valid credential used to authenticate against a private repository.
+- **None**: If the target repository is public, this variable is optional.
+- **Example**:
+  ```console
+  export TEMPLATE_REPO_TOKEN="<YOUR_TOKEN>"
+  ```
+
+### Supported Git Providers
+
+- **GitHub**
+- **GitLab**
+
+If you configure TEMPLATE_REPO_URL to point to a host other than GitHub or GitLab, the CLI will return an error indicating that the provider is unsupported.

@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools", "build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ibm-watsonx-ai-cli"
+version = "0.2.1"
+requires-python = ">=3.10,<3.14"
+authors = [
+  {name = "IBM"}
+]
+maintainers = [
+    { name = "Łukasz Ćmielowski", email = "lukasz.cmielowski@pl.ibm.com"},
+    { name = "Daniel Ryszka", email = "daniel.ryszka@pl.ibm.com"},
+    { name = "Mateusz Szewczyk", email = "mateusz.szewczyk@ibm.com"},
+    { name = "Mateusz Świtala", email =  "mateusz.switala@ibm.com"},
+]
+description = "CLI for deploying AI services with Agents to watsonx.ai."
+readme = "README.md"
+license = {text = "BSD-3-Clause"}
+
+dependencies = [
+    "typer (>=0.13.0,<1.0.0)",
+    "tomli (>=2.0,<3.0.0)",
+    "tomlkit (<1.0.0)",
+    "ibm-watsonx-ai (>=1.3.18)",
+    "python-dotenv (>=1.1.0, <2.0.0)",
+    "setuptools (<80.9.0); python_version < '3.13'",
+    "ibm-watsonx-gov (==1.1.0); python_version < '3.13'",
+    "numpy (>=1.26.4,<1.27.0); python_version < '3.13'",
+    "scikit-learn (>=1.5.1,<1.8); python_version < '3.13'",
+    "unitxt (>=1.22.0,<1.27); python_version < '3.13'",
+    "textstat (>=0.7.7,<0.8.0); python_version < '3.13'",
+    "litellm (>=1.48.0, <2.0.0); python_version < '3.13'",
+    "jsonschema (>=4.19.0,<5.0.0); python_version < '3.13'",
+    "nest-asyncio (>=1.6.0,<2.0.0); python_version < '3.13'",
+]
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest_mock = "*"
+mypy = "^1.15"
+ruff = "^0.9"
+coverage = "^7.6.12"
+pre-commit = "^4.1.0"
+detect-secrets = { git = "https://github.com/ibm/detect-secrets.git", branch = "master" }
+
+[tool.mypy]
+disallow_untyped_defs = true
+exclude = [
+    '^venv/',
+    '\.env$',
+]
+
+[project.scripts]
+watsonx-ai = "ibm_watsonx_ai_cli.cli:cli"
