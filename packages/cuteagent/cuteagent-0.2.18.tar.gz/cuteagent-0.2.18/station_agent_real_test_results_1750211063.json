@@ -1,0 +1,171 @@
+{
+  "timestamp": "2025-06-17 18:44:23",
+  "api_url": "https://c16bgaz0i2.execute-api.us-west-1.amazonaws.com/prod",
+  "station_thread_id": "test-station-36cb1871-29a1-4279-9150-f5151a5d758c",
+  "total_tests": 27,
+  "passed_tests": 27,
+  "results": [
+    {
+      "test": "Agent Setup",
+      "passed": true,
+      "message": "StationAgent created successfully with initial state",
+      "details": null
+    },
+    {
+      "test": "Property Assignment",
+      "passed": true,
+      "message": "All properties set correctly and initial state pushed",
+      "details": null
+    },
+    {
+      "test": "Reserved Variables",
+      "passed": true,
+      "message": "Reserved variables: {'serverThread', 'server'}",
+      "details": null
+    },
+    {
+      "test": "Set Variable",
+      "passed": true,
+      "message": "Set 'dev_testVariable' = 'testValue123', result: True",
+      "details": null
+    },
+    {
+      "test": "Get Variable",
+      "passed": true,
+      "message": "Retrieved: 'testValue123', expected: 'testValue123'",
+      "details": null
+    },
+    {
+      "test": "Get Non-existent Variable",
+      "passed": true,
+      "message": "Non-existent variable returned: None",
+      "details": null
+    },
+    {
+      "test": "Set Reserved Variable",
+      "passed": true,
+      "message": "Correctly blocked reserved variable: Cannot set reserved variable 'server'. Reserved variables: {'serverThread', 'server'}",
+      "details": null
+    },
+    {
+      "test": "Push Valid Variables",
+      "passed": true,
+      "message": "Push operation returned: True",
+      "details": null
+    },
+    {
+      "test": "Pull All Variables",
+      "passed": true,
+      "message": "Found 6/6 expected vars. Total vars: 10",
+      "details": null
+    },
+    {
+      "test": "Push Reserved Variables",
+      "passed": true,
+      "message": "Correctly blocked reserved variables: Cannot set reserved variables: {'server'}. Reserved variables: {'serverThread', 'server'}",
+      "details": null
+    },
+    {
+      "test": "Sync Variable",
+      "passed": true,
+      "message": "Sync returned: value1",
+      "details": null
+    },
+    {
+      "test": "Variable Exists Check",
+      "passed": true,
+      "message": "Exists: True, Not exists: False",
+      "details": null
+    },
+    {
+      "test": "List Variables",
+      "passed": true,
+      "message": "Listed 10 variables: ['dev_stationId', 'dev_testSetup', 'dev_testTimestamp', 'dev_testVariable', 'dev_userVar1']...",
+      "details": null
+    },
+    {
+      "test": "Delete Variable",
+      "passed": true,
+      "message": "Delete result: True, verify: None",
+      "details": null
+    },
+    {
+      "test": "Delete Reserved Variable",
+      "passed": true,
+      "message": "Correctly blocked deleting reserved variable: Cannot delete reserved variable 'server'. Reserved variables: {'serverThread', 'server'}",
+      "details": null
+    },
+    {
+      "test": "Server Availability Check",
+      "passed": true,
+      "message": "Initial availability: {'server': 'idle', 'serverThread': 'idle'}",
+      "details": null
+    },
+    {
+      "test": "Server Load",
+      "passed": true,
+      "message": "Load result: {'status': 'loaded', 'serverThread': 'data_processing_test'}",
+      "details": null
+    },
+    {
+      "test": "Server Status After Load",
+      "passed": true,
+      "message": "Status after load: {'server': 'busy', 'serverThread': 'data_processing_test'}",
+      "details": null
+    },
+    {
+      "test": "Server Load When Potentially Busy",
+      "passed": true,
+      "message": "Second load result: {'status': 'busy', 'error': 'Server is busy'}",
+      "details": null
+    },
+    {
+      "test": "Server Unload",
+      "passed": true,
+      "message": "Unload result: {'status': 'unloaded'}",
+      "details": null
+    },
+    {
+      "test": "Server Unload When Idle",
+      "passed": true,
+      "message": "Unload when idle: {'status': 'idle', 'error': 'Server is already idle'}",
+      "details": null
+    },
+    {
+      "test": "Uninterrupt With Thread ID",
+      "passed": true,
+      "message": "Uninterrupt result: {'resumeFrom': 'thread-15afb1df-e9de-4551-b329-d4c345f8340b'}",
+      "details": null
+    },
+    {
+      "test": "Uninterrupt Without Thread ID",
+      "passed": true,
+      "message": "Uninterrupt for non-existent: {'error': 'Thread ID not found'}",
+      "details": null
+    },
+    {
+      "test": "Complete Workflow Simulation",
+      "passed": true,
+      "message": "Workflow simulation: 6/6 operations successful (100.0%). Server ops: load=True, unload=True. Final state has 15 variables",
+      "details": null
+    },
+    {
+      "test": "Concurrent Workflow Scenario",
+      "passed": true,
+      "message": "Server status: {'server': 'idle', 'serverThread': 'idle'}, Resume: {'resumeFrom': 'test-graph-1164bf44-19bf-45eb-be21-bba6cfd9a5d6'}",
+      "details": null
+    },
+    {
+      "test": "Complex Data Types",
+      "passed": true,
+      "message": "Set complex data: True, retrieved: <class 'dict'>",
+      "details": null
+    },
+    {
+      "test": "Edge Case Variable Names",
+      "passed": true,
+      "message": "Successfully set 4/4 edge case variables",
+      "details": null
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+# Automatic Release Creation
+# This workflow creates GitHub releases when version tags are pushed
+# The release creation then triggers the PyPI publishing workflow
+
+name: Auto Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Matches version tags like v1.0.0, v0.1.5, etc.
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for changelog generation
+      
+      - name: Extract version from tag
+        id: version
+        run: |
+          # Extract version from tag (remove 'v' prefix)
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          
+          # Find previous tag for changelog
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${{ github.ref }}^ 2>/dev/null || echo "")
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          
+          echo "📦 Creating release for version: $VERSION"
+          echo "🏷️ Current tag: ${GITHUB_REF#refs/tags/}"
+          echo "🔙 Previous tag: $PREVIOUS_TAG"
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Generate changelog between tags
+          if [ -n "${{ steps.version.outputs.previous_tag }}" ]; then
+            echo "📝 Generating changelog from ${{ steps.version.outputs.previous_tag }} to ${{ steps.version.outputs.tag }}"
+            
+            # Get commits between tags
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" ${{ steps.version.outputs.previous_tag }}..${{ steps.version.outputs.tag }} --no-merges)
+            
+            # Create full changelog
+            FULL_CHANGELOG="## What's Changed
+
+$CHANGELOG
+
+### 🔗 Links
+- **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.version.outputs.previous_tag }}...${{ steps.version.outputs.tag }}
+- **PyPI Package**: https://pypi.org/project/cuteagent/${{ steps.version.outputs.version }}/
+- **Documentation**: https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.tag }}/README.md
+
+### 🚀 Installation
+\`\`\`bash
+pip install cuteagent==${{ steps.version.outputs.version }}
+\`\`\`
+
+---
+*This release was automatically created by GitHub Actions*"
+          else
+            echo "📝 No previous tag found, creating initial release notes"
+            FULL_CHANGELOG="## 🎉 Initial Release v${{ steps.version.outputs.version }}
+
+This is the initial release of CuteAgent with StationAgent functionality.
+
+### ✨ Features
+- Complete StationAgent implementation for LangGraph workflows
+- Shared state management between workflow instances  
+- Server coordination and resource management
+- Workflow resumption capabilities
+- Comprehensive error handling and retry logic
+
+### 🔗 Links
+- **PyPI Package**: https://pypi.org/project/cuteagent/${{ steps.version.outputs.version }}/
+- **Documentation**: https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.tag }}/README.md
+
+### 🚀 Installation
+\`\`\`bash
+pip install cuteagent==${{ steps.version.outputs.version }}
+\`\`\`
+
+---
+*This release was automatically created by GitHub Actions*"
+          fi
+          
+          # Save changelog to output (escape newlines)
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$FULL_CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Check if release already exists
+        id: check_release
+        run: |
+          # Check if release already exists
+          RELEASE_EXISTS=$(gh release view ${{ steps.version.outputs.tag }} >/dev/null 2>&1 && echo "true" || echo "false")
+          echo "exists=$RELEASE_EXISTS" >> $GITHUB_OUTPUT
+          
+          if [ "$RELEASE_EXISTS" = "true" ]; then
+            echo "⚠️ Release ${{ steps.version.outputs.tag }} already exists"
+          else
+            echo "✅ Release ${{ steps.version.outputs.tag }} does not exist, will create"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+      
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          echo "🚀 Creating release ${{ steps.version.outputs.tag }}"
+          
+          # Create the release
+          gh release create ${{ steps.version.outputs.tag }} \
+            --title "🚀 Release v${{ steps.version.outputs.version }}" \
+            --notes "${{ steps.changelog.outputs.changelog }}" \
+            --draft=false \
+            --prerelease=false
+          
+          echo "✅ Successfully created release ${{ steps.version.outputs.tag }}"
+          echo "🔄 This will now trigger the PyPI publishing workflow"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      
+      - name: Release already exists
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          echo "ℹ️ Release ${{ steps.version.outputs.tag }} already exists, skipping creation"
+          echo "💡 The existing release will still trigger PyPI publishing if needed"
+      
+      - name: Summary
+        run: |
+          echo "## 📋 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: ${{ steps.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Previous Tag**: ${{ steps.version.outputs.previous_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Created**: ${{ steps.check_release.outputs.exists == 'false' && '✅ Yes' || '⚠️ Already existed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. 🔄 PyPI publishing workflow will start automatically" >> $GITHUB_STEP_SUMMARY
+          echo "2. 📦 Package will be available at: https://pypi.org/project/cuteagent/${{ steps.version.outputs.version }}/" >> $GITHUB_STEP_SUMMARY
+          echo "3. 🎉 Release page: https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY 

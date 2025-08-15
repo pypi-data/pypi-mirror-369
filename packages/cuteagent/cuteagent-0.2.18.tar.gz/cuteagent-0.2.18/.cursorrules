@@ -1,0 +1,84 @@
+description: 
+  Rules for maintaining a high-quality, modern Python library in CuteAgent.
+  Emphasizes modular, testable code with type hints, docstrings, and configuration best practices.
+
+globs:
+  - src/cuteagent/**/*.py
+  - tests/**/*.py
+
+rules:
+  # GENERAL STRUCTURE & STYLE
+  - Follow PEP8 style conventions throughout the project.
+  - Use type hints for all function arguments and return types.
+  - Use descriptive function and variable names. Avoid single-letter names except in short scopes (e.g. loops).
+  - Avoid unused imports and variables — keep modules clean.
+  - Prefer `f-strings` over `%` formatting or `.format()`.
+
+  # DOCSTRINGS
+  - Every public class and function must include a docstring using Google or NumPy style.
+  - Private functions (starting with `_`) may omit docstrings if their purpose is obvious.
+
+  # CONFIGURATION
+  - Use Pydantic's `BaseSettings` for configuration management and environment variable loading.
+  - Do not hardcode secrets, tokens, or API keys — load them from `.env` or the environment.
+  - Use a central `config.py` file or module for all global settings.
+
+  # STRUCTURE & MODULARITY
+  - Organize code into small, reusable modules. Each file should ideally have one primary responsibility.
+  - Use composition over inheritance where possible for flexibility and readability.
+  - Avoid monolithic files with multiple unrelated classes or functions.
+  - If a module exceeds 300 lines, consider breaking it up.
+
+  # TESTS
+  - All test files should live under `tests/` and be named `test_*.py`.
+  - Use `pytest` conventions: fixtures, parametrization, and direct `assert` statements.
+  - Each core module should have matching test coverage.
+  - Avoid testing implementation details — test behavior and interfaces.
+
+  # CODE SMELLS TO AVOID
+  - Avoid global variables or state unless unavoidable.
+  - Do not use `print()` for debugging — use `logging` instead.
+  - Avoid deeply nested conditionals or loops — refactor with helper functions.
+  - Do not use `setup.py` or legacy packaging — use `pyproject.toml`.
+
+  # PACKAGING
+  - Ensure `pyproject.toml` includes all project metadata, dependencies, and entry points.
+  - Use the `src/` layout to separate code from packaging.
+  - Do not check in `.pyc`, `.env`, or other generated files.
+
+  # CUTEAGENT LIBRARY INFORMATION
+  # CuteAgent is a comprehensive Python library for building computer-use AI agents with LangGraph integration.
+  # It provides three core agents: StationAgent (shared state management), WindowsAgent (computer automation), 
+  # and HumanAgent (human-in-the-loop). The library emphasizes production-ready workflows with robust error 
+  # handling, real-time coordination, and seamless integration with agentic AI frameworks. Key features include
+  # automatic state synchronization, server coordination, reserved variable protection, and multi-agent workflows.
+  # All development should maintain these core principles: reliability, ease of use, and enterprise-grade quality.
+
+  # TESTING STRATEGY & GUIDELINES
+  # CuteAgent maintains a comprehensive test suite organized in tests/ with four categories:
+  # 1. Mock Tests (tests/mock/): Fast unit tests with mocked dependencies, 100% pass rate expected
+  # 2. Real API Tests (tests/real_api/): End-to-end validation against actual SharedState API
+  # 3. Integration Tests (tests/integration/): Cross-component functionality and workflow testing  
+  # 4. Examples (tests/examples/): Demonstration code and usage patterns for documentation
+  # Always write tests when adding new features. Use unittest.mock for external dependencies.
+  # Real API tests require valid tokens and should clean up test data. Run tests with: 
+  # `python tests/run_tests.py mock` (fast) or `python tests/run_tests.py real token` (full validation).
+
+  # DOCUMENTATION & MAINTENANCE
+  # CuteAgent follows a documentation-first approach with comprehensive guides for all user types.
+  # Key documentation includes: README.md (main overview), docs/api_reference.md (detailed API),
+  # docs/langgraph_integration.md (LangGraph workflows), and tests/README.md (testing guide).
+  # When adding features: 1) Update relevant documentation, 2) Add working code examples, 
+  # 3) Update API reference if interfaces change, 4) Ensure examples work with current API.
+  # Documentation should be clear, include working code samples, and cover real-world use cases.
+  # Always test documentation examples to ensure they work with the current codebase.
+
+  # DEPLOYMENT & RELEASE PROCESS  
+  # CuteAgent uses automated deployment via deploy.sh script and GitHub Actions for reliable releases.
+  # Deployment process: 1) Run tests locally with `python tests/run_tests.py all token`,
+  # 2) Use `./deploy.sh "commit message" [patch|minor|major]` for version bumping and release,
+  # 3) Script handles: git commit/push, version bump, tag creation, GitHub release, PyPI deployment.
+  # Version strategy: patch for bug fixes, minor for new features, major for breaking changes.
+  # Always ensure 100% test pass rate before deployment. The deploy.sh script includes validation
+  # and will fail early if tests don't pass. Monitor deployment at GitHub Actions and PyPI.
+  # For hotfixes: use patch version and fast-track through deployment pipeline with minimal changes. 
