@@ -1,0 +1,102 @@
+[project]
+name = "pysolarfocus"
+version = "5.1.2"
+description = "Unofficial, local Solarfocus client"
+authors = [{ name = "Jeroen Laverman", email = "jjlaverman@web.de" }]
+requires-python = "~=3.11"
+readme = "README.md"
+license = "Apache-2.0"
+keywords = [
+    "solarfocus",
+    "api client",
+]
+dependencies = [
+    "pymodbus>=3.2.2,<4",
+    "packaging~=24.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/lavermanjj/pysolarfocus"
+Repository = "https://github.com/lavermanjj/pysolarfocus"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.0.286,<0.0.287",
+    "black>=22.10.0,<23",
+    "isort>=5.10.1,<6",
+    "pytest>=8.3.4,<9",
+    "pylint>=3.3.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+# Decrease the maximum line length to 79 characters.
+line-length = 180
+select = [
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "I",  # pyupgrade
+]
+
+[tool.black]
+target-version = ["py311"]
+line-length = 180
+
+[tool.pylint.MAIN]
+max-line-length = 180
+
+[tool.pylint."MESSAGES CONTROL"]
+# Reasons disabled:
+# format - handled by black
+# locally-disabled - it spams too much
+# duplicate-code - unavoidable
+# cyclic-import - doesn't test if both import on load
+# abstract-class-little-used - prevents from setting right foundation
+# unused-argument - generic callbacks and setup methods create a lot of warnings
+# too-many-* - are not enforced for the sake of readability
+# too-few-* - same as too-many-*
+# abstract-method - with intro of async there are always methods missing
+# inconsistent-return-statements - doesn't handle raise
+# too-many-ancestors - it's too strict.
+# wrong-import-order - isort guards this
+# consider-using-f-string - str.format sometimes more readable
+# ---
+# Enable once current issues are fixed:
+# consider-using-namedtuple-or-dataclass (Pylint CodeStyle extension)
+# consider-using-assignment-expr (Pylint CodeStyle extension)
+disable = [
+    "format",
+    "abstract-method",
+    "cyclic-import",
+    "no-name-in-module",
+    "duplicate-code",
+    "inconsistent-return-statements",
+    "locally-disabled",
+    "not-context-manager",
+    "too-few-public-methods",
+    "too-many-ancestors",
+    "too-many-arguments",
+    "too-many-branches",
+    "too-many-instance-attributes",
+    "too-many-lines",
+    "too-many-locals",
+    "too-many-public-methods",
+    "too-many-return-statements",
+    "too-many-statements",
+    "too-many-boolean-expressions",
+    "unused-argument",
+    "wrong-import-order",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "logging-fstring-interpolation"
+]
+enable = [
+    #"useless-suppression",  # temporarily every now and then to clean them up
+    "use-symbolic-message-instead",
+]
