@@ -1,0 +1,2 @@
+.. automodapi:: fiasco
+    :inherited-members:
