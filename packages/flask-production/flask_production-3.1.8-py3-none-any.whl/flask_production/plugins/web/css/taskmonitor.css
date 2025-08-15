@@ -1,0 +1,231 @@
+body {
+    width:100%;
+    height:100%;
+    margin: 0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    font-family: sans-serif;
+    font-size: 12px;
+    background-color: var(--theme-bg);
+    color: var(--theme-text-bright);
+}
+*::-webkit-scrollbar {
+    width: 14px !important;
+    height: 14px !important;
+}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumb-bg) var(--theme-logs-bg);
+}
+*::-webkit-scrollbar-track {
+    background: var(--theme-logs-bg);
+}
+*::-webkit-scrollbar-thumb {
+    background-color: var(--thumb-bg) ;
+    border-radius: 6px;
+    border: 3px solid var(--theme-logs-bg);
+}
+*::-webkit-scrollbar-corner {
+    background-color: var(--theme-logs-bg) ;
+}
+
+small, h2 { padding-top:10px;}
+table {
+    border-spacing: 0px;
+    border-collapse: collapse;
+    width: 90%;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+tr:hover {
+    background-color: var(--theme-table-hover);
+}
+td, th {
+    padding: 5px;
+}
+
+button {
+    border: none;
+    background-color: var(--theme-table-button);
+    color: var(--theme-text);
+    box-shadow: 2px 2px 3px var(--theme-table-shadow);
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+button:active{
+    box-shadow: none;
+}
+
+button:disabled,
+button[disabled]{
+    box-shadow: none;
+    opacity: 0.4;
+}
+
+pre, code {
+    background-color:transparent !important;
+    overflow:visible !important;
+}
+input[type=text] {
+    width: 250px;
+    padding: 6px 15px;
+    margin: 8px 0;
+    border: 1px solid var(--theme-text);
+    border-radius: 3px;
+    outline: none;
+}
+
+
+input {
+    background-color: var(--theme-bg);
+    color: var(--theme-text-bright);
+}
+
+
+.all-jobs {
+    border-collapse: separate;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 2px 2px 3px var(--theme-table-shadow);
+}
+
+.all-jobs,
+.all-jobs th {
+    background-color: var(--theme-table);
+    border-color: var(--theme-bg);
+    color: var(--theme-text);
+}
+.all-jobs th {
+    color: var(--theme-text-bright);
+}
+
+.all-jobs td {
+    border: 1px solid var(--theme-bg);
+}
+
+.all-jobs th[role=columnheader]:not(.no-sort) { /*tablesort.css*/
+    cursor: pointer;
+}
+.all-jobs th[role=columnheader]:not(.no-sort):after { /*tablesort.css*/
+    content: '';
+    float: right;
+    margin-top: 7px;
+    border-width: 4px 4px 0;
+    border-style: solid;
+    border-color: var(--theme-text-bright) transparent;
+    visibility: hidden;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+.all-jobs th[aria-sort=ascending]:not(.no-sort):after { /*tablesort.css*/
+    border-width: 0 4px 4px;
+}
+.all-jobs th[aria-sort]:not(.no-sort):after { /*tablesort.css*/
+    visibility: visible;
+}
+
+.all-jobs tr.row-hidden {
+    display:none;
+}
+
+
+.container {
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:row;
+}
+.container-vertical {
+    flex-direction:column;
+}
+.center {
+    justify-content:center;
+    align-items:center;
+}
+.btn {
+    cursor: pointer;
+}
+.btn:disabled,.btn[disabled] {
+    cursor: not-allowed;
+}
+.monitor {
+    width: 30vw;
+    height: 100vh;
+    display:flex;
+    flex-flow: column;
+    align-items:center;
+    background-color:var(--theme-table);
+}
+.monitor-code {
+    flex: 1 1 auto;
+    width:100%;
+    overflow-wrap: break-word;
+    background-color:var(--theme-code-bg) !important;
+}
+
+.monitor-btn {
+    height: 100%;
+    padding-left: 35%;
+    padding-right: 35%;
+}
+
+.info_table {
+    border:none;
+    margin-bottom:30px;
+    width:100%;
+}
+.info_table td {
+    border:none;
+    width:50%;
+    text-align:left;
+}
+.info_table td.title {
+    font-weight:bold;
+    text-align:right !important;
+    padding-right:20px;
+}
+
+
+.logs_div {
+    width: 70vw;
+    height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.log_table {
+    table-layout:fixed;
+    width:100%;
+    height:100%;
+    margin-top:0px;
+    margin-bottom:0px;
+    overflow:hidden;
+}
+.log_table td, .log_table th {
+    border: none;
+    border-left: 1px solid var(--theme-logs-brdr);
+    vertical-align: top;
+    overflow: hidden;
+    background-color:var(--theme-logs-bg);
+    color: var(--theme-text);
+}
+.console-div {
+    width:100%;
+    height:95vh;
+    overflow:scroll;
+    white-space: nowrap;
+    list-style-type: none;
+    font-size: 13px;
+}
+.console-color {
+    background-color:var(--theme-logs-bg);
+    color: var(--theme-text);
+}
+.brdr {
+    border: 1px solid var(--theme-logs-brdr);
+}
