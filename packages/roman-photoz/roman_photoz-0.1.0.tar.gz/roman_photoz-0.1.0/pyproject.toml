@@ -1,0 +1,133 @@
+[project]
+name = "roman_photoz"
+description = "Library for photometric redshift determination using data from the Nancy Grace Roman Space Telescope"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Roman calibration pipeline developers", email = "help@stsci.edu" },
+]
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Programming Language :: Python :: 3",
+]
+dependencies = [
+  "asdf >=3.3.0",
+  "astropy >=5.3.0",
+  "lephare",
+  "numpy >=1.23",
+  "pandas",
+  "pz-rail",
+  "pz-rail-lephare",
+  "requests >=2.26",
+  "roman_datamodels",
+]
+license-files = ["LICENSE"]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+docs = [
+  "matplotlib",
+  "sphinx",
+  "sphinx-rtd-theme",
+  "sphinx-argparse",
+  "myst_parser",
+]
+test = [
+  "pytest >=8.0.0",
+  "pytest-cov",
+  "romancal",          # needed by conftest.py
+  "romanisim",         # needed by romancal's conftest
+  "coverage",          # used in GitHub Actions
+  "ci-watson>=0.10.0", # provides --bigdata and --slow pytest flags
+  "deepdiff>=8.6.0",   # needed by regression tests
+]
+dev = ["roman_photoz[docs,test]", "tox > 4", "pre-commit > 3"]
+
+[project.urls]
+tracker = "https://github.com/spacetelescope/roman_photoz/issues"
+repository = "https://github.com/spacetelescope/roman_photoz"
+
+[build-system]
+requires = ["setuptools >=60", "setuptools_scm[toml] >=3.4", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+
+[tool.setuptools.package-data]
+# package_data values are glob patterns relative to each specific subpackage.
+"*" = [
+  "**/*.fits",
+  "**/*.txt",
+  "**/*.inc",
+  "**/*.cfg",
+  "**/*.csv",
+  "**/*.yaml",
+  "**/*.json",
+  "**/*.asdf",
+]
+
+[tool.pytest.ini_options]
+minversion = "4.6"
+filterwarnings = ["error::ResourceWarning"]
+junit_family = "xunit2"
+log_cli_level = "info"
+addopts = ["--doctest-ignore-import-errors", "--color=yes"]
+markers = ["soctests: run only the SOC tests in the suite."]
+
+[tool.bandit]
+skips = ["B101", "B307", "B404", "B603"]
+exclude_dirs = ["examples"]
+
+[tool.isort]
+profile = "black"
+filter_files = true
+line_length = 88
+
+[tool.black]
+line-length = 88
+force-exclude = "^/(\n  (\n      \\.eggs\n    | \\.git\n    | \\.pytest_cache\n    | \\.tox\n  )/\n)\n"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+exclude = ["jdocs", ".tox", ".eggs", "build"]
+ignore = [
+  "E741", # ambiguous variable name
+  "F403", # unable to detect undefined names
+]
+extend-select = ["NPY"]
+
+[tool.cibuildwheel.macos]
+archs = ["x86_64", "arm64"]
+
+[tool.cibuildwheel.linux]
+archs = ["auto", "aarch64"]
+
+[tool.coverage.run]
+source = ["roman_photoz"]
+omit = ["*/tests/*", "*/docs/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+precision = 2
+# fail_under = 70
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+
+[project.scripts]
+roman-photoz = "roman_photoz.__main__:main"
+roman-photoz-create-simulated-catalog = "roman_photoz.create_simulated_catalog:main"
+roman-photoz-create-simulated-catalog-old = "roman_photoz.create_simulated_catalog_old:main"
