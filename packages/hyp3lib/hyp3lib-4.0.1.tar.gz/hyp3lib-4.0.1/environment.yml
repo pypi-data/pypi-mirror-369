@@ -1,0 +1,28 @@
+name: hyp3-lib
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python>=3.10
+  - pip
+  # For running
+  - boto3>=1.36.0
+  - gdal<3.11.1 # FIXME: https://github.com/ASFHyP3/hyp3-lib/issues/370
+  - lxml
+  - netCDF4
+  - numpy
+  - pillow
+  - requests
+  - scipy
+  - statsmodels
+  - urllib3
+  # For packaging, and testing
+  - python-build
+  - setuptools
+  - setuptools_scm
+  - pytest
+  - pytest-console-scripts
+  - pytest-cov
+  - responses
+  - pip:
+    - -r requirements-static.txt
