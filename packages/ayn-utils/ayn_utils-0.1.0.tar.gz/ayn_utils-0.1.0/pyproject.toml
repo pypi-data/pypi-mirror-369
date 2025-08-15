@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ayn_utils"
+dynamic = ["version"]
+authors = [{ name = "Ahmed Y. Nurye", email = "anurye.yesuf@gmail.com" }]
+maintainers = [{ name = "Ahmed Y. Nurye", email = "anurye.yesuf@gmail.com" }]
+description = "A personal collection of Python utilities"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dependencies = ["click>=8.1.8", "pypdf"]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/anurye/ayn_utils"
+Issues = "https://github.com/anurye/ayn_utils/issues"
+
+[project.scripts]
+pdf = "pdf.pdf:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.4.1", "ruff>=0.12.8"]
+
+[tool.setuptools_scm]
+
