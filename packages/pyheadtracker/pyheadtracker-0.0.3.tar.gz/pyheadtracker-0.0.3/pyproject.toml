@@ -1,0 +1,50 @@
+[build-system]
+requires = ["uv_build>=0.8.2,<0.9.0"]
+build-backend = "uv_build"
+
+[project]
+name = "pyheadtracker"
+version = "0.0.3"
+authors = [
+    { name = "Felix Holzmüller", email = "holzmueller@iem.at" }
+]
+description = "Python package for easy interaction with head tracker hardware."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Multimedia",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator"
+]
+requires-python = ">=3.10"
+dependencies = [
+    "mido>=1.3.3",
+    "numpy>=2.2.6",
+    "pyopenxr>=1.1.5001",
+    "python-rtmidi>=1.5.8",
+]
+
+[project.urls]
+Homepage = "https://git.iem.at/holzmueller/pyheadtracker"
+Issues = "https://git.iem.at/holzmueller/pyheadtracker/-/issues"
+Repository = "https://git.iem.at/holzmueller/pyheadtracker.git"
+Changelog = "https://git.iem.at/holzmueller/pyheadtracker/-/blob/main/CHANGELOG.md"
+
+[tool.bumpver]
+current_version = "0.0.3"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message  = "Bump version {old_version} -> {new_version}"
+commit          = true
+tag             = false
+push            = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
+"src/pyheadtracker/__init__.py" = ['__version__ = "{version}"']
