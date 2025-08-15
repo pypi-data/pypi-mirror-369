@@ -1,0 +1,15 @@
+#!/bin/bash
+
+PADMAPPER_PIDFILE="/tmp/padmapper.pid"
+python3 -m padmapper.padmapper $1 &
+echo $! > ${PADMAPPER_PIDFILE}
+shift
+
+$@
+
+if [ -f ${PADMAPPER_PIDFILE} ]; then
+	PID=$(cat ${PADMAPPER_PIDFILE})
+	kill -9 $PID
+	rm ${PADMAPPER_PIDFILE}
+fi
+
