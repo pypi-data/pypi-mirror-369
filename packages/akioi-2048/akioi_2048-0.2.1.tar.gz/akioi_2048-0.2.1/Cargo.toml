@@ -1,0 +1,25 @@
+[package]
+name = "akioi-2048"
+edition = "2021"
+readme = "README.md"
+
+
+[lib]
+crate-type = ["cdylib", "rlib"] # 生成 Python 扩展
+
+
+[features]
+default = []
+python-bindings = [
+  "pyo3/extension-module", # 产出可导入的 .so/.pyd
+  "pyo3/abi3-py37",       # 与 ≥3.7 的解释器 ABI 兼容
+]
+
+
+[dependencies]
+rand = "0.9.1"
+pyo3 = { version = "0.21", default-features = false, features = ["macros"] }
+
+
+[profile.dev]
+incremental = true # 提升二次编译速度
