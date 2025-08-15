@@ -1,0 +1,98 @@
+Metadata-Version: 2.4
+Name: markup-front-matter-parser
+Version: 0.6.0
+Summary: An OOP-y front matter parser for markup files
+Author-email: Jamison Griffith <jamison.griffith@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/jamogriff/markup-front-matter-parser
+Project-URL: Documentation, https://github.com/jamogriff/markup-front-matter-parser/blob/main/README.md
+Project-URL: Source, https://github.com/jamogriff/markup-front-matter-parser
+Project-URL: Issues, https://github.com/jamogriff/markup-front-matter-parser/issues
+Keywords: markup,front matter,parser,markdown,html,jekyll,development,factory pattern
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 4 - Beta
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.15
+Classifier: Topic :: File Formats
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Markup
+Classifier: Topic :: Text Processing :: Markup :: HTML
+Classifier: Topic :: Text Processing :: Markup :: Markdown
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: code-style
+Requires-Dist: black; extra == "code-style"
+Provides-Extra: testing
+Requires-Dist: pytest; extra == "testing"
+Provides-Extra: typing
+Requires-Dist: mypy; extra == "typing"
+Dynamic: license-file
+
+# Markup Front Matter Parser
+
+This is an OOP-y Python package for parsing the Front Matter of markup files (e.g. .md, .html).
+Front Matter is a `YAML` snippet at the top of a markup file that stores metadata
+that is used commonly in [Jekyll](https://jekyllrb.com/docs/front-matter/) static sites.
+
+Note that this package is a simple front matter parser that will only parse single
+line key-values. It currently __does not support__ parsing multi-line front matter mapping entries (e.g. `YAML` lists).
+
+
+## Usage
+
+Install the package with:
+```
+pip install markup-front-matter-parser
+```
+
+In your code import the following:
+```
+from markup_front_matter_parser import FrontMatterParserFactory, InvalidFrontMatterError
+```
+**Note:** If you'd like to add type-hints to objects, then you can additionally import `MarkupFile`, `MarkupContent`, and `FileFormat`.
+
+To use in your code, start by creating an instance of `FrontMatterParserFactory` and then call `get_parser()` with the desired file you want parsed:
+```
+parser_factory = FrontMatterParserFactory()
+parser: AbstractFrontMatterParser = parser_factory.get_parser("songs/crazy-train.md")
+```
+
+Obtaining the parser may raise a `ValueError` if the file type is incompatible and a `FileNotFoundError` if the file is not found.
+Calling `parse()` on this parser instance will return a `MarkupFile` instance that contains the parsed front matter and other attributes:
+```
+try:
+    markup_file: MarkupFile = parser.parse()
+except InvalidFrontMatterException as e:
+    [...]
+```
+
+For example, parsing the file `crazy_train.md`:
+```
+---
+name: Crazy Train
+artist: Ozzy Osbourne
+---
+# This is content.
+Hooray for content
+```
+
+Would result in a `MarkupFile` object composed of:
+- A front_matter attribute: `{"name": "Crazy Train", "artist": "Ozzy Osbourne"}`
+- A content attribute (an instance of `MarkupContent` [specifically the `raw` attribute]): `"# This is content.\nHooray for content\n"`
+- A path attribute: `"crazy_train.md"`
+- A file_format attribute: `FileFormat.MARKDOWN`
+
+The `parse()` method will raise an informative `InvalidFrontMatterError` if the file's front matter cannot be parsed.
+
+
+## Code Overview
+
+This was written within the context of an in-depth sprint of learning Python, so it may not be the most practical package for the job.
+The architecture of the package uses the factory pattern and was designed so that future improvements would not change the public API.
+In addition, each subclass of `AbstractFrontMatterParser` could easily implement their own tokenizing of file-specific markup content.
+In this fashion, the package could then become a holistic markup parser rather than solely just a front matter parser.
+
+
