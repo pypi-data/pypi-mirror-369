@@ -1,0 +1,38 @@
+[project]
+name = "k-lights-interface"
+version = "0.2.4"
+authors = [{ name = "bjorn", email = "developer@riftlabs.com" }]
+description = "A package to control Kelvin lights using usb or bluetooth. Set cct, hsi, rgb, rgbacl, read out various data and more."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    'numpy',
+    'pyserial',
+    'markupsafe==2.0.1',
+    'betterproto[compiler]==2.0.0b7',
+    'betterproto==2.0.0b7',
+    'grpcio-tools',
+    #'python4yahdlc@git+https://x-token-auth:ATCTT3xFfGN0ehp5bAN5THYpRflG9MfmPsQODeO_e3B7bUpfvbX8QzITTwh583tovdBv9n3yCQFUfMoZ0sJBO5YyDXY8CDgGoo4T7qEioLbbiRTpHaruRuTYbvcdzwSGSXXFJUukSplZJDbv8fRu3BSp1F1TtNzriPGYzmosQAu2czU2ix19u7Y=B197A1B4@bitbucket.org/riftlabs/python4yahdlc.git@feature/fix_unsized_arrays',
+    'ordered_set',
+    'nest-asyncio',
+    'bleak'
+]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" ="https://github.com/KelvinLights/k-lights-interface-py"
+"Bug Tracker" = "https://github.com/KelvinLights/k-lights-interface-py/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build]
+exclude = ["PRIVATE_README.md", "raw_proto", "private_requirements.txt", "tests", "scripts"]
