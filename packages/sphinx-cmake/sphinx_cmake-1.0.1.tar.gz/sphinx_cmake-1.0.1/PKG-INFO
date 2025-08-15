@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: sphinx-cmake
+Version: 1.0.1
+Summary: Provide CMake module for Sphinx
+Project-URL: Documentation, https://python-cmake.github.io/sphinx-cmake
+Project-URL: Repository, https://github.com/python-cmake/sphinx-cmake
+Project-URL: Issues, https://github.com/python-cmake/sphinx-cmake/issues
+Project-URL: Changelog, https://python-cmake.github.io/sphinx-cmake/release/release_notes.html
+Author-email: Jeremy Retailleau <jeremy.retailleau@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 Jeremy Retailleau
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: cmake,development,sphinx
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Build Tools
+Requires-Python: <4,>=3.7
+Requires-Dist: sphinx<9,>=1
+Description-Content-Type: text/markdown
+
+# Sphinx CMake
+
+[![PyPi version](https://img.shields.io/pypi/v/sphinx-cmake.svg?logo=pypi&label=PyPI&logoColor=gold)](https://pypi.python.org/pypi/sphinx-cmake)
+[![CMake](https://img.shields.io/badge/CMake-3.20...4.1-blue.svg?logo=CMake&logoColor=blue)](https://cmake.org)
+[![Test](https://github.com/python-cmake/sphinx-cmake/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/python-cmake/sphinx-cmake/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+This project provides convenient ways to use [Sphinx](https://www.sphinx-doc.org/)
+within a [CMake](https://cmake.org/) project. The package can be discovered from a specific range of
+versions on Linux, macOS or Windows using the
+[find_package](https://cmake.org/cmake/help/latest/command/find_package.html)
+function:
+
+```cmake
+find_package(Sphinx 7.3.7 REQUIRED)
+```
+
+A ``sphinx_add_docs`` function is provided as a convenience for adding a target
+for generating documentation with Sphinx.
+
+```cmake
+sphinx_add_docs(docs ALL)
+```
+
+## Documentation
+
+Full documentation, including installation and setup guides, can be found at
+https://python-cmake.github.io/sphinx-cmake/
