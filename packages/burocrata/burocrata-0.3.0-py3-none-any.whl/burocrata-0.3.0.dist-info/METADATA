@@ -1,0 +1,136 @@
+Metadata-Version: 2.4
+Name: burocrata
+Version: 0.3.0
+Summary: Check and insert copyright and license notices into source code
+Author-email: The Burocrata Developers <fatiandoaterra@protonmail.com>
+Maintainer-email: Leonardo Uieda <leo@uieda.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/fatiando/burocrata
+Project-URL: Changelog, https://github.com/fatiando/burocrata/blob/main/CHANGELOG.md
+Project-URL: Bug Tracker, https://github.com/fatiando/burocrata/issues
+Project-URL: Source Code, https://github.com/fatiando/burocrata
+Keywords: license,development,copyright
+Classifier: Development Status :: 4 - Beta
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+License-File: AUTHORS.md
+Requires-Dist: click<9.0.0,>=8.0.0
+Requires-Dist: tomli<3.0.0,>=1.1.0
+Requires-Dist: pathspec>=0.10.1
+Dynamic: license-file
+
+# Burocrata: Check and insert copyright and license notices into source code
+
+Part of the [Fatiando a Terra][fatiando] project.
+
+[![Latest release on PyPI](https://img.shields.io/pypi/v/burocrata.svg?style=flat-square)][pypi]
+[![Latest release on conda-forge](https://img.shields.io/conda/vn/conda-forge/burocrata.svg?style=flat-square)][conda-forge]
+[![Compatible Python versions](https://img.shields.io/pypi/pyversions/burocrata.svg?style=flat-square)][pypi]
+
+## About
+
+*Burocrata* is a small command-line program that can check the existence of
+copyright and license notices in source code files and add them when they are
+missing.
+
+## Installing
+
+*Burocrata* is available from PyPI:
+
+```
+python -m pip install burocrata
+```
+
+and conda-forge:
+
+```
+conda install burocrata -c conda-forge
+```
+
+## Using
+
+Check that very `.py` file in a directory has a license notice:
+
+```
+$ burocrata --check --extension=py source_folder
+```
+
+Removing the `--check` option will make Burocrata add the license notice to
+the files that don't have them:
+
+```
+$ burocrata --extension=py source_folder
+```
+
+The license and copyright notice can be configured in a `pyproject.toml` file
+located in the directory where `burocrata` is run:
+
+```
+$ cat pyproject.toml
+[tool.burocrata]
+notice = '''
+# Copyright (c) YYYY Name of Developer.
+# Distributed under the terms of the BSD 3-Clause License.
+# SPDX-License-Identifier: BSD-3-Clause'''
+exclude = ["__init__.py"]
+```
+
+See a full list of options:
+
+```
+$ burocrata --help
+```
+
+## Dependencies
+
+We use the following dependencies (see `pyproject.toml` for specific version
+constraints):
+
+* [click](https://click.palletsprojects.com) for building the command-line
+  interface.
+* [tomli](https://github.com/hukkin/tomli) to parse the TOML configuration
+  files.
+* [pathspec](https://github.com/cpburnz/python-pathspec) to parse `.gitignore`
+  files.
+
+## Contacting Us
+
+Find out more about how to reach us at
+[fatiando.org/contact][contact]
+
+## Contributing
+
+### Code of conduct
+
+Please note that this project is released with a [Code of Conduct][coc].
+By participating in this project you agree to abide by its terms.
+
+### Contributing Guidelines
+
+Please read our
+[Contributing Guide][contrib]
+to see how you can help and give feedback.
+
+## License
+
+Burocrata is free and open-source software distributed under the
+[MIT License][license].
+
+[pypi]: https://pypi.org/project/burocrata/
+[conda-forge]: https://github.com/conda-forge/burocrata-feedstock
+[coverage]: https://app.codecov.io/gh/fatiando/burocrata
+[license]: https://github.com/fatiando/burocrata/blob/main/LICENSE.txt
+[contrib]: https://github.com/fatiando/burocrata/blob/main/CONTRIBUTING.md
+[coc]: https://github.com/fatiando/community/blob/main/CODE_OF_CONDUCT.md
+[fatiando]: https://www.fatiando.org
+[contact]: https://www.fatiando.org/contact
