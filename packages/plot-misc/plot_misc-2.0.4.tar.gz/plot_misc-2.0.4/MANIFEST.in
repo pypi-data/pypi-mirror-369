@@ -1,0 +1,16 @@
+# include top-level metadata
+include README.md LICENSE
+include requirements.txt
+include requirements-dev.txt
+
+# ship the example datasets explicitly
+recursive-include plot_misc/example_data/example_datasets *.tsv.gz *.txt
+
+# drop these 
+prune tests
+prune resources
+
+# drop the rest
+global-exclude .*
+global-exclude *.py[cod]
+global-exclude __pycache__/*
