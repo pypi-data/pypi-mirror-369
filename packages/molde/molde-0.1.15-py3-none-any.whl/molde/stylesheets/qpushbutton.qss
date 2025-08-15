@@ -1,0 +1,89 @@
+QPushButton {
+    color: @primary;
+    background-color: @background;
+    border: 1px solid @border-color;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px 9px;
+}
+
+QPushButton::hover {
+    background-color: @background-variant;
+}
+
+QPushButton::checked,
+QPushButton::pressed {
+    background-color: @primary-lighter;
+    color: @primary-darker;
+}
+
+QPushButton::disabled {
+    background: @disabled-background;
+    color: @disabled-color;
+}
+
+QPushButton[status=main], 
+QPushButton::default {
+    color: @on-primary;
+    background-color: @primary;
+}
+
+QPushButton[status=main]::hover,
+QPushButton::default:hover {
+    background-color: @primary-lighter;
+}
+
+QPushButton[status=main]::checked, 
+QPushButton[status=main]::pressed,
+QPushButton::default:checked,
+QPushButton::default:pressed {
+    background-color: @primary-darker;
+    color: @on-primary;
+}
+
+QPushButton[status=danger],
+QPushButton[status=danger]:focus {
+    color: @on-primary;
+    border-color: @danger-color;
+    background-color: @danger-color;
+}
+
+QPushButton[status=danger]::hover {
+    background-color: @danger-color-lighter;
+}
+
+QPushButton[status=danger]::checked,
+QPushButton[status=danger]::pressed {
+    background-color: @danger-color-darker;
+    border-color: @danger-color;
+}
+
+QPushButton[status=warning],
+QPushButton[status=warning]:focus {
+    color: @on-primary;
+    background-color: @warning-color;
+    border-color: @warning-color;
+}
+
+QPushButton[status=warning]::hover {
+    background-color: @warning-color-lighter;
+}
+
+QPushButton[status=warning]::checked,
+QPushButton[status=warning]::pressed {
+    background-color: @warning-color-darker;
+    color: @on-primary;
+}
+
+QPushButton[status=main]::disabled,
+QPushButton[status=warning]::disabled,
+QPushButton[status=danger]::disabled {
+    background-color: @disabled-background;
+    color: @disabled-color;
+    border: none;
+}
+
+QDialogButtonBox QPushButton {
+    min-width: 65px;
+}
+
