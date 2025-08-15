@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cuda-switch"
+version = "1.0.0"
+description = "A tool for managing multiple CUDA versions on macOS"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "Jason Wang", email = "your-email@example.com"},
+]
+keywords = ["cuda", "nvidia", "gpu", "development", "macos"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: MacOS",
+]
+dependencies = [
+    "requests>=2.25.0",
+    "beautifulsoup4>=4.9.0",
+    "lxml>=4.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/cuda-switch"
+"Bug Reports" = "https://github.com/yourusername/cuda-switch/issues"
+"Source Code" = "https://github.com/yourusername/cuda-switch"
+
+[project.scripts]
+cuda-switch = "cuda_switch:main"
+
+[tool.setuptools]
+py-modules = ["cuda_switch", "cuda_downloader"]
