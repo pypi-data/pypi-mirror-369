@@ -1,0 +1,421 @@
+
+# MicroAlpha 
+
+**A Python library for analyzing ultra-high-frequency tick data and discovering micro-alpha trading signals.**
+
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://badge.fury.io/py/microalpha.svg)](https://badge.fury.io/py/microalpha)
+
+## ✨ Features
+
+- ** Microstructure Analysis**: Quote stuffing, order book imbalance, spread dynamics
+- ** High-Frequency Ready**: Optimized for tick-level data with rolling windows
+- ** Smart Data Conversion**: Auto-convert from common exchange formats
+- ** Feature Engineering**: 8+ pre-built microstructure features
+- ** One-Line Analysis**: `analyze_ticks()` does everything automatically
+- ** Real-time Support**: Buffer class for streaming analysis
+
+## Quick Start
+
+### Installation
+
+```bash
+pip install microalpha
+```
+
+### Fetch and Analyze Data Automatically!
+
+```python
+import microalpha as ma
+
+# Fetch and analyze from any exchange in one line!
+features = ma.fetch_and_analyze("binance", "BTCUSDT", "1m", 1000)
+
+# Fetch from Coinbase
+eth_data = ma.fetch_and_analyze("coinbase", "ETH-USD", "5m", 500)
+
+# Fetch from custom API
+custom_data = ma.fetch_and_analyze(
+    "custom_url", "BTCUSDT", "1m", 100,
+    url="https://api.your-exchange.com/data",
+    headers={"Authorization": "Bearer token"}
+)
+
+# Fetch specific time range
+recent_data = ma.fetch_and_analyze(
+    "binance", "ADAUSDT", "15m", 200,
+    start_time="2025-01-01",
+    end_time="2025-01-02"
+)
+```
+
+### Analyze Your Data in One Line
+
+```python
+import microalpha as ma
+
+# Analyze any CSV file automatically
+features = ma.analyze_ticks("your_data.csv")
+
+# Customize analysis
+features = ma.analyze_ticks(
+    "your_data.csv",
+    window="500ms",      # Feature computation window
+    horizon="1s",        # Forward return horizon
+    ts_unit="ms"         # Timestamp unit
+)
+```
+
+### Supported Data Sources
+
+```python
+# Get list of supported sources
+sources = ma.get_supported_sources()
+print(sources)  # ['binance', 'coinbase', 'kraken', 'custom_url']
+
+# Get detailed info about a source
+info = ma.get_source_info('binance')
+print(info['rate_limit'])  # '1200 requests per minute'
+```
+
+### Convert Any Format to MicroAlpha
+
+```python
+# Convert Binance kline data
+ma.convert_data(
+    "BTCUSDT-1s.csv", 
+    "converted.csv", 
+    symbol="BTCUSDT", 
+    preset="binance_kline"
+)
+
+# Convert generic CSV
+ma.convert_data(
+    "raw_data.csv", 
+    "converted.csv", 
+    symbol="ETHUSDT", 
+    ts_unit="ms"
+)
+```
+
+## Tutorials & Examples
+
+### 1. Basic Analysis
+
+```python
+import microalpha as ma
+import pandas as pd
+
+# Load and analyze tick data
+features = ma.analyze_ticks("data/ticks.csv")
+
+print(features.head())
+print(f"Dataset shape: {features.shape}")
+print(f"Features: {list(features.columns)}")
+```
+
+### 2. Custom Feature Computation
+
+```python
+from microalpha.features import compute_features
+
+# Load data first
+df = ma.read_ticks("data/ticks.csv")
+
+# Compute features with custom parameters
+features = compute_features(
+    df, 
+    window="200ms",
+    include_cancel_bursts=True,
+    cancel_burst_threshold=3
+)
+
+print(features.head())
+```
+
+### 3. Real-time Analysis
+
+```python
+from microalpha import Buffer
+
+# Create real-time buffer
+buffer = Buffer(window="60s", horizon="1s")
+
+# Add ticks as they arrive
+tick = {
+    'timestamp': pd.Timestamp.now(),
+    'symbol': 'BTCUSDT',
+    'event_type': 'trade',
+    'side': 'buy',
+    'price': 50000.0,
+    'size': 1.0,
+    'best_bid': 49995.0,
+    'best_ask': 50005.0,
+    'bid_size': 100.0,
+    'ask_size': 100.0
+}
+
+buffer.append(tick)
+
+# Get current features
+current_features = buffer.get_features()
+if current_features is not None:
+    print(f"OBI: {current_features['obi']:.3f}")
+    print(f"Spread: {current_features['spread']:.2f}")
+```
+
+## Data Format
+
+### Required Schema
+
+Your CSV should have these columns:
+
+| Column | Description | Example |
+|--------|-------------|---------|
+| `timestamp` | Event timestamp | `2025-01-01 09:30:00.123456` |
+| `symbol` | Trading symbol | `BTCUSDT` |
+| `event_type` | Event type | `trade`, `add`, `cancel` |
+| `side` | Trade side | `buy`, `sell`, `` (empty for non-trades) |
+| `price` | Event price | `50000.50` |
+| `size` | Event size | `1.5` |
+| `best_bid` | Best bid price | `49995.00` |
+| `best_ask` | Best ask price | `50005.00` |
+| `bid_size` | Bid size | `100.0` |
+| `ask_size` | Ask size | `100.0` |
+
+### Supported Input Formats
+
+- **MicroAlpha Standard**: Direct compatibility
+- **Binance Klines**: Use `preset="binance_kline"`
+- **Generic CSV**: Auto-detect columns
+- **Custom Formats**: Specify column mappings
+
+## Available Features
+
+| Feature | Description | Range |
+|---------|-------------|-------|
+| `trade_intensity` | Trade count per window | `[0, ∞)` |
+| `qs_freq` | Quote stuffing frequency | `[0, ∞)` |
+| `spread` | Bid-ask spread | `[0, ∞)` |
+| `spread_vol` | Spread volatility | `[0, ∞)` |
+| `obi` | Order book imbalance | `[-1, 1]` |
+| `mid` | Mid-price | `[0, ∞)` |
+| `rv` | Realized volatility | `[0, ∞)` |
+| `cancel_burst_buy` | Buy-side cancel bursts | `{0, 1}` |
+| `cancel_burst_sell` | Sell-side cancel bursts | `{0, 1}` |
+
+## Advanced Usage
+
+### Parameter Tuning
+
+```python
+# Fine-tune feature computation
+features = compute_features(
+    df,
+    window="100ms",                    # Rolling window
+    include_cancel_bursts=True,        # Include burst detection
+    cancel_burst_threshold=5           # Burst sensitivity
+)
+```
+
+### Batch Processing
+
+```python
+# Process multiple files
+import glob
+
+for file in glob.glob("data/*.csv"):
+    features = ma.analyze_ticks(file, window="1s")
+    features.to_csv(f"features_{file.split('/')[-1]}")
+```
+
+### Data Validation
+
+```python
+# Check if your data is compatible
+validation = ma.validate_data_format("your_file.csv")
+
+if validation['is_valid']:
+    print("✓ Data is ready for analysis!")
+else:
+    print("⚠ Issues found:")
+    for suggestion in validation['suggestions']:
+        print(f"  - {suggestion}")
+```
+
+## Performance Tips
+
+- **Large Files**: Use longer windows (e.g., `"1s"` instead of `"100ms"`)
+- **Memory**: Process in chunks for very large datasets
+- **Speed**: Use `ts_unit="ns"` for nanosecond precision
+- **Real-time**: Use `Buffer` class for streaming data
+
+## Troubleshooting
+
+### Common Issues
+
+**"Missing required columns"**
+```python
+# Use convert_data() to fix format
+ma.convert_data("raw.csv", "converted.csv", symbol="BTCUSDT")
+```
+
+**"Invalid timestamp format"**
+```python
+# Specify timestamp unit
+features = ma.analyze_ticks("data.csv", ts_unit="ms")
+```
+
+**"Memory error with large file"**
+```python
+# Use longer windows
+features = ma.analyze_ticks("large_file.csv", window="5s")
+```
+
+### Get Help
+
+```python
+# Check what presets are available
+print(ma.get_supported_presets())
+
+# Get feature descriptions
+print(ma.get_feature_descriptions())
+
+# Validate your data
+print(ma.validate_data_format("your_file.csv"))
+```
+
+## API Reference
+
+### Complete Function Reference Table
+
+| Function | Parameters | Types | Returns | Description |
+|----------|------------|-------|---------|-------------|
+| **Core Functions** |
+| `read_ticks(path, ts_unit)` | `path: str`, `ts_unit: str` | `str`, `str` | `pd.DataFrame` | Load and normalize CSV file |
+| `normalize_schema(df, ts_unit)` | `df: pd.DataFrame`, `ts_unit: str` | `pd.DataFrame`, `str` | `pd.DataFrame` | Convert DataFrame to MicroAlpha format |
+| `compute_features(df, window, include_cancel_bursts, cancel_burst_threshold)` | `df: pd.DataFrame`, `window: str`, `include_cancel_bursts: bool`, `cancel_burst_threshold: int` | `pd.DataFrame`, `str`, `bool`, `int` | `pd.DataFrame` | Compute microstructure features |
+| `rolling_forward_returns(df, horizon)` | `df: pd.DataFrame`, `horizon: str` | `pd.DataFrame`, `str` | `pd.DataFrame` | Generate forward return labels |
+| `join_features_and_labels(features, labels)` | `features: pd.DataFrame`, `labels: pd.Series` | `pd.DataFrame`, `pd.Series` | `pd.DataFrame` | Combine features with labels |
+| **Enhanced API** |
+| `analyze_ticks(file_path, window, horizon, ts_unit, symbol, **kwargs)` | `file_path: Union[str, Path, pd.DataFrame]`, `window: str`, `horizon: str`, `ts_unit: str`, `symbol: str`, `**kwargs` | `Union[str, Path, pd.DataFrame]`, `str`, `str`, `str`, `str`, `dict` | `pd.DataFrame` | Complete analysis pipeline |
+| `convert_data(input_path, output_path, symbol, preset, ts_unit, **kwargs)` | `input_path: Union[str, Path]`, `output_path: Union[str, Path]`, `symbol: str`, `preset: str`, `ts_unit: str`, `**kwargs` | `Union[str, Path]`, `Union[str, Path]`, `str`, `str`, `str`, `dict` | `None` | Convert CSV to MicroAlpha format |
+| `quick_analysis(file_path, window, horizon)` | `file_path: Union[str, Path]`, `window: str`, `horizon: str` | `Union[str, Path]`, `str`, `str` | `dict` | Quick statistical summary |
+| `get_supported_presets()` | None | None | `Dict[str, str]` | Get available conversion presets |
+| `validate_data_format(file_path)` | `file_path: Union[str, Path]` | `Union[str, Path]` | `Dict[str, Any]` | Validate data format compatibility |
+| **Data Fetching** |
+| `fetch_and_analyze(source, symbol, interval, limit, start_time, end_time, **kwargs)` | `source: str`, `symbol: str`, `interval: str`, `limit: int`, `start_time: Optional[Union[str, datetime]]`, `end_time: Optional[Union[str, datetime]]`, `**kwargs` | `str`, `str`, `str`, `int`, `Optional[Union[str, datetime]]`, `Optional[Union[str, datetime]]`, `dict` | `pd.DataFrame` | Fetch and analyze in one call |
+| `fetch_data(source, symbol, interval, limit, start_time, end_time, **kwargs)` | `source: str`, `symbol: str`, `interval: str`, `limit: int`, `start_time: Optional[Union[str, datetime]]`, `end_time: Optional[Union[str, datetime]]`, `**kwargs` | `str`, `str`, `str`, `int`, `Optional[Union[str, datetime]]`, `Optional[Union[str, datetime]]`, `dict` | `pd.DataFrame` | Fetch raw data from source |
+| `get_supported_sources()` | None | None | `List[str]` | Get available data sources |
+| `get_source_info(source)` | `source: str` | `str` | `Dict[str, Any]` | Get information about data source |
+| **Feature Utilities** |
+| `get_feature_descriptions()` | None | None | `Dict[str, str]` | Get descriptions of all features |
+| **Simple API** |
+| `Buffer(window, horizon, ts_unit, buffer_seconds)` | `window: str`, `horizon: str`, `ts_unit: str`, `buffer_seconds: Optional[int]` | `str`, `str`, `str`, `Optional[int]` | `Buffer` | Real-time analysis buffer |
+
+### Parameter Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `str` | String value | `"BTCUSDT"`, `"1s"`, `"binance"` |
+| `int` | Integer value | `1000`, `5` |
+| `bool` | Boolean value | `True`, `False` |
+| `pd.DataFrame` | Pandas DataFrame | `df` |
+| `pd.Series` | Pandas Series | `series` |
+| `Union[str, Path]` | String or Path object | `"file.csv"` or `Path("file.csv")` |
+| `Union[str, Path, pd.DataFrame]` | String, Path, or DataFrame | `"file.csv"`, `Path("file.csv")`, or `df` |
+| `Optional[Union[str, datetime]]` | Optional string or datetime | `"2023-01-01"`, `datetime.now()`, or `None` |
+| `Dict[str, Any]` | Dictionary with string keys | `{"key": "value"}` |
+| `List[str]` | List of strings | `["binance", "coinbase"]` |
+
+### Return Types
+
+| Type | Description | Contains |
+|------|-------------|----------|
+| `pd.DataFrame` | Pandas DataFrame | Features, labels, and metadata |
+| `Dict[str, Any]` | Dictionary | Configuration or validation results |
+| `List[str]` | List of strings | Available options or sources |
+| `Buffer` | Buffer object | Real-time analysis instance |
+| `None` | No return value | Side effects only (file operations) |
+
+### Core Functions
+
+- `analyze_ticks()` - One-line analysis
+- `convert_data()` - Convert any format
+- `read_ticks()` - Load and normalize
+- `compute_features()` - Feature engineering
+- `quick_analysis()` - Statistical summary
+
+### Classes
+
+- `Buffer` - Real-time analysis
+- `DataFetcher` - Data fetching utilities
+
+### Buffer Class Methods
+
+| Method | Parameters | Types | Returns | Description |
+|--------|------------|-------|---------|-------------|
+| `add_row(row)` | `row: Dict` | `Dict` | `None` | Add a new data row to the buffer |
+| `add(timestamp, price, size, **kwargs)` | `timestamp`, `price: float`, `size: float`, `**kwargs` | `Any`, `float`, `float`, `dict` | `Optional[pd.Series]` | Add data with minimal parameters |
+| `latest()` | None | None | `Optional[pd.Series]` | Get latest computed features |
+| `get_features()` | None | None | `pd.DataFrame` | Get all computed features in buffer |
+
+### DataFetcher Class Methods
+
+| Method | Parameters | Types | Returns | Description |
+|--------|------------|-------|---------|-------------|
+| `fetch_and_analyze(source, symbol, interval, limit, **kwargs)` | `source: str`, `symbol: str`, `interval: str`, `limit: int`, `**kwargs` | `str`, `str`, `str`, `int`, `dict` | `pd.DataFrame` | Fetch and analyze in one call |
+| `fetch_data(source, symbol, interval, limit, **kwargs)` | `source: str`, `symbol: str`, `interval: str`, `limit: int`, `**kwargs` | `str`, `str`, `str`, `int`, `dict` | `pd.DataFrame` | Fetch raw data from source |
+
+### Supported Data Sources
+
+| Source | Symbol Format | Intervals | Authentication | Rate Limits |
+|--------|---------------|-----------|----------------|-------------|
+| `binance` | `BTCUSDT`, `ETHUSDT` | `1m`, `5m`, `15m`, `1h`, `4h`, `1d` | None (public) | High |
+| `coinbase` | `BTC-USD`, `ETH-USD` | `1m`, `5m`, `15m`, `1h`, `6h`, `1d` | None (public) | Medium |
+| `kraken` | `BTCUSD`, `ETHUSD` | `1m`, `5m`, `15m`, `1h`, `4h`, `1d` | None (public) | Medium |
+| `custom_url` | Any | Any | Depends on API | Depends on API |
+
+### Common Parameters
+
+| Parameter | Type | Default | Description | Examples |
+|-----------|------|---------|-------------|----------|
+| `window` | `str` | `"1s"` | Rolling window for features | `"100ms"`, `"5s"`, `"1m"` |
+| `horizon` | `str` | `"100ms"` | Forward return horizon | `"100ms"`, `"1s"`, `"5s"` |
+| `ts_unit` | `str` | `"ms"` | Timestamp unit | `"ns"`, `"ms"`, `"s"` |
+| `interval` | `str` | `"1m"` | Data time interval | `"1m"`, `"5m"`, `"1h"` |
+| `limit` | `int` | `1000` | Number of data points | `100`, `1000`, `5000` |
+
+### Computed Features
+
+| Feature | Type | Description | Range |
+|---------|------|-------------|-------|
+| `trade_intensity` | `float` | Number of trades in rolling window | `≥ 0` |
+| `qs_freq` | `float` | Quote stuffing frequency (cancels per add) | `≥ 0` |
+| `spread` | `float` | Instantaneous bid-ask spread | `≥ 0` |
+| `spread_vol` | `float` | Rolling volatility of spread | `≥ 0` |
+| `obi` | `float` | Order book imbalance | `[-1, 1]` |
+| `mid` | `float` | Mid-price: (bid + ask) / 2 | `> 0` |
+| `rv` | `float` | Realized volatility proxy | `≥ 0` |
+| `cancel_burst_buy` | `int` | Buy-side cancel burst indicator | `{0, 1}` |
+| `cancel_burst_sell` | `int` | Sell-side cancel burst indicator | `{0, 1}` |
+| `fwd_ret` | `float` | Forward log return | `(-∞, +∞)` |
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Built for quantitative researchers and traders
+- Inspired by academic microstructure literature
+- Optimized for real-world high-frequency data
+
+---
+
+**Ready to discover micro-alpha? Start with `pip install microalpha` and analyze your first tick! **
