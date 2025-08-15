@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: elemem_vector_sdk
+Version: 2.0.3
+Summary: A Python SDK for elem
+Author: elemem.tech
+Author-email: support@elemem.tech
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: grpcio==1.73.0
+Requires-Dist: grpcio-tools==1.73.0
+Requires-Dist: numpy==1.26.4
+Requires-Dist: tqdm==4.67.1
+Requires-Dist: h5py==3.14.0
+Requires-Dist: protobuf==6.31.1
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# elemem-vector-sdk
+
+提供向量的增删改查
+
+## 注意事项
+
+- 支持pip安装，import需要改为绝对路径导入。
+```
+1. sdk_pb2_grpc.py中的
+import sdk_pb2 as sdk__pb2
+改为
+from . import sdk_pb2 as sdk__pb2
+
+2. hilbert_client.py中的
+import sdk_pb2
+import sdk_pb2_grpc
+改为
+from . import sdk_pb2
+from . import sdk_pb2_grpc
+
+3. demo中的
+from hilbert_client import HilbertClient, get_data_from_hdf5
+改为
+from elemem_sdk import hilbert_client
+
+```
+
+## 上传到pypi上，支持任意位置安装
+
+```
+bash upload.sh
+```
+
+
+## 安装
+
+```bash
+pip install elemem-vector-sdk
+```
