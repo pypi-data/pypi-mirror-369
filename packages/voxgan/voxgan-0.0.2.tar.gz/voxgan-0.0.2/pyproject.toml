@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "voxgan"
+version = "0.0.2"
+requires-python = ">=3.9"
+authors = [{name = "Guillaume Rongier"}]
+description = "Python package to generate 2D and 3D images using Generative Adversarial Networks and PyTorch"
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+keywords = ["python", "deep learning", "deep generative modeling", "GAN", "2D", "3D", "PyTorch"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Development Status :: 4 - Beta",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy<2.0",    # Needed on OSX x86-64 for compatibility with the PyTorch version available on pip
+    "scipy",
+    "h5py",
+    "torch",
+    "scikit-learn",
+    "bottleneck"
+]
+
+[tool.setuptools.packages.find]
+exclude = ["examples"]
+
+[project.urls]
+"Homepage" = "https://github.com/grongier/voxgan"
+"Bug Tracker" = "https://github.com/grongier/voxgan/issues"
