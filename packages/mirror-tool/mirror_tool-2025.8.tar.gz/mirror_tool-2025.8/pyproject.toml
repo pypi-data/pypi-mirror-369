@@ -1,0 +1,30 @@
+[project]
+name = "mirror-tool"
+dynamic = ["version"]
+description = "A tool for managing git mirrors."
+readme = "README.md"
+authors = [{name = "Rohan McGovern", email="rohan@mcgovern.id.au"}]
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://github.com/rohanpm/mirror-tool"
+Repository = "https://github.com/rohanpm/mirror-tool"
+
+[project.scripts]
+"mirror-tool" = "mirror_tool.cmd:entrypoint"
+
+[tool.setuptools.dynamic]
+version = {attr = "mirror_tool.__version__"}
+dependencies = { file = "requirements.in" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mirror_tool*"]
+
+[tool.isort]
+profile = "black"
+
+[build-system]
+requires = ["buildsys-dateversion"]
+build-backend = "buildsys_dateversion"
