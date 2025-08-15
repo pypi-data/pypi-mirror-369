@@ -1,0 +1,75 @@
+{
+  "model": {
+    "vocab_size": 8000,
+    "embedding_dim": 256,
+    "num_layers": 4,
+    "num_heads": 4,
+    "max_seq_length": 512,
+    "dropout": 0.1
+  },
+  "tokenizer": {
+    "vocab_size": 8000,
+    "model_type": "bpe",
+    "character_coverage": 0.999
+  },
+  "training": {
+    "batch_size": 8,
+    "learning_rate": 1e-4,
+    "num_epochs": 15,
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0
+  },
+  "data": {
+    "max_length": 512,
+    "min_length": 20,
+    "clean_text": true,
+    "validation_split": 0.15,
+    "test_split": 0.1,
+    "ingestion": {
+      "supported_formats": ["txt", "markdown", "html"],
+      "batch_size": 50,
+      "num_workers": 2,
+      "output_format": "txt",
+      "enable_ocr": false,
+      "html_parser": "html.parser"
+    },
+    "deduplication": {
+      "enable_exact_deduplication": true,
+      "enable_semantic_deduplication": false,
+      "similarity_threshold": 0.8,
+      "batch_size": 500,
+      "chunk_size": 256,
+      "min_text_length": 30,
+      "use_gpu_for_embeddings": false
+    }
+  },
+  "tokenizer_training": {
+    "vocab_size": 8000,
+    "algorithm": "bpe",
+    "min_frequency": 2,
+    "special_tokens": ["<pad>", "<unk>", "<s>", "</s>"],
+    "character_coverage": 0.999,
+    "num_threads": 2,
+    "max_training_time": 1800
+  },
+  "gguf_conversion": {
+    "quantization_level": "Q8_0",
+    "validate_output": true,
+    "conversion_timeout": 3600,
+    "preferred_script": "auto"
+  },
+  "system": {
+    "device": "cpu",
+    "mixed_precision": false,
+    "compile_model": false,
+    "num_workers": 2,
+    "pin_memory": false
+  },
+  "paths": {
+    "data_dir": "data",
+    "model_dir": "models",
+    "checkpoint_dir": "checkpoints",
+    "tokenizer_dir": "tokenizers",
+    "output_dir": "output"
+  }
+}
