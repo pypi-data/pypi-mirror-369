@@ -1,0 +1,150 @@
+$defs:
+  ConceptPropertiesFile:
+    additionalProperties: true
+    properties:
+      key:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        title: Key
+      override-column-group-ordering:
+        anyOf:
+        - items:
+            enum:
+            - kind
+            - type
+            - identity-relations
+            - inline-relations
+            - foreign-relations
+            - attributes
+            type: string
+          type: array
+        - type: 'null'
+        default: null
+        title: Override-Column-Group-Ordering
+      permit-attributes:
+        default: true
+        title: Permit-Attributes
+        type: boolean
+      plural:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        title: Plural
+      typing-concept:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: type
+        title: Typing-Concept
+    title: ConceptPropertiesFile
+    type: object
+  MITM:
+    enum:
+    - MAED
+    - OCEL2
+    title: MITM
+    type: string
+  MITMDataType:
+    enum:
+    - text
+    - json
+    - integer
+    - numeric
+    - boolean
+    - datetime
+    - unknown
+    - infer
+    title: MITMDataType
+    type: string
+  Meta:
+    additionalProperties: true
+    properties:
+      keys:
+        anyOf:
+        - additionalProperties:
+            type: string
+          type: object
+        - type: 'null'
+        title: Keys
+      plurals:
+        anyOf:
+        - additionalProperties:
+            type: string
+          type: object
+        - type: 'null'
+        title: Plurals
+    title: Meta
+    type: object
+  OwnedRelationsFile:
+    properties:
+      foreign:
+        additionalProperties:
+          additionalProperties:
+            anyOf:
+            - additionalProperties:
+                type: string
+              type: object
+            - items:
+                type: string
+              type: array
+          type: object
+        title: Foreign
+        type: object
+      identity:
+        additionalProperties:
+          type: string
+        title: Identity
+        type: object
+      inline:
+        additionalProperties:
+          type: string
+        title: Inline
+        type: object
+    title: OwnedRelationsFile
+    type: object
+properties:
+  base-concepts:
+    additionalProperties:
+      $ref: '#/$defs/MITMDataType'
+    title: Base-Concepts
+    type: object
+  concept-properties:
+    additionalProperties:
+      $ref: '#/$defs/ConceptPropertiesFile'
+    title: Concept-Properties
+    type: object
+  concepts:
+    items:
+      anyOf:
+      - type: string
+      - additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+    title: Concepts
+    type: array
+  meta:
+    $ref: '#/$defs/Meta'
+  mitm:
+    $ref: '#/$defs/MITM'
+  owned-relations:
+    additionalProperties:
+      $ref: '#/$defs/OwnedRelationsFile'
+    title: Owned-Relations
+    type: object
+  unowned-relations:
+    anyOf:
+    - additionalProperties:
+        $ref: '#/$defs/OwnedRelationsFile'
+      type: object
+    - type: 'null'
+    default: null
+    title: Unowned-Relations
+required:
+- mitm
+title: MITMDefinitionFile
+type: object
