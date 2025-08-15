@@ -1,0 +1,119 @@
+[build-system]
+requires = ['setuptools>=64']
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astro-otter"
+authors = [{name = "Noah Franz", email = "nfranz@arizona.edu"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+
+requires-python = ">=3.9" #,<3.12"
+
+classifiers = [
+  "License :: OSI Approved :: BSD License",
+  "Topic :: Scientific/Engineering",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Development Status :: 2 - Pre-Alpha"
+]
+
+dependencies = [
+  # necessary dependencies for the src code
+  "numpy>=1.20,<2",
+  "astropy>=6",
+  "pandas",
+  "synphot",
+  "typing-extensions",
+  "pyarango",
+  "tabulate",
+
+  # for the plotting
+  "matplotlib",
+  "plotly",
+
+  # for the DataFinder query tool
+  "astroquery",
+  "ads",
+  "skypatrol",
+  "fundamentals",
+  "astro-datalab",
+  "sparclclient",
+
+  # for the schema validation
+  "pydantic",
+
+  # only for windows OS b/c it doesn't ship with readline by default
+  'pyreadline3; platform_system == "Windows"'
+]
+
+[project.urls]
+Home = "https://github.com/astro-otter"
+
+[project.optional-dependencies]
+# tools for building the readthedocs page
+docs = [
+  "Sphinx>=3.0.0",
+  "myst-parser>=0.13",
+  "nbsphinx>=0.9.1",
+  "sphinx-book-theme>=0.0.33",
+  "sphinx_copybutton",
+  "autodoc",
+  "ipykernel",
+  "autodoc_pydantic"
+]
+
+# useful tools for developers
+dev = [
+  "ruff", # linter
+  "pre-commit", # enable pre-commit hooks
+]
+
+[tool.setuptools.packages.find]
+where = ['src']
+
+[tool.setuptools.dynamic]
+version = {attr = 'otter._version.__version__'}
+
+[tool.ruff]
+# put in some excluded files
+exclude = [
+    "*/__init__.py"
+]
+
+# set the maximum line length to 79 characters
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+# select some other rules to add
+select = [
+    # pycodestyle
+    "E",
+
+    # pyflakes
+    "F",
+
+    # pep8-naming
+    "N",
+
+    # warnings
+    "W"
+]
+
+# ignore a few rules that don't matter to us or just throw errors that are wrong
+ignore = ['E712']
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"
