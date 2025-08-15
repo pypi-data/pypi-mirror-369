@@ -1,0 +1,28 @@
+# Include the README and license files
+include README.md
+include LICENSE
+include MANIFEST.in
+
+# Include configuration and template files
+recursive-include swe_agent/rules *.md
+recursive-include swe_agent/prompts *.md
+recursive-include swe_agent/config *.json
+recursive-include swe_agent/templates *.py *.md
+
+# Include documentation
+recursive-include docs *.md *.rst *.txt
+
+# Include examples
+recursive-include examples *.py *.md *.json
+
+# Exclude unnecessary files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *~
+global-exclude .DS_Store
+global-exclude .git*
+global-exclude __pycache__
+global-exclude *.so
+global-exclude .pytest_cache
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
