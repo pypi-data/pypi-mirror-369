@@ -1,0 +1,114 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm", "pyinstaller"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aind-watchdog-service"
+description = "Generated from aind-library-template"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Allen Institute for Neural Dynamics"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+readme = "README.md"
+dynamic = ["version"]
+
+dependencies = [
+    'aind-data-transfer-service>=1.16.0',
+    'pyyaml',
+]
+
+[project.optional-dependencies]
+
+service = [
+    'watchdog',
+    'APScheduler',
+    'requests',
+    'mpetk==0.5.2.dev7',
+    'pykeepass>=4.1.0',
+    'truststore',
+    'crc32c'
+]
+
+dev = [
+    'black',
+    'coverage',
+    'flake8',
+    'interrogate',
+    'isort',
+    'bump2version',
+]
+
+docs = [
+    'Sphinx',
+    'furo',
+    'autodoc_pydantic',
+    'sphinx_mdinclude'
+]
+
+
+publish = [
+    'setuptools==69.5.1',
+    'pyinstaller==6.2.0',
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "aind_watchdog_service.__version__"}
+
+[tool.black]
+line-length = 90
+target_version = ['py39']
+exclude = '''
+
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | build
+    | dist
+  )/
+  | .gitignore
+)
+'''
+
+[tool.coverage.run]
+omit = ["*__init__*"]
+source = ["aind_watchdog_service", "tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "from",
+    "import",
+    "pragma: no cover"
+]
+fail_under = 85
+
+[tool.isort]
+line_length = 90
+profile = "black"
+
+[tool.interrogate]
+exclude = ["setup.py", "docs", "build"]
+fail-under = 85
+
+
+[[tool.uv.index]]
+name = "devpi"
+url = "http://eng-tools:3141/aibs/packages/+simple/"
+explicit = true
+
+[tool.uv.sources]
+mpetk = { index = "devpi" }

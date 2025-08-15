@@ -1,0 +1,143 @@
+name: test_transfer_args_2025-02-26_10-09-20
+processor_full_name: User Name
+subject_id: 614173
+acquisition_datetime: '2025-02-26T10:09:20.837631'
+schedule_time: null
+force_cloud_sync: false
+transfer_endpoint: http://aind-data-transfer-service-dev/api/v1/submit_jobs
+platform: multiplane-ophys
+capsule_id: null
+mount: null
+s3_bucket: private
+project_name: Dynamic Routing
+destination: //allen/aind/scratch/SIPE/test_watchdog
+modalities:
+  behavior:
+  - C:/ProgramData/AIBS_MPE/aind_watchdog_service/logs/test_data/behavior/test.txt
+  - C:/ProgramData/AIBS_MPE/aind_watchdog_service/logs/test_data/behavior/test2.txt
+  behavior-videos:
+  - C:/ProgramData/AIBS_MPE/aind_watchdog_service/logs/test_data/behavior-videos/test.txt
+  - C:/ProgramData/AIBS_MPE/aind_watchdog_service/logs/test_data/behavior-videos/test2.txt
+schemas:
+- C:/ProgramData/AIBS_MPE/aind_watchdog_service/logs/test_data/session.json
+transfer_service_args:
+  job_type: transform_and_upload
+  user_email: null
+  email_notification_types:
+  - fail
+  upload_jobs:
+  - user_email: null
+    email_notification_types:
+    - fail
+    project_name: Dynamic Routing
+    input_data_mount: null
+    process_capsule_id: null
+    s3_bucket: private
+    platform:
+      name: Multiplane optical physiology platform
+      abbreviation: multiplane-ophys
+    modalities:
+    - modality:
+        name: Behavior
+        abbreviation: behavior
+      source: //allen/aind/scratch/SIPE/test_watchdog/test_transfer_args_2025-02-26_10-09-20/behavior
+      compress_raw_data: false
+      extra_configs: null
+      job_settings: null
+      slurm_settings: null
+      output_folder_name: behavior
+    - modality:
+        name: Behavior videos
+        abbreviation: behavior-videos
+      source: //allen/aind/scratch/SIPE/test_watchdog/test_transfer_args_2025-02-26_10-09-20/behavior-videos
+      compress_raw_data: false
+      extra_configs: null
+      job_settings: null
+      slurm_settings: null
+      output_folder_name: behavior-videos
+    subject_id: '614173'
+    acq_datetime: '2025-02-26T10:09:20'
+    metadata_dir: //allen/aind/scratch/SIPE/test_watchdog/test_transfer_args_2025-02-26_10-09-20
+    metadata_dir_force: false
+    force_cloud_sync: false
+    metadata_configs:
+      job_settings_name: GatherMetadata
+      metadata_service_domain: null
+      subject_settings:
+        subject_id: '614173'
+        metadata_service_path: subject
+      session_settings: null
+      acquisition_settings: null
+      raw_data_description_settings:
+        name: multiplane-ophys_614173_2025-02-26_10-09-20
+        project_name: Dynamic Routing
+        modality:
+        - name: Behavior
+          abbreviation: behavior
+        - name: Behavior videos
+          abbreviation: behavior-videos
+        institution:
+          name: Allen Institute for Neural Dynamics
+          abbreviation: AIND
+          registry:
+            name: Research Organization Registry
+            abbreviation: ROR
+          registry_identifier: 04szwah67
+        metadata_service_path: funding
+      procedures_settings:
+        subject_id: '614173'
+        metadata_service_path: procedures
+      processing_settings: null
+      metadata_settings: null
+      directory_to_write_to: stage
+      metadata_dir: //allen/aind/scratch/SIPE/test_watchdog/test_transfer_args_2025-02-26_10-09-20
+      metadata_dir_force: false
+    trigger_capsule_configs:
+      job_type: multiplane_ophys
+      bucket: private
+      prefix: multiplane-ophys_614173_2025-02-26_10-09-20
+      asset_name: multiplane-ophys_614173_2025-02-26_10-09-20
+      mount: multiplane-ophys_614173_2025-02-26_10-09-20
+      input_data_asset_id: null
+      input_data_mount: null
+      process_capsule_id: null
+      capsule_version: null
+      results_suffix: processed
+      input_data_asset_name: null
+      output_bucket: null
+      aind_data_transfer_version: null
+      modalities:
+      - name: Behavior
+        abbreviation: behavior
+      - name: Behavior videos
+        abbreviation: behavior-videos
+      capsule_id: null
+      input_data_point: null
+    codeocean_configs:
+      job_type: multiplane-ophys
+      pipeline_monitor_capsule_id: null
+      pipeline_monitor_capsule_settings: null
+      register_data_settings:
+        name: multiplane-ophys_614173_2025-02-26_10-09-20
+        tags:
+        - '614173'
+        - multiplane-ophys
+        - raw
+        mount: multiplane-ophys_614173_2025-02-26_10-09-20
+        description: null
+        source:
+          aws:
+            bucket: private
+            prefix: multiplane-ophys_614173_2025-02-26_10-09-20
+            keep_on_external_storage: true
+            public: false
+          gcp: null
+          computation: null
+        target: null
+        custom_metadata:
+          data level: raw
+          experiment type: multiplane-ophys
+          subject id: '614173'
+        data_asset_ids: null
+        results_info: null
+    s3_prefix: multiplane-ophys_614173_2025-02-26_10-09-20
