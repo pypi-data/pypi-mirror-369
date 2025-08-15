@@ -1,0 +1,57 @@
+=====================================
+配置 browser-use-mcp-console 到 Claude Code
+=====================================
+
+【PowerShell 版本】
+-------------------
+# 1. 设置Git Bash路径（如果需要）
+$env:CLAUDE_CODE_GIT_BASH_PATH = "D:\MyGit\Git\bin\bash.exe"
+
+# 2. 配置MCP服务（一行命令，使用反引号换行）
+claude mcp add browser-use `
+  --env OPENROUTER_API_KEY=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 `
+  -- uvx browser-use-mcp-console
+
+# 3. 验证配置
+claude mcp list
+
+
+【CMD 版本】
+------------
+:: 1. 设置Git Bash路径（如果需要）
+set CLAUDE_CODE_GIT_BASH_PATH=D:\MyGit\Git\bin\bash.exe
+
+:: 2. 配置MCP服务（一行命令，使用^换行）
+claude mcp add browser-use ^
+  --env OPENROUTER_API_KEY=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 ^
+  -- uvx browser-use-mcp-console
+
+:: 3. 验证配置
+claude mcp list
+
+
+【一行命令版本（PowerShell）】
+------------------------------
+claude mcp add browser-use --env OPENROUTER_API_KEY=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 -- uvx browser-use-mcp-console
+
+
+【一行命令版本（CMD）】
+-----------------------
+claude mcp add browser-use --env OPENROUTER_API_KEY=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 -- uvx browser-use-mcp-console
+
+
+【说明】
+--------
+1. 如果提示找不到Git Bash，需要先设置CLAUDE_CODE_GIT_BASH_PATH环境变量
+2. API密钥已包含在命令中，直接复制执行即可
+3. 配置成功后，使用 claude mcp list 查看是否添加成功
+4. 在Claude中就可以使用browser-use工具了
+
+【删除配置（如需要）】
+----------------------
+claude mcp remove browser-use
+
+【更新配置（如需要）】
+----------------------
+先删除：claude mcp remove browser-use
+再添加：执行上面的配置命令
