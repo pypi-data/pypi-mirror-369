@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "shamir-mnemonic-slip39"
+packages = [
+    { include = "shamir_mnemonic" },
+]
+version = "0.4.2"
+description = "SLIP-39 Shamir Mnemonics"
+authors = ["Trezor <info@trezor.io>"]
+license = "MIT"
+readme = [
+    "README.rst",
+    "CHANGELOG.rst",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.6,<4.0"
+dataclasses = { version = "*", python = "<=3.6" }
+click = { version = ">=7,<9", optional = true }
+
+[tool.poetry.group.dev.dependencies]
+bip32utils = "^0.3.post4"
+pytest = "*"
+pytest-mypy = { version = "*", python = ">=3.9" }
+black = ">=20"
+flake8 = "*"
+isort = "^5"
+deepset = "^1"
+
+[tool.poetry.extras]
+cli = ["click"]
+
+[tool.poetry.scripts]
+shamir = "shamir_mnemonic.cli:cli"
+
+[tool.black]
+target-version = ['py36']
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
