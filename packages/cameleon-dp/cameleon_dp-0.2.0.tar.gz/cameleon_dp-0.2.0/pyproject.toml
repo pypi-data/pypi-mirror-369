@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cameleon-dp"
+version = "0.2.0"
+description = "Exact 1-D DP with structure detection (convex, ε‑Monge, ε‑monotone) and auditable ledger"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "CAMELEON-DP authors"}]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "numpy>=1.24",
+  "cloudpickle>=3.0",
+  "PyNaCl>=1.5",
+]
+
+[project.urls]
+Homepage = "https://example.com/cameleon-dp"
+
+[project.scripts]
+cameleon-dp = "cameleon_dp.cli:main"
+camdp = "cameleon_dp.cli:main"
+
+[project.optional-dependencies]
+plots = [
+  "matplotlib>=3.7",
+]
+parquet = [
+  "pyarrow>=12",
+]
+dev = [
+  "pytest>=7.4",
+  "build>=1.2",
+  "twine>=4.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["cameleon_dp", "cameleon_dp.*", "tools"]
+
+

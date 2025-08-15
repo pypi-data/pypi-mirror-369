@@ -1,0 +1,239 @@
+Metadata-Version: 2.4
+Name: cameleon-dp
+Version: 0.2.0
+Summary: Exact 1-D DP with structure detection (convex, ε‑Monge, ε‑monotone) and auditable ledger
+Author: CAMELEON-DP authors
+License: MIT
+Project-URL: Homepage, https://example.com/cameleon-dp
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.24
+Requires-Dist: cloudpickle>=3.0
+Requires-Dist: PyNaCl>=1.5
+Provides-Extra: plots
+Requires-Dist: matplotlib>=3.7; extra == "plots"
+Provides-Extra: parquet
+Requires-Dist: pyarrow>=12; extra == "parquet"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
+Requires-Dist: build>=1.2; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
+Dynamic: license-file
+
+# CAMELEON-DP
+
+This is a **minimal runnable** prototype focusing on the **convex-form specialist** (Li Chao). It includes:
+- A safe orchestrator that **only** specializes when a **ConvexFormHint** is supplied and verified on a few points (no false positives).
+- A baseline O(n^2) DP for comparison.
+- A quick benchmark to verify **exactness** and show speedups for large n.
+
+### Quick start
+See also: `docs/START_HERE.md` for a 5-minute guide, `docs/INDEX.md` for a repo map, and `docs/PROFILES.md` for profiles.
+```python
+from cameleon_dp import solve
+
+def w(j, i):
+    return (i - j) * (i - j) if j < i else float('inf')
+
+F, arg, recs, boundary_count = solve(n=5000, w=w, profile='auto')
+print(F[-1])
+```
+```python
+from cameleon_dp import run_quick_bench
+print(run_quick_bench(n=5000, repeats=2))
+```
+
+Install from PyPI:
+```
+pip install cameleon-dp
+```
+
+### Quick insert (CSV/Parquet → run → Parquet)
+
+Minimal path to get an audit-ready exact changepoint run from a tabular file.
+
+```python
+import pandas as pd
+
+# 1) Load your series and persist to Parquet for fast IO
+df = pd.read_csv('ts.csv')  # must include a numeric column, e.g., 'y'
+df.to_parquet('ts.parquet', index=False)
+```
+
+```bash
+# 2) Run exact changepoint and emit an audit bundle (local-only)
+python -m cameleon_dp.cli run --input ts.parquet --column y --audit out_audit --p99-limit 0.5
+
+# 3) Summarize or export Parquet for downstream analytics
+python -m cameleon_dp.cli summarize out_audit/ledger.json --export-parquet out_parquet
+```
+
+Polars variant:
+
+```python
+import polars as pl
+pl.read_csv('ts.csv').write_parquet('ts.parquet')
+```
+
+### Self-serve vertical (audit-first)
+- Run exact changepoint on CSV/Parquet and emit an audit bundle:
+```
+python -m cameleon_dp.cli run --input ts.parquet --column y --audit out_audit --p99-limit 0.5
+```
+- Verify offline with a public key:
+```
+python -m cameleon_dp.cli verify out_audit --pubkey $CAMELEON_PUBKEY_B64
+```
+See `docs/COMPLIANCE_SR11_GXP.md`, `docs/PRIVACY.md`, and `docs/PILOT_README.md`.
+
+Summarize a ledger after a run:
+
+```
+python -m cameleon_dp.cli summarize ledger.json
+# Highlights only
+python -m cameleon_dp.cli summarize ledger.json --highlights-only
+
+# Actionable insights
+python -m cameleon_dp.cli summarize ledger.json --insights
+# Export CSVs and quick plots
+python -m cameleon_dp.cli summarize ledger.json --export-csv out_csv --plot out_plots
+
+# Suggest process thresholds from a previous ledger
+python -m cameleon_dp.cli suggest-thresholds ledger.json
+```
+
+Export Prometheus metrics from a ledger:
+
+```
+python -m tools.perf_metrics_exporter ledger.json > metrics.prom
+```
+
+### Tuning and budgets
+
+You can control certification and parallelism via the `cert_budget` dict and worker args when calling `cameleon_dp` or the quick benches.
+
+Example:
+
+```python
+from cameleon_dp.scheduler import cameleon_dp
+from cameleon_dp.bench import recommended_cert_budget
+
+budget = recommended_cert_budget(n)
+F, arg, recs, bc = cameleon_dp(
+    n=10_000,
+    w=w,
+    F0=0.0,
+    workers=4,
+    proc_workers=4,
+    proc_workers_monotone=0,
+    hints={"interval_oracle": None},
+    cert_budget=budget
+)
+```
+
+Notes:
+- Pass `hints={"interval_oracle": lambda j,i: Interval(lo, hi)}` to enable interval reject-only guards.
+- The ledger `cert.details` records `budget` (requested), `budget_used`, `budget_requested`, and `budget_truncated` for transparency.
+- Interval-aware acceptance:
+  - Convex cert: when `interval_oracle` is provided, acceptance uses interval-definite equality checks (mutual ≤) across sampled points.
+  - Monge certs: T‑M1 uses intervals to accept when samples don’t definitively contradict φ; T‑M3 uses interval bounds for convex-in-i and monotone-in-j checks.
+
+Recommended starting budgets (safe defaults):
+- Use `recommended_cert_budget(n, profile='balanced'|'fast_convex'|'monotone_careful'|'low_latency'|'opinionated_safe')`
+- Scheduler: `min_cert_I=256`
+- Convex: `convex_max_j_checks=8`
+- Monge guards: `monge_samples=5..9`, `monge_guard_grid_i=j=8`, `monge_interval_samples=3..6` (if interval_oracle provided), `monge_tiled_max_checks=0..32` (0 disables cap)
+- Monotone pilot: `monotone_grid=5`, `monotone_grid_small=3`, `monotone_small_I=256`, optionally `monotone_max_pilots=16`
+- Monotone refine: `refine_grid=0..3` (0 disables; adds midpoints between pilot segments to tighten j-bounds)
+- D&C thresholds: `W0_mono=512`, `mono_dc_min_I=1024`
+- Process thresholds: `proc_*_min_blocks=2`, `proc_*_min_I=8192`
+
+Export and summarize ledgers:
+```
+$env:PYTHONPATH='.'; python run_bench.py
+$env:PYTHONPATH='.'; python -m cameleon_dp.cli summarize ledger_convex.json
+$env:PYTHONPATH='.'; python -m cameleon_dp.cli summarize ledger_mono.json
+```
+
+Windows PowerShell-friendly quickstart (for this repo checkout):
+```
+$env:PYTHONPATH='.'
+python -m pytest -q
+python run_bench.py
+```
+
+Linux/macOS:
+```
+PYTHONPATH=. python -m pytest -q
+PYTHONPATH=. python run_bench.py
+```
+
+### Docker (optional)
+
+Build a CPU-only image and run benches with CPU pinning for stable timings.
+
+```
+# Build image
+docker build -t camaleon-dp:latest .
+
+# Quick bench (convex-form), pin CPUs 0-3
+docker run --rm --cpuset-cpus=0-3 camaleon-dp:latest \
+  python -m cameleon_dp.cli run-quick --n 4000 --repeats 1 --profile opinionated_safe
+
+# Full bench with large-N and p99 reporting
+docker run --rm --cpuset-cpus=0-3 camaleon-dp:latest \
+  python -m cameleon_dp.cli run-full --large-n --repeats 1 --p99-cap 1.0 --p99-mode report
+
+# Curated evidence packs (writes ledgers and zips into mounted working dir)
+docker run --rm -v "$PWD":/work -w /work camaleon-dp:latest \
+  python -m cameleon_dp.cli curate-evidence --out-ledgers curated_ledgers --out-evidence evidence_packs
+```
+CI perf guard (optional):
+```
+python tools/ci_perf.py  # uses perf_targets.json; set CI_PERF_STRICT=1 to fail on regressions
+```
+You can set dataset thresholds in `perf_targets.json` under `datasets` (e.g., Gaussian/Poisson/Adversarial by size), plus quick convex/monotone gates. Set `CI_PERF_DATASETS_STRICT=1` to make dataset thresholds gate CI. You may also set `PERF_WORKERS`, `PERF_PROC_WORKERS`, and `PERF_PROC_WORKERS_MONO` to exercise process pools in CI.
+Sample summary keys you’ll see: `total_blocks`, `by_cert`, `total_w_calls`, `budget_hist`, `guard_stats_total`, `by_template`.
+
+### Security notes
+
+- For untrusted environments, set `no_pickle_mode=True` in `cert_budget` to disable process pools (avoids cloudpickle).
+- Ledgers include a minimal manifest with a SHA‑256 of the records for audit reproducibility.
+
+Numeric tolerance, epsilon, and tie-breaking are documented in `docs/NUMERIC_SPEC.md`.
+
+### Licensing (Pro/Enterprise)
+
+- Core features remain available in Community mode.
+- To enable Pro/Enterprise features, set the verification public key and activate your license:
+  ```
+  # Set the vendor public key for verification (example)
+  $env:CAMELEON_PUBKEY_B64="<BASE64_PUBLIC_KEY>"
+  # Activate a signed license
+  python -m cameleon_dp.cli license activate --key <BASE64_JSON_LICENSE>
+  python -m cameleon_dp.cli license status
+  ```
+- For development, you can generate keys and sign licenses:
+  ```
+  # Generate Ed25519 keypair (do not commit private keys)
+  python -m tools.license_keygen --gen-keypair
+  # Sign a license (Pro, expires 2030-12-31)
+  python -m tools.license_keygen --sign --private-key-b64 <SK_B64> --tier PRO --expires 20301231 --name ACME
+  ```
+
+### Schema and loaders
+
+- JSON ledger schema and Parquet field reference: see `SCHEMA.md`.
+- Parquet export: `python -m cameleon_dp.cli summarize ledger.json --export-parquet out_parquet`
+- PySpark loader: `python -m tools.pyspark_loader --parquet out_parquet`
+- Snowflake loader: `python -m tools.snowflake_loader --stage @my_stage/cameleon --table CAMELEON_RECORDS`
+- DuckDB helper: `duckdb -c ".read tools/duckdb_helper.sql"`
+
+### Legal
+
+- License: see `LICENSE`.
+- Changelog: see `CHANGELOG.md`.
