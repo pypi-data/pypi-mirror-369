@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reference &mdash; xacrodoc 1.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=58fbf978"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="xacrodoc" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            xacrodoc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">XacroDoc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc"><code class="docutils literal notranslate"><span class="pre">XacroDoc</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.doc"><code class="docutils literal notranslate"><span class="pre">XacroDoc.doc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.from_file"><code class="docutils literal notranslate"><span class="pre">XacroDoc.from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.from_includes"><code class="docutils literal notranslate"><span class="pre">XacroDoc.from_includes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.from_package_file"><code class="docutils literal notranslate"><span class="pre">XacroDoc.from_package_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.localize_assets"><code class="docutils literal notranslate"><span class="pre">XacroDoc.localize_assets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.temp_urdf_file_path"><code class="docutils literal notranslate"><span class="pre">XacroDoc.temp_urdf_file_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.to_mjcf_file"><code class="docutils literal notranslate"><span class="pre">XacroDoc.to_mjcf_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.to_mjcf_string"><code class="docutils literal notranslate"><span class="pre">XacroDoc.to_mjcf_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.to_temp_urdf_file"><code class="docutils literal notranslate"><span class="pre">XacroDoc.to_temp_urdf_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.to_urdf_file"><code class="docutils literal notranslate"><span class="pre">XacroDoc.to_urdf_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xacrodoc.xacrodoc.XacroDoc.to_urdf_string"><code class="docutils literal notranslate"><span class="pre">XacroDoc.to_urdf_string()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#finding-ros-packages">Finding ROS Packages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.packages.PackageNotFoundError"><code class="docutils literal notranslate"><span class="pre">PackageNotFoundError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.packages.get_file_path"><code class="docutils literal notranslate"><span class="pre">get_file_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.packages.get_path"><code class="docutils literal notranslate"><span class="pre">get_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.packages.look_in"><code class="docutils literal notranslate"><span class="pre">look_in()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.packages.reset"><code class="docutils literal notranslate"><span class="pre">reset()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.packages.update_package_cache"><code class="docutils literal notranslate"><span class="pre">update_package_cache()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xacrodoc.packages.walk_up_from"><code class="docutils literal notranslate"><span class="pre">walk_up_from()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xacrodoc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/reference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="xacrodoc">
+<h1>XacroDoc<a class="headerlink" href="#xacrodoc" title="Link to this heading"></a></h1>
+<p>The main interface for xacrodoc: use to compile xacro files to URDF or MJCF.</p>
+<dl class="py class" id="module-xacrodoc.xacrodoc">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xacrodoc.xacrodoc.</span></span><span class="sig-name descname"><span class="pre">XacroDoc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_runs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_packages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc" title="Link to this definition"></a></dt>
+<dd><p>Convenience class to build URDF strings and files out of xacro components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em>) – The xacro text to compile into a URDF document.</p></li>
+<li><p><strong>subargs</strong> (<em>dict</em><em> or </em><em>None</em>) – Optional dict of substitution arguments; i.e., the values of
+<code class="docutils literal notranslate"><span class="pre">&lt;xacro:arg</span> <span class="pre">...&gt;</span></code> directives. Equivalent to writing <code class="docutils literal notranslate"><span class="pre">value:=foo</span></code> on
+the command line.</p></li>
+<li><p><strong>max_runs</strong> (<em>int</em>) – The text is repeated compiled until a fixed point is reached; i.e.,
+compilation of the text just returns the same text. <code class="docutils literal notranslate"><span class="pre">max_runs</span></code> is the
+maximum number of times compilation will be performed.</p></li>
+<li><p><strong>resolve_packages</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, resolve package protocol URIs in the compiled URDF.
+Otherwise, they are left unchanged.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.doc">
+<span class="sig-name descname"><span class="pre">doc</span></span><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.doc" title="Link to this definition"></a></dt>
+<dd><p>The underlying XML document.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.from_file">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walk_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.from_file" title="Link to this definition"></a></dt>
+<dd><p>Load the URDF document from a xacro file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em> or </em><em>Path</em>) – The path to the xacro file.</p></li>
+<li><p><strong>walk_up</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, look for packages by walking up the directory tree
+from <code class="docutils literal notranslate"><span class="pre">path</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.from_includes">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_includes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">includes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'robot'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.from_includes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.from_includes" title="Link to this definition"></a></dt>
+<dd><p>Build the URDF document from xacro includes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>includes</strong> (<em>list</em>) – A list of strings representing files to include in a new, otherwise
+empty, xacro file. Any string that can be used in a xacro include
+directive is valid, so look-ups like <code class="docutils literal notranslate"><span class="pre">$(find</span> <span class="pre">package)</span></code> are valid.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the top-level robot tag.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.from_package_file">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_package_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.from_package_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.from_package_file" title="Link to this definition"></a></dt>
+<dd><p>Load the URDF document from a xacro file in a ROS package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package_name</strong> (<em>str</em>) – The name of the ROS package.</p></li>
+<li><p><strong>relative_path</strong> (<em>str</em><em> or </em><em>Path</em>) – The path of the xacro file relative to the ROS package.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.localize_assets">
+<span class="sig-name descname"><span class="pre">localize_assets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.localize_assets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.localize_assets" title="Link to this definition"></a></dt>
+<dd><p>Copy all assets to a local directory and update all filenames in the
+document accordingly.</p>
+<p>This is useful when converting to MJCF format. The local assets are
+given unique names in the case of name collisions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>asset_dir</strong> (<em>str</em><em> or </em><em>Path</em>) – The path to the local directory where all the assets should be
+copied to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.temp_urdf_file_path">
+<span class="sig-name descname"><span class="pre">temp_urdf_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.temp_urdf_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.temp_urdf_file_path" title="Link to this definition"></a></dt>
+<dd><p>Get the context of a temporary URDF file path.</p>
+<p>This is useful for temporarily writing the URDF to a file for
+consumption by other programs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>bool</em>) – Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> to print information about xacro compilation,
+<code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Use as a context manager:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">doc</span><span class="o">.</span><span class="n">temp_urdf_file_path</span><span class="p">()</span> <span class="k">as</span> <span class="n">path</span><span class="p">:</span>
+    <span class="n">load_file_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.to_mjcf_file">
+<span class="sig-name descname"><span class="pre">to_mjcf_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.to_mjcf_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.to_mjcf_file" title="Link to this definition"></a></dt>
+<dd><p>Convert and write to a Mujoco MJCF XML file.</p>
+<p>This requires the <code class="docutils literal notranslate"><span class="pre">mujoco</span></code> module to be installed and available for
+import.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> are used as Mujoco compiler options; see
+<a class="reference external" href="https://mujoco.readthedocs.io/en/stable/modeling.html#curdf">https://mujoco.readthedocs.io/en/stable/modeling.html#curdf</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em> or </em><em>Path</em>) – The path to the MJCF XML file to be written.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.to_mjcf_string">
+<span class="sig-name descname"><span class="pre">to_mjcf_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.to_mjcf_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.to_mjcf_string" title="Link to this definition"></a></dt>
+<dd><p>Convert to a string in Mujoco MJCF XML format.</p>
+<p>This requires the <code class="docutils literal notranslate"><span class="pre">mujoco</span></code> module to be installed and available for
+import.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> are used as Mujoco compiler options; see
+<a class="reference external" href="https://mujoco.readthedocs.io/en/stable/modeling.html#curdf">https://mujoco.readthedocs.io/en/stable/modeling.html#curdf</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The string of XML.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.to_temp_urdf_file">
+<span class="sig-name descname"><span class="pre">to_temp_urdf_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.to_temp_urdf_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.to_temp_urdf_file" title="Link to this definition"></a></dt>
+<dd><p>Write the URDF to a temporary file.</p>
+<p>Clean-up is left to the user. If you want the tempfile to be
+automatically deleted, use the context manager <code class="docutils literal notranslate"><span class="pre">temp_urdf_file_path</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>bool</em>) – Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> to print information about xacro compilation,
+<code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path to the temporary URDF file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.to_urdf_file">
+<span class="sig-name descname"><span class="pre">to_urdf_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_existing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.to_urdf_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.to_urdf_file" title="Link to this definition"></a></dt>
+<dd><p>Write the URDF to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em> or </em><em>Path</em>) – The path to the URDF file to be written.</p></li>
+<li><p><strong>compare_existing</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then if the file at <code class="docutils literal notranslate"><span class="pre">path</span></code> already exists, read it
+and only write back to it if the parsed URDF is different than the
+file content. This avoids some race conditions if the file is being
+compiled by multiple processes concurrently.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> to print information about xacro compilation,
+<code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xacrodoc.xacrodoc.XacroDoc.to_urdf_string">
+<span class="sig-name descname"><span class="pre">to_urdf_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pretty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/xacrodoc.html#XacroDoc.to_urdf_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.xacrodoc.XacroDoc.to_urdf_string" title="Link to this definition"></a></dt>
+<dd><p>Get the URDF as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pretty</strong> (<em>bool</em>) – True to format the string for human readability, False otherwise.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The URDF represented as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="finding-ros-packages">
+<h1>Finding ROS Packages<a class="headerlink" href="#finding-ros-packages" title="Link to this heading"></a></h1>
+<p>xacro and ROS are built around the concept of ROS packages, but xacrodoc can
+find these packages without ROS installed.</p>
+<dl class="py exception" id="module-xacrodoc.packages">
+<dt class="sig sig-object py" id="xacrodoc.packages.PackageNotFoundError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xacrodoc.packages.</span></span><span class="sig-name descname"><span class="pre">PackageNotFoundError</span></span><a class="reference internal" href="_modules/xacrodoc/packages.html#PackageNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.packages.PackageNotFoundError" title="Link to this definition"></a></dt>
+<dd><p>Raised when a package could not be found.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xacrodoc.packages.get_file_path">
+<span class="sig-prename descclassname"><span class="pre">xacrodoc.packages.</span></span><span class="sig-name descname"><span class="pre">get_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pkg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/packages.html#get_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.packages.get_file_path" title="Link to this definition"></a></dt>
+<dd><p>Get the path to a file within a ROS package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pkg</strong> (<em>str</em>) – The name of the ROS package.</p></li>
+<li><p><strong>relative_path</strong> (<em>str</em><em> or </em><em>Path</em>) – The path of the file relative to the package root.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The file path.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xacrodoc.packages.get_path">
+<span class="sig-prename descclassname"><span class="pre">xacrodoc.packages.</span></span><span class="sig-name descname"><span class="pre">get_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pkg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/packages.html#get_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.packages.get_path" title="Link to this definition"></a></dt>
+<dd><p>Attempt to get the path of a package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pkg</strong> (<em>str</em>) – The name of the package.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path to the package.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#xacrodoc.packages.PackageNotFoundError" title="xacrodoc.packages.PackageNotFoundError"><strong>PackageNotFoundError</strong></a> – If the package could not be found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xacrodoc.packages.look_in">
+<span class="sig-prename descclassname"><span class="pre">xacrodoc.packages.</span></span><span class="sig-name descname"><span class="pre">look_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/packages.html#look_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.packages.look_in" title="Link to this definition"></a></dt>
+<dd><p>Add additional directories to search for packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>paths</strong> (<em>Iterable</em>) – A list of paths in which to search for packages. Internally, these are
+passed to <cite>rospkg.RosPack</cite>.</p></li>
+<li><p><strong>priority</strong> (<em>int</em>) – Priority for the search: lower means the package is looked for using
+this method earlier.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xacrodoc.packages.reset">
+<span class="sig-prename descclassname"><span class="pre">xacrodoc.packages.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/packages.html#reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.packages.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the package finder to the default look-up methods.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xacrodoc.packages.update_package_cache">
+<span class="sig-prename descclassname"><span class="pre">xacrodoc.packages.</span></span><span class="sig-name descname"><span class="pre">update_package_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pkgpaths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/packages.html#update_package_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.packages.update_package_cache" title="Link to this definition"></a></dt>
+<dd><p>Update the package cache.</p>
+<p>This allows the user to manually specify the location of packages on the
+filesystem. The path does not actually need to be a proper ROS package,
+meaning that there is no need to have a package.xml file there.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pkgpaths</strong> (<em>dict</em>) – Map from package names to package paths. The paths are resolved,
+made absolute, and converted to strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xacrodoc.packages.walk_up_from">
+<span class="sig-prename descclassname"><span class="pre">xacrodoc.packages.</span></span><span class="sig-name descname"><span class="pre">walk_up_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xacrodoc/packages.html#walk_up_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xacrodoc.packages.walk_up_from" title="Link to this definition"></a></dt>
+<dd><p>Look for packages by walking up the directory tree from <code class="docutils literal notranslate"><span class="pre">path</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – The path at which to start looking for packages.</p></li>
+<li><p><strong>priority</strong> (<em>int</em>) – Priority for the search: lower means the package is looked for using
+this method earlier.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="xacrodoc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Adam Heins.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xacrodoc.packages &mdash; xacrodoc 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=def9ab29"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            xacrodoc
+          </a>
+              <div class="version">
+                1.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">XacroDoc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#finding-ros-packages">Finding ROS Packages</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xacrodoc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xacrodoc.packages</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xacrodoc.packages</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
+<span class="kn">import</span> <span class="nn">rospkg</span>
+
+
+<div class="viewcode-block" id="PackageNotFoundError"><a class="viewcode-back" href="../../reference.html#xacrodoc.packages.PackageNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">PackageNotFoundError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a package could not be found.&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="k">class</span> <span class="nc">PackageFinder</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Utility to find ROS packages.</span>
+
+<span class="sd">    But without relying too much on ROS infrastructure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># list of tuples (func, err): func(pkg) looks for the path to package</span>
+        <span class="c1"># `pkg`, raises error of type `err` if it is not found</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finder_funcs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">package_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># ament (ROS 2)</span>
+            <span class="kn">from</span> <span class="nn">ament_index_python.packages</span> <span class="kn">import</span> <span class="p">(</span>
+                <span class="n">get_package_share_directory</span><span class="p">,</span>
+                <span class="n">PackageNotFoundError</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">finder_funcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">get_package_share_directory</span><span class="p">,</span> <span class="n">PackageNotFoundError</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="c1"># if no ament, fall back to rospkg (ROS 1)</span>
+            <span class="n">rospack</span> <span class="o">=</span> <span class="n">rospkg</span><span class="o">.</span><span class="n">RosPack</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finder_funcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">rospack</span><span class="o">.</span><span class="n">get_path</span><span class="p">,</span> <span class="n">rospkg</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">ResourceNotFound</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">look_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add additional directories to search for packages.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        paths : Iterable or str or Path</span>
+<span class="sd">            A path or list of paths (represented as `str` or `Path`) in which</span>
+<span class="sd">            to search for packages. Internally, these are passed to</span>
+<span class="sd">            `rospkg.RosPack`.</span>
+<span class="sd">        priority : int</span>
+<span class="sd">            Priority for the search: lower means the package is looked for</span>
+<span class="sd">            using this method earlier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">paths</span><span class="p">]</span>
+        <span class="n">rospack</span> <span class="o">=</span> <span class="n">rospkg</span><span class="o">.</span><span class="n">RosPack</span><span class="p">(</span><span class="n">ros_paths</span><span class="o">=</span><span class="n">paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finder_funcs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+            <span class="n">priority</span><span class="p">,</span> <span class="p">(</span><span class="n">rospack</span><span class="o">.</span><span class="n">get_path</span><span class="p">,</span> <span class="n">rospkg</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">ResourceNotFound</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">walk_up_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Look for packages by walking up the directory tree from ``path``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or pathlib.Path</span>
+<span class="sd">            The path at which to start looking for packages.</span>
+<span class="sd">        priority : int</span>
+<span class="sd">            Priority for the search: lower means the package is looked for</span>
+<span class="sd">            using this method earlier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resolved</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">finder_func</span><span class="p">(</span><span class="n">pkg</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">resolved</span>
+            <span class="k">while</span> <span class="n">path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">!=</span> <span class="n">path</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+
+                <span class="c1"># check for package.xml, get the package name from it</span>
+                <span class="n">package_xml_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">rospkg</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">PACKAGE_FILE</span>
+                <span class="k">if</span> <span class="n">package_xml_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">package_xml_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">doc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                    <span class="n">names</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Expected one name in </span><span class="si">{</span><span class="n">package_xml_path</span><span class="si">}</span><span class="s2">, but found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">pkg</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+
+                <span class="c1"># check for manifest.xml (used in the old, deprecated rosbuild</span>
+                <span class="c1"># system); if it exists, the package name is the directory name</span>
+                <span class="n">manifest_xml_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">rospkg</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">MANIFEST_FILE</span>
+                <span class="k">if</span> <span class="n">manifest_xml_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+
+                <span class="c1"># go up to the next directory</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span>
+            <span class="k">raise</span> <span class="n">PackageNotFoundError</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">finder_funcs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">priority</span><span class="p">,</span> <span class="p">(</span><span class="n">finder_func</span><span class="p">,</span> <span class="n">PackageNotFoundError</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pkg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Attempt to get the path of a package.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pkg : str</span>
+<span class="sd">            The name of the package.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : str</span>
+<span class="sd">            The path to the package.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        PackageNotFoundError</span>
+<span class="sd">            If the package could not be found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># try the cache first</span>
+        <span class="k">if</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_cache</span><span class="p">[</span><span class="n">pkg</span><span class="p">]</span>
+
+        <span class="c1"># otherwise try a lookup</span>
+        <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">finder_funcs</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">package_cache</span><span class="p">[</span><span class="n">pkg</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>  <span class="c1"># add to cache</span>
+                <span class="k">return</span> <span class="n">path</span>
+            <span class="k">except</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+        <span class="k">raise</span> <span class="n">PackageNotFoundError</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_package_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pkgpaths</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the package cache.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pkgpaths : dict</span>
+<span class="sd">            Map from package names to package paths. The paths are resolved,</span>
+<span class="sd">            made absolute, and converted to strings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pkgpaths</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">pkg</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">pkg</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">pkgpaths</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package_cache</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pkgpaths</span><span class="p">)</span>
+
+
+<span class="c1"># global package finder</span>
+<span class="n">_finder</span> <span class="o">=</span> <span class="n">PackageFinder</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="reset"><a class="viewcode-back" href="../../reference.html#xacrodoc.packages.reset">[docs]</a><span class="k">def</span> <span class="nf">reset</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Reset the package finder to the default look-up methods.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_finder</span>
+    <span class="n">_finder</span> <span class="o">=</span> <span class="n">PackageFinder</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="look_in"><a class="viewcode-back" href="../../reference.html#xacrodoc.packages.look_in">[docs]</a><span class="k">def</span> <span class="nf">look_in</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add additional directories to search for packages.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    paths : Iterable</span>
+<span class="sd">        A list of paths in which to search for packages. Internally, these are</span>
+<span class="sd">        passed to `rospkg.RosPack`.</span>
+<span class="sd">    priority : int</span>
+<span class="sd">        Priority for the search: lower means the package is looked for using</span>
+<span class="sd">        this method earlier.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_finder</span><span class="o">.</span><span class="n">look_in</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="n">priority</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="walk_up_from"><a class="viewcode-back" href="../../reference.html#xacrodoc.packages.walk_up_from">[docs]</a><span class="k">def</span> <span class="nf">walk_up_from</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Look for packages by walking up the directory tree from ``path``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str or pathlib.Path</span>
+<span class="sd">        The path at which to start looking for packages.</span>
+<span class="sd">    priority : int</span>
+<span class="sd">        Priority for the search: lower means the package is looked for using</span>
+<span class="sd">        this method earlier.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_finder</span><span class="o">.</span><span class="n">walk_up_from</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="n">priority</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_path"><a class="viewcode-back" href="../../reference.html#xacrodoc.packages.get_path">[docs]</a><span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="n">pkg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Attempt to get the path of a package.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkg : str</span>
+<span class="sd">        The name of the package.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : str</span>
+<span class="sd">        The path to the package.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    PackageNotFoundError</span>
+<span class="sd">        If the package could not be found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_finder</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_file_path"><a class="viewcode-back" href="../../reference.html#xacrodoc.packages.get_file_path">[docs]</a><span class="k">def</span> <span class="nf">get_file_path</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">relative_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the path to a file within a ROS package.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkg : str</span>
+<span class="sd">        The name of the ROS package.</span>
+<span class="sd">    relative_path : str or Path</span>
+<span class="sd">        The path of the file relative to the package root.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : str</span>
+<span class="sd">        The file path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pkgpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="n">pkg</span><span class="p">))</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">pkgpath</span> <span class="o">/</span> <span class="n">relative_path</span>
+    <span class="k">return</span> <span class="n">filepath</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_package_cache"><a class="viewcode-back" href="../../reference.html#xacrodoc.packages.update_package_cache">[docs]</a><span class="k">def</span> <span class="nf">update_package_cache</span><span class="p">(</span><span class="n">pkgpaths</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the package cache.</span>
+
+<span class="sd">    This allows the user to manually specify the location of packages on the</span>
+<span class="sd">    filesystem. The path does not actually need to be a proper ROS package,</span>
+<span class="sd">    meaning that there is no need to have a package.xml file there.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkgpaths : dict</span>
+<span class="sd">        Map from package names to package paths. The paths are resolved,</span>
+<span class="sd">        made absolute, and converted to strings.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_finder</span><span class="o">.</span><span class="n">update_package_cache</span><span class="p">(</span><span class="n">pkgpaths</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Adam Heins.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
