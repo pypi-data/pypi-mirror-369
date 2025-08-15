@@ -1,0 +1,51 @@
+[build-system]
+requires = [
+  "scikit-build-core>=0.4.3",
+  "pybind11>=2.6.0",
+  "numpy>=1.20",
+  "setuptools>=42",
+  "wheel",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "VegasAfterglow"
+version = "0.2.8"
+description = "MCMC tools for astrophysics"
+readme = "README.md"
+authors = [
+  {name = "Yihan Wang", email = "yihan.astro@gmail.com"}
+]
+requires-python = ">=3.7"
+dependencies = [
+  "numpy>=1.20",
+  "scipy>=1.6",
+  "pandas>=1.2",
+  "emcee>=3.0",
+  "corner>=2.2.1",
+  "tqdm>=4.0",
+]
+license = {text = "BSD-3-Clause"}
+
+[tool.scikit-build]
+wheel.packages = ["VegasAfterglow"]
+wheel.license-files = ["LICENSE"]
+cmake.version = ">=3.15.0"
+cmake.args = ["-DCMAKE_POSITION_INDEPENDENT_CODE=ON","-DCMAKE_BUILD_PARALLEL_LEVEL=8"]
+cmake.build-type = "Release"
+build.verbose = false
+
+sdist.include = [
+  "LICENSE",
+  "README.md",
+  "CMakeLists.txt",
+  "include/**/*",
+  "src/**/*",
+  "pybind/**/*",
+  "external/**/*",
+  "VegasAfterglow/**/*"
+]
+
+[tool.cibuildwheel]
+test-command = "python -c \"from VegasAfterglow import ObsData, Setups, Fitter, ParamDef, Scale; print('OK')\""
+build-verbosity = 0
