@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "polypacket"
+version = "1.1.31"
+authors = [
+    {name = "Jason Berger", email = "Berge472@gmail.com"},
+]
+description = "A tool for building protocol services"
+readme = "README.md"
+requires-python = ">=3.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "markdown",
+    "mako",
+    "prompt_toolkit",
+    "pyyaml",
+    "cobs",
+    "pyserial",
+    "update_notipy",
+    "urllib3",
+    "validators",
+    "websocket-client",
+    "websockets",
+    "mrtutils"
+]
+
+[project.urls]
+Documentation = "https://mrt.readthedocs.io/en/latest/pages/polypacket/polypacket.html"
+
+[project.scripts]
+poly-packet = "polypacket.polypacket_cli:run"
+poly-make = "polypacket.poly_make:main"
+polymake = "polypacket.poly_make:main"
+polypacket = "polypacket.polypacket_cli:run"
+
+[tool.hatch.build]
+include = [
+    "polypacket/*",
+    "polypacket/templates/*",
+    "polypacket/examples/*",
+    "polypacket/plugins/*"
+]

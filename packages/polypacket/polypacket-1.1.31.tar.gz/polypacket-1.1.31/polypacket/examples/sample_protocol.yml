@@ -1,0 +1,118 @@
+---
+name: sample
+namespace: sp  #this defines the namespace used for functions and types in the code. This allows multiple protocols to be used in a project
+desc: This is a sample protocol made up to demonstrate features of the PolyPacket
+  code generation tool. The idea is to have a tool that can automatically create parseable/serializable
+  messaging for embedded systems
+
+###########################################################################################################
+#                                   FIELDS                                                                #
+###########################################################################################################
+
+fields:
+
+  #Fields can be nested into a 'Field Group' for convenience. They will be put in the packet just like regular fields
+  - header:
+      - src: {type: uint16, desc: Address of node sending message }
+      - dst: {type: uint16, desc: Address of node to receive message }
+
+  - sensorA: { type: int16 ,desc: Value of Sensor A}  #Simple Fields can be defined as inline dictionares to save space
+
+  - sensorB:
+      type: int
+      desc: Value of Sensor B
+
+  - sensorName:
+      type: string
+      desc: Name of sensor
+
+  - cmd:
+      type: enum
+      format: hex
+      desc: command byte for controlling node
+      vals:
+        - led_ON: { desc: turns on led}
+        - led_OFF: { desc: turns off led}
+        - reset: { desc: resets device }
+
+###########################################################################################################
+#                                   Packets                                                               #
+###########################################################################################################
+packets:
+  - SendCmd:
+      desc: Message to send command to node
+      fields:
+        - header
+        - cmd
+
+  - GetData:
+      desc: Message tp get data from node
+      response: Data          #A response packet can be specified
+      fields:
+        - header
+
+  - SetData:
+      desc: contains data from a sensor
+      fields:
+        - header
+        - sensorA
+        - sensorB
+        - sensorName : {desc: Name of sensor sending data }   #Field descriptions can be overriden for different packets
+
+  - Data:
+      desc: contains data from a sensor
+      fields:
+        - header
+        - sensorA
+        - sensorB
+        - sensorName : {desc: Name of sensor sending data }   #Field descriptions can be overriden for different packets
+###########################################################################################################
+#                                   Structs                                                                #
+###########################################################################################################
+
+structs:
+  - Node:
+      desc: struct for modeling node
+      fields:
+        - sensorA
+        - sensorB
+        - sensorName
+
+###########################################################################################################
+#                                   Agents                                                                #
+###########################################################################################################
+agents:
+  # This creates an agent named 'node' to load it, add '-a node' when running poly packet
+  # naming a sim 'default' will cause it to load 
+  - node: 
+      # init signature is init(service):
+      # There is a global dicst named DataStore that can be used to store variables
+      init: |
+        DataStore['node'] = service.newStruct('Node')
+        DataStore['node'].setField('sensorName', 'node01')
+        DataStore['node'].setField('sensorA', 25)
+        DataStore['node'].setField('sensorB', 65)
+        node = DataStore['node']
+        service.print('\nCreating Sensor node:\n   name: {0}\n   sensorA: {1}\n   sensorB: {2}\n'.format(node.getField('sensorName'),node.getField('sensorA'),node.getField('sensorB') ))
+
+
+      #handlers fill out a function with the signature <name>_handler(service, req, resp):
+      # you can print out to the console with service.print(text)
+      handlers: 
+          
+        #Use packets/nodes can be copied to eachother. All shared fields that are present in the source will get copied to the destination
+        - SetData: |
+            req.copyTo(DataStore['node'])
+
+        - GetData: |
+            DataStore['node'].copyTo(resp)
+
+      #You can add custom commands to a sim that will be loaded in for autocomplete and help menus in the CLI
+      commands:
+        - rename: 
+            desc: renames the node
+            args:
+              - name: {desc: new name for node, default: 'node01'}
+            handler: |
+              DataStore['node'].setField('sensorName', args['name'])
+              service.print('\nRenaming Sensor node:\n   name: {0}\n'.format(name))
