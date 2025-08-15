@@ -1,0 +1,50 @@
+[project]
+name = "concordia-cli"
+version = "0.1.0"
+description = "Concordia CLI - Generate LookML from BigQuery using Looker & Dataform"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Cobry" }]
+keywords = ["looker", "lookml", "bigquery", "dataform", "cli", "dbt"]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Database",
+    "Topic :: Software Development :: Code Generators",
+    "Typing :: Typed",
+]
+
+dependencies = [
+  "click",
+  "pyyaml",
+  "google-cloud-bigquery>=3.0.0",
+  "google-auth>=2.0.0",
+  "jinja2>=3.0.0",
+  "lkml>=1.3.0",
+  "pandas>=1.5.0",
+  "pandas-gbq>=0.19.0",
+  "pydantic>=2.0.0",
+  "ruamel.yaml>=0.17.0",
+]
+
+# Add links to your repository
+[project.urls]
+Homepage = "https://github.com/CobryDev/concordia-cli"
+Repository = "https://github.com/CobryDev/concordia-cli"
+"Bug Tracker" = "https://github.com/CobryDev/concordia-cli/issues"
+
+[project.scripts]
+concordia = "main:cli"
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+include = ["actions*"]
