@@ -1,0 +1,60 @@
+# Conda Recipe for Tethys Platform
+# WARNING: THIS IS A GENERATED FILE. DO NOT EDIT.
+# TO CHANGE THIS FILE, SEE $TETHYS_SRC/tethys_cli/gen_templates/meta yaml
+
+
+package:
+  name: {{ package_name }}
+  version: {{ tethys_version }}
+
+source:
+  path: ..
+
+{% raw -%}
+build:
+  number: 0
+  string: {% if environ.get('GIT_DESCRIBE_NUMBER', 0)|int > 0 %}dev{{ GIT_BUILD_STR }}{% endif %}
+  noarch: python
+  script:  python -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - tethys = tethys_cli:tethys_command
+{%- endraw %}
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - setuptools_scm
+  run:
+    {% for requirement in run_requirements -%}
+    - {{ requirement }}
+    {% endfor %}
+
+test:
+  imports:
+    - tethys_apps
+    - tethys_cli
+    - tethys_compute
+    - tethys_config
+    - tethys_gizmos
+    - tethys_portal
+    - tethys_quotas
+    - tethys_sdk
+    - tethys_services
+
+about:
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Primary Tethys Platform Django Site Project
+  description: |
+    Tethys Platform provides both a development environment
+    and a hosting environment for scientific web applications.
+  home: https://www.tethysplatform.org
+  doc_url: http://docs.tethysplatform.org
+  dev_url: https://github.com/tethysplatform/tethys
+
+extra:
+  recipe-maintainers:
+    - sdc50
+    - swainn

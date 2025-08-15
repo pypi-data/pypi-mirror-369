@@ -1,0 +1,83 @@
+{% load static tethys %}
+
+{% for column_value in row.columns %}
+  {% with col_idx=forloop.counter0 %}
+    <td class="{{ column_fields|return_item:col_idx }}-field" id="{{ column_fields|return_item:col_idx }}-{{ job.id }}">{{ column_value }}</td>
+  {% endwith %}
+{% endfor %}
+{% if show_status %}
+  <td id="jobs-table-status-{{ job.id }}" class="job-status status-col" data-job-id="{{ job.id }}">
+    {% if delay_loading_status and not job_status %}
+    <div class="progress" style="margin-bottom: 0;">
+      <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" title="Updating" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; background-color: #555555;"></div>
+    </div>
+    {% else %}
+    <div align="left">
+      {% if job_status == 'Various' or job_status == 'Various-Complete' %}
+        <div class="progress" data-bs-toggle="tooltip" title="{{ job_status }}" data-bs-placement="top" style="margin-bottom: 0;">
+          {% if job_statuses.Aborted > 0 %}
+          <div class="progress-bar" role="progressbar" title="Aborted ({{ job_statuses.Aborted }}%)" aria-valuenow="{{ job_statuses.Aborted }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ job_statuses.Aborted }}%; background-color: #555555;"></div>
+          {% endif %}
+          {% if job_statuses.Error > 0 %}
+          <div class="progress-bar bg-danger" role="progressbar" title="Error ({{ job_statuses.Error }}%)" aria-valuenow="{{ job_statuses.Error }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ job_statuses.Error }}%"></div>
+          {% endif %}
+          {% if job_statuses.Completed > 0 %}
+          <div class="progress-bar bg-success" role="progressbar" title="Complete ({{ job_statuses.Completed }}%)" aria-valuenow="{{ job_statuses.Completed }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ job_statuses.Completed }}%"></div>
+          {% endif %}
+          {% if job_statuses.Running > 0 %}
+          <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" title="Running ({{ job_statuses.Running }}%)" role="progressbar" aria-valuenow="{{ job_statuses.Running }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ job_statuses.Running }}%"></div>
+          {% endif %}
+        </div>
+      {% else %}
+        {% if error_message %}
+          <i class="bi bi-info-circle{% if job_status|codify != "pending" %}-fill{% endif %} status-info status-{{ job_status|codify }}" data-bs-toggle="tooltip" data-bs-placement="left" title="{{ error_message }}"></i>
+        {% else %}
+          <div class="status-indicator status-{{ job_status|codify }}"></div>
+        {% endif %}
+        <span>{{ job_status }}</span>
+      {% endif %}
+    </div>
+    {% endif %}
+  </td>
+{% endif %}
+{% if show_actions %}
+  <td>
+    <div class="btn-group">
+      <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
+      <ul class="dropdown-menu dropdown-menu-right">
+        {% for action, properties in row.actions.items %}
+          {% if action|slice:":5" == "_sep_" %}
+            <li><hr class="dropdown-divider"></li>
+          {% else %}
+            <li>
+              <a class="dropdown-item {% if not properties.enabled %}disabled{% endif %} job-action job-action-{{ action|codify }}"
+                {% if properties.enabled %}
+                    href="{% if properties.url %}{% url properties.url job_id=job.id %}{% else %}javascript:void(0){% endif %}"
+                  {% if action == 'View Logs' %}
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-dialog-jobs-table-show-log"
+                  {% elif properties.modal_url %}
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-dialog-jobs-table-modal"
+                    data-modal-url ="{% url properties.modal_url job_id=job.id %}"
+                  {% elif properties.confirmation_message %}
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-dialog-jobs-table-confirm"
+                    data-confirmation-message="{{ properties.confirmation_message }}"
+                  {% endif %}
+                {% else %}
+                  href="#"
+                {% endif %}
+                {% if properties.callback %}
+                  data-callback="{{ properties.callback }}"
+                {% endif %}
+                  data-job-id="{{ job.id }}"
+                  data-show-overlay="{{ properties.show_overlay|jsonify }}"
+              >{{ action }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </td>
+{% endif %}

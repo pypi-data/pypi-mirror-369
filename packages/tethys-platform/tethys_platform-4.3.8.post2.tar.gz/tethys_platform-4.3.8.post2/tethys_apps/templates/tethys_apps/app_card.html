@@ -1,0 +1,36 @@
+{% load static tethys %}
+<div class="app-card-container position-relative" data-tags="{{ app|get_tag_class }}">
+    {% if not unconfigured %}
+    <a class="app-link-wrapper rounded d-block mt-4 {% if not app.show_in_apps_library or not app.enabled %} veiled{% endif %}"
+       title="{% if not app.show_in_apps_library %}Hidden{% elif not app.enabled %}Disabled{% elif app.description %}{{ app.description }}{% else %}{{ app.name }}{% endif %}"
+       href="{% if app.proxied %}{{ app.url }}{% if app.back_url %}?back={{ app.back_url }}{% endif %}{% else %}{% url app.index_url %}{% endif %}"
+       {% if app.proxied and app.open_in_new_tab %}target="_blank"{% endif %}
+    >
+    {% else %}
+    <a class="app-link-wrapper rounded d-block mt-4 unconfigured"
+       title="Not Configured"
+       href="{% url 'admin:index' %}tethys_apps/tethysapp/{{ app.id }}/change/"
+    >
+    {% endif %}
+        <div class="card app-card text-center">
+            <div class="card-body">
+                <img class="card-img-top" {% if app.icon %}{% if 'http' in app.icon %}src="{{ app.icon }}"{% else %}src="{% static app.icon %}"{% endif %}{% else %}src="{% static 'tethys_apps/images/default_app_icon.gif' %}"{% endif %} alt="">
+                {% if app.display_external_icon %}
+                    <div class="redirect-icon position-absolute bottom-0 end-0 p-2 m-2">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </div>
+                {% endif %}
+                <h5 class="card-title app-title mt-2 mb-0" title="{{ app.name }}">{{ app.name }}</h5>
+            </div>
+        </div>
+    </a>
+    {% if app.description %}
+    <div class="app-help-icon d-none position-absolute top-0 end-0 p-1 m-2 border border-dark">
+        <i class="bi bi-info-lg"></i>
+    </div>
+    <div class="app-help-info position-absolute top-0 start-0 w-100 h-100 p-3 text-start border rounded overflow-auto bg-white d-none">
+        <button type="button" class="btn-close float-end" aria-label="Close"></button>
+        <p>{% if app.description %}{{ app.description }}{% else %}{% endif %}</p>
+    </div>
+    {% endif %}
+</div>

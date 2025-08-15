@@ -1,0 +1,233 @@
+# Portal Level Config File
+
+# For more information about this file refer to the Tethys Docs (http://docs.tethysplatform.org/en/stable/tethys_portal/configuration.html)
+version: 2.0
+name: Tethys Main Portal
+
+############################################################################
+# APPS
+# The "tethys install" command checks this section for app settings.
+#############################################################################
+apps:
+  my_first_app:
+    services:
+      persistent:
+        catalog_db: test
+      spatial:
+      dataset:
+      wps:
+      custom_settings:
+
+############################################################################
+# SETTINGS
+# Settings from this section are read everytime the Portal starts up.
+#############################################################################
+settings:
+  SECRET_KEY: 'gij28v16WhZ4v18WtlHqusP5VYnVUslxEvRQoXLj7hvJ2ZRN7f'
+  DEBUG: True
+  ALLOWED_HOSTS: []
+  ADMINS: []
+  TETHYS_PORTAL_CONFIG:
+    BYPASS_TETHYS_HOME_PAGE: False
+    ENABLE_OPEN_SIGNUP: False
+    ENABLE_OPEN_PORTAL: False
+    ENABLE_RESTRICTED_APP_ACCESS: False
+    #  REGISTER_CONTROLLER: ''
+    #  STATIC_ROOT: ''
+    #  TETHYS_WORKSPACES_ROOT: ''
+    #  STATICFILES_USE_NPM: True
+    #  ADDITIONAL_TEMPLATE_DIRS:
+    #  - tethysapp.myapp.templates
+    #  ADDITIONAL_URLPATTERNS:
+    #  - tethysext.myextension.urls
+    # ADDITIONAL_SETTINGS_FILES:
+    #  - tethysext.myestension.settings
+    #  - tethys_home/additional_settings.py
+    # MULTIPLE_APP_MODE: True
+    # STANDALONE_APP: my_app
+
+
+  SESSION_CONFIG:
+    EXPIRE_AT_BROWSER_CLOSE: True
+    SECURITY_WARN_AFTER: 840
+    SECURITY_EXPIRE_AFTER: 900
+
+  DATABASES:
+    default:
+      ENGINE: django.db.backends.sqlite3
+      NAME: tethys_platform.sqlite
+
+    postgresql_db_config:
+      ENGINE: django.db.backends.postgresql
+      NAME: tethys_platform
+      USER: tethys_default
+      PASSWORD: pass
+      HOST: localhost
+      PORT:  5436
+      DIR: psql
+
+  # LOGGING:
+  #   formatters: {}
+  #   handlers: {}
+  #   loggers:
+  #     django:
+  #       handlers:
+  #       - console_simple
+  #       level: WARNING
+  #     tethys:
+  #       handlers:
+  #       - console_verbose
+  #       level: INFO
+  #     tethysapp:
+  #       handlers:
+  #       - console_verbose
+  #       level: INFO
+
+  #  INSTALLED_APPS_OVERRIDE: []
+  INSTALLED_APPS: []
+
+  #  MIDDLEWARE_OVERRIDE: []
+  MIDDLEWARE: []
+
+  #  AUTHENTICATION_BACKENDS_OVERRIDE: []
+  AUTHENTICATION_BACKENDS: []
+
+  #  RESOURCE_QUOTA_HANDLERS_OVERRIDE: []
+  RESOURCE_QUOTA_HANDLERS: []
+
+  CAPTCHA_CONFIG:
+    ENABLE_CAPTCHA: False
+    RECAPTCHA_PRIVATE_KEY: ''
+    RECAPTCHA_PUBLIC_KEY: ''
+    #  RECAPTCHA_PROXY_HOST: https://recaptcha.net
+
+  #  OAUTH_CONFIG:
+  #    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: ''
+  #    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: ''
+  #
+  #    SOCIAL_AUTH_FACEBOOK_KEY: ''
+  #    SOCIAL_AUTH_FACEBOOK_SECRET: ''
+  #    SOCIAL_AUTH_FACEBOOK_SCOPE: ['email']
+  #
+  #    SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY: ''
+  #    SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET: ''
+  #
+  #    SOCIAL_AUTH_HYDROSHARE_KEY: ''
+  #    SOCIAL_AUTH_HYDROSHARE_SECRET: ''
+  #
+  #    SOCIAL_AUTH_ARCGIS_KEY: ''
+  #    SOCIAL_AUTH_ARCGIS_SECRET: ''
+  #
+  #    SOCIAL_AUTH_ARCGIS_PORTAL_KEY: ''
+  #    SOCIAL_AUTH_ARCGIS_PORTAL_SECRET: ''
+  #    SOCIAL_AUTH_ARCGIS_PORTAL_URL: ''
+
+  #    OAUTH2_PROVIDER:
+  #        URL_NAMESPACE: o
+  #        SCOPES:
+  #          read: Read scope
+
+
+  #  ANALYTICS_CONFIG:
+  #    CLICKMAP_TRACKER_ID: False
+  #    CLICKY_SITE_ID: False
+  #    CRAZY_EGG_ACCOUNT_NUMBER: False
+  #    GAUGES_SITE_ID: False
+  #    GOOGLE_ANALYTICS_JS_PROPERTY_ID: False
+  #    GOSQUARED_SITE_TOKEN: False
+  #    HOTJAR_SITE_ID: False
+  #    HUBSPOT_PORTAL_ID: False
+  #    INTERCOM_APP_ID: False
+  #    KISSINSIGHTS_ACCOUNT_NUMBER: False
+  #    KISSINSIGHTS_SITE_CODE: False
+  #    KISS_METRICS_API_KEY: False
+  #    MIXPANEL_API_TOKEN: False
+  #    OLARK_SITE_ID: False
+  #    OPTIMIZELY_ACCOUNT_NUMBER: False
+  #    PERFORMABLE_API_KEY: False
+  #    PIWIK_DOMAIN_PATH: False
+  #    PIWIK_SITE_ID: False
+  #    RATING_MAILRU_COUNTER_ID: False
+  #    SNAPENGAGE_WIDGET_ID: False
+  #    SPRING_METRICS_TRACKING_ID: False
+  #    USERVOICE_WIDGET_KEY: False
+  #    WOOPRA_DOMAIN: False
+  #    YANDEX_METRICA_COUNTER_ID: False
+
+  #  EMAIL_CONFIG:
+  #    EMAIL_BACKEND: 'django.core.mail.backends.smtp.EmailBackend'
+  #    EMAIL_HOST: 'localhost'
+  #    EMAIL_PORT: 25
+  #    EMAIL_HOST_USER: ''
+  #    EMAIL_HOST_PASSWORD: ''
+  #    EMAIL_USE_TLS: False
+  #    DEFAULT_FROM_EMAIL: 'Example <noreply@exmaple.com>'
+
+  #  CHANNEL_LAYERS:
+  #    default:
+  #      BACKEND: channels.layers.InMemoryChannelLayer
+
+  # Password validation
+  # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+  #  AUTH_PASSWORD_VALIDATORS:
+  #    - NAME: django.contrib.auth.password_validation.UserAttributeSimilarityValidator
+  #    - NAME: django.contrib.auth.password_validation.MinimumLengthValidator
+  #    - NAME: django.contrib.auth.password_validation.CommonPasswordValidator
+  #    - NAME: django.contrib.auth.password_validation.NumericPasswordValidator
+
+  # Django Guardian Settings
+  #   GUARDIAN_RAISE_403: False  # Mutually exclusive with GUARDIAN_RENDER_403
+  #   GUARDIAN_RENDER_403: False  # Mutually exclusive with GUARDIAN_RAISE_403
+  #   GUARDIAN_TEMPLATE_403: ''
+  #   ANONYMOUS_DEFAULT_USERNAME_VALUE: 'anonymous'
+
+############################################################################
+# SITE SETTINGS
+# This section is applied when running the "tethys site -f" command.
+#############################################################################
+site_settings:
+  GENERAL_SETTINGS:
+    SITE_TITLE:
+    FAVICON:
+    BRAND_TEXT:
+    BRAND_IMAGE:
+    BRAND_IMAGE_HEIGHT:
+    BRAND_IMAGE_WIDTH:
+    BRAND_IMAGE_PADDING:
+    APPS_LIBRARY_TITLE:
+    PRIMARY_COLOR:
+    SECONDARY_COLOR:
+    BACKGROUND_COLOR:
+    PRIMARY_TEXT_COLOR:
+    PRIMARY_TEXT_HOVER_COLOR:
+    SECONDARY_TEXT_COLOR:
+    SECONDARY_TEXT_HOVER_COLOR:
+    COPYRIGHT:
+  HOME_PAGE:
+    HERO_TEXT:
+    BLURB_TEXT:
+    FEATURE_1_HEADING:
+    FEATURE_1_BODY:
+    FEATURE_1_IMAGE:
+    FEATURE_2_HEADING:
+    FEATURE_2_BODY:
+    FEATURE_2_IMAGE:
+    FEATURE_3_HEADING:
+    FEATURE_3_BODY:
+    FEATURE_3_IMAGE:
+    CALL_TO_ACTION:
+    CALL_TO_ACTION_BUTTON:
+  CUSTOM_STYLES:
+    PORTAL_BASE_CSS:
+    HOME_PAGE_CSS:
+    APPS_LIBRARY_CSS:
+    ACCOUNTS_BASE_CSS:
+    LOGIN_CSS:
+    REGISTER_CSS:
+    USER_BASE_CSS:
+  CUSTOM_TEMPLATES:
+    HOME_PAGE_TEMPLATE:
+    APPS_LIBRARY_TEMPLATE:
+    LOGIN_PAGE_TEMPLATE:
+    REGISTER_PAGE_TEMPLATE:
+    USER_PAGE_TEMPLATE:

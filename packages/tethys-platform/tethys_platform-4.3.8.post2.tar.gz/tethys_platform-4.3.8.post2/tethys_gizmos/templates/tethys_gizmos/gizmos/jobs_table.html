@@ -1,0 +1,57 @@
+{% load static tethys %}
+
+<div id="jobs-table-messages"></div>
+<table class="table jobs-table{% if bordered %} table-bordered{% endif %}{% if hover %} table-hover{% endif %}{% if striped %} table-striped{% endif %}{% if condensed %} table-condensed{% endif %}{% if classes %} {{ classes }}{% endif %}"
+       {% if attributes %}
+           {% for key, value in attributes.items %}
+               {{ key }}="{{ value }}"
+           {% endfor %}
+       {% endif %}
+       data-column-fields="{{ column_fields }}"
+       data-show-status="{{ show_status }}"
+       data-show-actions="{{ show_actions }}"
+       data-monitor-url="{{ monitor_url }}"
+       data-results-url="{{ results_url }}"
+       data-refresh-interval="{{ refresh_interval }}"
+       data-active-statuses="{{ active_statuses|jsonify }}"
+       data-actions="{{ actions|jsonify }}"
+       data-enable-data-table="{{ enable_data_table|jsonify }}"
+       data-data-table-options="{{ data_table_options|jsonify }}"
+       data-base-ajax-url="{{ base_ajax_url }}"
+>
+  <thead>
+    {% for column_name in column_names %}
+      <th>{{ column_name }}</th>
+    {% endfor %}
+    {% if show_status %}
+      <th class="status-col no-sort">Status</th>
+    {% endif %}
+    {% if show_actions %}
+      <th class="actions-col no-sort">Actions</th>
+    {% endif %}
+  </thead>
+  <tbody>
+  {% for row in rows %}
+    {% with row_idx=forloop.counter0 %}
+      {% with job=jobs|return_item:row_idx %}
+        {% if job.type == 'DaskJob' and show_detailed_status %}
+          <tr class="bokeh-nodes-row" id="bokeh-nodes-row-{{ job.id }}" data-job-id="{{ job.id }}"></tr>
+        {% endif %}
+        <tr class="job-row" id="jobs-table-row-{{ job.id }}" data-job-id="{{ job.id }}">
+          {% include "tethys_gizmos/gizmos/job_row.html" with job_status=row.job_status %}
+        </tr>
+        {% if job.type == 'CondorWorkflow' and show_detailed_status %}
+        <tr class="workflow-nodes-row" id="workflow-nodes-row-{{ job.id }}" data-job-id="{{ job.id }}">
+          {% include "tethys_gizmos/gizmos/workflow_nodes_row.html" %}
+        </tr>
+        {% endif %}
+      {% endwith %}
+    {% endwith %}
+  {% empty %}
+    <tr>
+      <td colspan="100" align="center">No Jobs</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+

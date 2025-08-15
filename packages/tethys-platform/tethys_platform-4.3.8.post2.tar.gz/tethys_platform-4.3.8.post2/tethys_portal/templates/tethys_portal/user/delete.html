@@ -1,0 +1,14 @@
+{% extends "tethys_portal/user/confirm.html" %}
+
+{% block title %}{{ block.super }} - Delete Account Confirmation{% endblock %}
+
+{% block account_form_title %}Delete Account{% endblock %}
+
+{% block account_form_body %}
+  <form role="form" method="post" action="">
+    <p>Are you sure you want delete your account with {{ site_globals.brand_text }} (this action cannot be undone)?</p>
+    {% csrf_token %}
+    <a href="{% url 'user:settings' %}" class="btn btn-outline-secondary">Cancel</a>
+    <button type="submit" id="delete-account-submit" class="btn btn-danger" name="delete-account-submit">Delete</button>
+  </form>
+{% endblock %}

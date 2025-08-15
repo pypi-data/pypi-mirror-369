@@ -1,0 +1,18 @@
+{% extends "tethys_portal/accounts/base.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}{{ block.super }} - Clear Workspace Confirmation{% endblock %}
+
+{% bootstrap_messages %}
+
+{% block account_form_title %}Clear Workspace{% endblock %}
+
+{% block account_form_body %}
+  <form role="form" method="post" action="">
+    <p>Are you sure you want to clear the {{ app_name }} workspace?</p>
+    {% csrf_token %}
+    <a href="{{ change_url }}" class="btn btn-outline-secondary">Cancel</a>
+    <button type="submit" id="clear-workspace-submit" class="btn btn-danger" name="clear-workspace-submit">Clear</button>
+  </form>
+{% endblock %}

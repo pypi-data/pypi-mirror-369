@@ -1,0 +1,31 @@
+version: "3.2"
+services:
+  tethys:
+    container_name: tethys
+    image: tethysplatform/tethys-core
+    build:
+      cache_from:
+        - tethysplatform/tethys-core
+      context: ../
+    ports:
+      - "80:80"
+    environment:
+      POSTGRES_PASSWORD: "mysecretpassword"
+      TETHYS_DB_HOST: "db"
+      TETHYS_DB_PORT: "5432"
+    healthcheck:
+      test: ["CMD", "./liveness-probe.sh"]
+      interval: 30s  # docker default
+      timeout: 30s  # docker default
+      retries: 3  # docker default
+      start_period: 4m
+    links:
+      - db
+    depends_on:
+      - db
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "mysecretpassword"
