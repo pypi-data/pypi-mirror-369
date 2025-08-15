@@ -1,0 +1,445 @@
+{% set MAPPER = {'up': '上', 'down': '下', 'stock': '股票', 'future': '期貨'} %}
+{% macro render_fee_setting(type, setting) %}
+<div class="row">
+    <div class="col-12">
+        <h6>{{ MAPPER[type] }}</h6>
+        <hr/>
+    </div>
+    <div class="col-12 col-md-6">
+        <p>手續費: {{ "%.6f"|format(fee_settings[type]["fee"]) }}%</p>
+        <p>交易稅: {{ "%.6f"|format(fee_settings[type]["tax"]) }}%</p>
+        <p>每筆交易固定成本: {{ "{:,.0f}".format(fee_settings[type]["per_trade_cost"]) }}</p>
+        <p>滑價設定: </p>
+        <ul>
+            <li>買入: 滑價方向:{{ MAPPER[fee_settings[type]["slippage"]["buy"]["direction"]] }}, 滑價 Tick 數: {{ "{:,.0f}".format(fee_settings[type]["slippage"]["buy"]["tick_count"]) }}</li>
+            <li>賣出: 滑價方向:{{ MAPPER[fee_settings[type]["slippage"]["sell"]["direction"]] }}, 滑價 Tick 數: {{ "{:,.0f}".format(fee_settings[type]["slippage"]["sell"]["tick_count"]) }}</li>
+        </ul>
+    </div>
+</div>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Bar Chart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        body {
+            background: #FAFAFA;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 56px 0 28px 0;
+        }
+        .section-bar {
+            border-bottom: 2px solid #DDDDDD;
+            margin: 0 0 16px 0;
+        }
+        .info-title {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .table th, .table td {
+            font-size: 0.95rem;
+        }
+        .btn-outline {
+            border: 1px solid #999999;
+            color: #333333;
+            background: linear-gradient(180deg, #FAFAFA 0%, #EFEFEF 59.62%, #E0E0E0 79.81%, #B5B5B5 100%);
+            border-radius: 5px;
+            padding: 2px 16px 3px 16px;
+        }
+        .second-title {
+            color: #4183B2;
+            font-weight: bold;
+            margin: 0 0 24px 0;
+        }
+        .th-block {
+            background-color: #EFEFEF !important;
+            height: 40px;
+            margin: 0 0 16px 0;
+            padding: 0 16px 0 16px !important;
+        }
+        .th-font {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: black;
+        }
+        .tooltip {
+            position: absolute;
+            top: 0px;
+            z-index: 9999;
+            gap: 10px;
+            background: rgb(102, 102, 102);
+            color: white;
+            display: none;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 進出場點位 -->
+        <div class="d-flex align-items-center section-title mt-5">
+            <i class="ri-bar-chart-box-fill me-2"></i>
+            進出場點位
+        </div>
+        <div class="section-bar"></div>
+
+        <div class="mb-3 position-relative">
+            <div id="chart" style="width: 100%; height: 500px;"></div>
+            <div id="tooltip" class="tooltip"></div>
+        </div>
+
+        <!-- 回測資訊 -->
+        <div class="d-flex align-items-center section-title">
+            <i class="ri-information-fill me-2"></i>
+            回測資訊
+        </div>
+        <div class="section-bar"></div>
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-6 w-50">
+                <div class="info-title second-title">股票回測</div>
+                <table class="table table-borderless table-sm">
+                    <tbody>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>手續費：</span><span>{{ "%.6f"|format(fee_settings["stock"]["fee"]) }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>證交稅：</span><span>{{ "%.6f"|format(fee_settings["stock"]["tax"]) }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>買入-滑價方向：</span><span>{{ MAPPER[fee_settings["stock"]["slippage"]["buy"]["direction"]] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>買入-滑價 Tick 數：</span><span>{{ fee_settings["stock"]["slippage"]["buy"]["tick_count"] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>賣出-滑價方向：</span><span>{{ MAPPER[fee_settings["stock"]["slippage"]["sell"]["direction"]] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>賣出-滑價 Tick 數：</span><span>{{ fee_settings["stock"]["slippage"]["sell"]["tick_count"] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>每筆交易固定成本：</span><span>{{ "{:,.0f}".format(fee_settings["stock"]["per_trade_cost"]) }}</span>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6 w-50">
+                <div class="info-title second-title">期貨回測</div>
+                <table class="table table-borderless table-sm">
+                    <tbody>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>手續費：</span><span>{{ "%.6f"|format(fee_settings["future"]["fee"]) }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>證交稅：</span><span>{{ "%.6f"|format(fee_settings["future"]["tax"]) }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>買入-滑價方向：</span><span>{{ MAPPER[fee_settings["future"]["slippage"]["buy"]["direction"]] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>買入-滑價 Tick 數：</span><span>{{ fee_settings["future"]["slippage"]["buy"]["tick_count"] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>賣出-滑價方向：</span><span>{{ MAPPER[fee_settings["future"]["slippage"]["sell"]["direction"]] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>賣出-滑價 Tick 數：</span><span>{{ fee_settings["future"]["slippage"]["sell"]["tick_count"] }}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="d-flex align-items-center th-block justify-content-between">
+                                <span>每筆交易固定成本：</span><span>{{ "{:,.0f}".format(fee_settings["future"]["per_trade_cost"]) }}</span>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 沖銷明細 -->
+        <div class="d-flex align-items-center section-title">
+            <i class="ri-file-list-fill me-2"></i>
+            沖銷明細
+        </div>
+        <div class="section-bar"></div>
+        <table class="table table-bordered table-sm mb-4">
+            <thead>
+                <tr>
+                    <th>標的代號</th>
+                    <th>進場方向</th>
+                    <th>進場時間</th><th>進場價格(不含滑價)</th><th>進場價格(含滑價)</th>
+                    <th>交易數量(最小單位)</th>
+                    <th>進場手續費</th><th>進場交易稅</th><th>進場額外成本</th><th>進場價金</th>
+                    <th>出場方向</th>
+                    <th>出場時間</th><th>出場價格(不含滑價)</th><th>出場價格(含滑價)</th>
+                    <th>出場手續費</th><th>出場交易稅</th><th>出場額外成本</th><th>出場價金</th>
+                    <th>損益</th>
+                    <th>損益率</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in profit_rows %}
+                    <tr>
+                        <td>{{ row["code"] }}</td>
+                        <td>{{ row["entry_action"] }}</td>
+                        <td>{{ row["entry_dt"] }}</td>
+                        <td>{{ "%.4f"|format(row["entry_origin_price"]) }}</td>
+                        <td>{{ "%.4f"|format(row["entry_price"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["min_qty"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["trade_cost_fee"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["trade_cost_tax"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["trade_cost_fixed"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["entry_amount"]) }}</td>
+                        <td>{{ row["exit_action"] }}</td>
+                        <td>{{ row["exit_dt"] }}</td>
+                        <td>{{ "%.4f"|format(row["exit_origin_price"]) }}</td>
+                        <td>{{ "%.4f"|format(row["exit_price"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["cover_cost_fee"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["cover_cost_tax"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["cover_cost_fixed"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["exit_amount"]) }}</td>
+                        <td>{{ "{:,.0f}".format(row["profit"]) }}</td>
+                        <td>{{ "{:.2f}".format(row["profit_ratio"] * 100) }} %</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 回測績效 -->
+        <div class="d-flex align-items-center justify-content-between section-title">
+            <div>
+                <i class="ri-pie-chart-2-fill me-2"></i>
+                回測績效
+            </div>
+            <button class="btn btn-outline" onclick="openQsReport()">績效報告</button>
+        </div>
+        <div class="section-bar"></div>
+        <div class="column mb-5">
+
+            <div class="info-title second-title">進出場摘要</div>
+            <div class="row mb-0">
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">進場次數：{{ "{:,.0f}".format(account_info['entry_times']) }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">出場次數：{{ "{:,.0f}".format(account_info['cover_times']) }}</div>
+                </div>
+            </div>
+            <div class="row mb-0">
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">獲利次數：{{ "{:,.0f}".format(account_info['profit_times']) }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">虧損次數：{{ "{:,.0f}".format(account_info['loss_times']) }}</div>
+                </div>
+            </div>
+            <div class="row mb-0">
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">勝率：{{ "{:.2f}".format(account_info['profit_times'] / account_info['cover_times'] * 100) if account_info['cover_times'] > 0 else 0 }} %</div>
+                </div>
+            </div>
+            <div class="row mb-0">
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">初始本金：{{ "{:,.0f}".format(initial_capital) }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">結算本金：{{ "{:,.0f}".format(current_capital) }}</div>
+                </div>
+            </div>
+            <div class="row mb-0">
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">總損益：{{ "{:,.0f}".format(account_info['profit']) }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">報酬率：{{ "{:.2f}".format(account_info['profit'] / initial_capital * 100) if initial_capital > 0 else 0 }} %</div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">總獲利：{{ "{:,.0f}".format(account_info['profit_total']) }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center th-block th-font">總虧損：{{ "{:,.0f}".format(account_info['loss_total']) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const kbar = JSON.parse(`{{ kbar_df | tojson }}`);
+        const profitRowsAndKbarMapper = JSON.parse(`{{ include_profit_rows | tojson }}`);
+        const fee_settings = JSON.parse(`{{ fee_settings | tojson }}`);
+
+        // 將損益進出明細轉 Map 已減少後續查詢開銷
+        let profitRowsMap = new Map();
+        profitRowsAndKbarMapper.forEach((item) => {
+            const key = new Date(item.dt).valueOf() / 1000;
+
+            if (profitRowsMap.has(key)) {
+                profitRowsMap.get(key).push(item);
+            } else {
+                profitRowsMap.set(key, [item]);
+            }
+        });
+
+        const chartOptions = { 
+            layout: { 
+                textColor: 'black', 
+                background: { 
+                    type: 'solid', color: 'white' 
+                } 
+            },
+            timeScale: {
+                timeVisible: true,
+                tickMarkFormatter: (time) => {
+                    const date = new Date(time * 1000);
+                    return date.toLocaleTimeString('zh-TW', {
+                        timeZone: 'Asia/Taipei',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false, // 24 小時制，不顯示上午/下午
+                    });
+                }
+            },
+            localization: {
+                timeFormatter: (timestamp) => {
+                    return new Date(timestamp * 1000).toLocaleString('zh-TW', {
+                        timeZone: 'Asia/Taipei',
+                    });
+                }
+            }
+        };
+        const chart = LightweightCharts.createChart(document.getElementById('chart'), chartOptions);
+        const candlestickSeries = chart.addCandlestickSeries({ upColor: '#ef5350', downColor: '#26a69a', borderVisible: false, wickUpColor: '#ef5350', wickDownColor: '#26a69a' });
+
+        candlestickSeries.setData(kbar.map((item) => {
+            return {
+                time: (new Date(item.time)).valueOf() / 1000,
+                open: item.open,
+                high: item.high,
+                low: item.low,
+                close: item.close
+            };
+        }));
+
+        let markers = [];
+        // 合併同個時間點下，同樣的進場紀錄
+        for (const [key, rows] of profitRowsMap) {
+            let tmp = {}
+            
+            for (i in rows) {
+                const row = rows[i];
+                if (!tmp.hasOwnProperty(row.type)) {
+                    tmp[row.type] = {
+                        time: key,
+                        position: row.type === 'entry' ? 'belowBar' : 'aboveBar',
+                        color: row.type === 'entry' ? 'red' : 'green',
+                        shape: row.type === 'entry' ? 'arrowUp' : 'arrowDown',
+                        qty: row.qty
+                    };
+                } else {
+                    tmp[row.type].qty += row.qty;
+                }
+            }
+            
+            for (let k in Object.keys(tmp)) {
+                type = Object.keys(tmp)[k];
+                markers.push({
+                    time: tmp[type].time,
+                    position: tmp[type].position,
+                    color: tmp[type].color,
+                    shape: tmp[type].shape,
+                    text: `${type === 'entry' ? '進場' : '出場'} ${tmp[type].qty} 張`
+                });
+            }
+        }
+        candlestickSeries.setMarkers(markers);
+
+        chart.timeScale().fitContent();
+        const tooltip = document.getElementById('tooltip');
+        chart.subscribeCrosshairMove((param) => {
+            if (!param || !param.time) {
+                tooltip.style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            const date = new Date(param.time * 1000);
+            const timeString = date.toLocaleTimeString('zh-TW', {
+                timeZone: 'Asia/Taipei',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+            });
+
+            html = `
+                <div>時間: ${timeString}</div>
+                <div>開盤: ${param.seriesData.get(candlestickSeries).open}</div>
+                <div>最高: ${param.seriesData.get(candlestickSeries).high}</div>
+                <div>最低: ${param.seriesData.get(candlestickSeries).low}</div>
+                <div>收盤: ${param.seriesData.get(candlestickSeries).close}</div>
+            `;
+
+            if (profitRowsMap.has(param.time)) {
+                profitRowsMap.get(param.time).forEach((info) => {
+                    let type = info.type == 'entry' ? '進場' : '出場';
+                    html += `
+                        <div class="trade-info">
+                            <div>標的: ${info.code}</div>
+                            <div>${type}</div>
+                            <div>價格: ${info.price}</div>
+                            <div>原始價格: ${info.origin_price}</div>
+                        </div>
+                    `
+                });
+            }
+
+            tooltip.innerHTML = html;
+            tooltip.style.display = 'flex';
+        });
+
+        const openQsReport = () => {
+            window.open(`{{ qs_report_path | tojson }}`, '_blank');
+        };
+    </script>
+</body>
+</html>
