@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hashkeep"
+version = "1.0.1" # setversion
+description = "Simple utility to hash the contents of files and store hashes in a cache for quick repeat hashing"
+authors = [
+    {name = "Nathan Shearer", email = "shearern@gmail.com"}
+]
+readme = "README.md"
+license = "MIT AND (Apache-2.0 OR BSD-2-Clause)"
+requires-python = ">=3.7"
+urls = {Repository = "https://gitlab.com/shearern/hashkeep"}
+dependencies = ["diskcache"]
+
+[project.scripts]
+hashkeep = "hashkeep:main"
+
+[tool.setuptools]
+py-modules = ["hashkeep"]
