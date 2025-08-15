@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61", "setuptools_scm[toml]>=6.4"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "defopt-stubs"
+dynamic = ["version"]
+authors = [{name="Daniel Pope", email="mauve@mauveweb.co.uk"}]
+description = "Typing stubs for the defopt package"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Typing :: Stubs Only",
+]
+
+[tool.setuptools]
+package-dir = {"" = "stubs"}
+packages = ["defopt-stubs"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed", "*.pyi"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["tests/test_script.py"]
+
+[tool.setuptools_scm]
+
+[dependency-groups]
+dev = ["mypy", "defopt"]
+

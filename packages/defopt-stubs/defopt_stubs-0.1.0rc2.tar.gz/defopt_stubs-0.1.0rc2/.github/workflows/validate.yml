@@ -1,0 +1,22 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - run: uv pip install --no-deps .
+      - run: echo "$(pwd)/.venv/bin" >> "$GITHUB_PATH"
+      - run: mypy
+      - run: python tests/test_script.py 42 --times 1
