@@ -1,0 +1,182 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "unrealon-browser"
+version = "1.0.0"
+description = "Enterprise-grade browser automation with stealth capabilities"
+authors = ["UnrealOn Browser Team <browser@unrealon.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/unrealon/unrealon-browser"
+repository = "https://github.com/unrealon/unrealon-browser"
+documentation = "https://docs.unrealon.com/browser"
+keywords = ["browser", "automation", "stealth", "playwright", "enterprise"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10", 
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+packages = [{include = "*", from = "src"}]
+
+[tool.poetry.dependencies]
+# CORE BROWSER AUTOMATION DEPENDENCIES
+python = "^3.9"
+
+# Core Pydantic v2 requirement (MANDATORY)
+pydantic = "^2.0.0"
+
+# Browser Automation Core
+playwright = "^1.40.0"
+playwright-stealth = "^1.0.5"
+
+# HTTP and Network
+aiohttp = "^3.8.0"
+httpx = ">=0.23.0,<0.24.0"
+
+# CLI Dependencies (minimal for browser CLI)
+click = "^8.1.0"
+questionary = "^2.0.0"
+rich = "^13.0.0"
+
+# Utilities
+python-dateutil = "^2.8"
+
+# Optional SDK integration (will be provided by parent)
+# unrealon-sdk = {path = "../unrealon_sdk", develop = true, optional = true}
+
+[tool.poetry.group.dev.dependencies]
+# Testing Framework
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.11.0"
+pytest-playwright = "^0.4.0"
+
+# Type Checking
+mypy = "^1.5.0"
+types-python-dateutil = "^2.8"
+
+# Code Quality
+black = "^23.7.0"
+isort = "^5.12.0"
+flake8 = "^6.0.0"
+bandit = "^1.7.5"
+
+[tool.poetry.extras]
+# Optional feature groups
+sdk = ["unrealon-sdk"]
+all = ["unrealon-sdk"]
+
+[tool.poetry.scripts]
+# Browser CLI entry points (when used standalone)
+unrealon-browser = "unrealon_browser.cli.main:cli"
+
+# Browser management utilities
+browser-stealth = "unrealon_browser.cli.main:stealth_command"
+browser-cookies = "unrealon_browser.cli.cookies_cli:main"
+browser-profiles = "unrealon_browser.cli.main:profiles_command"
+browser-interactive = "unrealon_browser.cli.interactive_mode:main"
+
+[tool.mypy]
+# Browser-specific type checking
+python_version = "3.9"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = ["playwright.*", "playwright_stealth.*"]
+ignore_missing_imports = true
+
+[tool.black]
+# Browser module formatting
+line-length = 100
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+# Browser module import sorting
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+known_first_party = ["unrealon_browser"]
+known_third_party = ["playwright", "aiohttp", "httpx", "click", "questionary", "rich", "pydantic"]
+
+[tool.pytest.ini_options]
+# Browser-specific testing
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=unrealon_browser",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov_browser",
+    "--cov-report=xml:coverage_browser.xml",
+    "--cov-fail-under=95",  # Browser automation allows 95% (browser flakiness)
+    "--benchmark-disable",
+]
+asyncio_mode = "auto"
+markers = [
+    "browser: Browser automation tests",
+    "stealth: Stealth capability tests",
+    "slow: Slow browser tests (> 10 seconds)",
+    "headless: Headless browser tests",
+    "headed: Headed browser tests",
+    "network: Tests requiring network access",
+]
+
+[tool.coverage.run]
+# Browser coverage configuration
+source = ["unrealon_browser"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/cli/*",  # CLI coverage less critical
+]
+branch = true
+
+[tool.coverage.report]
+# Browser coverage reporting
+precision = 2
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "except ImportError:",  # SDK integration fallbacks
+]
