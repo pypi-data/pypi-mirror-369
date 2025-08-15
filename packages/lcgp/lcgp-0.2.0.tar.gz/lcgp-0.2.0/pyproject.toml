@@ -1,0 +1,57 @@
+[project]
+name = "lcgp"
+authors = [
+  {name = "Moses Chan", email = "moses.chan@northwestern.edu"}
+]
+description = "Latent component Gaussian process"
+license = {file = "LICENSE.txt"}
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.9"
+dependencies = [
+    'numpy>=1.18.3',
+    'scipy>=1.10.1',
+    'tensorflow>=2.16.0',
+    'gpflow>=2.5.0']
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
+[project.urls]
+Repository = "https://github.com/mosesyhc/lcgp"
+
+[build-system]
+requires = [
+    "setuptools>=80",
+    "setuptools_scm>=8",
+    "setuptools_scm_git_archive",
+    "wheel>=0.33",
+    "numpy>=1.16",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "lcgp/_version.py"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov-report=html:.coverage_html.info"
+testpaths = [
+    "lcgp/tests",
+]
+
+# Coverage
+[tool.coverage.run]
+branch = true
+
+[tool.ruff]
+# In addition to the standard set of exclusions, omit all tests, plus a specific file.
+extend-exclude = ["reference_code"]
