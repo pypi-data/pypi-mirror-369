@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-network-tester"
+version = "0.1.0"
+description = "MCP server providing TCP connectivity checks, DNS resolve, and system ping"
+readme = "README.md"
+authors = [{ name = "Yucen" }]
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = [
+	"mcp>=1.0.0",
+]
+keywords = ["MCP", "Model Context Protocol", "network", "ping", "tcp", "dns"]
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://gitee.com/lyc067/Isitconnect"
+
+[project.scripts]
+# 安装后提供命令：mcp-network-tester
+mcp-network-tester = "mcp_network_tester:main"
+
+[tool.setuptools]
+# 单文件模块
+py-modules = ["mcp_network_tester"]
