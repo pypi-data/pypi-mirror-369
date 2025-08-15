@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Share Files</title>
+  <style>
+    body { font-family: monospace; background:#fff; color:#000; }
+    .container { max-width: 1000px; margin:20px auto; }
+    .files, .shares { float:left; width:48%; margin-right:2%; }
+    .shares { margin-right:0; }
+    h2 { margin-bottom:10px; }
+    ul { list-style:none; padding:0; border:1px solid #000; height:300px; overflow:auto; }
+    li { padding:4px 6px; border-bottom:1px solid #eee; display:flex; align-items:center; }
+    li:last-child { border-bottom:none; }
+    li:hover { background:#f5f5f5; }
+    button, .btn { font-family:monospace; border:1px solid #000; background:#fff; padding:4px 8px; cursor:pointer; font-size:12px; }
+    button:hover, .btn:hover { background:#f0f0f0; }
+    .btn.danger { border-color:#900; color:#900; }
+    .btn.danger:hover { background:#ffe5e5; }
+    .actions { margin-top:10px; clear:both; }
+    .share-link { font-size:12px; word-break:break-all; margin:3px 0; }
+    .file-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #000;
+      background: white;
+      margin-bottom: 10px;
+    }
+    .file-table th {
+      background: #000;
+      color: white;
+      padding: 8px 6px;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #000;
+    }
+    .file-table td {
+      padding: 6px;
+      border-bottom: 1px solid #ddd;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-table tbody tr:hover {
+      background: #f5f5f5;
+    }
+    .file-icon {
+      margin-right: 6px;
+    }
+    .file-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-size, .file-date {
+      font-family: monospace;
+      font-size: 11px;
+      color: #666;
+    }
+    table { width:100%; border-collapse:collapse; }
+    th, td { border:1px solid #ccc; padding:4px 6px; text-align:left; }
+    th { background:#000; color:#fff; }
+    form { display:inline; }
+    .clearfix:after { content:""; display:block; clear:both; }
+    .meta { font-size:11px; color:#555; }
+    .empty { text-align:center; color:#666; padding:12px 0; }
+    .pill { display:inline-block; background:#000; color:#fff; padding:0 6px; border-radius:10px; font-size:10px; margin-left:4px; }
+    .nowrap { white-space:nowrap; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Share Files</h1>
+    <p>Select files to generate a public, read-only link.</p>
+    <div class="clearfix">
+      <div class="files">
+        <h2>Files (max 500)</h2>
+        <table class="file-table" id="fileTable">
+          <thead>
+            <tr>
+              <th style="width:30px;">✓</th>
+              <th style="width:50%;">📁 Name</th>
+              <th style="width:15%;">📏 Size</th>
+              <th style="width:20%;">🕒 Modified</th>
+            </tr>
+          </thead>
+          <tbody id="fileTableBody">
+            <!-- Files will be loaded here -->
+          </tbody>
+        </table>
+        <div style="margin-top:10px;">
+          <button id="createShareBtn">Create Share Link</button>
+          <button id="selectAllBtn" class="btn">Select All</button>
+          <button id="selectNoneBtn" class="btn">Select None</button>
+        </div>
+        <div id="shareResult"></div>
+      </div>
+      <div class="shares">
+        <h2 style="display:flex;align-items:center;gap:8px;">Active Shares <span id="sharesCount" class="pill">0</span></h2>
+        <div style="margin-bottom:6px; display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="btn" id="refreshSharesBtn" title="Reload list">Refresh</button>
+          <button class="btn" id="revokeAllBtn" title="Revoke all shares">Revoke All</button>
+          <span class="meta" id="lastUpdated">Last updated: -</span>
+        </div>
+        <table id="sharesTable">
+          <thead>
+            <tr>
+              <th style="width:120px;">ID</th>
+              <th style="width:60px;">Files</th>
+              <th>Preview (up to 3)</th>
+              <th style="width:200px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="sharesBody">
+            <tr><td colspan="4" class="empty">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="/files/">Back to Browse</a>
+    </div>
+  </div>
+  <script>
+    const sharesBody = document.getElementById('sharesBody');
+    const sharesCountEl = document.getElementById('sharesCount');
+    const lastUpdatedEl = document.getElementById('lastUpdated');
+    const createShareBtn = document.getElementById('createShareBtn');
+    const refreshBtn = document.getElementById('refreshSharesBtn');
+    const revokeAllBtn = document.getElementById('revokeAllBtn');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const selectNoneBtn = document.getElementById('selectNoneBtn');
+    const fileTableBody = document.getElementById('fileTableBody');
+    let loading = false;
+
+    // File data from server
+    const fileData = [
+      {% for f in files %}
+      {
+        name: "{{ f }}",
+        path: "{{ f }}",
+        icon: "{{ get_file_icon(f) if get_file_icon else '📦' }}",
+        size: "calculating...",
+        modified: "loading..."
+      },
+      {% end %}
+    ];
+
+    function getFileIcon(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      if(['txt', 'md'].includes(ext)) return '📄';
+      if(['jpg', 'jpeg', 'png', 'gif'].includes(ext)) return '🖼️';
+      if(['py', 'js', 'java', 'cpp'].includes(ext)) return '💻';
+      if(['zip', 'rar'].includes(ext)) return '🗜️';
+      return '📦';
+    }
+
+    function renderFileTable() {
+      fileTableBody.innerHTML = '';
+      fileData.forEach((file, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="text-align:center;">
+            <input type="checkbox" value="${file.path}" id="file_${index}">
+          </td>
+          <td class="file-name">
+            <span class="file-icon">${getFileIcon(file.name)}</span>
+            <label for="file_${index}" style="cursor:pointer;">${file.name}</label>
+          </td>
+          <td class="file-size">${file.size}</td>
+          <td class="file-date">${file.modified}</td>
+        `;
+        fileTableBody.appendChild(tr);
+      });
+    }
+
+    function selectAll() {
+      fileTableBody.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+    }
+
+    function selectNone() {
+      fileTableBody.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    }
+
+    function formatPreview(paths){
+      if(!paths.length) return '-';
+      const preview = paths.slice(0,3).join(', ');
+      return preview + (paths.length>3? ` ... (${paths.length})`: '');
+    }
+
+    function setLoadingRow(text='Loading...'){
+      sharesBody.innerHTML = `<tr><td colspan="4" class="empty">${text}</td></tr>`;
+    }
+
+    function bindRowButtons(row){
+      row.querySelectorAll('[data-copy]').forEach(btn => {
+        btn.onclick = () => {
+          const rel = btn.getAttribute('data-copy');
+          const full = location.origin + rel;
+          navigator.clipboard.writeText(full).then(()=>{
+            btn.textContent = 'Copied!';
+            setTimeout(()=> btn.textContent='Copy', 1500);
+          });
+        };
+      });
+      row.querySelectorAll('[data-revoke]').forEach(btn => {
+        btn.onclick = async () => {
+          const id = btn.getAttribute('data-revoke');
+          await revokeShare(id, {silent:true});
+          row.remove();
+          if(!sharesBody.children.length){ setLoadingRow('No active shares'); }
+          updateCounters();
+        };
+      });
+      row.querySelectorAll('[data-open]').forEach(btn => {
+        btn.onclick = () => {
+          const rel = btn.getAttribute('data-open');
+          window.open(rel, '_blank');
+        };
+      });
+    }
+
+    function updateCounters(){
+      const rows = sharesBody.querySelectorAll('tr[data-sid]');
+      sharesCountEl.textContent = rows.length;
+      lastUpdatedEl.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    }
+
+    async function loadShares(force=false){
+      if(loading && !force) return; loading = true; setLoadingRow();
+      try {
+        const res = await fetch('/share/list?ts=' + Date.now(), {cache:'no-store'});
+        if(!res.ok){ setLoadingRow('Failed to load'); loading=false; return; }
+        const data = await res.json();
+        sharesBody.innerHTML = '';
+        if(!data.shares.length){ setLoadingRow('No active shares'); }
+        data.shares.forEach(s => {
+          const tr = document.createElement('tr');
+          tr.dataset.sid = s.id;
+          tr.innerHTML = `
+            <td class="nowrap">${s.id}</td>
+            <td>${s.paths.length}</td>
+            <td>${formatPreview(s.paths)}</td>
+            <td style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button class="btn" data-open="${s.url}" title="Open share">Open</button>
+              <button class="btn" data-copy="${s.url}" title="Copy link">Copy</button>
+              <button class="btn danger" data-revoke="${s.id}" title="Revoke share">Revoke</button>
+            </td>`;
+          sharesBody.appendChild(tr);
+          bindRowButtons(tr);
+        });
+        updateCounters();
+      } catch(e){
+        console.error(e); setLoadingRow('Error loading shares');
+      } finally { loading = false; }
+    }
+
+    async function revokeShare(id, {silent=false}={}){
+      const form = new URLSearchParams({id});
+      await fetch('/share/revoke', {method:'POST', body: form});
+      if(!silent) await loadShares(true);
+    }
+
+    async function revokeAll(){
+      const ids = Array.from(sharesBody.querySelectorAll('tr[data-sid]')).map(r => r.dataset.sid);
+      if(!ids.length) return;
+      if(!confirm('Revoke all shares?')) return;
+      for(const id of ids){ await revokeShare(id, {silent:true}); }
+      await loadShares(true);
+    }
+
+    async function createShare(){
+      const selected = Array.from(fileTableBody.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      if(!selected.length){ alert('Select at least one file'); return; }
+      createShareBtn.disabled = true; createShareBtn.textContent='Creating...';
+      try {
+        const res = await fetch('/share/create', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({paths: selected})});
+        const data = await res.json();
+        if(data.error){ alert(data.error); return; }
+        const resultDiv = document.getElementById('shareResult');
+        const full = location.origin + data.url;
+        resultDiv.innerHTML = `<p>Share created: <a href="${data.url}" target="_blank">${data.url}</a> <button class='btn' id='copyNew'>Copy Link</button></p>`;
+        document.getElementById('copyNew').onclick = () => {
+          navigator.clipboard.writeText(full).then(()=>{
+            const b = document.getElementById('copyNew'); b.textContent='Copied!'; setTimeout(()=> b.textContent='Copy Link', 1500);
+          });
+        };
+        // Optimistically insert row at top
+        const tr = document.createElement('tr');
+        tr.dataset.sid = data.id;
+        tr.innerHTML = `
+          <td class="nowrap">${data.id}</td>
+          <td>…</td>
+          <td>(updating)</td>
+          <td style="display:flex; gap:4px; flex-wrap:wrap;">
+            <button class="btn" data-open="${data.url}">Open</button>
+            <button class="btn" data-copy="${data.url}">Copy</button>
+            <button class="btn danger" data-revoke="${data.id}">Revoke</button>
+          </td>`;
+        if(sharesBody.querySelector('.empty')) sharesBody.innerHTML='';
+        sharesBody.prepend(tr);
+        bindRowButtons(tr);
+        updateCounters();
+        // Reload to get real file list
+        loadShares(true);
+      } catch(e){
+        alert('Failed to create share'); console.error(e);
+      } finally {
+        createShareBtn.disabled = false; createShareBtn.textContent='Create Share Link';
+      }
+    }
+
+    // Event bindings
+    createShareBtn.onclick = createShare;
+    refreshBtn.onclick = () => loadShares(true);
+    revokeAllBtn.onclick = revokeAll;
+    selectAllBtn.onclick = selectAll;
+    selectNoneBtn.onclick = selectNone;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFileTable();
+      loadShares();
+      setInterval(()=> loadShares(false), 15000); // gentle background refresh
+    });
+  </script>
+</body>
+</html>
