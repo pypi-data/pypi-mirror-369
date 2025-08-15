@@ -1,0 +1,165 @@
+{#
+First input argument consists of a dictionary with keys _common_ and _per_warp_.
+Keys map to lists of tuples with (name, dtype, num_elements) of each subarray.
+#}
+{%- macro declare_smem_arrays(arrays, warp_loc_var, config) %}
+    {%- set warps_per_block = divide(config.num_threads, config.warp_size) %}
+    extern __shared__ char s[];
+    {%- set ns = {"offset": 0, "total_warp_bytes": 0} %}
+    {%- for name, dtype, num_elements in arrays["common"] %}
+        {{dtype}}* {{name}} = ({{dtype}}*) (s + {{ ns["offset"] }});
+        {%- do ns.update({"offset": ns["offset"] + num_elements * sizeof(dtype)}) %}
+        {%- if ns["offset"] > config.smem %}
+            {{ raise("Error, required shared memory exceeds allocation maximum!") }}
+        {%- endif %}
+    {%- endfor %}
+
+    {%- for name, dtype, num_elements in arrays["per_warp"] %}
+        {% do ns.update({"total_warp_bytes": ns["total_warp_bytes"] + num_elements * sizeof(dtype)}) %}
+    {%- endfor %}
+
+    {%- if ns["offset"] + ns["total_warp_bytes"] * warps_per_block > config.smem %}
+        {{ raise("Error, required shared memory exceeds allocation maximum!") }}
+    {%- endif %}
+
+    char* per_warp_smem = s + {{ns["offset"]}} + {{ns["total_warp_bytes"]}} * {{ warp_loc_var }};
+
+    {%- do ns.update({"offset": 0}) %}
+    {%- for name, dtype, num_elements in arrays["per_warp"] %}
+        {{dtype}}* {{name}} = ({{dtype}}*) (per_warp_smem + {{ ns["offset"] }});
+        {% do ns.update({"offset": ns["offset"] + num_elements * sizeof(dtype)}) %}
+    {%- endfor %}
+{%- endmacro %}
+
+{# smem contains a mul_ir stored in row-major order as mul * rep, where mul
+   is at most |warp_size|. reg is at least a |rep|-sized register array on each thread.
+       Assumes: each thread has the lane_id. #}
+{%- macro transpose_load(mul, dim, smem, offset, reg) %}
+    if(lane_id < {{mul}}) {
+        {%- for i in range(dim) %}
+            {{reg}}[{{i}}] = {{smem}}[{{offset}} + lane_id * {{dim}} + {{i}}];
+        {%- endfor %}
+    }
+{%- endmacro %}
+
+{%- macro transpose_store(mul, dim, smem, offset, reg, op, coeff) %}
+    if(lane_id < {{mul}}) {
+        {%- for i in range(dim) %}
+            {{smem}}[{{offset}} + lane_id * {{dim}} + {{i}}] {{op}} {{reg}}[{{i}}] * {{coeff}};
+        {%- endfor %}
+    }
+{%- endmacro %}
+
+{%- macro declare_smem_variables(segment, smem_base) %}
+    {%- for name in segment.smem %}
+        {%- if name != "total" %}
+            {%- set smem_rng = segment.smem[name] %}
+            {{ smem_rng["dtype"] }}* {{name}}_smem = ({{smem_rng["dtype"]}}*) ({{smem_base}} + {{smem_rng["offset"]}}); 
+        {%- endif %}
+    {%- endfor %}
+{%- endmacro %}
+
+{%- macro load_ir_segments(map, glb_ptr_shft, smem_ptr, loop_var) %}
+    {%- if not map.persist_load %}
+        {%- for (src_rng, dst_rng) in map.copy_ranges %}
+            {%- set range_len = src_rng.stop - src_rng.start %}
+            ROW_OPERATION({{range_len}}, {{loop_var}}, {{smem_ptr}}[{{loop_var}} + {{dst_rng.start}} + lane_id] = {{glb_ptr_shft}}[{{loop_var}} + {{src_rng.start}}];)
+        {%- endfor %} 
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro load_ir_segments_force(map, glb_ptr_shft, smem_ptr, loop_var) %}
+    {%- for (src_rng, dst_rng) in map.copy_ranges %}
+        {%- set range_len = src_rng.stop - src_rng.start %}
+        ROW_OPERATION({{range_len}}, {{loop_var}}, {{smem_ptr}}[{{loop_var}} + {{dst_rng.start}} + lane_id] = {{glb_ptr_shft}}[{{loop_var}} + {{src_rng.start}}];)
+    {%- endfor %} 
+{%- endmacro %}
+
+{%- macro store_ir_segments(map, glb_ptr_shft, smem_ptr, loop_var) %}
+    {%- if not map.persist_store %}
+        {%- for i, src_rng in enumerate(map.original_src_ranges) %}
+            {%- set idx = map.idxs[i] %}
+            {%- set dst_rng = map.original_dst_ranges[i] %}
+            {%- set range_len = src_rng.stop - src_rng.start %}
+            {%- if map.storeback_procedure[idx] == "write" %}
+                ROW_OPERATION({{range_len}}, {{loop_var}}, {{glb_ptr_shft}}[{{loop_var}} + {{src_rng.start}}] = {{smem_ptr}}[{{loop_var}} + {{dst_rng.start}} + lane_id];)
+            {%- elif map.storeback_procedure[idx] == "accumulate" %}
+                ROW_OPERATION({{range_len}}, {{loop_var}}, {{glb_ptr_shft}}[{{loop_var}} + {{src_rng.start}}] += {{smem_ptr}}[{{loop_var}} + {{dst_rng.start}} + lane_id];)
+            {%- elif map.storeback_procedure[idx] == "atomic_accumulate" %}
+                ROW_OPERATION({{range_len}}, {{loop_var}}, atomicAdd({{glb_ptr_shft}} + {{src_rng.start}} + {{loop_var}}, {{smem_ptr}}[{{dst_rng.start}} + lane_id + {{loop_var}}]);)
+            {%- endif %}
+        {%- endfor %}
+    {% endif %}
+{%- endmacro %}
+
+{%- macro set_launch_bound_variables(config) %}
+    {%- set threads_per_warp = config.warp_size %}
+    {%- set warps_per_block = divide(config.num_threads, config.warp_size) %}
+    const int t_idx = blockIdx.x * blockDim.x + threadIdx.x;
+    const int warp_id = t_idx / {{ threads_per_warp }};
+    const int lane_id = t_idx % {{ threads_per_warp }};
+    const int warp_loc = warp_id % {{ warps_per_block }};
+    const size_t warps_launched = blockDim.x * gridDim.x / {{ threads_per_warp }};
+    const size_t nnz_per_warp = (num_products + warps_launched - 1) / warps_launched;
+
+    const size_t start = nnz_per_warp * ((size_t) warp_id);
+    const size_t end = min(start + nnz_per_warp, num_products);
+{%- endmacro %}
+
+{%- macro transpose_smem_A(irreps, smem_ptr) %}
+    {%- set slices = irreps.slices() %}
+    {%- for i, mul_ir in enumerate(irreps) %} {
+        {%- set dim = mul_ir.ir.dim %}
+        {%- set mul = mul_ir.mul %}
+        IRREP_T t_regs[{{dim}}];
+        if(lane_id < {{mul}}) {
+            {%- set offset = slices[i].start %}
+            {%- for i in range(dim) %}
+                t_regs[{{i}}] = {{smem_ptr}}[{{offset}} + lane_id * {{dim}} + {{i}}];
+            {%- endfor %}
+            __syncwarp();
+            {%- for i in range(dim) %}
+                {{smem_ptr}}[{{offset}} + lane_id + {{i * mul}}] = t_regs[{{i}}];
+            {%- endfor %}
+        }
+    } {%- endfor %} 
+{%- endmacro %}
+
+{%- macro transpose_smem_B(irreps, smem_ptr) %}
+    {%- set slices = irreps.slices() %}
+    {%- for i, mul_ir in enumerate(irreps) %} {
+        {%- set dim = mul_ir.ir.dim %}
+        {%- set mul = mul_ir.mul %}
+        IRREP_T t_regs[{{dim}}];
+        if(lane_id < {{mul}}) {
+            {%- set offset = slices[i].start %}
+            {%- for i in range(dim) %}
+                t_regs[{{i}}] = {{smem_ptr}}[{{offset}} + lane_id + {{i * mul}}]; 
+            {%- endfor %}
+            __syncwarp();
+            {%- for i in range(dim) %}
+                {{smem_ptr}}[{{offset}} + lane_id * {{dim}} + {{i}}] = t_regs[{{i}}];
+            {%- endfor %}
+        }
+    } {%- endfor %} 
+{%- endmacro %}
+
+{%- macro reg_load(mul, dim, smem, offset, reg) %}
+    if(lane_id < {{mul}}) {
+        {%- for i in range(dim) %}
+            {{reg}}[{{i}}] = {{smem}}[{{offset}} + lane_id + {{i * mul}}];
+        {%- endfor %}
+    }
+{%- endmacro %}
+
+{%- macro reg_store(mul, dim, smem, offset, reg, op, coeff) %}
+    if(lane_id < {{mul}}) {
+        {%- for i in range(dim) %}
+            {{smem}}[{{offset}} + lane_id + {{i * mul}}] {{op}} {{reg}}[{{i}}] * {{coeff}};
+        {%- endfor %}
+    }
+{%- endmacro %}
+
+{%- macro launch_bounds(schedule) %}
+__launch_bounds__({{schedule.launch_config.num_threads}})
+{%- endmacro %}
