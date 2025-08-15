@@ -1,0 +1,76 @@
+Metadata-Version: 2.4
+Name: jgdv
+Version: 1.3.2
+Summary: I Keep Writing These Things.
+Author-email: John Grey <jgrey.n.plus.one+jgdv@gmail.com>
+Project-URL: homepage, https://github.com/jgrey4296/jgdv
+Project-URL: documentation, https://jgdv.readthedocs.io/en/latest
+Project-URL: repository, https://github.com/jgrey4296/jgdv
+Project-URL: changelog, https://github.com/jgrey4296/jgdv/blob/master/CHANGELOG.md
+Keywords: utility,strang,toml
+Classifier: Programming Language :: Python
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyparsing
+Requires-Dist: networkx
+Requires-Dist: pydantic>=2.9.0
+Requires-Dist: python-statemachine>=2.5.0
+Requires-Dist: sh>=2.1.0
+Requires-Dist: stackprinter>=0.2.0
+Requires-Dist: sty>=1.0.6
+Requires-Dist: packaging>=24.2
+Dynamic: license-file
+
+# Deja Vu
+
+Author: John Grey
+Date  : 2024-03-04
+
+## Overview
+I keep writing these things.
+
+## Examples
+
+### ChainGuard
+
+With Toml Data:
+
+```toml
+
+   key = "value"
+   [table]
+   key = "other value"
+   sub = {key="blah"}
+```
+
+```python
+
+data = ChainGuard.load("some.toml")
+# Normal key access
+data['key'] == "value"
+# Key attributes
+data.key == "value"
+# Chained key attributes
+data.table.sub.key == "blah"
+# Failable keys
+data.on_fail(2).table.sub.key() == "blah"
+data.on_fail(2).table.sub.bad_key() == 2
+
+```
+
+
+### Strang
+
+```python
+
+example : Strang = Strang("head.meta.data::tail.value")
+# Regular string index access:
+example[0] == "h"
+example[0:4] == "he"
+# Section access:
+example[0,:] == "head.meta.data"
+example[1,:] == "tail.value"
+example[0,0] == "head"
+example[1,0] == "tail"
+```
