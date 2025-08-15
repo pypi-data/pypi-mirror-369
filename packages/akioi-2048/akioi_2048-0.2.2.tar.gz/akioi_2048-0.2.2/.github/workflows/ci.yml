@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv and maturin
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          pip install maturin
+      - name: Build extension
+        run: |
+          uv run --python 3.12 maturin develop --release
+      - name: Run tests
+        run: |
+          uv run --python 3.12 pytest
