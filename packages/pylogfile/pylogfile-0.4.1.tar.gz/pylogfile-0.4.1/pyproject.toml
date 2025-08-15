@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylogfile"
+version = "0.4.1"
+authors = [
+  { name="Grant Giesbrecht", email="grant.giesbrecht@colorado.edu" },
+]
+description = "Universal log files for Python"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+]
+dependencies = [
+	'numpy >= 2.0.0',
+	'h5py >= 3.11.0',
+	'colorama >= 0.4.6',
+	'importlib >= 1.0.0'
+]
+
+[project.urls]
+Homepage = "https://github.com/Grant-Giesbrecht/pylogfile"
+Issues = "https://github.com/Grant-Giesbrecht/pylogfile/issues"
+
+[project.scripts]
+lumber = "pylogfile.scripts.lumberjack:main"
+
+[tool.setuptools.package-data]
+lumber_help = ["pylogfile.scripts.assets.lumperjack_help.json"]
+
+[project.license]
+file = "LICENSE"
