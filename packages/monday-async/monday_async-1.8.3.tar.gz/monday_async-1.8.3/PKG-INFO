@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: monday-async
+Version: 1.8.3
+Summary: An asynchronous Python client library for monday.com
+Project-URL: Homepage, https://github.com/denyskarmazen/monday-async
+Project-URL: Repository, https://github.com/denyskarmazen/monday-async
+Project-URL: Issues, https://github.com/denyskarmazen/monday-async/issues
+Author-email: Denys <deniskarmazen@gmail.com>
+License-Expression: Apache-2.0
+License-File: LICENSE
+Keywords: API,aiohttp,async,graphql,library,monday,monday-api-client,monday.com,python-client,wrapper
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Internet
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Requires-Dist: aiofiles>=23.2.1
+Requires-Dist: aiohttp>=3.11.11
+Requires-Dist: graphql-core~=3.2.3
+Description-Content-Type: text/markdown
+
+# monday-async &middot; [![Tests](https://github.com/denyskarmazen/monday-async/actions/workflows/project-tests.yml/badge.svg)](https://github.com/denyskarmazen/monday-async/actions/workflows/project-tests.yml)
+
+An asynchronous Python client library for monday.com
+
+Check out monday.com API [here](https://developer.monday.com/api-reference/).
+
+### Install
+#### Python Requirements:
+- Python >= 3.9
+
+To install the latest version run:
+```bash
+pip install monday-async
+```
+
+### Example
+
+```python
+import asyncio
+
+from monday_async import AsyncMondayClient
+
+
+async def main():
+    with AsyncMondayClient(token="YOUR_API_KEY") as client:
+        boards = await client.boards.get_boards()
+
+
+asyncio.run(main())
+```
+
+### License
+This project is licensed under the [Apache-2.0 license](LICENSE).
