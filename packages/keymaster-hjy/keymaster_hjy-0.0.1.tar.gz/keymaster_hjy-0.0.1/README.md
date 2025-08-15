@@ -1,0 +1,388 @@
+<div align="center">
+
+# 🔐 Keymaster HJY
+
+**Zero-config, professional-grade API security manager**
+
+*Elegant authentication, rate limiting, and audit logging for modern Python APIs*
+
+[![PyPI version](https://img.shields.io/pypi/v/keymaster_hjy.svg?style=flat-square&color=1E3A8A)](https://pypi.org/project/keymaster_hjy/)
+[![Python versions](https://img.shields.io/pypi/pyversions/keymaster_hjy.svg?style=flat-square&color=1E3A8A)](https://pypi.org/project/keymaster_hjy/)
+[![License](https://img.shields.io/pypi/l/keymaster_hjy.svg?style=flat-square&color=059669)](https://github.com/hjy/keymaster_hjy/blob/main/LICENSE)
+[![Downloads](https://img.shields.io/pypi/dm/keymaster_hjy.svg?style=flat-square&color=059669)](https://pypi.org/project/keymaster_hjy/)
+
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat-square)](https://github.com/astral-sh/ruff)
+[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg?style=flat-square)](https://mypy-lang.org/)
+
+---
+
+**🚀 Zero Configuration** • **🔒 Production Ready** • **⚡ High Performance** • **🎯 Framework Agnostic**
+
+</div>
+
+## ✨ Why Keymaster HJY?
+
+<table>
+<tr>
+<td width="50%">
+
+### 🎯 **Zero Configuration**
+- Automatic environment detection
+- Database schema auto-creation  
+- Intelligent defaults that just work
+- No complex setup required
+
+### 🔒 **Production Ready**
+- Secure key hashing & storage
+- Distributed rate limiting with Redis
+- Comprehensive audit logging
+- Thread-safe & async-compatible
+
+</td>
+<td width="50%">
+
+### ⚡ **High Performance**
+- Optimized database queries
+- Efficient Redis operations
+- Minimal memory footprint
+- Sub-millisecond response times
+
+### 🎨 **Developer Experience**
+- Intuitive API design
+- Complete type hints
+- Framework integrations
+- Excellent error messages
+
+</td>
+</tr>
+</table>
+
+## 🚀 Quick Start
+
+### Installation
+
+Choose the installation that matches your needs:
+
+```bash
+# For FastAPI projects
+pip install keymaster_hjy[fastapi] -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# For Flask projects  
+pip install keymaster_hjy[flask] -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# With CLI tools for easy setup
+pip install keymaster_hjy[cli] -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# Everything included
+pip install keymaster_hjy[all] -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+### Interactive Setup
+
+The easiest way to get started is with our interactive CLI:
+
+```bash
+# Initialize a new project with guided setup
+keymaster init
+
+# Or initialize in a specific directory
+keymaster init my-secure-api
+```
+
+This will:
+- ✅ Guide you through database configuration
+- ✅ Set up optional Redis for distributed rate limiting  
+- ✅ Generate framework-specific example applications
+- ✅ Create all necessary configuration files
+
+### Manual Configuration
+
+Alternatively, create a `mysql.env` file manually:
+
+```bash
+# mysql.env - Database configuration
+MYSQL_HOST=your-mysql-host
+MYSQL_PORT=3306
+MYSQL_USER=your_user
+MYSQL_PASSWORD=your_password
+MYSQL_DATABASE=your_database
+
+# Optional: Redis for distributed rate limiting
+REDIS_HOST=your-redis-host
+REDIS_PORT=6379
+REDIS_PASSWORD=your_redis_password
+```
+
+### Usage Examples
+
+#### FastAPI Integration
+
+```python
+from fastapi import FastAPI
+from keymaster_hjy.integrations import fastapi_guard
+
+app = FastAPI()
+
+# Basic protection - requires valid API key
+@app.get("/api/data", dependencies=[fastapi_guard()])
+async def get_data():
+    return {"message": "Protected data"}
+
+# Scope-based protection
+@app.get("/api/users", dependencies=[fastapi_guard("read:users")])
+async def get_users():
+    return {"users": [...]}
+
+@app.post("/api/users", dependencies=[fastapi_guard("write:users")])
+async def create_user():
+    return {"status": "created"}
+```
+
+#### Flask Integration
+
+```python
+from flask import Flask
+from keymaster_hjy.integrations import flask_guard
+
+app = Flask(__name__)
+
+@app.route("/api/data")
+@flask_guard()  # Basic protection
+def get_data():
+    return {"message": "Protected data"}
+
+@app.route("/api/admin")
+@flask_guard("admin:access")  # Scope-based protection
+def admin_panel():
+    return {"message": "Admin access granted"}
+```
+
+### API Key Management
+
+#### Creating API Keys
+
+```python
+from keymaster_hjy import master
+
+# Create a basic API key
+key_info = master.keys.create(
+    description="My application key",
+    tags=["production"],
+    scopes=["read:users", "write:data"]
+)
+
+print(f"Key ID: {key_info['id']}")
+print(f"API Key: {key_info['key']}")  # Store this securely!
+```
+
+#### Testing Your API
+
+Once you have an API key, test your protected endpoints:
+
+```bash
+# Test with curl
+curl -H "X-API-Key: your-api-key-here" http://localhost:8000/api/data
+
+# Test with httpx (Python)
+import httpx
+response = httpx.get(
+    "http://localhost:8000/api/data",
+    headers={"X-API-Key": "your-api-key-here"}
+)
+```
+
+#### Key Management Operations
+
+```python
+# Rotate a key (old key expires after transition period)
+new_key = master.keys.rotate(key_id=123, transition_period_hours=24)
+
+# Deactivate a key
+master.keys.deactivate(key_id=123)
+
+# Manual validation
+try:
+    master.auth.validate_key("your-key", required_scope="read:data")
+    print("✅ Key is valid and has required scope")
+except Exception as e:
+    print(f"❌ Validation failed: {e}")
+```
+
+## 📚 API Reference
+
+### Key Management (`master.keys`)
+
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `create(description, **opts)` | Create new API key | `{'id': int, 'key': str}` |
+| `deactivate(key_id)` | Deactivate a key | `None` |
+| `rotate(key_id, transition_period_hours=24)` | Rotate key with grace period | `{'id': int, 'key': str}` |
+
+**Create Options:**
+- `rate_limit`: Custom rate limit (e.g., `"100/minute"`)
+- `expires_at`: Expiration date (ISO string)  
+- `tags`: List of tags for organization
+- `scopes`: List of permission scopes
+
+### Authentication (`master.auth`)
+
+| Method | Description | Exceptions |
+|--------|-------------|------------|
+| `validate_key(key, **opts)` | Validate API key | `InvalidKeyError`, `KeyExpiredError`, `RateLimitExceededError`, `ScopeDeniedError` |
+
+**Validation Options:**
+- `required_scope`: Required permission scope
+- `request_id`: Request tracking ID
+- `source_ip`: Client IP address
+- `request_method`: HTTP method
+- `request_path`: Request path
+
+### Framework Integrations
+
+```python
+from keymaster_hjy.integrations import fastapi_guard, flask_guard
+
+# FastAPI
+@app.get("/path", dependencies=[fastapi_guard("scope?")])
+
+# Flask  
+@flask_guard("scope?")
+```
+
+## 🔧 Advanced Features
+
+### Custom Rate Limits
+```python
+# High-frequency API key
+key_info = master.keys.create(
+    description="Batch processing service",
+    rate_limit="1000/minute"  # Custom limit
+)
+
+# Different limits for different use cases
+analytics_key = master.keys.create(
+    description="Analytics dashboard", 
+    rate_limit="50/second"
+)
+```
+
+### Key Organization with Tags
+```python
+# Organize keys by environment and purpose
+prod_key = master.keys.create(
+    description="Production mobile app",
+    tags=["production", "mobile", "v2.1"],
+    scopes=["read:users", "write:analytics"]
+)
+
+# Query and manage by tags (future feature)
+# keys_by_tag = master.keys.find_by_tags(["production"])
+```
+
+### Automatic Key Rotation
+```python
+# Rotate keys with zero downtime
+new_key = master.keys.rotate(
+    key_id=123,
+    transition_period_hours=48  # Old key valid for 48h
+)
+
+print(f"New key: {new_key['key']}")
+print("Update your applications with the new key within 48 hours")
+```
+
+## 🚨 Error Handling
+
+Keymaster provides clear, actionable error messages:
+
+```python
+from keymaster_hjy.exceptions import (
+    InvalidKeyError,
+    KeyDeactivatedError, 
+    KeyExpiredError,
+    RateLimitExceededError,
+    ScopeDeniedError
+)
+
+try:
+    master.auth.validate_key("your-key", required_scope="read:data")
+except InvalidKeyError:
+    # Key not found or malformed
+    return {"error": "Invalid API key provided"}
+except KeyExpiredError:
+    # Key has expired
+    return {"error": "API key expired, please generate a new one"}
+except ScopeDeniedError:
+    # Missing required permissions
+    return {"error": "Insufficient permissions for this operation"}
+except RateLimitExceededError:
+    # Too many requests
+    return {"error": "Rate limit exceeded, please try again later"}
+```
+
+### HTTP Status Mapping
+
+| Exception | HTTP Status | Description |
+|-----------|-------------|-------------|
+| `InvalidKeyError` | 401 Unauthorized | Key not found or invalid format |
+| `KeyDeactivatedError` | 401 Unauthorized | Key has been deactivated |
+| `KeyExpiredError` | 401 Unauthorized | Key has expired |
+| `ScopeDeniedError` | 403 Forbidden | Missing required permissions |
+| `RateLimitExceededError` | 429 Too Many Requests | Rate limit exceeded |
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+All configuration is done through the `mysql.env` file:
+
+```bash
+# Database (Required)
+MYSQL_HOST=your-mysql-host
+MYSQL_PORT=3306
+MYSQL_USER=your-username
+MYSQL_PASSWORD=your-password
+MYSQL_DATABASE=your-database
+
+# Redis (Optional - for distributed rate limiting)
+REDIS_HOST=your-redis-host
+REDIS_PORT=6379
+REDIS_PASSWORD=your-redis-password
+```
+
+### Default Settings
+
+| Setting | Default Value | Description |
+|---------|---------------|-------------|
+| Key Prefix | `lingchongtong-` | Prefix for generated keys |
+| Rate Limit | `100/minute` | Default rate limit for new keys |
+| Config Refresh | `30 seconds` | Settings cache refresh interval |
+
+> 💡 **Pro Tip**: All settings are stored in your database and can be modified at runtime by updating the `keymaster_settings` table.
+
+## 🏗️ Architecture
+
+- **Zero Configuration**: Automatic database schema creation and environment detection
+- **Security First**: Keys are hashed using secure algorithms, never stored in plain text
+- **Scalable**: Redis-backed rate limiting for multi-instance deployments
+- **Framework Agnostic**: Works with FastAPI, Flask, and can be extended to any Python web framework
+- **Production Ready**: Thread-safe, async-compatible, and battle-tested
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [DEVELOPER.md](DEVELOPER.md) for development setup and guidelines.
+
+---
+
+<div align="center">
+
+**Made with ❤️ for the Python community**
+
+*If you find this project useful, please consider giving it a ⭐ on GitHub!*
+
+</div>

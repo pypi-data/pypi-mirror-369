@@ -1,0 +1,31 @@
+# Include important files in the distribution
+include README.md
+include LICENSE
+include DEVELOPER.md
+include CHANGELOG.md
+include pyproject.toml
+
+# Include package data
+recursive-include keymaster_hjy *.py
+recursive-include keymaster_hjy *.pyi
+
+# Include examples and templates
+recursive-include examples *.py
+recursive-include examples *.md
+recursive-include examples *.env.example
+
+# Exclude development and temporary files
+exclude .env
+exclude .env.*
+exclude mysql.env
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.orig
+recursive-exclude * *.rej
+recursive-exclude * .DS_Store
+recursive-exclude tmp *
+recursive-exclude tests *
+exclude .coverage
+exclude .pytest_cache
+exclude .mypy_cache
+exclude .ruff_cache

@@ -1,0 +1,165 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["keymaster_hjy*"]
+exclude = ["tmp*", "tests*"]
+
+[project]
+name = "keymaster_hjy"
+version = "0.0.1"
+description = "Zero-config, professional-grade API security manager. Elegant authentication, rate limiting, and audit logging for modern Python APIs."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "hjy", email = "hjy@example.com" }
+]
+license = { text = "MIT" }
+keywords = [
+    "api", "authentication", "security", "rate-limiting", 
+    "audit-logging", "zero-config", "fastapi", "flask", 
+    "mysql", "redis", "async", "middleware"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+    "Framework :: Flask",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration :: Authentication/Directory",
+    "Typing :: Typed"
+]
+dependencies = [
+    "sqlalchemy[asyncio]>=2.0.0",
+    "redis[hiredis]>=4.5.0",
+    "aiomysql>=0.2.0",
+    "mysql-connector-python",  # Keep for backward compatibility
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "fakeredis[json]>=2.10.0",
+    "httpx>=0.24.0",
+]
+fastapi = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.20.0",
+]
+flask = [
+    "flask>=2.0.0",
+]
+dev = [
+    "keymaster_hjy[test,fastapi,flask]",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+]
+cli = [
+    "click>=8.0.0",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "sphinx-autodoc-typehints>=1.24.0",
+    "myst-parser>=2.0.0",
+]
+all = [
+    "keymaster_hjy[fastapi,flask,cli,docs]",
+]
+
+[project.urls]
+Homepage = "https://github.com/hjy/keymaster_hjy"
+Repository = "https://github.com/hjy/keymaster_hjy.git"
+Documentation = "https://github.com/hjy/keymaster_hjy#readme"
+Issues = "https://github.com/hjy/keymaster_hjy/issues"
+Changelog = "https://github.com/hjy/keymaster_hjy/releases"
+
+# CLI entry points
+[project.scripts]
+keymaster = "keymaster_hjy.cli:main"
+
+# Tool configurations for code quality
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["keymaster_hjy"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
