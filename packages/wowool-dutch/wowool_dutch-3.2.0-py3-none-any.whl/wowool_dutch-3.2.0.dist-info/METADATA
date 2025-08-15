@@ -1,0 +1,274 @@
+Metadata-Version: 2.4
+Name: wowool-dutch
+Version: 3.2.0
+Summary: Wowool NLP dutch Package
+Description-Content-Type: text/markdown
+
+# Wowool NLP dutch Package
+This package contains the language file and domains for dutch.
+To use this package, you need to install the wowool-sdk package and request a license file at info@wowool.com
+
+## Usage
+
+```python
+from wowool.sdk import Pipeline
+from pathlib import Path
+input_text = Path("input.txt").read_text()
+pipeline = Pipeline("dutch,entity")
+doc = pipeline(input_text)
+print(doc)
+```
+
+## Domains
+
+### dutch-unknown.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| UnknownThing |Unknown concept | Yttrium  |
+
+
+### dutch-syntax.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| AdjP |Adjective phrase. | evenveel waard, belangrijkste |
+| NP |Noun phrase. | de regionale leeromgeving |
+| PronPhrase |Pronoun phrase. | wij |
+| TimePhrase |Adverbial phrase expressing time. | zaterdagochtend |
+| VP |Verb phrase. | benadrukken, heeft verlaten,wordt geschorst |
+| VPScope |The scope from the auxiliary to the main verb group. | wil niet met de vinger worden gewezen |
+
+
+### dutch-metadata.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Url |Captures metadata Url from our corpus | Url: https://www.businessinsider.com/google-employees-test-smarter-chatbot-big-bard-2023-3 |
+
+
+### dutch-quotation.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Quotation |A quotation. | 'Waar is de kerk?', vroeg Jan Peeters |
+
+
+### dutch-entity-extended.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Address |Captures the Street, City and the complete Address | Emmastraat 1, 1071 JA Amsterdam |
+| Animal |Names of common animals. | kippen, huisdier, papegaai |
+| Automobile |A car brand or reference to a car. | Jeep Renegade |
+| BaseballTeam |US baseball team | Houston Astros |
+| City |Name of a City | Antwerpen |
+| Company |Name of a Company | ABN AMRO |
+| CurrencyUnit |A currency unit | Australische dollars |
+| Country |Name of a Country | Frankrijk, België, Engeland, Denemarken, Zweden |
+| Date |Date and Month | 19 mei 2016 |
+| District |A district | Manhattan |
+| Drink |Name of a drink | martini, cappuccino |
+| Email |Email address | info@wowool.com |
+| Event |Something that happens | nieuwjaarstoespraak |
+| Facility |A building or place that provides a particular service or is used for a particular industry | cultuurcentrum Zwaneberg |
+| Food |Name of food, ingredients as well as dishes | stamppot, hummus |
+| GivenName |First name of a Person | Willem |
+| Measure |Unit of measure | 350 tonnes, 5ft, 75ml |
+| MoneyAmount |Amount of money | vijftig miljard dollar |
+| Month |Name of a month | oktober |
+| Organization |Name of an Organization | federale politie |
+| Percent |A percentage | 12 procent |
+| Person |Name of a Person, it captures as well the PersonGiv (first name) and PersonFam (family name) | Hercule Poirot |
+| PersonMention |A mention of a person in a general way | patiënt |
+| PhoneNr |Phone number | +32 3 2309191 |
+| PlaceAdj |Adjective of geographical origin. | Russische helikopter, Duitse pers |
+| Position |Subclass of PersonMention. The professional occupation of a person. | districtsraadslid |
+| SoccerTeam |European soccer team | Beerschot, Ajax, Tottenham Hotspur |
+| Sports |Sports | voetbal, handbal, wielrennen |
+| Street |The name of a street with or without number. | de Mariniersweg |
+| Url |Url | https://www.wowool.com |
+| Vehicle |Name of a vehicle | drone, auto, Toyota Yaris |
+| Weapon |Name of a weapon | steekwapens, kruisraket |
+| WeekDay |Day of the week | maandag |
+| WorldRegion |A geographical place, like a continent, a region, a county, etc. | Indische Oceaan |
+
+
+### dutch-question.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Question |A question. | Hoelang ligt er nog sneeuw in Afrika? |
+
+
+### dutch-gdpr.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Address |Captures the Street, City and the complete Address | Hogehilweg 6, 1101 CC Amsterdam |
+| City |Name of a City | Amsterdam |
+| Company |Name of a Company | ABN Amro |
+| Country |Name of a Country | België |
+| Email |Email address | info@wowool.com |
+| Person |Name of a Person, it captures as well the PersonGiv (first name) and PersonFam (family name) | Henri Matisse |
+| PersonFam |Surname of a Person. Subannotation of the Person annotation | Peeters |
+| PersonGiv |Given name of a Person. Subannotation of the Person annotation | Dirk |
+| PhoneNr |A phone number | +32 496 34 34 |
+| Position |Subclass of PersonMention. The professional occupation of a person. | minister, woordvoerder, radiopresentator |
+| Street |The name of a street with or without number. | de Mariniersweg |
+| Url |Url | https://www.wowool.com |
+
+
+### dutch-semantic-theme.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Theme |Theme, in this case animal. | kippen, paard |
+
+
+### dutch-climate.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| EnvironmentalDisaster |A disaster for the environment | oceaanverzuring |
+
+
+### dutch-event.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Event |An event, in very general terms. | ontvoering |
+
+
+### dutch-person-inversion.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| GivenName |First name of a Person | Jean |
+| Person |Name of a Person, it captures as well the PersonGiv (first name) and PersonFam (family name) | Fourniret, Michel |
+| FamilyName |Surname, like Fourniret | JANSSENS Michel |
+
+
+### dutch-anonymizer.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Address |Captures the Street, City and the complete Address | Koningstraat 98, 1000 Brussel |
+| City |Name of a City | Brugge |
+| Company |Name of a Company | Delhaize |
+| Country |Name of a Country | België |
+| Email |Email address | info@wowool.com |
+| Person |Name of a Person, it captures as well the PersonGiv (first name) and PersonFam (family name) | Jan Peeters |
+| PersonFam |Surname of a Person. Subannotation of the Person annotation | Peeters |
+| PersonGiv |Given name of a Person. Subannotation of the Person annotation | Aart |
+| PhoneNr |A phone number | +32 (0) 230 33 12 |
+| Position |Subclass of PersonMention. The professional occupation of a person. | directeur |
+| Street |The name of a street with or without number. | Koningstraat 98 |
+| Url |Url | https://www.wowool.com |
+
+
+### dutch-dates.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Date |An attribute will resolve the absolute date from the date that has been set | 13/01/2021 |
+| TimePhrase |A phrase expressing time, including dates | vier jaar geleden |
+
+
+### dutch-contact-info.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Address |Captures the Street, City and the complete Address | Hogehilweg 6, 1101 CC Amsterdam |
+| City |Name of a City | Amsterdam, Kabul |
+| Company |Name of a Company | ABN Amro, T-Mobile, Jumbo |
+| Country |Name of a Country | Argentinië, Marokko, Suriname |
+| Email |Email address | info@wowool.com |
+| Person |Name of a Person, it captures as well the PersonGiv (first name) and PersonFam (family name) | Henri Matisse |
+| PersonFam |Surname of a Person. Subannotation of the Person annotation | Peeters |
+| PersonGiv |Given name of a Person. Subannotation of the Person annotation | Dirk |
+| PhoneNr |A phone number | Telefoon: 020-3123922 |
+| Position |Subclass of PersonMention. The professional occupation of a person. | minister, woordvoerder, radiopresentator |
+| Street |The name of a street with or without number. | de Mariniersweg |
+| Url |Url | https://www.wowool.com |
+
+
+### dutch-sentiment.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| PositiveSentiment |A positive opinion. | De Verenigde Naties is bijzonder tevreden met de beslissing |
+| NegativeSentiment |A negative opinion. | van kwaad naar erger, Melania Trump sleept Daily Mail voor rechtbank |
+| SentimentObject |The object of the sentiment. Like 'verhaal' in the example | Een mooi verhaal |
+
+
+### dutch-topics.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| TopicCandidate |Possible topics | groene energie, John Travolta |
+
+
+### dutch-discovery.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Definition |A definition. A sentence that explains what something or someone is. |  Saint-Cirgues is een gemeente in het Franse departement Haute-Loire |
+| Descriptor | descriptor is something like 'painter', which will allow us to classify an concept as a Person when it appears in certain definition context. In the sample above 'voetbalclub' is the descriptor | Germania FV was een Mexicaanse voetbalclub |
+| DescriptorMarker |A DescriptorMarker is a descriptor no matter the context | speler, spoorwegstation, voetbalclub |
+
+
+### dutch-entity.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| Address |Captures the Street, City and the complete Address | Emmastraat 1, 1071 JA Amsterdam |
+| City |Name of a City | Antwerpen |
+| Company |Name of a Company | ABN AMRO |
+| Country |Name of a Country | Frankrijk, België, Engeland, Denemarken, Zweden |
+| Date |Date and Month | 19 mei 2016 |
+| Email |Email address | info@wowool.com |
+| Event |Something that happens | nieuwjaarstoespraak |
+| Facility |A building or place that provides a particular service or is used for a particular industry | cultuurcentrum Zwaneberg |
+| MoneyAmount |Amount of money | vijftig miljard dollar |
+| Month |Name of a month | oktober |
+| Organization |Name of an Organization | federale politie |
+| Percent |A percentage | 12 procent |
+| Person |Name of a Person, it captures as well the PersonGiv (first name) and PersonFam (family name) | Hercule Poirot |
+| PersonMention |A mention of a person in a general way | patiënt |
+| PlaceAdj |Adjective of geographical origin. | Russische helikopter, Duitse pers |
+| Position |Subclass of PersonMention. The professional occupation of a person. | districtsraadslid |
+| Street |The name of a street with or without number. | de Mariniersweg |
+| Url |Url | https://www.wowool.com |
+| WorldRegion |A geographical place, like a continent, a region, a county, etc. | Indische Oceaan |
+
+
+### dutch-healthcare.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| BodyPart |Body parts and organs. | vaatvlies |
+| Covid19 |The SARS-CoV-2 respiratory disease. | Covid 19 |
+| Drug |Name of a drug. | Fentanyl |
+| DrugType |Type of drug. | pijnstiller, antibiotica |
+| HealthIssue |A health issue in general, from symptoms to pathologies | fibromyalgie, keelpijn |
+
+
+### dutch-recruitment.dom_info
+
+| Entity | Description | Sample |
+| ------ | ----------- | ------ |
+| City |Name of a City | Dordrecht, Antwerpen |
+| Company |Name of a Company | Vodafone, Capgemini |
+| Country |Name of a Country | Verenigd Koninkrijk, Netherlands, België |
+| JobCondition |General job condition | Interim, freelance |
+| Organization |Name of an Organization | raad van bestuur |
+| Person |Name of a Person, it captures as well the PersonGiv (first name) and PersonFam (family name) | Dominika Kaschke |
+| SoftSkill |Traits related to the desired personality | werkt nauwkeurig, hands - on mentaliteit |
+| Perks |Things to make job attractive | ouderschapsverlof, vakantiegeld, Bonus |
+| HardSkill |The name of a skill | Online Marketing, MS-Office, informatiebeveiliging |
+| WorldRegion |Geopolitical location, not a city or a country | Zuid - Holland, Limburg, Europa |
+| Position |Subclass of PersonMention. The professional occupation of a person. | belastingadviseur, vertegenwoordiger, Account Manager |
+
+
+

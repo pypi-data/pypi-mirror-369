@@ -1,0 +1,444 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Based on Default.rbbi, the default RBBI rules, based on UAX#29.
+# Added dashes to $MidLetter and $Midnum, so that words and identifiers aren't broken on single dashes.
+#
+#=====================================================================================================
+# {100, "+Num"},				// add a POS Num
+# {500, "+Punct"},			    // add a POS Punct, general punctuation
+# {501, "+Punct-Sent"},		    // add a POS Punct-Sent , end of sentence marker
+# {502, "+Punct-Comma"},		// add a POS Punct-Comma, ','
+# {503, "+Punct-Quote"},		// add a POS Punct-Open,
+# {504, "+Punct-Open"},		    // add a POS Punct-Open, '{(['
+# {505, "+Punct-Close"},		// add a POS Punct-Close, '])}'
+# {506, "+Punct-Line"},		    // add a POS Punct-Line
+# {101, "breakline"},			// add a property '------'
+# {510, TIR_PROP_ABBREV},		// add a property 'abbrev.'
+# {511, "+Num"},				// add a POS Num
+# {511, "_not_a_noun_"},		// add a POS _not_a_noun_
+# {512, "markup"},			    // add a property '<markup>'
+# {513, "apostrophe"},	 // add a property 'apostrophe'
+# {514, "+Num"},				// add a POS Num
+# {514, "currency"},			// add a property 'currency'
+# {700, "+Num"},				// add a POS Num
+# {700, "measure"},			// add a property 'g'
+# {520, "e-mail"},			// add a property 'e-mail'
+# {521, "separator"},			// add a property 'separator'
+# {524, "ipaddress"},			// add a property 'ipaddress'
+# {527, "sequence"},			// add a property 'sequence'
+# {621, "internet"},			// add a property 'internet'
+# {630, "e-mail"},			// add a property 'e-mail'
+# {522, "emoticon"},			// add a property 'emoticon'
+# {523, TIR_PROP_ALPHANUM_TOKEN},	// add a property 'alphanum'
+# {600, "+Prop-Std"},			// add the POS Prop-Std
+# {600, TIR_PROP_NOT_FOUND},	// '-' then the property NF (Not Found)
+# {2000, TIR_PROP_TAG},		// @ThisIsVeryGood #Will_Wheaton
+# {1900, "uuid"}				// (hex){8}-(hex){4}-(hex){4}-(hex){4}-hex*
+#=====================================================================================================
+
+#===============================================================
+!!chain;
+#===============================================================
+
+#
+#  Character Class Definitions.
+#
+
+$CR           = [\p{Word_Break = CR}];
+$LF           = [\p{Word_Break = LF}];
+$Newline      = [\p{Word_Break = Newline}];
+$Extend       = [\p{Word_Break = Extend}];
+$Format       = [\p{Word_Break = Format}];
+$Katakana     = [\p{Word_Break = Katakana}];
+# Don't use [:Dash:] here - it contains lots of chars that should continue to trigger word breaks
+$Dash         = [\N{HYPHEN-MINUS}
+                 \N{HYPHEN}
+                 \N{EN DASH}
+                 \N{MINUS SIGN}
+                 \N{SMALL HYPHEN-MINUS}
+                 \N{FULLWIDTH HYPHEN-MINUS}];
+$ALetter      = [\p{Word_Break = ALetter}];
+$MidNumLet    = [\p{Word_Break = MidNumLet}];
+$MidLetter    = [\p{Word_Break = MidLetter}]; # Don't break letters on (single) hyphen
+$MidNum       = [\p{Word_Break = MidNum}$Dash]; # Don't break numbers on (single) hyphen
+$Numeric      = [\p{Word_Break = Numeric}[[:Decomposition_Type=Wide:]&[:General_Category=Decimal_Number:]]];
+$ExtendNumLet = [\p{Word_Break = ExtendNumLet}];
+
+
+#   Dictionary character set, for triggering language-based break engines. Currently
+#   limited to LineBreak=Complex_Context. Note that this set only works in Unicode
+#   5.0 or later as the definition of Complex_Context was corrected to include all
+#   characters requiring dictionary break.
+
+$dictionary   = [:LineBreak = Complex_Context:];
+$Control        = [\p{Grapheme_Cluster_Break = Control}];
+$ALetterPlus  = [$ALetter [$dictionary-$Extend-$Control]];   # Note:  default ALetter does not
+                                                             #  include the dictionary characters.
+
+#
+#  Rules 4    Ignore Format and Extend characters,
+#             except when they appear at the beginning of a region of text.
+#
+$KatakanaEx     = $Katakana     ($Extend |  $Format)*;
+$ALetterEx      = $ALetterPlus  ($Extend |  $Format)*;
+$MidNumLetEx    = $MidNumLet    ($Extend |  $Format)*;
+$MidLetterEx    = $MidLetter    ($Extend |  $Format)*;
+$MidNumEx       = $MidNum       ($Extend |  $Format)*;
+$NumericEx      = $Numeric      ($Extend |  $Format)*;
+$ExtendNumLetEx = $ExtendNumLet ($Extend |  $Format)*;
+
+$Hiragana       = [\p{script=Hiragana}];
+$Ideographic    = [\p{Ideographic}];
+$HiraganaEx     = $Hiragana     ($Extend |  $Format)*;
+$IdeographicEx  = $Ideographic  ($Extend |  $Format)*;
+
+
+## -------------------------------------------------
+
+##==================================================##
+!!forward;
+##==================================================##
+
+
+# Rule 3 - CR x LF
+#
+$CR $LF;
+# Rule 4 - ignore Format and Extend characters, except when they appear at the beginning
+#          of a region of Text.   The rule here comes into play when the start of text
+#          begins with a group of Format chars, or with a "word" consisting of a single
+#          char that is not in any of the listed word break categories followed by
+#          format char(s).
+[^$CR $LF $Newline]? ($Extend |  $Format)+;
+
+
+#===============================================================
+# wow common
+#===============================================================
+$SingleQuote=[\u0027\u2018\u2019];
+$SingleQuote {513};
+
+$EMAlfaNum = ($ALetterEx | $Numeric | $HiraganaEx | $KatakanaEx | $Ideographic );
+
+#-----------------------------------------------
+# 12:30
+#-----------------------------------------------
+$Wow_Time=([0-9])+([\:])([0-6][0-9]);
+$Wow_Time {100};
+
+#-----------------------------------------------
+# 11pm
+#-----------------------------------------------
+$Wow_Time1=[0-9](a|p)m;
+$Wow_Time1 {511};
+
+#-----------------------------------------------
+# Tir_Percent
+#-----------------------------------------------
+$Wow_Percent=([0-9])+([\%]);
+$Wow_Percent {511};
+
+#-----------------------------------------------
+# Money Expression
+# $8,000
+# $275K
+# NZ$18m
+#-----------------------------------------------
+$MoneyBeg=[0-9][0-9]?[0-9]?;
+$MoneyPart=[0-9][0-9][0-9];
+
+
+$Wow_Money_Expression_Left=((NZ)?[\$€£¥₽₹₺₿])([0-9\,\.])*([0-9])+(bn|tn|m|M|b|k|K)?;
+$Wow_Money_Expression_Left {514};
+
+$Wow_Money_Expression_Right=([0-9\,\.])*([0-9])+([\$€£¥₽₹₺]);
+$Wow_Money_Expression_Right {514};
+
+$Wow_Money_Expression=[0-9]?[0-9]?[0-9]([\.][0-9][0-9][0-9])*[\,]([0-9])([0-9]);
+$Wow_Money_Expression {100};
+
+$Wow_Money=([\$€£¥₽₹₺]);
+$Wow_Money {514};
+
+#-----------------------------------------------
+# Measure
+# 300mg
+#-----------------------------------------------
+$Wow_Measure = ([0-9])+(m(c)?g(s)?);
+$Wow_Measure {700};
+
+$Wow_Temp = ([0-9])+[°][CF];
+$Wow_Temp {700};
+
+
+
+#-----------------------------------------------
+# 38k
+#-----------------------------------------------
+$Wow_Amount = ([0-9\,\.])*([0-9])+(bn|tn|m|b|k|K);
+$Wow_Amount {511};
+
+#-----------------------------------------------
+# 250GB
+#-----------------------------------------------
+$Wow_Volume = ([0-9])+([\.][0-9][0-9]?)?[GgMmKkTt][Bb];
+$Wow_Volume {700};
+
+#-----------------------------------------------
+# Punctuation
+#-----------------------------------------------
+$Wow_Punct = [\:\/\|\•\®\*\+\=\-\~\–\©\–];
+$Wow_Punct {500};
+
+$Wow_Punct_Sent = [\.\;\?\!\…];
+$Wow_Punct_Sent {501};
+
+$Wow_Punct_Comma = [\,];
+$Wow_Punct_Comma {502};
+
+$Wow_Punct_Quote = [\"\'\“\”\’\‘\«\»\„];
+$Wow_Punct_Quote {503};
+
+$Wow_Punct_Open = [\(\{\[\<];
+$Wow_Punct_Open {504};
+
+$Wow_Punct_Close = [\)\}\]\>];
+$Wow_Punct_Close {505};
+
+$Wow_Colon = [\:];
+
+$Wow_Hyphen = [—-];
+$Wow_Hyphen {500};
+
+$Wow_Lower = [a-z];
+
+#-----------------------------------------------
+# For things like
+# sh!t
+#-----------------------------------------------
+$Wow_Char_PlaceHolder = [\!\*];
+
+
+#-----------------------------------------------
+# Markup Headers : # ## ### ####
+#-----------------------------------------------
+$Wow_HeaderPrefix = (\#|\#\#|\#\#\#|\#\#\#\#);
+$Wow_HeaderPrefix {400};
+
+#-----------------------------------------------
+# Text Separators : ======= -------- /////////
+#-----------------------------------------------
+$Wow_Separators = [\=\-\/\*\+\.][\=\-\/\#\*\+\.][\=\-\/\#\*\+\.]([\=\-\/\#\*\+\.])+;
+$Wow_Separators {506};
+
+$Wow_Matteke = \#\#\#\#\#(\#)+;
+$Wow_Matteke {506};
+
+$Wow_Code_Block = \`\`\`;
+$Wow_Code_Block {525};
+
+#-----------------------------------------------
+# Arrow: Company -> Person
+#-----------------------------------------------
+$Wow_Arrow = \-\>;
+$Wow_Arrow {521};
+
+#-----------------------------------------------
+# Text Suffix : c++ c#
+#-----------------------------------------------
+$Wow_Suffix = (\+\+|\#);
+
+#-----------------------------------------------
+# XML markup: A run begins with < and ends with the first matching >
+#-----------------------------------------------
+$XmlMarkupOpen = \<[A-Za-z0-9_]+[\ \"\=A-Za-z0-9_\-\/\? \&:%]*\>;
+$XmlMarkupOpen {512};
+
+$XmlMarkupClose = \<\/[A-Za-z0-9_\-]+\>;
+$XmlMarkupClose{512};
+
+#-----------------------------------------------
+# Acronyms
+# ex: t.r.s.t
+#-----------------------------------------------
+$Wow_Dot_Acron = [a-zA-Z]\.[a-zA-Z]\.([a-zA-Z]\.)?([a-zA-Z]\.)?([a-zA-Z]\.)?;
+$Wow_Dot_Acron {600};
+
+#-----------------------------------------------
+# Hyphenated words
+# ex :  This-4word-gd4dw
+#-----------------------------------------------
+$HyphenatedWord1 = [A-Za-z0-9]+[\-][A-Za-z]*[0-9][A-Za-z0-9]*;
+$HyphenatedWord1 {527};
+
+#-----------------------------------------------
+# ex : R&D
+#-----------------------------------------------
+#$AndWord = [\p{Upper}][\&][\p{Upper}];
+$AndWord = [A-Za-z0-9][\&]([A-Za-z0-9])?;
+
+#-----------------------------------------------
+# Internet Addresses: http://www.foo.com(/bar)
+#-----------------------------------------------
+$IntSheme = (http|https|ftp|ftps|mailto|file|data|irc);
+$IntUserInfo = ($EMAlfaNum)+\@;
+$IntPath= ($EMAlfaNum|\/|\-|\_);
+# $IntHost= ($EMAlfaNum)+([\/\-\_\.]($EMAlfaNum)+)*;
+$IntHost= ($EMAlfaNum|\/|\-|\_|\.)+;
+$IntPart= ($EMAlfaNum|\/|\-|\_);
+$IniQuery=\?($IntPath|\=|\%|\&|\#)+;
+$IniFragment=\#($IntPath|\%)+;
+$IniPort=[\:][0-9]+;
+$InternetAddress = $IntSheme\:\/\/($IntUserInfo)?($IntHost)$EMAlfaNum($IniPort)?\/?($IntPart)*(\/$IniQuery)?($IniFragment)?;
+$InternetAddress {621};
+
+
+#-----------------------------------------------
+# MrsP.com
+# MyOutdoorTV.com
+# www.tdameritrade.com.
+# www.grunwald-true-style.com
+#-----------------------------------------------
+$com_company = [A-Za-z0-9]([A-Za-z0-9])+\.com;
+$com_company {200};
+
+$wwwAddress = www(\.[a-z0-9\-]+)+(\/([A-Za-z0-9\-][A-Za-z0-9\-\.]+)?)*;
+$wwwAddress {621};
+
+#-----------------------------------------------
+# cxc.harvard.edu
+# ibiblio.org/rcip/internl.html
+# harvard.edu
+#-----------------------------------------------
+$IntAddress = ([a-z][a-z][a-z]\.)?([a-z\-])+\.(ae|af|al|ao|ar|at|au|be|bg|bo|br|ca|ch|cl|cn|co|cr|cu|cz|de|dk|ee|es|eu|edu|com|fi|fr|gov|gt|hr|hu|ie|is|it|jp|lu|lv|int|mc|mil|mx|nl|no|org|pt|net|nl|ro|rs|ru|se|si|sk|ua|uk)(\/([A-Za-z0-9\-][A-Za-z0-9\-\.]+)?)*;
+$IntAddress {621};
+
+#-----------------------------------------------
+# Email address: sequence of letters, digits and punctuation followed by @ and followed by another sequence
+#-----------------------------------------------
+$EMCtrlCh = [_\-\#\+];
+$EmailAddress = ($EMAlfaNum|$EMCtrlCh)+(\.($EMAlfaNum|$EMCtrlCh)+)*\@$EMAlfaNum($EMAlfaNum|$EMCtrlCh)*(\.($EMAlfaNum|[-])+)+;
+$EmailAddress {630};
+
+#-----------------------------------------------
+# O'Connor
+#-----------------------------------------------
+$Wow_Irish_Name = O[\'\’][A-Z]([a-z]|[ß-ü])+;
+$Wow_Irish_Name {600};
+
+#-----------------------------------------------
+# UUID
+# uncomment these if you want uuid's to work,
+# !! Note that this will take a long time to compile the tokenizer.
+#-----------------------------------------------
+# $Wow_UUID = ([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\-([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\-([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\-([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\-([0-9a-fA-F])+;
+# $Wow_UUID {1900};
+
+#-----------------------------------------------
+# Hashtag
+# ex: #ILikeEyeOnText and @EyeOnText
+#-----------------------------------------------
+$AttTag=[\#|\@][0-9A-Za-z_\-]+;
+$AttTag {2000};
+
+#===============================================================
+# Custom - no chain
+# Note to myself: to break a token, use \
+# More Info : http://userguide.icu-project.org/boundaryanalysis#TOC-Forward-Reverse-Safe-Point-rules
+# See Also: https://unicode-org.github.io/icu/userguide/boundaryanalysis/break-rules.html#variables
+#===============================================================
+
+
+$NumericEx {100};
+$ALetterEx {200};
+$KatakanaEx {300};       # note:  these status values override those from rule 5
+$HiraganaEx {300};       #        by virtual of being numerically larger.
+$IdeographicEx {400};    #
+
+
+#===============================================================
+# rule 5
+#    Do not break between most letters.
+#===============================================================
+$ALetterEx $ALetterEx {200};
+#$ALetterEx ($MidLetterEx | $MidNumLetEx) $ALetterEx {200};
+#$ALetterEx $MidLetterEx $ALetterEx {200};
+$NumericEx $NumericEx {100};
+$ALetterEx $NumericEx {200};
+$NumericEx $ALetterEx {200};
+$NumericEx ($MidNumEx | $MidNumLetEx) $NumericEx {100};
+$KatakanaEx  $KatakanaEx {300};
+$ALetterEx      $ExtendNumLetEx {200};    #  (13a)
+$NumericEx      $ExtendNumLetEx {100};    #  (13a)
+$KatakanaEx     $ExtendNumLetEx {300};    #  (13a)
+$ExtendNumLetEx $ExtendNumLetEx {200};    #  (13a)
+$ExtendNumLetEx $ALetterEx  {200};    #  (13b)
+$ExtendNumLetEx $NumericEx  {100};    #  (13b)
+$ExtendNumLetEx $KatakanaEx {300};    #  (13b)
+
+#-----------------------------------------------
+# ex: sh!t f*ck
+#-----------------------------------------------
+$ALetterEx ($Wow_Char_PlaceHolder)+ $Wow_Lower {200};
+
+#-----------------------------------------------
+# ex: c++ or c#
+#-----------------------------------------------
+$ALetterEx $Wow_Suffix {610};
+
+#===============================================================
+# Custom : WORD BREAKS
+#===============================================================
+#-----------------------------------------------
+# A|B would have been tokenized [A] [|B]
+# so we split behind the |
+# A|B would have been tokenized [A] [|] [B]
+#-----------------------------------------------
+[|] /($ALetterEx|$NumericEx) {500};
+
+$Wow_threedots = \.\.\. ;
+$Wow_threedots {500};
+$AndWord {600};
+
+#----------------------------------------------------------------------------------
+# end lxcommon.tkz
+#----------------------------------------------------------------------------------
+
+
+
+
+
+#===============================================================
+# wow Language dependent
+#===============================================================
+
+# D'hoore
+$Wow_Surname = D[\'\’]([aeiouh])([a-z]|[ß-ü])+;
+$Wow_Surname {600};
+
+$Wow_plural = [AEIOUaeiou][\'\’]s;
+$Wow_plural {200};
+
+$Wow_plural_acronym = [A-Z][A-Z][\'\’]s;
+$Wow_plural_acronym {200};
+
+$Wow_contraction = [\'\’][skn];
+$Wow_contraction {200};
+
+# zo'n
+$Wow_zon = zo[\'\’]n;
+$Wow_contraction {200};
+
