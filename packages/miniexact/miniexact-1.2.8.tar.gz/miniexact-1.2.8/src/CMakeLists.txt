@@ -1,0 +1,13 @@
+set(SRCS
+  ${CMAKE_CURRENT_SOURCE_DIR}/parse.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/miniexact.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/simple.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/algorithm.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_x.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_c.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_m.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_c_dollar.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/log.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/util.c
+  PARENT_SCOPE
+)
