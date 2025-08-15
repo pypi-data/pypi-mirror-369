@@ -1,0 +1,47 @@
+grids:
+  swissgrid_21781:
+    resolutions: [1000, 500, 200, 100, 50, 20, 10, 5]
+    bbox: [420000, 30000, 900000, 350000]
+    tile_size: 256
+    srs: EPSG:21781
+  swissgrid_2056:
+    resolutions: [1000, 500, 200, 100, 50, 20, 10, 5]
+    bbox: [2420000, 1030000, 2900000, 1350000]
+    tile_size: 256
+    srs: EPSG:2056
+
+caches:
+  local:
+    type: filesystem
+    http_url: http://wmts1/tiles/
+    folder: /tmp/tiles
+
+defaults:
+  layer: &layer
+    type: wms
+    url: http://mapserver:8080/
+    wmts_style: default
+    mime_type: image/png
+    extension: png
+    dimensions:
+      - name: DATE
+        default: '2012'
+        generate: ['2012']
+        values: ['2005', '2010', '2012']
+    meta: true
+    meta_size: 2
+    meta_buffer: 128
+
+layers:
+  all:
+    <<: *layer
+    layers: point
+  one:
+    <<: *layer
+    layers: point
+    grids:
+      - swissgrid_2056
+
+generation:
+  default_cache: local
+  maxconsecutive_errors: 2

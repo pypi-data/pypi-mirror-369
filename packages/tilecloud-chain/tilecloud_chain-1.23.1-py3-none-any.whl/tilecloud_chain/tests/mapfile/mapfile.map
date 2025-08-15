@@ -1,0 +1,115 @@
+MAP
+  NAME "Tests"
+  STATUS ON
+  EXTENT 420000 30000 900000 350000
+  MAXSIZE 2500
+
+  WEB
+    TEMPLATE dummyTemplateForWmsGetFeatureInfo
+    METADATA
+        "ows_title" "Tests"
+        "ows_encoding" "UTF-8"
+        "wms_enable_request" "*"
+    END
+  END
+
+  PROJECTION
+    "init=epsg:21781"
+  END
+
+  SYMBOL
+    NAME "circle"
+    TYPE ellipse
+    POINTS
+      1 1
+    END
+    FILLED true
+  END
+
+  LAYER
+    NAME "point"
+    TYPE POINT
+    CONNECTIONTYPE postgis
+    CONNECTION "user=postgresql password=postgresql dbname=tests host=db"
+    DATA "the_geom FROM tests.point"
+    TEMPLATE fooOnlyForWMSGetFeatureInfo # For GetFeatureInfo
+    STATUS ON
+    METADATA
+        "gml_include_items" "all" # For GetFeatureInfo
+        "ows_geom_type" "point" # For returning geometries in GetFeatureInfo
+        "ows_geometries" "the_geom" # For returning geometries in GetFeatureInfo
+    END
+    CLASS
+        NAME "Point"
+        COLOR 255 0 0
+        SIZE 10
+        SYMBOL "circle"
+    END
+  END
+
+  LAYER
+    NAME "point_multi"
+    TYPE POINT
+    CONNECTIONTYPE postgis
+    CONNECTION "user=postgresql password=postgresql dbname=tests host=db"
+    DATA "the_geom FROM (SELECT * FROM tests.point WHERE name='%POINT_NAME%') AS foo USING unique gid"
+    TEMPLATE fooOnlyForWMSGetFeatureInfo # For GetFeatureInfo
+    STATUS ON
+    METADATA
+        "gml_include_items" "all" # For GetFeatureInfo
+        "ows_geom_type" "point" # For returning geometries in GetFeatureInfo
+        "ows_geometries" "the_geom" # For returning geometries in GetFeatureInfo
+    END
+    VALIDATION
+        "POINT_NAME" "[a-z0-9]+"
+        "default_POINT_NAME" "point1"
+    END
+    CLASS
+        NAME "Point"
+        COLOR 255 0 0
+        SIZE 10
+        SYMBOL "circle"
+    END
+  END
+
+  LAYER
+    NAME "line"
+    TYPE LINE
+    CONNECTIONTYPE postgis
+    CONNECTION "user=postgresql password=postgresql dbname=tests host=db"
+    DATA "the_geom FROM tests.line"
+    STATUS ON
+    CLASS
+        NAME "Line 1"
+        STYLE
+            COLOR 0 0 255
+            WIDTH 5
+            MINSCALEDENOM 100000
+        END
+    END
+    CLASS
+        NAME "Line 2"
+        STYLE
+            COLOR 0 0 255
+            WIDTH 5
+            MAXSCALEDENOM 100000
+        END
+    END
+  END
+
+  LAYER
+    NAME "polygon"
+    TYPE POLYGON
+    CONNECTIONTYPE postgis
+    CONNECTION "user=postgresql password=postgresql dbname=tests host=db"
+    DATA "the_geom FROM tests.polygon"
+    STATUS ON
+    CLASS
+        NAME "Polygon"
+        STYLE
+            OUTLINECOLOR 0 255 0
+            COLOR 255 255 0
+        END
+    END
+  END
+END
