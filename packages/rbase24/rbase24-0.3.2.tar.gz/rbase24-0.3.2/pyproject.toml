@@ -1,0 +1,61 @@
+[project]
+name = "rbase24"
+version = "0.3.2"
+description = "base16/base24 color scheme terminal viewer"
+authors = [
+    { name = "Simon Kennedy", email = "sffjunkie+code@gmail.com" },
+]
+dependencies = [
+    "rich",
+    "pyyaml",
+    "unicode-slugify",
+    "typer",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/sffjunkie/rbase24"
+Issues = "https://github.com/sffjunkie/rbase24/issues"
+
+[project.scripts]
+rbase24 = "rbase24.cli:main"
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pytest.ini_options]
+markers = [
+    "unit",
+    "integration",
+    "asyncio",
+]
+pythonpath = [
+    "src",
+]
+junit_family = "xunit2"
+norecursedirs = [
+    ".direnv",
+    ".venv",
+    ".git",
+    ".tox",
+    ".cache",
+    ".settings",
+    "dist",
+    "build",
+    "docs",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.11.12",
+    "ty>=0.0.1a7",
+    "sphinx>=8.2.3",
+]
