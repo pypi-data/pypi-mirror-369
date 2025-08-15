@@ -1,0 +1,222 @@
+Metadata-Version: 2.4
+Name: swe-ai-agent
+Version: 2.1.6
+Summary: Headless Agentic IDE with reasoning mode and in built Browser
+Home-page: https://github.com/sweagent/swe-agent
+Author: SWE Agent Team
+Author-email: Harish Santhanalakshmi Ganesan <harishsg99@gmail.com>
+Maintainer-email: Harish Santhanalakshmi Ganesan <harishsg99@gmail.com>
+License: MIT
+Project-URL: Homepage, https://sweagent.dev
+Project-URL: Repository, https://github.com/sweagent/swe-agent
+Project-URL: Documentation, https://docs.sweagent.dev
+Project-URL: Bug Tracker, https://github.com/sweagent/swe-agent/issues
+Keywords: ai,agent,code,software-engineering,reinforcement-learning,o1-reasoning,iterative-improvement,langraph,claude,anthropic,openrouter,multi-provider,gpt-4o,llama,ai-models,ide,headless,automation,development,programming-assistant
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Code Generators
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Utilities
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: anthropic>=0.40.0
+Requires-Dist: langgraph>=0.2.35
+Requires-Dist: langchain>=0.3.7
+Requires-Dist: langchain-anthropic>=0.2.4
+Requires-Dist: langchain-core>=0.3.15
+Requires-Dist: langchain-mcp-adapters>=0.1.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: psutil>=5.9.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: aiohttp>=3.9.0
+Requires-Dist: beautifulsoup4>=4.12.0
+Requires-Dist: trafilatura>=1.12.0
+Requires-Dist: tavily-python>=0.5.0
+Requires-Dist: detect-secrets>=1.5.0
+Requires-Dist: setuptools>=65.0.0
+Requires-Dist: typing-extensions>=4.8.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinx-rtd-theme; extra == "docs"
+Requires-Dist: myst-parser; extra == "docs"
+Provides-Extra: gaming
+Requires-Dist: pygame>=2.5.0; extra == "gaming"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# Fibonacci Calculator in Fortran
+
+A comprehensive Fortran program that calculates Fibonacci numbers using multiple methods.
+
+## Features
+
+- **Multiple Calculation Methods**:
+  - Recursive calculation (educational, slower for large numbers)
+  - Iterative calculation (efficient, recommended for large numbers)
+  - Sequence generation (displays multiple Fibonacci numbers)
+
+- **User-Friendly Interface**:
+  - Interactive menu system
+  - Input validation and error handling
+  - Clear output formatting
+
+- **Performance Considerations**:
+  - Uses 64-bit integers to handle larger Fibonacci numbers
+  - Warns users about performance implications of recursive method
+  - Efficient iterative algorithms for better performance
+
+## Requirements
+
+- **Fortran Compiler**: GNU Fortran (gfortran) or compatible
+- **Operating System**: Linux, macOS, or Windows with appropriate compiler
+
+## Installation
+
+### Ubuntu/Debian
+```bash
+sudo apt-get update
+sudo apt-get install gfortran
+```
+
+### macOS (with Homebrew)
+```bash
+brew install gcc
+```
+
+### Windows
+Install MinGW-w64 or use Windows Subsystem for Linux (WSL)
+
+## Compilation and Usage
+
+### Using Make (Recommended)
+```bash
+# Build the program
+make
+
+# Build and run
+make run
+
+# Clean build artifacts
+make clean
+
+# Show help
+make help
+```
+
+### Manual Compilation
+```bash
+# Compile the program
+gfortran -Wall -Wextra -std=f2008 -O2 -g -o fibonacci fibonacci.f90
+
+# Run the program
+./fibonacci
+```
+
+## Program Usage
+
+When you run the program, you'll see an interactive menu:
+
+```
+================================================
+           FIBONACCI CALCULATOR
+================================================
+
+Choose calculation method:
+1. Calculate single Fibonacci number (recursive)
+2. Calculate single Fibonacci number (iterative)
+3. Display Fibonacci sequence up to n terms
+4. Exit program
+
+Enter your choice (1-4):
+```
+
+### Option 1: Recursive Calculation
+- Best for educational purposes and small numbers (n ≤ 45)
+- Shows the mathematical definition of Fibonacci sequence
+- Warning displayed for large numbers due to exponential time complexity
+
+### Option 2: Iterative Calculation
+- Recommended for all practical purposes
+- Efficient O(n) time complexity
+- Can handle larger numbers quickly
+
+### Option 3: Sequence Display
+- Shows the first n Fibonacci numbers
+- Includes sum of the sequence
+- Limited to 50 terms for display purposes
+
+## Mathematical Background
+
+The Fibonacci sequence is defined as:
+- F(0) = 0
+- F(1) = 1
+- F(n) = F(n-1) + F(n-2) for n > 1
+
+The sequence starts: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
+
+## Example Output
+
+```
+Enter the position (n >= 0): 10
+Fibonacci(10) = 55
+
+First 10 Fibonacci numbers:
+----------------------------------------
+F(0) = 0
+F(1) = 1
+F(2) = 1
+F(3) = 2
+F(4) = 3
+F(5) = 5
+F(6) = 8
+F(7) = 13
+F(8) = 21
+F(9) = 34
+----------------------------------------
+Sum of sequence: 143
+```
+
+## Technical Details
+
+- **Language Standard**: Fortran 2008
+- **Integer Type**: 64-bit integers for handling large Fibonacci numbers
+- **Error Handling**: Input validation and graceful error recovery
+- **Memory Management**: Static arrays with defined limits
+- **Code Style**: Modern Fortran with explicit interfaces and clear structure
+
+## Performance Notes
+
+- **Recursive Method**: O(2^n) time complexity - use only for educational purposes or small n
+- **Iterative Method**: O(n) time complexity - recommended for all practical applications
+- **Memory Usage**: Minimal memory footprint with static allocation
+
+## License
+
+This project is licensed under the Apache License 2.0. See the source files for full license text.
+
+## Contributing
+
+Feel free to submit issues, feature requests, or pull requests to improve this Fibonacci calculator.
