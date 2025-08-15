@@ -1,0 +1,14 @@
+# Launched with e.g.
+# vllm serve meta-llama/Llama-4-Scout-17B-16E-Instruct \
+#  --tensor-parallel-size 8      --max-model-len $MAX_CONTEXT_LEN   \
+#  --override-generation-config='{"attn_temperature_tuning": true}' \
+#  --limit-mm-per-prompt image=8    --port 8001
+base_url: http://localhost:8001/v1
+api_key_var: DUMMY_API_KEY
+models:
+  - id: meta-llama/Llama-4-Scout-17B-16E-Instruct
+    canonical_id: Llama-4-Scout-Instruct
+  - id: meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8
+    canonical_id: Llama-4-Maverick-Instruct
+test_exclusions: {}
+self_hosted: true
