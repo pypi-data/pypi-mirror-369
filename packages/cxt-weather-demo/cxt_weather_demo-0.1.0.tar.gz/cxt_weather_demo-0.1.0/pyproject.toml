@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "cxt_weather_demo"
+version = "0.1.0"
+description = "MCP SSE Server，从 OpenWeather API 获取天气信息"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx",
+    "mcp",
+    "openai>=1.99.9",
+    "python-dotenv>=1.1.1",
+]
+
+[project.scripts]
+cxt_weather_demo = "weather: main"
+[tool.setuptools]
+package-dir = {"" = "src"}
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
