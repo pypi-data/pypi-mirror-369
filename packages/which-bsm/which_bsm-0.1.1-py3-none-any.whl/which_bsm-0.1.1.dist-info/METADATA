@@ -1,0 +1,125 @@
+Metadata-Version: 2.3
+Name: which_bsm
+Version: 0.1.1
+Summary: A factory for creating boto session managers with environment-aware AWS authentication across local, CI/CD, and cloud runtimes.
+License: MIT
+Author: Sanhe Hu
+Author-email: husanhe@email.com
+Maintainer: Sanhe Hu
+Maintainer-email: husanhe@email.com
+Requires-Python: >=3.9,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: auto
+Provides-Extra: dev
+Provides-Extra: doc
+Provides-Extra: test
+Requires-Dist: Sphinx (>=7.4.7,<8.0.0) ; extra == "doc"
+Requires-Dist: boto-session-manager (>=1.7.2,<2.0.0)
+Requires-Dist: boto3 (>=1.35.99,<2.0.0)
+Requires-Dist: build (>=1.2.1,<2.0.0) ; extra == "dev"
+Requires-Dist: docfly (==3.0.0) ; extra == "doc"
+Requires-Dist: furo (==2024.8.6) ; extra == "doc"
+Requires-Dist: ipython (>=8.18.1,<8.19.0) ; extra == "doc"
+Requires-Dist: nbsphinx (>=0.8.12,<1.0.0) ; extra == "doc"
+Requires-Dist: pygments (>=2.18.0,<3.0.0) ; extra == "doc"
+Requires-Dist: pytest (>=8.2.2,<9.0.0) ; extra == "test"
+Requires-Dist: pytest-cov (>=6.0.0,<7.0.0) ; extra == "test"
+Requires-Dist: rich (>=13.8.1,<14.0.0) ; extra == "dev"
+Requires-Dist: rstobj (==1.2.1) ; extra == "doc"
+Requires-Dist: sphinx-copybutton (>=0.5.2,<1.0.0) ; extra == "doc"
+Requires-Dist: sphinx-design (>=0.6.1,<1.0.0) ; extra == "doc"
+Requires-Dist: sphinx-jinja (>=2.0.2,<3.0.0) ; extra == "doc"
+Requires-Dist: twine (>=6.0.0,<7.0.0) ; extra == "dev"
+Requires-Dist: wheel (>=0.45.0,<1.0.0) ; extra == "dev"
+Requires-Dist: which_env (>=0.1.1,<1.0.0) ; extra == "test"
+Requires-Dist: which_runtime (>=0.1.1,<1.0.0)
+Project-URL: Changelog, https://github.com/MacHu-GWU/which_bsm-project/blob/main/release-history.rst
+Project-URL: Documentation, https://which-bsm.readthedocs.io/en/latest/
+Project-URL: Download, https://pypi.org/pypi/which-bsm#files
+Project-URL: Homepage, https://github.com/MacHu-GWU/which_bsm-project
+Project-URL: Issues, https://github.com/MacHu-GWU/which_bsm-project/issues
+Project-URL: Repository, https://github.com/MacHu-GWU/which_bsm-project
+Description-Content-Type: text/x-rst
+
+
+.. image:: https://readthedocs.org/projects/which-bsm/badge/?version=latest
+    :target: https://which-bsm.readthedocs.io/en/latest/
+    :alt: Documentation Status
+
+.. image:: https://github.com/MacHu-GWU/which_bsm-project/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/MacHu-GWU/which_bsm-project/actions?query=workflow:CI
+
+.. image:: https://codecov.io/gh/MacHu-GWU/which_bsm-project/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/MacHu-GWU/which_bsm-project
+
+.. image:: https://img.shields.io/pypi/v/which-bsm.svg
+    :target: https://pypi.python.org/pypi/which-bsm
+
+.. image:: https://img.shields.io/pypi/l/which-bsm.svg
+    :target: https://pypi.python.org/pypi/which-bsm
+
+.. image:: https://img.shields.io/pypi/pyversions/which-bsm.svg
+    :target: https://pypi.python.org/pypi/which-bsm
+
+.. image:: https://img.shields.io/badge/✍️_Release_History!--None.svg?style=social&logo=github
+    :target: https://github.com/MacHu-GWU/which_bsm-project/blob/main/release-history.rst
+
+.. image:: https://img.shields.io/badge/⭐_Star_me_on_GitHub!--None.svg?style=social&logo=github
+    :target: https://github.com/MacHu-GWU/which_bsm-project
+
+------
+
+.. image:: https://img.shields.io/badge/Link-API-blue.svg
+    :target: https://which-bsm.readthedocs.io/en/latest/py-modindex.html
+
+.. image:: https://img.shields.io/badge/Link-Install-blue.svg
+    :target: `install`_
+
+.. image:: https://img.shields.io/badge/Link-GitHub-blue.svg
+    :target: https://github.com/MacHu-GWU/which_bsm-project
+
+.. image:: https://img.shields.io/badge/Link-Submit_Issue-blue.svg
+    :target: https://github.com/MacHu-GWU/which_bsm-project/issues
+
+.. image:: https://img.shields.io/badge/Link-Request_Feature-blue.svg
+    :target: https://github.com/MacHu-GWU/which_bsm-project/issues
+
+.. image:: https://img.shields.io/badge/Link-Download-blue.svg
+    :target: https://pypi.org/pypi/which-bsm#files
+
+
+Welcome to ``which_bsm`` Documentation
+==============================================================================
+.. image:: https://which-bsm.readthedocs.io/en/latest/_static/which_bsm-logo.png
+    :target: https://which-bsm.readthedocs.io/en/latest/
+
+``which_bsm`` is a factory for creating boto session managers with environment-aware AWS authentication across local, CI/CD, and cloud runtimes. It automatically selects the appropriate authentication method based on where your code is running - whether that's local development with AWS CLI profiles, CI/CD environments using role assumption, or AWS compute services with built-in IAM roles.
+
+The library simplifies multi-environment AWS deployments by providing a single configuration point that adapts to different runtime contexts. You configure your environment topology once, and the system handles authentication complexity automatically.
+
+Key features include lazy-loaded session management, AWS account ID validation, automatic workload role ARN generation for CI environments, and runtime detection across various AWS services (Lambda, Batch, ECS, Glue, EC2) and CI platforms.
+
+
+.. _install:
+
+Install
+------------------------------------------------------------------------------
+
+``which_bsm`` is released on PyPI, so all you need is to:
+
+.. code-block:: console
+
+    $ pip install which-bsm
+
+To upgrade to latest version:
+
+.. code-block:: console
+
+    $ pip install --upgrade which-bsm
+
