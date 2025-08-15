@@ -1,0 +1,68 @@
+.TH RESALLOC "1" "2023\-04\-09" "resalloc 0" "Generated Python Manual"
+.SH NAME
+resalloc
+.SH SYNOPSIS
+.B resalloc
+[-h] [--connection CONNECTION] [--version] {ticket,ticket-check,ticket-wait,ticket-close} ...
+
+.SH OPTIONS
+.TP
+\fB\-\-connection\fR \fI\,CONNECTION\/\fR
+
+.TP
+\fB\-\-version\fR
+show program's version number and exit
+
+.SH
+ACTIONS
+.TP
+\fBresalloc\fR \fI\,ticket\/\fR
+Create ticket
+.TP
+\fBresalloc\fR \fI\,ticket\-check\/\fR
+Obtain ticket
+.TP
+\fBresalloc\fR \fI\,ticket\-wait\/\fR
+Wait till ticket is ready and write the output
+.TP
+\fBresalloc\fR \fI\,ticket\-close\/\fR
+Close a ticket
+
+.SH COMMAND \fI\,'resalloc ticket'\/\fR
+usage: resalloc ticket [\-h] \-\-tag TAGS
+
+.SH OPTIONS \fI\,'resalloc ticket'\/\fR
+.TP
+\fB\-\-tag\fR \fI\,TAGS\/\fR
+What tag the Resource should have
+
+.SH COMMAND \fI\,'resalloc ticket\-check'\/\fR
+usage: resalloc ticket\-check [\-h] ticket
+
+.TP
+\fBticket\fR
+Get the ticket
+
+.SH COMMAND \fI\,'resalloc ticket\-wait'\/\fR
+usage: resalloc ticket\-wait [\-h] ticket
+
+.TP
+\fBticket\fR
+ID of ticket to wait for
+
+.SH COMMAND \fI\,'resalloc ticket\-close'\/\fR
+usage: resalloc ticket\-close [\-h] ticket
+
+.TP
+\fBticket\fR
+ID of ticket to be closed
+
+.SH AUTHOR
+.nf
+Pavel Raiskup <praiskup@redhat.com>
+.fi
+
+.SH DISTRIBUTION
+The latest version of resalloc may be downloaded from
+.UR https://github.com/praiskup/resalloc
+.UE

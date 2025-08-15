@@ -1,0 +1,14 @@
+#! /bin/sh
+
+# Copyright (C) 2022 Red Hat, Inc.
+
+srcdir=$(readlink -f "$(dirname "$0")")
+
+run_python=${PYTHON-python3}
+
+echo >&2
+echo >&2 " !! running argparse-manpage from git, this is not supported PYTHON=$run_python!!"
+echo >&2
+
+export PYTHONPATH=$srcdir/${PYTHONPATH+:$PYTHONPATH}
+exec $run_python -c 'from argparse_manpage.cli import main; main()' "$@"
