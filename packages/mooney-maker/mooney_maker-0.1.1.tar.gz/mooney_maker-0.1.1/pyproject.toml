@@ -1,0 +1,58 @@
+[project]
+name = "mooney-maker"
+version = "0.1.1"
+authors = [
+    { name = "Lars Reining", email = "lars.reining@stud.tu-darmstadt.de"},
+]
+description = "A Python package to automatically create ambiguous Mooney (two-tone) images"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "einops>=0.8.1",
+    "fvcore>=0.1.5.post20221221",
+    "huggingface-hub>=0.33.2",
+    "matplotlib>=3.10.1",
+    "opencv-python>=4.11.0.86",
+    "requests>=2.32.4",
+    "scikit-image>=0.25.2",
+    "torch>=2.6.0",
+    "torchvision>=0.21.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ag-perception-wallis-lab/mooney_maker"
+Issues = "https://github.com/ag-perception-wallis-lab/mooney_maker/issues"
+
+[dependency-groups]
+dev = [
+    "flake8>=7.1.2",
+    "ipykernel>=6.29.5",
+    "nbconvert>=7.16.6",
+    "pre-commit>=4.1.0",
+    "ipywidgets>=8.1.7",
+]
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+[tool.isort]
+profile = "black"
+
+[tool.setuptools]
+license-files = ["LICENSE", "src/mooney_maker/DiffusionEdge/LICENSE", "src/mooney_maker/TEED/LICENSE"]
+
+[tool.setuptools.package-data]
+"mooney_maker" = ["TEED/checkpoints/TEED.pth"] 

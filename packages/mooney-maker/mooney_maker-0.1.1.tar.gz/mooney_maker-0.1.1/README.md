@@ -1,0 +1,67 @@
+# MooneyMaker
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A Python package to automatically create ambiguous Mooney (two-tone) images.
+
+Mooney images are two-tone stimuli that appear ambiguous initially but become recognizable once the observer has seen the template image. They are created by smoothing and thresholding an image. In the past, the size of the smoothing kernel and the threshold had to be selected manually. This process is not only time-consuming but also subjective, leading to inconsistencies across studies. MooneyMaker automates this process by providing multiple techniques for generating Mooney images.
+
+## Available Techniques
+
+MooneyMaker supports nine different techniques for generating Mooney images:
+- **Mean**: Use predetermined smoothing kernel size and pixel intensity mean as threshold.
+- **Otsu**: Use predetermined smoothing kernel size and Otsu's method to determine the threshold.
+- **CannyMaxEdge** Use predetermined smoothing kernel size and select threshold which maximizes the number of edges detected by Canny edge detection.
+- **CannyEdgeSimilarity**: Optimize smoothing kernel size and threshold to maximize the similarity of the Mooney image's edges to the edges of the original image as detected by Canny edge detection.
+- **CannyEdgeDisruption**: Optimize smoothing kernel size and threshold to minimize the similarity of the Mooney image's edges to the edges of the original image as detected by Canny edge detection.
+- **TEEDEdgeSimilarity**: Optimize smoothing kernel size and threshold to maximize the similarity of the Mooney image's edges to the edges of the original image as detected by the [Tiny and Efficient Model for the Edge Detection (TEED)](https://github.com/xavysp/TEED).
+- **TEEDEdgeDisruption**: Optimize smoothing kernel size and threshold to minimize the similarity of the Mooney image's edges to the edges of the original image as detected by [TEED](https://github.com/xavysp/TEED).
+- **DiffusionEdgeSimilarity**: Optimize smoothing kernel size and threshold to maximize the similarity of the Mooney image's edges to the edges of the original image as detected by the [DiffusionEdge](https://github.com/GuHuangAI/DiffusionEdge) model.
+- **DiffusionEdgeDisruption**: Optimize smoothing kernel size and threshold to minimize the similarity of the Mooney image's edges to the edges of the original image as detected by the [DiffusionEdge](https://github.com/GuHuangAI/DiffusionEdge) model.
+
+The usage of different edge detection methods allows to optimize for similarity or disruption of different kinds of edges. Canny edge detection is a classic, non-neural, method, which detects all low level edges. TEED is a modern, efficient neural network model that detects edges at multiple scales, while DiffusionEdge is a diffusion-based model that captures object-level edges.
+
+For more details on the techniques, refer to the [techniques.ipynb](examples/techniques.ipynb) notebook.
+
+
+## Installation
+
+You can install MooneyMaker using pip:
+
+```bash
+pip install mooney_maker
+```
+
+## Usage
+
+Here's a basic example of how to use MooneyMaker to create a Mooney image from a template image:
+
+```python
+from mooney_maker import generate_mooney_image
+
+mooney_image = generate_mooney_image(
+    image_path="path/to/your/image.png",
+    output_path="path/to/results/",
+)
+```
+For more advanced usage, including different techniques for Mooney image generation, refer to the [examples](examples/) directory.
+
+## Citation
+
+If you use MooneyMaker in your research, please cite us:
+
+```bibtex
+@misc{reining2025mooneymaker,
+  author = {Lars C. Reining and Thabo Matthies and Rabea Turon and Thomas S. A. Wallis},
+  title = {MooneyMaker: A Python package to automatically create ambiguous Mooney (two-tone) images},
+  year = {2025},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  url = {https://github.com/ag-perception-wallis-lab/mooney_maker}
+}
+```
+
+## Acknowledgements
+
+- [DiffusionEdge: Diffusion Probabilistic Model for Crisp Edge Detection](https://github.com/GuHuangAI/DiffusionEdge)
+- [Tiny and Efficient Model for the Edge Detection Generalization](https://github.com/xavysp/TEED)
