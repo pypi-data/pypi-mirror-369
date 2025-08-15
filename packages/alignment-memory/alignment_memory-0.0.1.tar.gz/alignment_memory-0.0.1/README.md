@@ -1,0 +1,81 @@
+﻿# =========================
+# Quick start (PowerShell)
+# =========================
+python -m alignment_memory.cli new
+# 가장 최근 세션 ID (ALMEM_DIR 있으면 거기서, 없으면 로컬 기본 경로)
+$root = (if ($env:ALMEM_DIR) { $env:ALMEM_DIR } else { ".\alignment_memory\data\sessions" })
+$SID = (Get-ChildItem "$root\*.json" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime | Select-Object -Last 1).BaseName
+python -m alignment_memory.cli append --id $SID --speaker user --content "hello"
+python -m alignment_memory.cli search  --id $SID --query hello
+python -m alignment_memory.cli summarize --id $SID --last-k 20
+python -m alignment_memory.cli export --id $SID
+
+# =================
+# One-minute smoke
+# =================
+python -m alignment_memory.cli smoke
+
+# =================
+# Data directory
+# =================
+# Persistent (new shells)
+setx ALMEM_DIR "D:\ALIGNBEING\sessions"
+# Current shell only
+$env:ALMEM_DIR = "D:\ALIGNBEING\sessions"
+
+# ==========================
+# Optional convenience cmds
+# ==========================
+function alm { python -m alignment_memory.cli @args }
+function alm-last {
+  $root = (if ($env:ALMEM_DIR) { $env:ALMEM_DIR } else { ".\alignment_memory\data\sessions" })
+  $last = Get-ChildItem "$root\*.json" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime | Select-Object -Last 1
+  if ($last) { $last.BaseName }
+}
+
+# ==========================
+# PATH quick fixes (Windows)
+# ==========================
+# Python Scripts (auto-detect)
+$py=(python -c "import sys,os;print(os.path.join(os.path.dirname(sys.executable),'Scripts'))").Trim(); $u=[Environment]::GetEnvironmentVariable('Path','User'); if($u -notlike "*$py*"){[Environment]::SetEnvironmentVariable('Path',($u.TrimEnd(';')+';'+$py),'User')}; $env:Path=[Environment]::GetEnvironmentVariable('Path','User') + ';' + [Environment]::GetEnvironmentVariable('Path','Machine'); where alm; where twine
+# Python Scripts (Windows Store default)
+$s="$env:LOCALAPPDATA\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts"; $u=[Environment]::GetEnvironmentVariable('Path','User'); if($u -notlike "*$s*"){[Environment]::SetEnvironmentVariable('Path',($u.TrimEnd(';')+';'+$s),'User')}; $env:Path=[Environment]::GetEnvironmentVariable('Path','User') + ';' + [Environment]::GetEnvironmentVariable('Path','Machine'); where alm; where twine
+# Git cmd
+$s="C:\Program Files\Git\cmd"; $u=[Environment]::GetEnvironmentVariable('Path','User'); if($u -notlike "*$s*"){[Environment]::SetEnvironmentVariable('Path',($u.TrimEnd(';')+';'+$s),'User')}; $env:Path=[Environment]::GetEnvironmentVariable('Path','User') + ';' + [Environment]::GetEnvironmentVariable('Path','Machine'); git --version
+
+# ==========================
+# ExecutionPolicy (session)
+# ==========================
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+
+# =====================================
+# Local wheel reinstall / dev editable
+# =====================================
+# Reinstall latest local wheel
+$whl=(Get-ChildItem dist\alignment_memory-*-py3-none-any.whl | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName; python -m pip install --force-reinstall $whl
+# Editable install (development)
+python -m pip install -e .
+
+# ==========================
+# CLI smoke (both variants)
+# ==========================
+python -m alignment_memory.cli smoke
+alm smoke
+
+# ==========================
+# Git line-endings (global)
+# ==========================
+git config --global core.autocrlf true; git config --global core.eol crlf
+
+## Install shim (Windows)
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\install_alm_shim.ps1
+
+Set-Location C:\arka_project
+
+@'
+## Install shim (Windows)
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\install_alm_shim.ps1
+# Tip: data-dir 지정 실행
+python -m alignment_memory.cli new --data-dir "D:\ALIGNBEING\sessions"
