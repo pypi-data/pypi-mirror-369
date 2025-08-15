@@ -1,0 +1,101 @@
+Metadata-Version: 2.4
+Name: scystream-sdk
+Version: 1.2.2
+Summary: The official SDK for developing scystream compute blocks
+Home-page: https://github.com/RWTH-TIME/scystream-sdk
+Author: Felix Evers, Paul Kalhorn
+Author-email: evers@time.rwth-aachen.de, kalhorn@time.rwth-aachen.de
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydantic>=2.9.2
+Requires-Dist: PyYAML>=6.0.2
+Requires-Dist: pydantic-settings>=2.6.1
+Requires-Dist: pyspark>=3.5.3
+Requires-Dist: setuptools>=75.5.0
+Requires-Dist: boto3>=1.35.65
+Provides-Extra: dev
+Requires-Dist: sphinx>=8.1.3; extra == "dev"
+Requires-Dist: sphinx-autodoc-typehints>=2.5.0; extra == "dev"
+Requires-Dist: sphinxawesome-theme>=5.3.2; extra == "dev"
+Requires-Dist: Pygments>=2.18.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# scystream-sdk
+
+## Installation
+
+You can install the package via pip once it's published:
+
+```bash
+pip install scystream-sdk
+```
+
+## Introduction
+
+One of the central concepts of scystream are the so-called **Compute Blocks**.
+
+A Compute Block describes an independent programm, that acts as some kind of worker
+which will be scheduled using the scystream-core application.
+This worker executes a task (e.g. a NLP task, a crawling task).
+
+This SDK aims to provide helper functions and all other requirements you need to implement
+a custom Compute Block on your own.
+
+Each worker can have multiple entrypoints, each aiming to solve one task.
+These entrypoints can be configured from the outside using the **Settings**.
+These are basically ENV-Variables, which will be parsed & validated using pydantic.
+
+Find the whole Documentation [here](https://docs-scystream.go.iso.rwth-aachen.de/)!
+
+## Development of the SDK
+
+### Installation
+
+1. Create a venv and use it
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2. Install the package within the venv 
+
+> [!NOTE]
+> This will also install all the install_requirements from the setup.py
+
+```bash
+pip install -e .
+```
+
+3. Install the dev dependencies
+
+```bash
+pip install -e ".[dev]"
+```
+
+4. Develop!
+
+### Tests
+
+To run all the tests run the following command:
+
+```bash
+python3 -m unittest discover -s tests
+```
+
