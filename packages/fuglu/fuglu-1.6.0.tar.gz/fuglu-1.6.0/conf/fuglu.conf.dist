@@ -1,0 +1,351 @@
+[main]
+
+#identifier can be any string that helps you identifying your config file
+#this helps making sure the correct config is loaded. this identifier will be printed out when fuglu is reloading its config
+identifier=dist
+
+#run as a daemon? (fork)
+daemonize=1
+
+#Enable session scantime logger
+scantimelogger=0
+
+#run as user
+user=nobody
+
+#run as group
+group=nobody, nogroup
+
+#comma separated list of directories in which fuglu searches for additional plugins and their dependencies
+plugindir=
+
+#what SCANNER plugins do we load, comma separated
+plugins=archive,attachment,clamav,spamassassin
+
+#what PREPENDER plugins do we load, comma separated
+prependers=debug,skip
+
+#what APPENDER plugins do we load, comma separated
+#appender plugins are plugins run after the scanning plugins
+#appenders will always be run, even if a a scanner plugin decided to delete/bounce/whatever a message
+#(unless a mail is deferred in which case running the appender would not make sense as it will come again)
+appenders=
+
+#address fuglu should listen on. usually 127.0.0.1 so connections are accepted from local host only
+bindaddress=127.0.0.1
+
+#incoming port(s) (postfix connects here)
+#you can use multiple comma separated ports here
+#f.ex. to separate incoming and outgoing mail and a special port for debugging messages
+#10025: standard incoming mail
+#10099: outgoing mail
+#10888: debug port
+incomingport=10025,10099,10888
+
+#outgoing hostname/ip where postfix is listening for re-injects.
+#use ${injecthost} to connect back to the IP where the incoming connection came from
+outgoinghost=127.0.0.1
+
+#outgoing port where postfix is listening for re-injects)
+outgoingport=10026
+
+#outgoing helo we should use for re-injects
+#leave empty to auto-detect current hostname
+outgoinghelo=
+
+#how many times should we try to re-inject before returning temporary error (after queue mode only)
+outgoingretry=1
+
+#outgoing hostname/ip where postfix is listening for bounces.
+#supports same template variables as outgoinghost. leave empty to use outgoinghost value.
+bouncehost=
+
+#outgoing port where postfix is listening for bounces.
+#leave empty to use outgoingport value.
+bounceport=
+
+#temp dir where fuglu can store messages while scanning
+tempdir=/tmp
+
+#String to prepend to added headers
+prependaddedheaders=X-Fuglu-
+
+#If a plugin decides to delete a message, save a copy here
+#default empty, eg. do not save a backup copy
+trashdir=
+
+#list all deleted messages in 00-fuglutrash.log in the trashdir
+trashlog=0
+
+#if this is set to True/1/yes , no Bounces will be sent from Fuglu eg. after a blocked attachment has been detected
+#This may be used for debugging/testing to make sure fuglu can not produce backscatter
+disablebounces=0
+
+#list of domains to which no bounces will be sent
+nobouncefile=${confdir}/rules/nobounce.txt
+
+#write debug info header to every mail
+debuginfoheader=0
+
+#write a Spamstatus YES/NO header
+spamstatusheader=1
+
+#write suspect ID to every mail
+suspectidheader=1
+
+#append suspect ID to return message (e.g. reject message)
+suspectidreturn=1
+
+#write mrtg statistics
+mrtgdir=
+
+#port where fuglu provides statistics etc (used by fuglu_control). Can also be a path to a unix socket
+controlport=/tmp/fuglu_control.sock
+
+#Log pattern to use for all suspects in fuglu log. set empty string to disable logging generic suspect info. Supports the usual template variables plus: ${size}, ${spam} ${highspam}, ${modified} ${decision} ${tags} (short tags representagion) ${fulltags} full tags output, ${decision}
+logtemplate=Suspect ${id} from=${from_address} to=${to_address} size=${size} spam=${spam} virus=${virus} modified=${modified} decision=${decision}
+
+#warn about known severe problems/security issues of current version.
+#Note: This performs a DNS lookup of gitrelease.patchlevel.minorversion.majorversion.versioncheck.fuglu.org on startup and fuglu --lint.
+#No other information of any kind is transmitted to outside systems.
+#Disable this if you consider the DNS lookup an unwanted information leak.
+versioncheck=1
+
+#Method to check mail address validity ("Default","LazyLocalPart")
+address_compliance_checker=Default
+
+#localpart max size
+address_compliance_checker_maxsize=64
+
+#Action to perform if address validity check fails ("defer","reject","discard")
+address_compliance_fail_action=defer
+
+#Reply message if address validity check fails
+address_compliance_fail_message=invalid sender or recipient address
+
+#Remove temporary message file from disk for receive or address compliance errors
+remove_tmpfiles_on_error=1
+
+#comma separated list of disabled archive extensions.
+disabledarchivetypes=pdf
+
+[PluginAlias]
+debug=fuglu.plugins.p_debug.MessageDebugger
+skip=fuglu.plugins.p_skipper.PluginSkipper
+fraction=fuglu.plugins.p_fraction.PluginFraction
+p_blwl=fuglu.plugins.p_blwl.BlockWelcomeList
+m_blwl=fuglu.plugins.p_blwl.BlockWelcomeMilter
+a_autolist=fuglu.plugins.p_blwl.AutoListAppender
+archive=fuglu.plugins.archive.ArchivePlugin
+attachment=fuglu.plugins.attachment.FiletypePlugin
+bacn=fuglu.plugins.bacn.BACN
+m_callahead=fuglu.plugins.call_ahead.AddressCheck
+clamav=fuglu.plugins.clamav.ClamavPlugin
+actionoverride=fuglu.plugins.decision.ActionOverridePlugin
+killer=fuglu.plugins.decision.KillerPlugin
+filterdecision=fuglu.plugins.decision.FilterDecision
+rcptrewrite=fuglu.plugins.decision.RcptRewrite
+condrcptapp=fuglu.plugins.decision.ConditionalRcptAppend
+delay=fuglu.plugins.delay.DelayPlugin
+dkimsign=fuglu.plugins.domainauth.DKIMSignPlugin
+dkimverify=fuglu.plugins.domainauth.DKIMVerifyPlugin
+arcsign=fuglu.plugins.domainauth.ARCSignPlugin
+arcverify=fuglu.plugins.domainauth.ARCVerifyPlugin
+dmarc=fuglu.plugins.domainauth.DMARCPlugin
+spf=fuglu.plugins.domainauth.SPFPlugin
+spfout=fuglu.plugins.domainauth.SPFOutPlugin
+srs=fuglu.plugins.domainauth.SenderRewriteScheme
+domainauth=fuglu.plugins.domainauth.DomainAuthPlugin
+spearphish=fuglu.plugins.domainauth.SpearPhishPlugin
+fuzorcheck=fuglu.plugins.fuzor.FuzorCheck
+fuzorreport=fuglu.plugins.fuzor.FuzorReport
+a_fuzorreport=fuglu.plugins.fuzor.FuzorReportAppender
+fuzorprint=fuglu.plugins.fuzor.FuzorPrint
+geoip=fuglu.plugins.geoip.GeoIPLookup
+knownsubject=fuglu.plugins.knownsubject.KnownSubject
+a_knownsubject=fuglu.plugins.knownsubject.KnownSubjectAppender
+imapcopy=fuglu.plugins.mailcopy.IMAPCopy
+mailfeed=fuglu.plugins.mailcopy.MailFeed
+autoreport=fuglu.plugins.mailcopy.AutoReport
+m_msgsize=fuglu.plugins.messagesize.MessageSize
+m_originpolicy=fuglu.plugins.originpolicy.OriginPolicy
+m_sdrdomrules=fuglu.plugins.outpolicy.SenderDomainRules
+m_nobounce=fuglu.plugins.outpolicy.NoBounce
+trapintercept=fuglu.plugins.outpolicy.TrapIntercept
+fuzorratelimit=fuglu.plugins.outpolicy.FuzorRateLimit
+m_pfqdratelimit=fuglu.plugins.outpolicy.PFQDRateLimit
+m_accessrestrictions=fuglu.plugins.restrictions.AccessRestrictions
+m_accessrestrictionsnwl=fuglu.plugins.restrictions.AccessRestrictionsNWL
+rspamd=fuglu.plugins.rspamd.RSpamdPlugin
+spamassassin=fuglu.plugins.sa.SAPlugin
+salearn=fuglu.plugins.sa.SALearn
+vacation=fuglu.plugins.vacation.VacationPlugin
+icap=fuglu.plugins.antivirus.ICAPPlugin
+sssp=fuglu.plugins.sssp.SSSPPlugin
+fprot=fuglu.plugins.antivirus.FprotPlugin
+cyren=fuglu.plugins.antivirus.CyrenPlugin
+scriptfilter=fuglu.plugins.script.ScriptFilter
+m_enforcetls=fuglu.plugins.tlspolicy.EnforceTLS
+m_tlssender=fuglu.plugins.tlspolicy.TLSSender
+uriextract=fuglu.plugins.uriextract.URIExtract
+emailextract=fuglu.plugins.uriextract.EmailExtract
+domainaction=fuglu.plugins.uriextract.DomainAction
+emailaction=fuglu.plugins.uriextract.EmailAction
+a_uriextract=fuglu.plugins.uriextract.URIExtractAppender
+a_emailextract=fuglu.plugins.uriextract.EmailExtractAppender
+a_elasticlogger=fuglu.plugins.a_logging.ElasticLogger
+a_plugintime=fuglu.plugins.a_statsd.PluginTime
+a_msgstatus=fuglu.plugins.a_statsd.MessageStatus
+a_mststatusrcpt=fuglu.plugins.a_statsd.MessageStatusPerRecipient
+
+[milter]
+
+#available options: readonly,manual,auto,tags,replace_demo,autoheaders
+milter_mode=readonly
+
+#available options: all,body,headers,from,to,prepend
+milter_mode_options=
+
+#do not write clientinfo
+ignoreclient=0
+
+#extra verbose debug output
+milter_debug=0
+
+[performance]
+
+#minimum scanner threads
+minthreads=2
+
+#maximum scanner threads
+maxthreads=40
+
+#minimum free scanner threads
+minfreethreads=0
+
+#Method for parallelism, either 'thread' or 'process' 
+backend=thread
+
+#Initial number of processes when backend='process'. If 0 (the default), automatically selects twice the number of available virtual cores. Despite its 'initial'-name, this number currently is not adapted automatically.
+initialprocs=0
+
+#Maximum cache size to keep attachemnts (archives extracted) per suspect during mail analysis (in bytes, default: 50MB)
+att_mgr_cachesize=50000000
+
+#Default maximum filesize to extract from archives (in bytes, default: 50MB)
+att_mgr_default_maxextract=50000000
+
+#Upper maximum filesize limit to extract from archives (in bytes, default: 500MB)
+att_mgr_hard_maxextract=500000000
+
+#Default limit for maximum number of files to be extracted from archives (default: 500)
+att_mgr_default_maxnfiles=500
+
+#Upper limit for maximum number of files to be extracted from archives (default: 500)
+att_mgr_hard_maxnfiles=500
+
+#do not use aiosmtplib even if it is installed (fallback to python built in smtplib)
+disable_aiosmtp=False
+
+[spam]
+
+#what to do with messages that plugins think are spam but  not so sure  ("low spam")
+#in normal usage you probably never set this something other than DUNNO
+#this is a DEFAULT action, eg. anti spam plugins should take this if you didn't set 
+# a individual override
+defaultlowspamaction=DUNNO
+
+#what to do with messages if a plugin is sure it is spam ("high spam") 
+#in after-queue mode this is probably still DUNNO or maybe DELETE for courageous people
+#this is a DEFAULT action, eg. anti spam plugins should take this if you didn't set
+# a individual override 
+defaulthighspamaction=DUNNO
+
+[virus]
+
+##what to do with messages if a plugin detects a virus
+#in after-queue mode this should probably be DELETE
+#in pre-queue mode you could use REJECT
+#this is a DEFAULT action, eg. anti-virus plugins should take this if you didn't set 
+# a individual override
+defaultvirusaction=DELETE
+
+[smtpconnector]
+
+#confirmation template sent back to the connecting postfix for accepted messages
+requeuetemplate=FUGLU REQUEUE(${id}): ${injectanswer}
+
+[esmtpconnector]
+
+#confirmation template sent back to the connecting client for accepted messages
+queuetemplate=${injectanswer}
+
+#only deliver the message to the first recipient, ignore the others. This is useful in spamtrap setups where we don't want to create duplicate deliveries.
+ignore_multiple_recipients=0
+
+[databaseconfig]
+
+#read runtime configuration values from database types specified in this order. currently supported db types: sql, rest, yaml
+dbpriority=sql
+
+#cache values for given number of seconds. set to 0 to disable cache (not recommended)
+value_cache_ttl=30
+
+#read runtime configuration values from SQL database. requires sqlalchemy to be installed
+dbconnectstring=
+
+#sql query that returns a configuration value override. sql placeholders are ':section',':option' in addition the usual suspect filter default values like ':to_domain', ':to_address' etc
+#if the statement returns more than one row/value only the first value in the first row is used
+sql=SELECT value FROM fugluconfig WHERE `section`=:section AND `scope` IN (:globalscope,CONCAT('%',:to_domain),:to_address) AND `option`=:option ORDER BY `scope` DESC LIMIT 1
+
+#sql query that returns all values, options and scopes (relevant for one recipient) of one section. sql placeholders ':section' available in addition the usual suspect filter default values like ':to_domain', ':to_address' etc
+sqlsection=SELECT value, option, scope FROM fugluconfig WHERE `section`=:section AND `scope` IN (:globalscope,CONCAT('%',:to_domain),:to_address) ORDER BY `scope` DESC
+
+#name of global scope
+globalscope=$GLOBAL
+
+#what is the name of the "option" field in the database
+option_field=option
+
+#what is the name of the "scope" field in the database
+scope_field=scope
+
+#what is the name of the "value" field in the database
+value_field=value
+
+#REST API base URI
+restapi_uri=
+
+#REST API endpoint path to config overrides
+restapi_endpoint=
+
+#list of additional REST API headers, e.g. for authentication
+restapi_headers=
+
+#verify REST API server's SSL certificate
+restapi_verify=True
+
+#REST API http connection timeout
+restapi_timeout=10
+
+#REST API caching timeout. Set to 0 to disable caching (not recommended)
+restapi_cachettl=300
+
+[environment]
+
+#Distance to the boundary MTA ("how many received headers should fuglu skip to determine the last untrusted host information"). Only required if plugins need to have information about the last untrusted host(SPFPlugin)
+boundarydistance=0
+
+#Optional regex that should be applied to received headers to skip trusted (local) mta helo/ip/reverse dns.
+#Only required if plugins need to have information about the last untrusted host and the message doesn't pass a fixed amount of hops to reach this system in your network
+trustedhostsregex=
+
+#Optional regex that should be applied to received headers to skip trusted (local) mta transfers (for example LMTP).
+#Only required if plugins need to have information about the last untrusted host and the message doesn't pass a fixed amount of hops to reach this system in your network
+trustedreceivedregex=
+
+#Skip broken/unparseable received headers
+skiponerror=0
+
+#Skip received headers if helo/ptr domain is same domain as host in 'by' section
+skipsamedomain=0

@@ -1,0 +1,574 @@
+-- Fuglu 1.6.0 2025-08-15 "Schabziger"
+Schabziger is a very dry, brittle and sharp tasting cheese from the Glarus Alps in Switzerland.
+It is low in fat and high in protein, usually used as a seasoning rather than a staple. The
+slightly spicy taste is defined by the seasoning herb, a type of fenugreek. Due to the very
+different flavour it is once again not everybody's favourite food, but with addiction potential.
+
+* add support for sqlalchemy 2.0
+* support and use async redis/elastic/dns
+* CallAhead: SQL backend got refactored and now supports any sqlalchemy database. Create database via shell. New plugin BounceCheck.
+* blwl: require column "active" (bool, int(1)) for sql based listings
+* various fixes, improvements, and options in ARC handling
+* add btc plugin from fuglu-extra-plugins
+* new plugins LogHeaders, GetOrigin, AttachmentLimit, LineLength (in various modules)
+* new outpolicy plugins NoInvalidFrom, RCPTDomainThrottle, EnforceFromSender
+* domainauth: dkim/dmarc plugin reject logic, new plugin PTRPlugin
+* QR extract support more backends, categorise content
+* more outbound policy plugins
+* add pdf as archive format, extract uris from pdf
+* allow to globally disable extraction of specific file archive types
+* improve fuglu initialisation
+* improve log verbosity and messages in core and plugins
+* more unit tests
+
+Developers:
+* Any plugin can now be run async
+* Async Redis is now preferred
+* Refactoring of SuspectFilter matches and get_args methods. If you use extended=True then you must update your code!
+
+Administrators:
+* Improved Documentation
+* dmarc depencency version must be at least 1.1.0
+* removed outdated python-file as supported file magic library
+* Elasticsearch/Opensearch dependency must support async
+* aiodns dependency required for DNS lookups
+* cleaned up logger names, may need to adjust logging.conf
+* update blwl database model with column "active"
+
+-- Fuglu 1.5.0 2024-04-11 "Chou Dou Fu"
+Chou Dou Fu or smelly tofu is a fermented bean curd popular in Taiwan. Think of it as a kinf of vegan
+cheese. You will notice the sour smell of preparation from afar on any night market. Follow it to
+discover an fantastic tasting, healthy snack. It is crispy on the outside, melting soft on the inside
+and usually served with some pickled cabbage on the side.
+
+* minor code security improvements
+* add fluentd loghandler
+* continued to improve log output
+* send bounces via separate outbound system
+* ratelimit: expire redis values
+* split FilterDecision plugin into two components (FilterDecision and DeliverDecision)
+* new plugin to extract uris/emails from attached qr codes
+* new plugins in domainauth to strip dkim/arc headers and pass dkim header data between fuglu instances
+* domainauth: various fixes and improvements to arc and dkim signing. use org domain for dmarc checks.
+* archive plugin: new backends for S3 and WebDAV storage
+* fuzor: make hash algorithm configurable
+* call-ahead: better behaviour on misbehaving target server, fix command line client
+* logging plugin: use async elasticsearch
+* new plugin: sigenc: sign and encrypt outgoing mail. decrypt and verify incoming mail. load and learn certificates.
+* fuglu/src/startscript/fuglu is superseded by python -m fuglu
+
+Developers
+* rework core mail handling. make less use of python message/emailmessage objects,
+  instead work directly with source, e.g. when altering headers. this prevents unintended
+  changes of mail structure (e.g. mime-headers) which may break crytographic signatures.
+* removed python-redis 2.x compatibility and RedisKeepAlive, deprecate explicit password
+* improved python 3.12 compatibility
+
+
+
+-- Fuglu 1.4.0 2023-09-15 "Haggis"
+Haggis is Scotland's national dish. It consists of sheep stomach filled with sheep offal, onion, oats,
+and is heavily spiced with black pepper. Thus it "is not for the weak of constitution". Slainte!
+
+* Python 3.11 compatibility
+* Improve dependency requirements
+* Better dependency linting
+* replace aioredis by redis.asyncio, consider redis-py 2.x to be deprecated
+* Attachment handling improvements:
+  * Handling of password protected (encrypted) archives using a set of default passwords
+  * Read original filename from .gz header (if present)
+  * Explicit check if rarfile can be unpacked (unrar backend is installed)
+  * add fuzzyhashlib to easily extend list of available hashing-methods for attachments
+  * enable tar.xz extraction
+  * determine maximum extraction size
+* various small improvements of domainauth module.
+  * spf "skipped" renamed to "skip".
+  * spf allow override of envelope sender with header value
+  * arcsign: improve ptr extraction
+* filterdecision: subject tag fixes for encoded subjects, don't add tag repeatedly
+* spamassassin plugin: low spam score override
+* fublwl plugin:
+  * read listings from json file
+  * add rbl backend
+  * autolist: renamed (prefixed) config options
+* autolist appender: major improvements, add score overrides, renamed (prefixed) some config options
+* uriextract: performance fix: do not repeatedly reparse html with beautifulsoup
+* elasticlogger:
+  * performance fix if multiple recipients, add timeout
+  * log if archive is pw protected
+* add fuzzyhash antivirus plugin (formerly ssdeep plugin from fuglu-extra-plugins)
+* better connection error handling for redis and avscan connections
+* ongoing work of log message cleanup
+
+
+-- Fuglu 1.3.0 2023-03-02 "Natto"
+Natto is a fermented soy bean product from Japan. It is cheap, nutrious, and healthy.
+But the smell and the gooey consistency can be challenging.
+
+* new milter mode to prepend headers
+* dns extension: deprecate pydns, support dnssec
+* elastic logger plugin: log booleans/numeric without conversion to string
+* bacn plugin: minor usability improvements
+* fublwl plugin: update hitcount via REST API
+* address checker: make maximum local part length configurable
+* outpolicy trapintercept improvements and refactoring
+* filetypeplugin refactoring to remove class variables, remove oversize check
+* ratelimit plugin improvements and new limiters (e.g. for virus senders)
+* arc signing plugin bugfixes in authentication results header handling and ptr verification
+* blwl plugin: header checks in milter mode, performance and logging improvements
+* spf plugin: different reject message per spf result, write received-spf header, support different strict levels
+* geoip plugin: use continent code as fallback
+* dkim plugin: allow subject patching before dkim evaluation
+* domainaction plugin: support welcomelists, rename blacklist to blocklist
+* moved SSSP plugin to antivirus module
+* moved encrypted archives plugin to attachment module
+* some small performance and cache improvements
+
+Developers
+* deprecated functions are now at log level error - removal is immminent
+* deprecated aiosmtp as there is no known active user
+* ongoing work of log message cleanup
+* use more f-strings
+* add more typing hints
+* new suspect.wrap function
+* use super().__init__ instead of SuperClass.__init__ calls
+* require latest domainmagic
+
+
+-- Fuglu 1.2.0 2022-08-22 "Vegemite"
+Vegemite is Australia's distinct yeast spread. As always it's a love it or hate it
+relationship, but used in a quantity as small as possible it turns every boring sandwich
+into an umami sensation - in Canberra as well as in Brussels.
+
+ * use utc timezone and isoformat
+ * Improve multi recpient capability (milter mode)
+ * Config parsing is more fault tolerant and accepts more environment variables (for docker)
+ * SuspectFilter: support numeric operator comparisons
+ * SPFPlugin: complete rewrite
+ * DMARC/DKIM/ARC: improved validation
+ * new plugin: ARC sign: add ARC signature
+ * ElasticLogger: load mapping from external file, configurable fieldmap, log envelope as lowercase
+ * Archive: store base64 encoded message body if unicode conversion fails
+ * URIExtract: improved correction of borked URIs
+ * ICAP: don't convert mail to unicode first
+ * Call-Ahead: support client side TLS certificate
+ * AtthashAction: More config options
+ * IVMSG plugin: moved to fuglu-extra-plugins, data source is gone
+ * new plugin: DNSData: DNS lookups of sender/recipient domains
+ * DBConfig: improved caching
+ * various small changes, e.g. log output improvements, fixed redis deprecations, unit test updates
+ * added more unit tests
+
+
+-- Fuglu 1.1.0 2022-03-04 "Surströmming"
+Surströmming is a canned and partially fermented fish popular in Sweden.
+It's stench is unbearable, but properly washed, prepared, and served it
+turns into an incredible melt-in-your-mouth delicacy.
+
+ * new AV plugin: support Cyren AV (and Eset via ICAP)
+ * new plugin: ASN lookup
+ * add REST API backend to dbconfig, fublwl, filterconfig, domainaction, emailaction
+ * add YAML backend to dbconfig
+ * support rspamd checkv2 API
+ * add opensearch library support
+ * add plugin fraction support for appender plugins
+ * temp reject on milter errors
+ * URIExtract bugfixes and improvements
+ * SPF plugin improvements
+ * small fixes and improvements in mailfeed, logging, blwl, restrictions, dkim
+ * rate limit aborts faster to prevent milter timeouts / redis failure improvements
+ * call-ahead is more resilient on redis failure and requires less config
+ * extend dnsquery extension
+ * improve compatibility to Debian/CentOS by allowing specification of multiple
+   groups to run the process, then pick an existing one
+ * improved python version compatibility for python 3.6-3.10
+ * fixed sighup behaviour
+
+
+-- Fuglu 1.0.1 2021-09-08 "Durian"
+ * fix get_outgoing_helo
+ * fix config generator
+ * add SQL lint stub
+ * URIExtract, DomainAction bugfixes and improvements
+ * KnownSubject add kafka backend, fix redis backend
+ * improve wording and documentation
+ * deprecate functions
+
+-- Fuglu 1.0.0 2021-07-21 "Durian"
+This is Fuglu 1.0. It does not mean development is finished, but Fuglu can now be
+considered mature and (for the moment) feature complete.
+Releases will be nicknamed after some exquisite food. Durian is a south east Asian
+fruit, also called "stinky fruit" due to its distinctive odour. It is definitely
+an acquired taste, but it is considered the "King of Fruit" for a reason.
+
+ * async milter
+  - healthcheck
+  - timings sum up for same message & plugin
+  - improved logging for non-continue plugin result
+  - runtime parameter to send lint output to custom module
+ * milter plugins converted to async milter interface
+ * SPFPlugin improvements (mx exceptions, WListable (soft-)fail in async milter mode)
+ * lint log-test fix in foreground mode and colored final state
+ * improve body text decoding
+ * EmailExtract stores domains in tags
+ * URIExtract parsing using vobject if present
+ * SA extra header for tmp-uris added
+ * refactor and harmonise redis connection settings
+ * refactor plugins, this will break most configs
+ * major rework of archive plugin, may be suitable as quarantine
+ * new elasticsearch logger plugin
+ * new block/white list plugin framework
+ * many new filter plugins
+ * import postomaat plugins (as milter-plugins, where possible)
+
+Developers:
+ * refactored and unified tagging
+ * use pooled redis connections
+ * extensible archive plugin supporting different backends
+ * FuConfigParser extends RawConfigParser and provides getlist function
+ * support async SMTP lib
+
+-- Fuglu 0.10.8 2021-02-15
+ * Python 3.9 compatibility
+ * DKIM plugin: check if signed in author/sender domain
+ * Fuzor plugin: Kafka reporting backend
+ * FProt plugin: use bytes buffer directly
+ * Fixes preventing unmodified msg modification
+   - Fprot plugin adding Content-Type header
+   - smtpconnector/esmtpconnector detecting end-of-data too early
+ * Attachment manager limits for max num files extracted
+ * Attachment plugin: rules for protected archives
+ * fixed "fuglu_conf" fixes and "-d" option to print defaults
+ * "--logconfig" option to define a specific log-config file foreground mode
+
+Developers:
+ * smtpconnector: read SIZE in MAILFROM state if available,
+   defer if buffer creating suspect is much smaller
+ * URIExtract:
+   * refined href link extraction, imags src uri extraction
+   * detect uris split on different lines
+   * check mime parts with parsing errors too
+   * extract redirects
+   * use <base> html-tag for uris
+ * clientinfo:
+   * regex input possible to trust received lines
+   * input to skip received with same domain (rcv from/by)
+ * Async milter implementation (enabled by milter + asyncprocess as backend)
+ * Async milter process pool  (milter-mode only)
+   "backend=asyncprocess"
+
+
+-- Fuglu 0.10.7 2020-07-06
+ * dropped support for Python 2 - Python 3.6 is new minimum requirement
+ * use Python EmailMessage (rfc5322) object
+ * minor improvements and fixes to many plugins (e.g. dkim, spf, sa)
+ * new plugin: imapcopy (from fuglu-extra-plugins)
+ * new plugin: uriextract (from fuglu-extra-plugins)
+ * new plugin: DMARC check
+ * new tool 'fuglu_healthcheck' allows monitor fuglu health (docker, zabbix)
+
+
+-- Fuglu 0.10.6 2019-12-03
+ * improvements to DKIM and SPF plugins
+ * pass envelope sender to spamassassin
+ * contain suspect.id in reject message
+ * THIS WILL BE THE LAST VERSION WITH OFFICIAL SUPPORT FOR PYTHON2!
+
+-- Fuglu 0.10.3 2019-11-13
+ * ClamAV fix for infinite loop
+ * Improvements for multiline attachment filenames
+ * Include suspect id in reject response
+
+Developers:
+ * sssp refactor and unit tests
+ * more tests for 7z-archives
+ * on bounce, save postfix queue-id as tag
+ * improvements decoding from-type headers
+
+-- Fuglu 0.10.1 and 0.10.2, 2019-07-31
+ * switch python3 testing from 3.4 to 3.6
+ * allows to define custom conf.d (in fuglu config file or as runtime parameter)
+ * disable bounces for addresses given by file
+ * in reinject, use SMTPUTF8 for unicode addresses even if not given
+ * new plugin SALearn
+
+Developers:
+ * improvements string encoding/decoding
+ * improvements get_client_info
+ * fix in SpearPhishPlugin for empty sender
+ * virusscanner - skip on previous virusscanner hit
+ * Fuzor: Prevent checksum recalculation, always add tag, improved exception handling
+ * RSpamdPlugin: fix for non-ascii chars in rspamd answer
+ * strip_attachments moved from SAPlugin to Suspect
+ * Fuzor: Strip oversize option
+ * Py3 fix for fuglu_debug
+
+-- Fuglu 0.10.0, 2019-04-11
+ * require setuptools
+ * performance improvements (smtpconnector)
+ * improved header parsing and decoding
+ * Milter mode:
+   * handle multiple suspects in one session
+   * significant stability improvements
+ * F-Prot plugin: lint file mode
+ * RSpamd: new plugin (imported from fuglu-extra-plugins)
+ * Fuzor: new plugin (imported from fuglu-extra-plugins)
+ * AppenderSkipper: new plugin
+ * Threading backend: force configurable number of free worker threads
+ * FileTypePlugin: process only message parts marked as "attachment", "inline" or with filename present
+
+Developers:
+ * More Python 3 fixes
+ * Use objgraph for debugging (fuglu_control)
+ * Attachment manager: more attachment properties
+ * New redis extension: provides keepalive redis connections
+ * Milter: access to queue id and SASL info
+ * Docker dev environment
+ * static prepend_header_to_source routine in Suspect (conversion, encoding, prepend)
+ * static decode_msg_header routine in Suspect (decoding and conversion to string)
+ * static parse_from_type_header routine in Suspect (returns list of (display name, mail))
+ * improved archive error handling in mailattach
+ * improved getting payload for corrupted mail
+ * MailAttachment
+   * location for attachment (in archive tree if file is archive)
+   * md5 and sha1 checksum
+   * Content-Disposition: inline/attachment
+   * in_archive property useful for recursive extraction
+   * parts with decode errors get contenttype: application/unknown
+
+-- Fuglu 0.9.0, 2018-10-25
+ * ClamAV plugin: Fix sending large files to ClamAV which caused timeouts
+ * Attachment plugin: Improve file type detection of unnamed attachments
+ * Spamassassin plugin: strip attachment function now generates proper mail format
+ * F-Prot plugin: fix missing content-type header
+ * New Plugin: Sender Rewrite Scheme in module domainauth (imported from fuglu-extra-plugins)
+ * Fix for CentOS-6 system script to correctly stop all processes
+ * Configurable check for mail address validity, fail action and message
+ * Configuration option to remove (default) or keep temporary message files on internal errors (receive,address,unknown)
+ * new input "att_mgr_cachesize" to define attachment manager cache size
+ * new input "archiveextractlevel" in FiletypePlugin to define attachment archive extract level
+ * allow binding incoming ports to different addresses
+ * gzip archive handler
+ * new milter connector allowing changes to the message
+ * support for unicode addresses (SMTPUTF8) and 8BITMIME in smtpconnctor
+ * checksums for all attachments on request
+ * fuglu with "--foreground" option ignores logging.conf and prints to stdout
+
+Developers:
+ * extended signature of scan_stream function in AV plugins / new subclass shared.AVScannerPlugin
+ * tighter integration of dnsquery extension
+ * Mail attachment manager - "Suspect.att_mgr" - storing all message attachments and message parts
+ * Attachment objects are created as needed, cached as long as withing the cache limit
+ * caching framework for member variables and methods
+ * New implementation for address validity check
+ * Consistent types in SuspectFilter/Suspect getters/setters (bytes/unicode)
+ * nonzero fuglu return values on error
+ * fix encoding problems in bounce messages
+ * fixes and exception handling in string encoding/decoding for Python 3
+ * mail scantime details (to be written to log)
+
+
+-- Fuglu 0.8.0, 2018-04-23
+ * Significant improvements of Python 3 support fixing many issues.
+ * Logging rewrite, log level can now be changed at runtime. Logging will spawn a dedicated process.
+ * Caching rewrite, caching will spawn a dedicated process.
+ * Multiprocessing improvements improving performance and fixing many issues.
+ * Toggle between multithreading and multiprocessing run modes at runtime
+ * IPv6 support for connections to Postfix and SpamAssassin.
+ * Allow multiple plugin directories
+ * SpamAssassin plugin: option to strip attachments from big mails
+ * ClamAV plugin: option to fallback to clamscan if clamd fails
+
+Developers:
+ * New dnsquery extension to faciliate dns lookups
+ * convenience function is_ham in shared.Suspect
+ * gitlab CI tests
+
+
+-- Fuglu 0.7.0, 2018-01-14
+ * Attachment Plugin:
+  * support more archive types ( tar.gz, tgz, tar.bz2, .7z)
+  * extract archives based on detected magic mime type if possible (instead of file ending)
+  * the plugin now supports scan-time configuration options
+ * New Plugin: SpearPhish detection
+ * Improve body text extraction by also extracting multipart/mixed and the message's epilogue
+ * various refactorings / remove lots of code smell
+ * suspect: new "blocked" default tag to indicate a message contains unwanted content (blocked attachents etc), but is not strictly malicious like spam/virus
+ * new tool 'fuglu_client' allows scanning messages from the commandline by either injecting them into a running fuglu
+   with the Netcat plugin or by starting its own temporary fuglu instance. This is helpful for debugging or running fuglu
+   in fetchmail like environments
+ * multi processing mode: instead of running multithreaded the scanning tasks can now run in their own process
+ * prequeue mode can now be configured to only deliver to one recipient per message - useful in spamtrap setups
+ * Add IPv6 support in various plugins connecting to other daemons (clamav, spamasassin, drweb, fprot, icap, sssp)
+ * domainauth plugin: remove hard dependency of pkg_resources
+
+Developers:
+ * suspect.to_addr is no longer a writeable member, it has been converted to a property which always returns the first recipient of a message
+
+
+-- Fuglu 0.6.6, 2016-05-17
+ * Minimum python version 2.6
+ * Many changes to start making fuglu python3 compatible
+ * core: Keep additional groups when dropping privileges
+ * ScriptFilter : stop() now requires action and message arguments for any action other than DUNNO
+ * Attachment Plugin: treat .z archives like .zip
+ * improve DKIMVerify plugin - it is now slightly less experimental and actually works in most cases ;-)
+ * new experimental Plugin "DomainAuth" ( poor man's DMARC: check if message is either DKIM or SPF authenticated)
+ * make writing the SpamStatus header configurable
+ * fix crash when reading null values from db config overrides
+ * support float values for highspamlevel
+ * start the fuglu-extra-plugins repository to reduce the amount of mostly unused plugins in the core distro
+ * new log handlers: Group(Readable|Writable)(Timed)?RotatingFilehandler
+ * Extracting the client ip address from received headers now supports IPv6
+
+Developers:
+ * new helper class fuglu.shared.FileList : maps lines in a file to a list which refreshes automatically
+
+-- Fuglu 0.6.5, 2015-11-19
+ * core: Fix unquote lines with leading dots in pre-queue mode
+ * core: Specifiy stricter default permissions for daemon's pidfile
+ * SuspectFilters: support new fields clienthostname, clientip, clienthelo
+ * smtp connector: don't crash if a plugin tries to backscatter using REJECT
+ * Attachment Plugin: improve detection of installed filemagic lib
+
+-- Fuglu 0.6.4, 2015-07-30
+ * core: warn about known issues/security risks of current version in startup/lint.
+   Note: This performs a DNS lookup containing *only* the current version number
+   This check can be disabled by setting [main]versioncheck=0
+ * core: optimized thread handling to reduce CPU usage
+ * core: lint now also checks the logging configuration
+ * F-Prot plugin: support additional scan options
+ * Attachment plugin: Support rarfile extraction (requires additional lib) and improve zipfile extraction
+ * Clamav plugin: new experimental option "pipelining" to scan multiple messages over the same connection
+ * new plugin: DrWeb Antivirus (experimental)
+ * new appender plugin: statsd sender (experimental) : Send various stats to a statsd/graphite system
+   * Plugin execution time
+   * Message decisions
+   * Per recipient message stats
+
+Developers:
+ * plugdummy tool: now supports prepender plugins
+
+-- Fuglu 0.6.3, 2015-03-20
+ * lint now also checks SuspectFilter files in some plugins
+ * SuspectFilters: improved HTML stripping
+ * Attachment plugin: can now check file names in zip archives and extract files from zips to check their content type
+ * bugfix: Spamassassin plugin no longer treats ham as spam if forwardoriginal=0 and spamheader contains bayes test result
+ * bugfix: Attachment plugin should no longer cause fuglu to crash under load if python-file is installed
+ * bugfix: Attachment plugin should now evaluate rules within the same file in the correct order
+
+Developers:
+ * suspects now have an additional built-in tag 'scantimes' which contains a list of tuples (<plugin section name>, scan time) - you no longer have to add your custom Myplugin.time tag
+   Existing plugins no longer write the .time tag themselves.
+ * the built-in "decisions" tag now uses the plugin's section name instead of the  human readable name
+
+-- Fuglu 0.6.2, 2014-09-05
+ * new Prepender: PluginFraction (basically the opposite of PluginSkipper:include instead of exclude list)
+ * new tool: fuglu_suspectfilter . Use this to find out which rules in a suspect filter match a sample message
+ * Spamassassin Plugin: unix domain socket support
+ * Improved bounce message formatting
+ * new config: outgoing_host for reinjecting messages into a remote MTA
+ * the HeaderPlugin has been removed, the plugin was buggy and the functionality is redundant
+ * Clamav Plugin: removed the deprecated STREAM scan method with INSTREAM
+ * tuned the internal thread pool which should slightly improve scan performance
+ * reorganized script directory, added init/systemd scripts for the common linux distributions
+ * added action DISCARD as alias to DELETE to be more consistent with postfix
+
+Developers:
+ * plugdummy tool: can run run multiple plugins in one go, autodetects plugin type, can read messages from stdin
+ * suspect.get_tag() now takes a default argument which will be returned if the requested tag is not found
+
+-- Fuglu 0.6.1, 2013-11-15
+ * new Plugin: ScriptFilter (dynamically loaded filter scripts)
+ * new (experimental) domain authentication plugins: DKIM Sign / Verify, SPF Check
+ * Archive Plugin:
+    * new options chown/chgrp/chmod to change owner/permissions of archived file
+    * storage directory and filename are now configurable using templates. "makedomainsubdir" option is deprecated
+ * fuglu start script has more common options like --foreground, --pidfile, -c <configfile>
+ * milter protocol: some improvements. It "should work" but has not received much testing
+ * Antivirus plugins: Increased default timeout to 30 sec
+ * Prequeue Bugfix: correctly close connection to 2nd postfix instance when message is deferred/rejected/discarded
+ * Fuglu doesn't completely shut down anymore if one connector fails to start
+ * SQL extension: (experimental) Some configuration values can now be dynamically loaded from a database
+   see: https://fumail.gitlab.io/fuglu/configuration-index.html#fetching-scan-time-configuration-values-from-a-database
+ * Reduce log and header noise: The log template is now configurable, removed tag logging by default (use ${tags} in logtemplate to get the old behaviour)
+   The suspect-id header can now be disabled
+
+Developers:
+ * plugdummy.py has new options (show default plugin config, lint plugin)
+ * Spamassassin Plugin: now can pass "temporary headers" to SA. read from tag `SAPlugin.tempheader`. These headers are only visible to Spamassassin.
+ * apply_template now takes a callbackfunction which allows modifying the built-in values before the template is applied
+ * to add support for configuration domain/user overrides from a database use a fuglu.extension.sql.DBConfig object instead of self.config
+ * suspectfilter get_args can now optionally return extended info about a match (matched field, used regex, matched value)
+ * suspect has a new method get_client_info which tries to extract helo, ip and reverse dns information from received headers
+ * fuglu_control has a new command 'netconsole' which starts a python interactive shell on a network socket. This allows runtime debugging of plugins or fuglu itself.
+
+-- Fuglu 0.6.0, 2012-07-04
+ * various bugfixes and improvements in before-queue support
+ * new Plugin: ActionOverride (Custom action based on filter)
+ * new Plugin: F-prot Antivirus
+ * new Plugin: SSSP (Sophos Antivirus scan over SSSP Prodocol / SAVDI)
+ * new Plugin: ICAP (Antivirus scan over ICAP - Sophos/Symantec/...)
+ * new Plugin: Killer (Deletes All messages) - used in some special setups
+ * Vacation Plugin: Now supports domain wide ooo messages
+ * SuspectFilter Files now have support advanced regex format /<perl style regular expression>/<modifiers>
+   see:  https://fumail.gitlab.io/fuglu/plugins-index.html#suspect-filters
+ * Archive Plugin: Improved Logging
+ * Attachment Plugin: bugfix, sendbounce option could not be disabled
+ * Spamassassin Plugin: bugfix, better detection of spamflag header
+ * Clamav Plugin / Spamassassin Plugin / Attachment Plugin: new option 'rejectmessage' for before queue rejects
+ * improved core support for multi recipient messages. it is no longer absoultely required to set fuglu_*_destination_recipient_limit=1
+   (but some plugins still only act on the first recipient)
+ * outgoinghelo is no longer mandatory, fuglu auto-detects the local hostname if the config option is empty
+ * new tool: fuglu_conf to export current config, show differences from the default (fuglu_conf -n) etc
+ * the message returned to the connecting client is now configurable
+
+Developers:
+ * suspect.addheader() has a new 'immediate' option to make headers visible for consecutive plugins. by default, headers are only added before re-injecting
+ * Spamassassin Plugin: writes new tag "SAPlugin.skipreason' if the message was not scanned
+ * new way of defining required config variables. plugins can now provide defaults and config option descriptions.
+   see: https://fumail.gitlab.io/fuglu/plugins-index.html#define-configuration-options-for-your-plugin
+   important: for default values to work, make sure your plugin doesn't read it's own config values in __init__ !
+ * Suspect.getSource() now has an optional maxsize parameter to limit the amount of body data read into memory
+ * new development tool: 'plugdummy.py', dry-run and debug your plugins without a running fuglu
+   see: https://fumail.gitlab.io/fuglu/plugins-index.html#debug-a-plugin-without-running-fuglu
+
+-- Fuglu 0.5.0, Released 2011-10-28
+ * started changelog ;-)
+ * bugfix: Milter protocol errors
+ * bugfix: Incorrect unquoting of two leading dots in smtp transactions could lead to broken s/mime sigs
+ * A few plugins now have a 'PROBLEMACTION' so it is now configurable if a message should be deferred or accepted if for example the clamav daemon is not reachable
+ * new option: [main] trashlog (boolean), default False, if True, Fuglu writes a 00-fuglutrash.log file in the trashdir listing all deleted messages
+ * SuspectFilters (previously 'HeaderFilters'):
+ 	* now supports header wildcard (Character '*')
+ 	* accepts colon at the end
+ 	* alias "from_address" for envelope_from and "to_address" for envelope_to
+ 	* new type: 'mime:<headername>' to check mime headers in all attachments
+ 	* new type: 'body:stripped'  (or just 'body') to match all text parts with html tags removed and newlines replaced by space
+ 	* new type: 'body:raw' to match the decoded body in all text/* parts
+ 	* new type: 'body:full' to match the full undecoded body
+ 	* bugfix: regexes now match everywhere in the field, not just at the beginning
+ * Attachment Plugin:
+ 	* Configuration of attachment rules can now be read from a database table (sql extension)
+ 	* Support rule configuration from sql
+ 	* Support both 'python-magic' and 'python-file' libraries
+ 	* Improved log messages
+ 	* "BOUNCE" action has been removed and replaced with the config option 'sendbounce'
+ * Archive Plugin:
+ 	* Allow archive exception rules (append "no" to the regex)
+ 	* Messages are now stored as '<suspect-id>.eml' instead of a random string
+ * Clamav Plugin:
+ 	* Virusaction is now configurable
+ * Spamassassin Plugin:
+ 	* now Supports lowspam / highspam configuration
+ 	* new option "scanoriginal" -> Scans the unmodified original message (not the probably modified version from other plugins)
+ 	* new option "forwardoriginal" -> Does forward the original message source to the next plugin, without modified SA-Headers
+
+Developers:
+ * Suspects now also have a "highspam" tag which allows different behavior based on whether a message is "probably" or "definitely" spam
+ * if a plugin cannot be loaded, a full stack trace is displayed
+ * Appenderplugins can now read the tag "injectanswer" which contains the final smtp answer from SMTP reinjects
+ * (sql extension) DBFiles allow reading sql tables and treat them like config files
+ * HeaderFilter is now called SuspectFilter
+
+-- Fuglu 0.4.5, Released 2010-05-20

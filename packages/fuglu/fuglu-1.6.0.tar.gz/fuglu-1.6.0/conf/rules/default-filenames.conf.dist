@@ -1,0 +1,113 @@
+# default allowed / denied filename patterns
+# line format:
+# <action> <regex> <description>
+# <action> can be:
+# allow - this file is ok, don't do further checks . Don't use this blindly! If unsure, make NO rule instead of allow
+# deny - send error containing <description> back to sender, don't deliver the message
+# delete - silently delete the message, no error is sent back. Be careful with this option!
+
+# These are known to be mostly harmless or are used in ham too often to block
+# Override default Microsoft/Google blocked extensions here
+allow   \.jpg$               -
+allow   \.gif$               -
+allow   \.png$               -
+allow   \.url$               -
+allow   \.cer$               -
+allow   \.crt$               -
+allow   \.der$               -
+allow   \.vcf$               -
+allow   \.txt$               -
+
+# Default Google/Microsoft extension blocks
+
+# GOOGLE
+# https://support.google.com/mail/answer/6590
+deny    \.apk$               Dangerous attachment type (apk)
+deny    \.appx$              Dangerous attachment type (appx)
+deny    \.appxbundle$        Dangerous attachment type (appxbundle)
+deny    \.cab$               Dangerous attachment type (cab)
+deny    \.dll$               Dangerous attachment type (dll)
+deny    \.dmg$               Dangerous attachment type (dmg)
+deny    \.ex_?$              Dangerous attachment type (ex/ex_)
+deny    \.iso$               Dangerous attachment type (iso)
+deny    \.lib$               Dangerous attachment type (lib)
+deny    \.msc$               Dangerous attachment type (msc)
+deny    \.msix$              Dangerous attachment type (msix)
+deny    \.msixbundle$        Dangerous attachment type (msixbundle)
+deny    \.nsh$               Dangerous attachment type (nsh)
+deny    \.sys$               Dangerous attachment type (sys)
+deny    \.vxd$               Dangerous attachment type (vxd)
+
+# MICROSOFT
+# https://support.microsoft.com/en-us/office/blocked-attachments-in-outlook-434752e1-02d3-4e90-9124-8b81e49a8519?ui=en-us&rs=en-us&ad=us
+# https://techcommunity.microsoft.com/t5/exchange-team-blog/changes-to-file-types-blocked-in-outlook-on-the-web/ba-p/874451
+deny    \.ad[ep]$            Dangerous attachment type (ade/adp)
+deny    \.app$               Dangerous attachment type (app)
+deny    \.appcontent-ms$     Dangerous attachment type (appcontent-ms)
+deny    \.appref-ms$         Dangerous attachment type (appref-ms)
+deny    \.aspx?$             Dangerous attachment type (asp/aspx)
+deny    \.asx$               Dangerous attachment type (asx)
+deny    \.ba[st]$            Dangerous attachment type (bas/bat)
+deny    \.cer$               Dangerous attachment type (cer)
+deny    \.cdxml$             Dangerous attachment type (cdxml)
+deny    \.chm$               Dangerous attachment type (chm)
+deny    \.cmd$               Dangerous attachment type (cmd)
+deny    \.cnt$               Dangerous attachment type (cnt)
+deny    \.com$               Dangerous attachment type (com)
+deny    \.cpl$               Dangerous attachment type (cpl)
+deny    \.crt$               Dangerous attachment type (crt)
+deny    \.csh$               Dangerous attachment type (csh)
+deny    \.der$               Dangerous attachment type (der)
+deny    \.diagcab$           Dangerous attachment type (diagcab)
+deny    \.exe$               Dangerous attachment type (exe)
+deny    \.fxp$               Dangerous attachment type (fxp)
+deny    \.gadget$            Dangerous attachment type (gadget)
+deny    \.grp$               Dangerous attachment type (grp)
+deny    \.hlp$               Dangerous attachment type (hlp)
+deny    \.hpj$               Dangerous attachment type (hpj)
+deny    \.ht[ac]$            Dangerous attachment type (hta/htc)
+deny    \.in[fs]$            Dangerous attachment type (inf/ins)
+deny    \.isp$               Dangerous attachment type (isp)
+deny    \.its$               Dangerous attachment type (its)
+deny    \.jar$               Dangerous attachment type (jar)
+deny    \.jnlp$              Dangerous attachment type (jnlp)
+deny    \.jse?$              Dangerous attachment type (js/jse)
+deny    \.ksh$               Dangerous attachment type (ksh)
+deny    \.lnk$               Dangerous attachment type (lnk)
+deny    \.ma[dfgmqrstuvw]$   Dangerous attachment type (mad/maf/mag/mam/maq/mar/mas/mat/mau/mav/maw)
+deny    \.mcf$               Dangerous attachment type (mcf)
+deny    \.md[abetwz]$        Dangerous attachment type (mda/mdb/mde/mdt/mdw/mdz)
+deny    \.msh[12]?$          Dangerous attachment type (msh/msh1/msh2)
+deny    \.msh[12]?xml$       Dangerous attachment type (mshxml/msh1xml/msh2xml)
+deny    \.ms[iptu]$          Dangerous attachment type (msi/msp/mst/msu)
+deny    \.ops$               Dangerous attachment type (ops)
+deny    \.osd$               Dangerous attachment type (osd)
+deny    \.pcd$               Dangerous attachment type (pcd)
+deny    \.pif$               Dangerous attachment type (pif)
+deny    \.plg?$              Dangerous attachment type (pl/plg)
+deny    \.pr[fg]$            Dangerous attachment type (prf/prg)
+deny    \.printerexport$     Dangerous attachment type (printerexport)
+deny    \.psc?[12]$          Dangerous attachment type (ps1/ps2/psc1/psc2)
+deny    \.ps[12]xml$         Dangerous attachment type (ps1xml/ps2xml)
+deny    \.psdm?1$            Dangerous attachment type (psd1/psdm1)
+deny    \.pssc$              Dangerous attachment type (pssc)
+deny    \.pst$               Dangerous attachment type (pst)
+deny    \.py[cowz]?$         Dangerous attachment type (py/pyc/pyo/pyw/pyz)
+deny    \.pyzw$              Dangerous attachment type (pyzw)
+deny    \.reg$               Dangerous attachment type (reg)
+deny    \.sc[frt]$           Dangerous attachment type (scf/scr/sct)
+deny    \.settingcontent-ms$ Dangerous attachment type (settingcontent-ms)
+deny    \.sh[bs]$            Dangerous attachment type (shb/shs)
+deny    \.theme$             Dangerous attachment type (theme)
+deny    \.tmp$               Dangerous attachment type (tmp)
+deny    \.udl$               Dangerous attachment type (udl)
+deny    \.vb[eps]?$          Dangerous attachment type (vb/vbe/vbp/vbs)
+deny    \.vhdx?$             Dangerous attachment type (vhd/vhdx)
+deny    \.vsmacros$          Dangerous attachment type (vsmacros)
+deny    \.vsw$               Dangerous attachment type (vsw)
+deny    \.webpnp$            Dangerous attachment type (webpnp)
+deny    \.website$           Dangerous attachment type (website)
+deny    \.ws[bcfh]?$         Dangerous attachment type (ws/wsb/wsc/wsf/wsh)
+deny    \.xbap$              Dangerous attachment type (xbap)
+deny    \.xll$               Dangerous attachment type (xll)
+deny    \.xnk$               Dangerous attachment type (xnk)
