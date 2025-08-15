@@ -1,0 +1,60 @@
+[project]
+name = "rpaframework-core"
+version = "12.0.2"
+description = "Core utilities used by RPA Framework"
+authors = [{name = "RPA Framework", email = "rpafw@robocorp.com"}]
+license = {text = "Apache-2.0"}
+readme = "README.rst"
+requires-python = ">=3.9.1"
+
+keywords = ["robotframework", "rpa", "automation"]
+classifiers = [
+	"License :: OSI Approved :: Apache Software License",
+	"Development Status :: 5 - Production/Stable",
+	"Operating System :: OS Independent",
+	"Intended Audience :: Developers",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Topic :: Software Development :: Libraries",
+	"Framework :: Robot Framework :: Library",
+	"Framework :: Robot Framework",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+	"selenium >=4.0.0, <5.0.0",
+	"webdriver-manager >=4.0.2, <5.0.0",
+	"psutil >=5.9.0; platform_system == 'Windows'",
+	"pywin32 >=300, <400; platform_system == 'Windows' and python_version != '3.8.1'",
+	"uiautomation >=2.0.15; platform_system == 'Windows'",
+	"pillow >=10.2.0",
+	"packaging >=24.0",
+]
+
+[project.urls]
+homepage = "https://rpaframework.org/"
+documentation = "https://rpaframework.org/"
+repository = "https://github.com/robocorp/rpaframework"
+
+[dependency-groups]
+dev = [
+	"pytest>=7.0.0",
+	"pytest-cov>=4.0.0",
+	"pylint>=3.3.2",
+]
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/RPA"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-report term-missing --cov-branch"
+testpaths = ["tests"]
