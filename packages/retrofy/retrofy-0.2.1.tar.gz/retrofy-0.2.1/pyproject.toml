@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "retrofy"
+dynamic = [
+  "version",
+]
+description = "A tool to convert modern Python code to less modern Python versions"
+readme = "README.md"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+authors = [
+  { name = "Phil Elson", email = "pelson.pub@gmail.com" },
+]
+requires-python = ">=3.9"
+license = "Apache-2.0"
+
+# The core dependencies of the project.
+dependencies = [
+  "libcst",
+  "setuptools-ext",  # TODO: Get rid of this dependency when there is a wheel interface elsewhere.
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+]
+
+[dependency-groups]
+dev = [
+  "mypy",
+]
+
+[project.urls]
+Homepage = "https://github.com/pelson/retrofy"
+
+[tool.setuptools.packages.find]
+include = ["retrofy", "retrofy.*"]
+
+[tool.setuptools_scm]
+write_to = "retrofy/_version.py"
+
+[project.entry-points.multistage_build]
+# Declare automatic hooks for a multistage-build using project.
+post-build-wheel = "retrofy._pep517_hooks:compatibility_via_rewrite"
+post-build-editable = "retrofy._pep517_hooks:compatibility_via_import_hook"
