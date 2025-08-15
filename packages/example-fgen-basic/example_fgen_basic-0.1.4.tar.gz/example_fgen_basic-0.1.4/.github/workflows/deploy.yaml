@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  release:
+    types: [published]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy-pypi:
+    name: Deploy to PyPI
+    # Having an environment for deployment is strongly recommend by PyPI
+    # https://docs.pypi.org/trusted-publishers/adding-a-publisher/#github-actions
+    # You can comment this line out if you don't want it.
+    environment: deploy
+    strategy:
+      matrix:
+        os: [ "ubuntu-latest" ]
+        python-version: [ "3.11" ]
+    runs-on: "${{ matrix.os }}"
+    permissions:
+      # this permission is mandatory for trusted publishing with PyPI
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+        with:
+          python-version: ${{ matrix.python-version }}
+          uv-dependency-install-flags: "--all-extras --group dev"
+      - name: Publish to PyPI
+        run: |
+          uv run --no-sync python scripts/add-locked-targets-to-pyproject-toml.py
+          # TODO: move to using cibuildwheel so we have wheels for multiple platforms and python versions
+          # starting docs: https://cibuildwheel.pypa.io/en/stable/
+          uv build --sdist
+          uv publish
+          # Just in case, undo the changes to `pyproject.toml`
+          git restore --staged . && git restore .
