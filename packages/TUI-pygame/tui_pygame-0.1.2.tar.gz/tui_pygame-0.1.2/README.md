@@ -1,0 +1,95 @@
+# TUI_game
+
+A simple Text-Based User Interface (TUI) game framework for creating terminal-based games. This module allows you to create a text-based game with mouse control, character placement, and screen updates.
+
+## Features
+
+- Initialize screen dimensions based on user input.
+- Control a mouse cursor using 'w', 's', 'a', 'd' keys.
+- Place characters at specific coordinates on the screen.
+- Refresh the screen to reflect changes.
+- Exit the game loop gracefully.
+
+## Installation
+
+To install `TUI_pygame`, you can use pip:
+
+```bash
+pip install TUI_pygame
+```
+
+Usage
+
+Basic Example
+
+Here's a basic example of how to use the `TUI-game` module:
+
+```python
+import TUI_game
+import time
+
+# Initialize the game screen
+TUI_pygame.initialize()
+
+# Main game loop
+while True:
+    if not TUI_game.run():
+        break
+    TUI_game.update_screen()
+    time.sleep(0.001)  # Add a brief delay to prevent the program from running too fast
+```
+
+Customizing the Game Loop
+
+You can also customize the game loop by adding your own logic:
+
+```python
+import TUI_pygame
+import time
+
+# Initialize the game screen
+TUI_pygame.initialize()
+
+# Custom game loop
+while True:
+    # Place a character at a specific position
+    TUI_pygame.place_character('X', (5, 5))
+    
+    # Move the mouse cursor
+    TUI_pygame.move_mouse('w')
+    
+    # Process user input
+    if not TUI_pygame.run():
+        break
+    
+    # Update the screen
+    TUI_game.update_screen()
+    
+    # Add a brief delay
+    time.sleep(0.001)
+```
+
+Functions
+
+`initialize()`
+Initializes the screen dimensions and content. This function must be called before entering the game loop.
+
+`run()`
+Processes user input and returns `True` to continue the game loop or `False` to exit.
+
+`update_screen()`
+Refreshes the screen to reflect changes.
+
+`place_character(character, position)`
+Places a character at the specified coordinates on the screen.
+
+`move_mouse(direction)`
+Moves the mouse cursor in the specified direction ('w', 's', 'a', 'd').
+
+Contributing
+
+Contributions are welcome! If you have any suggestions or improvements, please feel free to open an issue or submit a pull request.
+
+License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
