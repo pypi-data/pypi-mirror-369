@@ -1,0 +1,103 @@
+# Deploy documentation on Github Pages.
+name: Deploy Github Pages
+
+on:
+  release:
+    # A release, pre-release, or draft of a release is published.
+    types: [published]
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel.
+jobs:
+  # The introduction just shows some useful informations.
+  intro:
+    # The type of runner that the job will run on.
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job.
+    steps:
+      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "The name of the branch is ${{ github.ref }} and the repository is ${{ github.repository }}."
+
+  # Build and deploy to gh-pages branch.
+  build-and-deploy:
+    # The type of runner that the job will run on.
+    runs-on: ubuntu-latest
+    env:
+      PLANTUML_VARIABLE: ""
+    # Steps represent a sequence of tasks that will be executed as part of the job.
+    steps:
+      - name: Setup cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y graphviz curl default-jre
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install .
+
+      - name: Setup PlantUML
+        run: |
+          cd ./tools/plantuml
+          chmod +x get_plantuml.sh
+          . ./get_plantuml.sh
+          echo "PLANTUML=$PLANTUML" >> $GITHUB_ENV
+          cd ../..
+
+      - name: Generate requirements in reStructuredText
+        run: |
+          cd ./tools/req2rst
+          chmod +x req2rst.sh
+          ./req2rst.sh
+          cd ../..
+
+      - name: Generate test cases in reStructuredText
+        run: |
+          cd ./tools/tc2rst
+          chmod +x tc2rst.sh
+          ./tc2rst.sh
+          cd ../..
+
+      - name: Create test report
+        run: |
+          cd ./tools/createTestReport
+          chmod +x create_test_report.sh
+          ./create_test_report.sh
+          rm -f ./out/coverage/.gitignore
+          cd ../..
+
+      - name: Build tracing report
+        run: |
+            cd ./tools/lobster
+            chmod +x create_tracing_online_report.sh
+            ./create_tracing_online_report.sh
+            rm -f ./out/*-lobster.json
+            cd ../..
+
+      - name: Build sphinx webpages
+        run: |
+          cd ./tools/sphinx
+          make html
+
+      - name: Upload static files as artifacts
+        id: deployment
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./tools/sphinx/build/html

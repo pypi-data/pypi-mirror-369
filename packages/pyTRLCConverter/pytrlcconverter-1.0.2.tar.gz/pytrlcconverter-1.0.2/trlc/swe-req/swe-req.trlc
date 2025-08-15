@@ -1,0 +1,459 @@
+package SwRequirements
+import AbstractRequirements
+import Generic
+
+section "pyTRLCConverter" {
+
+    Generic.Info sw_req_info_about_sw_req {
+        description = "This file contains the software requirements for the pyTRLCConverter tool."
+    }
+
+    Generic.PlantUML sw_req_tool_context_diagram {
+        file_path = "../../doc/architecture/context_diagram.puml"
+        caption = "PyTRLCConverter Tool Flow"
+    }
+
+    section "Software Requirements" {
+
+        section "General" {
+
+            SwReq sw_req_cli {
+                description = "The software shall be a command-line interface (CLI) application."
+                verification_criteria = "Every feature shall be accessible via the command line. Therefore its verified by the CLI tests."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_translation {
+                description = "The software shall support the requirement type attribute name translation via a translation file in JSON format."
+                verification_criteria = "Verify by converting one or more TRLC files with a translation file."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+                note = "Some attribute names may contain underscores or other special characters. These shall be translated to a humand readable names."
+            }
+
+            SwReq sw_req_prj_spec {
+                description = "The software shall support project specific adaptions for the conversion."
+                verification_criteria = "Verify by converting one or more TRLC files with a project specific conversion file."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+                note = "Every project might have different requirements how the converted output should look like."
+            }
+
+            SwReq sw_req_version {
+                description = "The software shall provide a version information in the format '<program-name> <major>.<minor>.<patch>'."
+                verification_criteria = "Verify by requesting the version information and use the format '<program-name> <major>.<minor>.<patch>'."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_process_trlc_symbols {
+                description = "The software shall process all TRLC symbols from the TRLC files."
+                verification_criteria = "Verify DumpConverter output against a known good reference."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_destination_format {
+                description = "The software shall convert the TRLC files to the required destination format."
+                verification_criteria = "Verify by converting to one or more destination formats. Depended on the available formats."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_verbose_mode {
+                description = "The software shall show additional conversion information in verbose mode."
+                verification_criteria = "Verify by converting one or more TRLC files with the verbose mode enabled."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_error {
+                description = "The software shall log any error message on stderr."
+                verification_criteria = "Verify by calling the software with no or invalid arguments."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+        }
+
+        section "Project Specific Conversion" {
+            SwReq sw_req_prj_spec_file {
+                description = "The project specific conversion file shall be a Python file."
+                verification_criteria = "Verify by converting one or more TRLC files with a project specific conversion file."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+                derived = [sw_req_prj_spec]
+            }
+
+            SwReq sw_req_prj_spec_interface {
+                description = "The project specific conversion interface shall be realized by an abstract interface."
+                verification_criteria = "Verify by converting one or more TRLC files with a project specific conversion file."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+        }
+
+        section "Command Line Arguments" {
+            SwReq sw_req_cli_help {
+                description = "The software shall support the command line argument '-h' and --help' to show the help information."
+                verification_criteria = "Verify by calling the software with the argument '--help' and check if the help information is shown."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_cli_version {
+                description = "The software shall support the command line argument '--version' to show the version information."
+                verification_criteria = "Verify by calling the software with the argument '--version' and check if the version information is shown."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+                derived = [sw_req_version]
+            }
+
+            SwReq sw_req_cli_source {
+                description = "The software shall support the command line argument '-s' and '--source' multiple times to specify the source file(s) (*.rsl and *.trlc)."
+                verification_criteria = "Verify by calling the software with the argument '--source' and check if the source file(s) are used for conversion."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+                note = "Source files will be given to TRLC for conversion."
+            }
+
+            SwReq sw_req_cli_include {
+                description = "The software shall support the command line argument '-i' and '--include' multiple times to specify the file(s) for automatic inclusion."
+                verification_criteria = "Verify by calling the software with the argument '--include' and check if the file(s) are included."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+                note = "Its equal to TRLC --include program argument."
+            }
+
+            SwReq sw_req_cli_exclude {
+                description = "The software shall support the command line argument '-ex' and '--exclude' multiple times to specify the file(s) for automatic exclusion."
+                verification_criteria = "Verify by calling the software with the argument '--exclude' and check if the file(s) are excluded."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+                note = "This is necessary in case an defined archtecture element traces to a requirement, but the requirement should not be included in the output."
+            }
+
+            SwReq sw_req_no_prj_spec {
+                description = "If no project specific conversion file is provided, the software shall use a default conversion."
+                verification_criteria = "Verify by converting one or more TRLC files without a project specific conversion file."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_cli_out {
+                description = "The software shall support the command line argument '-o' and '--out' to specify the output directory."
+                verification_criteria = "Verify by calling the software with the argument '--out' and check if the output is written to the specified directory."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_cli_translation {
+                description = "The software shall support the command line argument '-tr' and '--translation' to specify the translation JSON file."
+                verification_criteria = "Verify by calling the software with the argument '--translation' and check if the output is written to the specified directory."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+        }
+
+        section "Markdown" {
+            SwReq sw_req_markdown {
+                description = "The software shall support the conversion into Markdown format."
+                verification_criteria = "Verify by converting one or more TRLC files into Markdown format."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_section {
+                description = "The Markdown converter shall convert a TRLC section into a Markdown heading by considering the depth level."
+                verification_criteria = "Verify by converting a TRLC section into a Markdown heading."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_record {
+                description = "The Markdown converter shall convert the attributes of a TRLC record into a Markdown table."
+                verification_criteria = "Verify by converting consecutive TRLC records into a Markdown table."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_escape {
+                description = "The software shall escape all strings according the Markdown format."
+                verification_criteria = "Verify by using strings with characters, which needs escaping."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_heading {
+                description = "The Markdown converter shall provide a function to create a Markdown heading."
+                verification_criteria = "Verify by creating a Markdown heading."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_table {
+                description = "The Markdown converter shall provide the functionality to create a Markdown table."
+                verification_criteria = "Verify by creating a Markdown table."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_list {
+                description = "The Markdown converter shall provide a function to create a Markdown list, as well as a HTML list."
+                verification_criteria = "Verify by creating a Markdown list."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_link {
+                description = "The Markdown converter shall provide a function to create a Markdown link."
+                verification_criteria = "Verify by creating a Markdown link."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_image {
+                description = "The Markdown converter shall provide a function to create a Markdown image to embed images."
+                verification_criteria = "Verify by creating a Markdown image."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_text_color {
+                description = "The Markdown converter shall provide a function to create colored text in Markdown format."
+                verification_criteria = "Verify by creating colored text in Markdown format."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_soft_return {
+                description = "The Markdown converter shall provide a function to convert a line feed to Markdown soft return."
+                verification_criteria = "Verify by creating a text with one and more line feeds."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_markdown_out_folder {
+                description = "The Markdown converter shall create the converted files in the specified output folder."
+                verification_criteria = "Verify by specifing an output folder, that doesn't exist. It must exist after the conversion."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            section "Multiple Documents Mode" {
+                SwReq sw_req_markdown_multiple_doc_mode {
+                    description = "The software shall create a Markdown file for each TRLC file by default."
+                    verification_criteria = "Verify by converting one or more TRLC files into Markdown format and check if a Markdown file is created for each TRLC file."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_markdown_md_top_level {
+                    description = "The software shall add a top level heading to the Markdown file if there is no top level section."
+                    verification_criteria = "Verify the top level heading in the Markdown file in multiple doc mode."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+            }
+
+            section "Single Document Mode" {
+                SwReq sw_req_markdown_single_doc_mode {
+                    description = "The software shall create a single Markdown file which combines all TRLC files if requested by command line arguments."
+                    verification_criteria = "Verify by converting one or more TRLC files into Markdown format and check if a single Markdown file is created."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_markdown_out_file_name_default {
+                    description = "The output file name shall be 'output.md' by default."
+                    verification_criteria = "Verify by converting one or more TRLC files into Markdown format and check if the output file name is 'output.md'."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_markdown_out_file_name_custom {
+                    description = "The output file name shall be customizable by command line arguments."
+                    verification_criteria = "Verify by converting one or more TRLC files into Markdown format and check if the output file name is customizable."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_markdown_sd_top_level {
+                    description = "The software shall add a top level heading to the Markdown file in single doc mode."
+                    verification_criteria = "Verify the top level heading in the Markdown file in single doc mode."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_markdown_top_level_default {
+                    description = "The top level heading shall be 'Specification' by default."
+                    verification_criteria = "Verify the top level heading in the Markdown file in single doc mode."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_markdown_top_level_custom {
+                    description = "The top level heading shall be customizable by command line arguments."
+                    verification_criteria = "Verify by specifying a custom top level heading in the Markdown file in single doc mode."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+            }
+        }
+
+        section "reStructuredText" {
+            SwReq sw_req_rst {
+                description = "The software shall support the conversion into reStructuredText format."
+                verification_criteria = "Verify by converting one or more TRLC files into reStructuredText format."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_section {
+                description = "The reStructuredText converter shall convert a TRLC section into a reStructuredText heading by considering the depth level."
+                verification_criteria = "Verify by converting a TRLC section into a reStructuredText heading."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_record {
+                description = "The reStructuredText converter shall convert the attributes of a TRLC record into a reStructuredText admonition with a table."
+                verification_criteria = "Verify by converting consecutive TRLC records into a reStructuredText admonition with a table."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_escape {
+                description = "The software shall escape all strings according the reStructuredText format."
+                verification_criteria = "Verify by using strings with characters, which needs escaping."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_heading {
+                description = "The reStructuredText converter shall provide a function to create a reStructuredText heading."
+                verification_criteria = "Verify by creating a reStructuredText heading."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_admonition {
+                description = "The reStructuredText converter shall provide a function to create a reStructuredText admonition."
+                verification_criteria = "Verify by creating a reStructuredText admonition."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_table {
+                description = "The reStructuredText converter shall provide a function to create a reStructuredText table."
+                verification_criteria = "Verify by creating a reStructuredText table."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_list {
+                description = "The reStructuredText converter shall provide a function to create a reStructuredText list."
+                verification_criteria = "Verify by creating a reStructuredText list."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_link {
+                description = "The reStructuredText converter shall provide a function to create a reStructuredText link."
+                verification_criteria = "Verify by creating a reStructuredText link."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_image {
+                description = "The reStructuredText converter shall provide a function to create a reStructuredText image to embed images."
+                verification_criteria = "Verify by creating a reStructuredText image."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_role {
+                description = "The reStructuredText converter shall provide a function to create role text in reStructuredText format."
+                verification_criteria = "Verify by creating role text in reStructuredText format."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_rst_out_folder {
+                description = "The reStructuredText converter shall create the converted files in the specified output folder."
+                verification_criteria = "Verify by specifing an output folder, that doesn't exist. It must exist after the conversion."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            section "ReST Multiple Documents Mode" {
+                SwReq sw_req_rst_multiple_doc_mode {
+                    description = "The software shall create a reStructuredText file for each TRLC file by default."
+                    verification_criteria = "Verify by converting one or more TRLC files into reStructuredText format and check if a reStructuredText file is created for each TRLC file."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+            }
+
+            section "ReST Single Document Mode" {
+                SwReq sw_req_rst_single_doc_mode {
+                    description = "The software shall create a single reStructuredText file which combines all TRLC files if requested by command line arguments."
+                    verification_criteria = "Verify by converting one or more TRLC files into reStructuredText format and check if a single reStructuredText file is created."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_rst_out_file_name_default {
+                    description = "The output file name shall be 'output.rst' by default."
+                    verification_criteria = "Verify by converting one or more TRLC files into reStructuredText format and check if the output file name is 'output.rst'."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_rst_out_file_name_custom {
+                    description = "The output file name shall be customizable by command line arguments."
+                    verification_criteria = "Verify by converting one or more TRLC files into reStructuredText format and check if the output file name is customizable."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_rst_sd_top_level {
+                    description = "The software shall add a top level heading to the reStructuredText file in single doc mode."
+                    verification_criteria = "Verify the top level heading in the reStructuredText file in single doc mode."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_rst_sd_top_level_default {
+                    description = "The top level heading shall be 'Specification' by default."
+                    verification_criteria = "Verify the top level heading in the reStructuredText file in single doc mode."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+
+                SwReq sw_req_rst_sd_top_level_custom {
+                    description = "The top level heading shall be customizable by command line arguments."
+                    verification_criteria = "Verify by specifying a custom top level heading in the reStructuredText file in single doc mode."
+                    valid_status = AbstractRequirements.VALID_STATUS.valid
+                }
+            }
+        }
+
+        section "Docx" {
+            SwReq sw_req_docx {
+                description = "The software shall support the conversion into docx format."
+                verification_criteria = "Verify by converting one or more TRLC files into Docx format."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_docx_template {
+                description = "The software shall support loading a docx template to append docx content to."
+                verification_criteria = "Verify that the generated docx file format starts with the content of the given template."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_docx_file {
+                description = "The software shall create a combined docx file for each TRLC file in file read order as provided by TRLC."
+                verification_criteria = "Verify by converting one or more TRLC files into docx format and check if a merged docx file is generated as expected."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_docx_section {
+                description = "If no project specific conversion file is available, a TRLC section shall be converted into a Docx heading by considering the depth level."
+                verification_criteria = "Verify by converting a TRLC section into a docx heading."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+
+            SwReq sw_req_docx_record {
+                description = "If no project specific conversion file is available, consecutive TRLC records shall be converted into a docx heading with depth+1 and a table listing the attributes."
+                verification_criteria = "Verify by converting consecutive TRLC records into a docx file."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+        }
+
+        section "Dump" {
+            SwReq sw_req_ascii_conversion {
+                description = "The software shall support a simple conversion into text format to console out."
+                verification_criteria = "Verify by converting one or more TRLC files using the dump converter."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+        }
+
+        section "PlantUML" {
+            SwReq sw_req_plantuml {
+                description = "The software shall support the conversion of a PlantUML diagram to a propriate image format."
+                verification_criteria = "Verify by converting a PlantUML diagram into a propriate image format."
+                valid_status = AbstractRequirements.VALID_STATUS.valid
+            }
+        }
+    }
+
+    section "Software Constraints" {
+        
+        SwConstraint sw_constraint_os_win {
+            description = "The software shall support the Windows operating system."
+            valid_status = AbstractRequirements.VALID_STATUS.valid
+        }
+        
+        SwConstraint sw_constraint_os_linux {
+            description = "The software shall support the Linux operating system."
+            valid_status = AbstractRequirements.VALID_STATUS.valid
+        }
+
+        SwConstraint sw_constraint_prg_lang {
+            description = "The software shall be implemented in the Python programming language v3.12."
+            valid_status = AbstractRequirements.VALID_STATUS.valid
+            note = "TRLC as 3rd party library supports only up to Python v3.12."
+        }
+
+        SwConstraint sw_constraint_pep8 {
+            description = "The software shall comply with the PEP8 coding standard."
+            valid_status = AbstractRequirements.VALID_STATUS.valid
+        }
+    }
+
+}

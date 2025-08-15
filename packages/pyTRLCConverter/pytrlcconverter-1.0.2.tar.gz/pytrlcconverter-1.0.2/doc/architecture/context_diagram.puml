@@ -1,0 +1,29 @@
+@startuml context_diagram
+
+left to right direction
+skinparam linetype ortho
+
+database "Filesystem" as fileSystemSrc {
+    file "Requirement Specification Language file(s)\n(*.rsl)" as rlsFiles
+    file "Source file(s)\n(*.trlc)" as srcFiles
+    file "Translation file\n(*.json)" as translationFile
+    file "Project specific conversion file (PRJSCF)\n(*.py)" as projectSpecificConversionFile
+}
+
+database "Filesystem" as fileSystemDst {
+    file "Destination file(s)" as dstFiles
+}
+
+rectangle "System" as system {
+
+    component "pyTRLCConverter" <<tool>> as tool
+}
+
+rlsFiles ...> tool: <<flow>>
+srcFiles ...> tool: <<flow>>
+translationFile ...> tool: <<flow>>\n<<optional>>
+projectSpecificConversionFile ...> tool: <<flow>>\n<<optional>>
+
+tool ...> dstFiles: <<flow>>
+
+@enduml

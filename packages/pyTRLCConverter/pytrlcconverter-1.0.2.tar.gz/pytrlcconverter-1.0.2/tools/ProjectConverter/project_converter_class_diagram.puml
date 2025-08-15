@@ -1,0 +1,149 @@
+@startuml Project converter class_diagram
+
+
+rectangle "Built-in Converter" {
+
+    interface AbstractConverter <<abstract>>{
+        + {abstract} register(args_parser)
+        + {abstract} convert_section()
+        + {abstract} convert_record()
+        + {abstract} enter_file()
+        + {abstract} leave_file()
+        + {abstract} begin()
+        + {abstract} finish()
+
+    }
+
+    note right of AbstractConverter 
+        Interface to 
+        pyTRLCConverter
+        tool.
+    endnote
+
+    class BaseConverter <<abstract>> {
+        # register_handlers()
+        # convert_record_generic()
+    }
+    
+    note right of BaseConverter
+        Add support for project
+        specific rsl type record
+        handler registration.
+    endnote
+
+    Rectangle "Generic Format Converter" {
+        class MarkdownConverter {
+        }
+
+        class RstConverter {
+        }
+
+        class DocxConverter {
+        }
+        
+        class DumpConverter {
+        }
+    }
+}
+
+AbstractConverter <|.. BaseConverter: <<realize>>
+BaseConverter <|.. MarkdownConverter: <<realize>>
+BaseConverter <|.. RstConverter: <<realize>>
+BaseConverter <|.. DocxConverter: <<realize>>
+BaseConverter <|.. DumpConverter: <<realize>>
+
+rectangle "pyTRLCConverter Project Converter Extensions" {
+    class GenericRslMarkdownConverter {
+        # print_info()
+        # print_image()
+        # print_plantuml()
+    }
+
+    note right of GenericRslMarkdownConverter
+        Add support for
+        generic.rsl
+    endnote
+
+    class GenericRslRstConverter {
+        # print_info()
+        # print_image()
+        # print_plantuml()
+    }
+
+    note right of GenericRslRstConverter
+        Add support for
+        generic.rsl
+    endnote
+
+    class GenericRslDocxConverter {
+        # convert_image()
+        # convert_plantuml()
+    }
+
+    note right of GenericRslDocxConverter
+        Add support for
+        sw_generic.rsl
+    endnote 
+
+    class ProjectMarkdownConverter {
+        # print_sw_req()
+        # print_sw_req_non_func()
+        # print_sw_constraint()
+    }
+
+    note bottom of ProjectMarkdownConverter
+        Add support for
+        sw_req.rsl
+    endnote 
+
+    class TestCaseMarkdownConverter {
+        # print_sw_test_case()
+    }
+
+    note bottom of TestCaseMarkdownConverter
+        Add support for
+        sw_test.rsl
+    endnote 
+
+    class ProjectRstConverter {
+        # print_sw_req()
+        # print_sw_req_non_func()
+        # print_sw_constraint()
+    }
+
+    note bottom of ProjectRstConverter
+        Add support for
+        sw_req.rsl
+    endnote 
+
+    class TestCaseRstConverter {
+        # print_sw_test_case()
+    }
+    
+    note bottom of TestCaseRstConverter
+        Add support for
+        sw_test.rsl
+    endnote 
+
+    class ProjectDocxConverter {
+        # convert_sw_reg()
+        # convert_sw_reg_non_func()
+        # convert_sw_constraint()
+    }
+
+    note bottom of ProjectDocxConverter
+        Add support for
+        sw_req.rsl
+    endnote
+}
+
+MarkdownConverter <|.. GenericRslMarkdownConverter
+RstConverter <|.. GenericRslRstConverter
+DocxConverter <|.. GenericRslDocxConverter
+
+GenericRslMarkdownConverter <|.. ProjectMarkdownConverter
+GenericRslMarkdownConverter <|.. TestCaseMarkdownConverter
+GenericRslRstConverter <|.. ProjectRstConverter
+GenericRslRstConverter <|.. TestCaseRstConverter
+GenericRslDocxConverter <|.. ProjectDocxConverter
+@enduml

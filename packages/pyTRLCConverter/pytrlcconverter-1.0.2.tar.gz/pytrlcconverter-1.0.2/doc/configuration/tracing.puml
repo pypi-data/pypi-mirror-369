@@ -1,0 +1,40 @@
+@startuml tracing
+
+left to right direction
+
+component "SW-Requirements" as swRequirements
+component "SW-Tests" as swTests
+file "SW-Implementation\n(/src/pyTRLCConverter/*.py)" as swImplementation
+file "SW-Test Implementation\n(/tests/*.py)" as swTestImplementation
+
+file "SW-Requirement Model\n(/trlc/model/swe-req.rsl)" as swReqRsl
+file "SW-Requirements\n(/trlc/swe-req/swe-req.trlc)" as swReqTrlc
+
+file "SW-Test Model\n(/trlc/model/swe-test.rsl)" as swTestRsl
+file "SW-Test\n(/trlc/swe-test/swe-testq.trlc)" as swTestTrlc
+
+swReqRsl <.. swRequirements
+swReqTrlc <.. swRequirements
+
+swTests ..> swTestRsl
+swTests ..> swTestTrlc
+
+swRequirements <..> swTests: <<trace>>
+swRequirements <.> swImplementation: <<trace>>
+swTests <.> swTestImplementation: <<trace>>
+
+note bottom of swImplementation
+    Use lobster-trace comments to trace to the sw-requirement.
+    <code>
+    # lobster-trace: SW-Requirements.<SW-REQ-ID>
+    </code>
+end note
+
+note bottom of swTestImplementation
+    Use lobster-trace comments to trace to the sw-test case.
+    <code>
+    # lobster-trace: SW-Tests.<SW-TEST-CASE-ID>
+    </code>
+end note
+
+@enduml

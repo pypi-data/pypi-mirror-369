@@ -1,0 +1,60 @@
+@startuml sequence_diagram
+
+participant "main" as main
+participant "ItemWalker" as walker
+participant "Format converter" as formatConverter
+participant "TRLC" as trlc
+
+autoactivate on
+
+-> main
+
+    loop every converter in built-in converter table
+        main -> formatConverter: register command specific program arguments
+        main <-- formatConverter
+    end
+
+    alt "project specific converter is available"
+        main -> formatConverter: load converter module
+        main <-- formatConverter
+        main -> formatConverter: register command specific program arguments
+        main <-- formatConverter
+    end
+
+    main -> trlc: get TRLC symbols using sources argument
+    main <-- trlc: TRLC symbols
+
+    main -> formatConverter: Create converter based on command argument
+    main <-- formatConverter: converter
+
+    main -> walker: walk symbols using converter and program arguments 
+
+    walker -> formatConverter: init with arguments
+    walker <-- formatConverter: Result
+
+    walker -> formatConverter: begin
+    walker <-- formatConverter: Result
+
+    loop every TRLC document
+        walker -> formatConverter: enter file
+        walker <-- formatConverter
+        loop every item in TRLC document
+            alt Item is a section
+                walker -> formatConverter: convert section
+                walker <-- formatConverter: Result
+            else Item is a record object
+                walker -> formatConverter: convert record object
+                walker <-- formatConverter: Result
+            end
+        end
+        walker -> formatConverter: leave file
+        walker <-- formatConverter
+    end
+    walker -> formatConverter: finish
+    walker <-- formatConverter: Result
+
+    main <-- walker: Status
+
+<-- main: Status
+
+@enduml

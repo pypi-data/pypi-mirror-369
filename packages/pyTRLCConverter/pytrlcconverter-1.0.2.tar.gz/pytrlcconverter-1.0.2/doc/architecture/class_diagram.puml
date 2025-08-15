@@ -1,0 +1,119 @@
+@startuml class_diagram
+
+interface "AbstractConverter" as abstractConverter <<abstract>> {
+    + {abstract} register(args_parser)
+    + {abstract} convert_section()
+    + {abstract} convert_record()
+    + {abstract} enter_file()
+    + {abstract} leave_file()
+    + {abstract} begin()
+    + {abstract} finish()
+
+}
+
+note top of abstractConverter
+    Interface for converting TRLC symbols
+    into destination format.
+end note
+
+class "BaseConverter" as baseConverter <<abstract>> {
+}
+
+rectangle "Built-in Converter" {
+
+    class "MarkdownConverter" as markdownConverter {
+    }
+
+    class "RstConverter" as rstConverter {
+
+    }
+
+    class "DocxConverter" as docxConverter {
+    }
+
+    class "DumpConverter" as dumpConverter {
+    }
+}
+
+abstractConverter <|.. baseConverter: <<realize>>
+baseConverter <|.. markdownConverter: <<realize>>
+baseConverter <|.. docxConverter: <<realize>>
+baseConverter <|.. dumpConverter: <<realize>>
+baseConverter <|.. rstConverter: <<realize>>
+
+class "version" as version <<module>> {
+}
+
+note top of version
+    Module for handling version information.
+end note
+
+rectangle Utilities {
+
+    class "logger" as logger <<module>> {
+    }
+
+    note top of logger
+        Module for handling
+         verbose logging and 
+         error messages.
+    end note
+
+    class "plantuml" as plantuml <<module>> {
+    }
+
+    note top of plantuml
+        Module for handling
+        PlantUML diagram
+        generation.
+    end note
+
+    enum Ret {
+        OK
+        ERROR
+    }
+
+    note top of Ret
+        Return codes
+        for functions.
+    end note
+}
+
+class "main" as main <<module>> {
+    - _table: []
+    + main() : int
+}
+
+class "ItemWalker" as itemWalker
+
+note top of itemWalker
+    TRLC item list traverse logic 
+end note
+
+
+main ..> itemWalker: <<use>>
+itemWalker ..> abstractConverter: <<use>>
+main *--- abstractConverter
+main ..> version: <<use>>
+
+
+class "ProjectSpecific Converter" as prjSpecConverter {
+}
+
+note right of prjSpecConverter
+May also subclass one of the "Built-in Converter"
+end note
+
+baseConverter <|.r. prjSpecConverter: <<realize>>
+main o- prjSpecConverter : Dynamic loading "--project <file>" option
+
+class "Translator" as translator
+
+note top of translator
+    Loads translation file and
+    provides translation functions.
+end note
+
+translator <- baseConverter
+
+@enduml

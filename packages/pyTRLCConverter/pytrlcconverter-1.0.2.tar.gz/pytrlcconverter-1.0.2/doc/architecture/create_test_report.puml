@@ -1,0 +1,38 @@
+@startuml create_test_report
+
+left to right direction
+
+component "create_test_report" as createTestReport<<script>>
+component "pytest" as pytest
+component "python" as python
+component "pyTRLCConverter" as pyTRLCConverter
+
+file "./tests" as tests
+file "test_result_xml2trlc.py" as testResultXML2TRLC
+
+package "out" as createTestReportOut {
+
+    package "coverage" as coverage {
+        file "Coverage Report (HTML)" as coverageReportHTML
+    }
+
+    file "Test Result Report (XML)" as testResultXML
+    file "Test Result Report (TRLC)" as testResultTRLC
+    file "Test Result Report (MD)" as testResultMD
+    file "Test Result Report (RST)" as testResultRST
+}
+
+createTestReport ..> pytest: 1.\n<<call>>
+createTestReport ..> python: 2.\n<<call>>
+createTestReport ..> pyTRLCConverter: 3.\n<<call>>
+tests .> pytest: <<flow>>
+pytest ...> testResultXML: <<create>>
+pytest ...> coverageReportHTML: <<create>>
+python ..> testResultXML2TRLC: <<call>>
+testResultXML .> testResultXML2TRLC: <<flow>>
+testResultXML2TRLC ..> testResultTRLC: <<create>>
+testResultTRLC ..> pyTRLCConverter: <<flow>>
+pyTRLCConverter ..> testResultMD: <<create>>
+pyTRLCConverter ..> testResultRST: <<create>>
+
+@enduml

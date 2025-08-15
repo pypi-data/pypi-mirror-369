@@ -1,0 +1,36 @@
+@startuml use_cases
+
+left to right direction
+
+rectangle "System" {
+
+    usecase "Convert to requested format" as ucConvertToFormat
+    usecase "Show tool version" as ucShowToolVersion
+    usecase "Create destination file" as ucCreateDestinationFile
+    usecase "Convert item" as ucConvertItem
+    usecase "Convert item project specific" as ucConvertItemProjectSpecific
+
+    ucConvertToFormat ..> ucCreateDestinationFile: <<include>>
+    ucConvertToFormat <.. ucConvertItem: <<extend>>
+    ucConvertToFormat <.. ucConvertItemProjectSpecific: <<extend>>
+}
+
+actor "User" as user
+file "Source file(s)\n(*.trlc)" as srcFiles
+file "Translation file\n(*.json)" as translationFile
+file "Requirement Specification Language file(s)\n(*.rsl)" as rlsFiles
+file "Destination file(s)" as dstFiles
+file "Project specific conversion file (PRJSCF)\n(*.py)" as projectSpecificConversionFile
+
+user --> ucConvertToFormat: Request conversion
+srcFiles --> ucConvertToFormat
+translationFile --> ucConvertToFormat
+rlsFiles --> ucConvertToFormat
+projectSpecificConversionFile -l-> ucConvertItemProjectSpecific
+ucCreateDestinationFile --> dstFiles
+ucConvertItem --> dstFiles
+ucConvertItemProjectSpecific --> dstFiles
+
+user --> ucShowToolVersion: Request version
+
+@enduml
