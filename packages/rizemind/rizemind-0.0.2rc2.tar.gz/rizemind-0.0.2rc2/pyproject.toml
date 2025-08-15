@@ -1,0 +1,136 @@
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rizemind"
+dynamic = ["version"]
+description = "RIZEMIND: building decentralized collective intelligence"
+authors = [{ name = "T-RIZE Labs", email = "michael.duchesne@t-rize.io" }]
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = [
+    "bidict>=0.23.1",
+    "eth-account>=0.13.6",
+    "mnemonic>=0.21",
+    "pydantic>=2.11.3",
+    "tomli>=2.2.1",
+    "web3>=7.10.0",
+    "flwr[simulation]>=1.17.0",
+    "numpy>=1.26.4",
+    "dotenv>=0.9.9",
+    "typer>=0.12.5",
+    "brotli>=1.1.0",
+    "zstandard>=0.23.0",
+    "eth-tester>=0.13.0b1",
+]
+
+[project.scripts]
+rzmnd = "rizemind.cli:rzmnd"
+
+[dependency-groups]
+dev = ["pytest>=8.3.5", "ruff>=0.11.4"]
+docs = [
+    "myst-parser>=4.0.1",
+    "pygments>=2.19.1",
+    "sphinx>=8.2.3",
+    "sphinx-autobuild>=2024.10.3",
+    "sphinx-book-theme>=1.1.4",
+    "sphinx-copybutton>=0.5.2",
+]
+ml = [
+    "flwr[simulation]>=1.17.0",
+    "flwr-datasets[vision]>=0.5.0",
+    "ray>=2.0.0",
+    "opacus>=1.5.3",
+    "torch>=2.6.0",
+    "torchvision>=0.21.0"
+]
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+fallback-version = "0.0.0"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/py/rizemind"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/py/rizemind"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/py/rizemind" = "rizemind"
+
+[tool.pytest.ini_options]
+minversion = "6.2"
+testpaths = ["src/py", "tests"]
+filterwarnings = "ignore::DeprecationWarning"
+pythonpath = ["."]
+
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+line-length = 88
+indent-width = 4
+target-version = "py312"
+preview = false
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "RUF001", "RUF002", "RUF003", "UP"]
+ignore = ["UP047"]
+allowed-confusables = []
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+explicit-preview-rules = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.uv.sources]
+rizemind = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "examples/tf_basic_signature",
+    "examples/tf_centralized_shapely",
+    "examples/tf_decentralized_shapley",
+    "examples/tf_rizenet_deployment",
+    "examples/tf_rizenet_shapley",
+    "examples/torch_basic",
+    "examples/torch_diff_privacy",
+    "examples/torch_dyn_diff_privacy_shapley",
+    "examples/torch_shapley",
+]
