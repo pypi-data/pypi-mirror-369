@@ -1,0 +1,111 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plaud-live-agent-sdk"
+version = "1.0.1"
+description = "Plaud Live Agent SDK - 实时AI助手客户端SDK"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Plaud AI", email = "dev-support@plaud.ai"}
+]
+maintainers = [
+    {name = "Plaud AI", email = "dev-support@plaud.ai"}
+]
+keywords = ["Plaud", "livekit", "webrtc", "audio", "real-time", "ai", "assistant"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Communications :: Chat",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "livekit>=1.0.0",
+    "livekit-api>=1.0.0",
+    "numpy>=1.20.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-asyncio>=0.18.0",
+    "black>=21.0",
+    "flake8>=3.8",
+]
+audio = [
+    "sounddevice>=0.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Plaud-AI/plaud-live-agent-dev"
+Documentation = "https://github.com/Plaud-AI/plaud-live-agent-dev/blob/main/README.md"
+Repository = "https://github.com/Plaud-AI/plaud-live-agent-dev"
+"Bug Tracker" = "https://github.com/Plaud-AI/plaud-live-agent-dev/issues"
+
+[tool.setuptools]
+packages = ["live_agent_sdk"]
+
+[tool.setuptools.package-data]
+live_agent_sdk = ["*.md", "*.txt"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["live_agent_sdk"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+] 
