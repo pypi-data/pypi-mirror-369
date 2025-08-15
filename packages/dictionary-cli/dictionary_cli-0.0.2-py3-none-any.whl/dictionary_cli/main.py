@@ -1,0 +1,85 @@
+from sys import exit
+
+import requests
+
+MENU_TEXT = """Select a number:
+(1) Definition
+(2) Synonyms
+(3) Anytonyms
+"""
+
+
+def get_definition(response_content):
+    print(response_content["meanings"][0]["definitions"][0]["definition"])
+
+
+def get_synonyms(response_content):
+        all_synonyms = []
+
+        # Loop through all meanings
+        for meaning in response_content["meanings"]:
+            all_synonyms.extend(meaning.get("synonyms", []))
+
+            for definition in meaning["definitions"]:
+                all_synonyms.extend(definition.get("synonyms", []))
+
+        # Remove duplicates
+        all_synonyms = list(set(all_synonyms))
+
+        if all_synonyms:
+            for synonym in all_synonyms:
+                print(synonym)
+        else:
+            print("No synonyms found.")
+
+def get_antonyms(response_content):
+    all_antonyms = []
+    
+    for meaning in response_content["meanings"]:
+        all_antonyms.extend(meaning.get("antonyms", []))
+
+        for definition in meaning["definitions"]:
+            all_antonyms.extend(definition.get("antonyms", []))
+
+    all_antonyms = list(set(all_antonyms))
+
+    if all_antonyms:
+        for antonym in all_antonyms:
+            print(antonym)
+    else:
+        print("No anytonyms found.")
+
+
+def main():
+    print(MENU_TEXT)
+    choice = input(">> ")
+    if choice not in [
+        "1",
+        "2",
+        "3",
+    ]:
+        print("Invalid choice")
+        exit(1)
+
+    word = input("Word: ")
+    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        response_content = response.json()[0]
+
+        if choice == "1":
+            get_definition(response_content)
+        elif choice == "2":
+            get_synonyms(response_content)
+        elif choice == "3":
+            get_antonyms(response_content)
+
+
+    else:
+        print(f"ERROR: {response.status_code}")
+        exit(1)
+
+
+if __name__ == "__main__":
+    main()
