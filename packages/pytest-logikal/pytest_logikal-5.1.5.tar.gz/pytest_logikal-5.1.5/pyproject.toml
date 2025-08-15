@@ -1,0 +1,84 @@
+[build-system]
+requires = ['setuptools>=64', 'setuptools-scm>=8']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'pytest-logikal'
+description = 'Common testing environment'
+readme = 'README.rst'
+requires-python = '~= 3.12'
+license = 'MIT'
+authors = [{name = 'Logikal GmbH', email = 'contact@logikal.io'}]
+keywords = ['pytest']
+classifiers = [
+  'Development Status :: 5 - Production/Stable',
+  'Intended Audience :: Developers',
+  'Operating System :: POSIX :: Linux',
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.12',
+  'Framework :: Pytest',
+  'Topic :: Software Development',
+  'Typing :: Typed',
+]
+dynamic = ['version', 'entry-points', 'dependencies', 'optional-dependencies']
+
+[project.urls]
+'Documentation' = 'https://docs.logikal.io/pytest-logikal/'
+'Release notes' = 'https://github.com/logikal-io/pytest-logikal/releases'
+'Issue tracker' = 'https://github.com/logikal-io/pytest-logikal/issues'
+'Source code' = 'https://github.com/logikal-io/pytest-logikal'
+
+[tool.setuptools]
+packages = ['pytest_logikal']
+
+[tool.setuptools.dynamic]
+entry-points = {file = 'entry_points.ini'}
+dependencies = {file = 'requirements/core.txt'}
+
+[tool.setuptools.dynamic.optional-dependencies]
+black = {file = 'requirements/extras/black.txt'}
+browser = {file = 'requirements/extras/browser.txt'}
+django = {file = 'requirements/extras/django.txt'}
+
+[tool.setuptools.package-data]
+pytest_logikal = [
+  'py.typed', 'package.json', 'package-lock.json',
+  'bandit_config.yml', 'css_config.yml', 'js_config.yml',
+]
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = 'tests.website.settings'
+norecursedirs = [
+  '*.egg', '.*', 'build', 'dist', 'node_modules',  # standard folders
+  'tests/pytest_logikal/files',  # ignore files used inside plugin runs
+]
+
+[tool.mypy]
+plugins = ['mypy_django_plugin.main']  # see https://github.com/python/mypy/issues/11667
+untyped_calls_exclude = ['factory']
+
+[[tool.mypy.overrides]]
+module = [
+  'django_migration_linter.*',  # https://github.com/3YOURMIND/django-migration-linter/issues/238
+  'license_expression',
+  'pycodestyle',
+  'pydocstyle',
+  'pytest_cov',
+  'xdist.*',
+]
+ignore_missing_imports = true
+
+[tool.browser.versions]
+chrome = '139.0.7258.68'
+edge = '139.0.3405.86'
+
+[tool.isort]
+known_first_party = ['pytest_logikal']
+
+[tool.coverage.report]
+omit = [
+  '/tmp/*',  # ignore temporary files created during testing
+  'tests/pytest_logikal/files/*',  # ignore files used inside plugin runs
+]
