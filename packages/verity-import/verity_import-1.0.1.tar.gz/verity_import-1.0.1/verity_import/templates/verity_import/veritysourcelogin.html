@@ -1,0 +1,90 @@
+{% extends 'generic/object.html' %}
+{% load plugins %}
+
+{% block extra_controls %}
+<form id="sync_form" action="{% url 'plugins:verity_import:veritysourcelogin_sync' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="vnetc" value="{{ object.verity_source.verity_url }}">
+    <input type="hidden" name="username" value="{{ object.username }}">
+    <input type="hidden" name="password" value="{{ object.password }}">
+    <button id="sync_button" type="submit" class="btn btn-primary">
+        <i class="mdi mdi-sync" aria-hidden="true"></i> Sync
+    </button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">Credential</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Controller</th>
+                        <td>
+                            <a href="{{ object.verity_source.verity_url }}">{{ object.verity_source.verity_url }}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Username</th>
+                        <td>{{ object.username }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Password</th>
+                        <td>
+                            <span id="toggle-password-span" class="hidden-password"
+                                data-password="{{ object.password }}">********</span>
+                            <button id="toggle-password" class="btn btn-sm btn-secondary">Show</button>
+                        </td>
+                        <!-- <td>{{ object.password }}</td> -->
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% include 'inc/panels/custom_fields.html' %}
+        {% include 'inc/panels/tags.html' %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<script>
+    // Re-enable the button when the page is loaded
+    window.addEventListener("pageshow", () => {
+        const sync_button = document.getElementById("sync_button");
+        sync_button.disabled = false;
+        sync_button.childNodes[2].nodeValue = " Sync ";
+        // sync_button.childNodes.forEach(node => {
+        //     if (node.nodeType === Node.TEXT_NODE) {
+        //         node.nodeValue = " Sync ";
+        //     }
+        // });
+    });
+    // Disable the button when the form is submitted
+    document.getElementById("sync_form").addEventListener("submit", () => {
+        const sync_button = document.getElementById("sync_button");
+        sync_button.disabled = true;
+        sync_button.childNodes[2].nodeValue = " Synching... ";
+        // sync_button.childNodes.forEach(node => {
+        //     if (node.nodeType === Node.TEXT_NODE) {
+        //         node.nodeValue = " Synching... ";
+        //     }
+        // });
+    });
+    // Add logic for the show/hide button for passwords
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggle_password = document.getElementById("toggle-password");
+        toggle_password.addEventListener("click", () => {
+            let span = document.getElementById("toggle-password-span");
+            if (span.textContent === "********") {
+                span.textContent = span.getAttribute("data-password");
+                toggle_password.textContent = "Hide";
+            } else {
+                span.textContent = "********";
+                toggle_password.textContent = "Show";
+            }
+        });
+    });
+</script>
+{% endblock %}
