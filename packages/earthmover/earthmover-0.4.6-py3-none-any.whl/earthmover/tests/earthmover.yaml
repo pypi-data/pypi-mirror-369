@@ -1,0 +1,461 @@
+version: 2
+
+config:
+  output_dir: ${OUTPUT_DIR} # test the case where an env var can be passed 
+                            #     but a default is also allowed
+  log_level: INFO
+  show_stacktrace: False
+  show_graph: False
+  macros: >
+    {% macro test() -%}
+      testing!
+    {%- endmacro -%}
+    {% macro test2() -%}
+      testing!
+    {%- endmacro %}
+  parameter_defaults:
+    BASE_DIR: "."
+    OUTPUT_DIR: "./outputs"
+
+
+sources:
+
+  mammal_species:
+    file: ${BASE_DIR}/sources/mammals.csv
+    header_rows: 1
+
+  bird_species:
+    file: ${BASE_DIR}/sources/birds.csv
+    header_rows: 1
+
+  fish_species:
+    file: ${BASE_DIR}/sources/fishes.csv
+    header_rows: 1
+
+  reptile_species:
+    file: ${BASE_DIR}/sources/reptiles.csv
+    header_rows: 1
+
+  zoos:
+    file: ${BASE_DIR}/sources/zoos.csv
+    header_rows: 1
+
+  zoo_inventories:
+    file: ${BASE_DIR}/sources/inventories.csv
+    header_rows: 1
+
+  wildcards:
+    file: ${BASE_DIR}/sources/wildcards.csv
+    header_rows: 1
+  
+  cities:
+    file: ${BASE_DIR}/sources/cities.jsonl
+
+
+
+transformations:
+
+  mammal_species:
+    source: $sources.mammal_species
+    operations:
+      - operation: snake_case_columns
+      - operation: add_columns
+        columns:
+          family: mammal
+      - operation: modify_columns
+        columns:
+          id: {%raw%}1_{{value}}{%endraw%}
+          "*": "{%raw%}{{value|trim}}{%endraw%}"
+
+  bird_species:
+    source: $sources.bird_species
+    operations:
+      - operation: add_columns
+        columns:
+          family: bird
+      - operation: modify_columns
+        columns:
+          id: {%raw%}2_{{value}}{%endraw%}
+
+  fish_species:
+    source: $sources.fish_species
+    operations:
+      - operation: distinct_rows
+        columns: [ id, name, genus, species ]
+      - operation: add_columns
+        columns:
+          family: fish
+      - operation: modify_columns
+        columns:
+          id: {%raw%}3_{{value}}{%endraw%}
+
+  reptile_species:
+    source: $sources.reptile_species
+    operations:
+      - operation: add_columns
+        columns:
+          family: reptile
+      - operation: modify_columns
+        columns:
+          id: {%raw%}4_{{value}}{%endraw%}
+
+  animal_species:
+    source: $transformations.mammal_species
+    operations:
+      - operation: union
+        sources:
+          - $transformations.bird_species
+          - $transformations.fish_species
+          - $transformations.reptile_species
+      - operation: sort_rows
+        columns: [ family, -genus ]
+    debug: True
+
+  joined_inventories:
+    source: $sources.zoo_inventories
+    operations:
+      - operation: join
+        sources:
+          - $sources.zoos
+        join_type: inner
+        left_key: zoo
+        right_key: id
+      - operation: duplicate_columns
+        columns:
+          name: zoo_name
+      - operation: drop_columns
+        columns:
+          - id
+          - name
+      - operation: join
+        sources:
+          - $transformations.animal_species
+        join_type: inner
+        left_key: animal
+        right_key: id
+      - operation: duplicate_columns
+        columns:
+          name: species_name
+      - operation: drop_columns
+        columns:
+          - id
+          - name
+
+  species_counts:
+    source: $sources.zoos
+    operations:
+      - operation: join
+        sources:
+          - $sources.zoo_inventories
+        join_type: right
+        left_key: id
+        right_key: zoo
+      - operation: group_by
+        group_by_columns:
+          - id
+        create_columns:
+          count: count()
+  species_count_by_zoo:
+    source: $sources.zoos
+    operations:
+      - operation: join
+        sources:
+          - $transformations.species_counts
+        join_type: left
+        left_key: id
+        right_key: id
+        left_keep_columns:
+          - name
+        right_keep_columns:
+          - id
+          - count
+      - operation: keep_columns
+        columns:
+          - name
+          - count
+      - operation: modify_columns
+        columns:
+          count: "{%raw%}{% if value!=value %}0.0{% else %}{{value}}{% endif %}{%endraw%}"
+      - operation: add_columns
+        columns:
+          entity: zoo
+          count_column: species_count
+
+  zoo_count_by_species:
+    source: $transformations.joined_inventories
+    operations:
+      - operation: group_by
+        group_by_columns:
+          - animal
+          - species_name
+        create_columns:
+          count: count()
+      - operation: duplicate_columns
+        columns:
+          species_name: name
+      - operation: keep_columns
+        columns:
+          - name
+          - count
+      - operation: add_columns
+        columns:
+          entity: species
+          count_column: zoo_count
+
+  zoo_count_by_year_founded:
+    source: $sources.zoos
+    operations:
+      - operation: date_format
+        column: date_founded
+        from_format: "%b %d %Y"
+        to_format: "%Y-%m-%d"
+      - operation: modify_columns
+        columns:
+          date_founded: "{%raw%}{{value[0:4]}}{%endraw%}"
+      - operation: rename_columns
+        columns:
+          date_founded: year_founded
+      - operation: keep_columns
+        columns:
+          - year_founded
+      - operation: group_by
+        group_by_columns:
+          - year_founded
+        create_columns:
+          count: count()
+      - operation: rename_columns
+        columns:
+          year_founded: name
+      - operation: add_columns
+        columns:
+          entity: year
+          count_column: zoos_founded
+
+  big_cats:
+    source: $transformations.mammal_species
+    operations:
+      - operation: filter_rows
+        query: "name.str.contains('Cheetah') or name.str.contains('Lion') or name.str.contains('Tiger')"
+        behavior: include
+      - operation: duplicate_columns
+        columns:
+          genus: branch
+      - operation: map_values
+        column: branch
+        mapping:
+          Acinonyx:
+          Panthera: panther
+      - operation: combine_columns
+        columns:
+          - genus
+          - species
+        new_column: scientific_name
+        separator: " "
+      - operation: limit_rows
+        count: 10 # this should do nothing, since there are only 4 big cats in the dataset
+
+  total_of_each_species:
+    source: $transformations.joined_inventories
+    operations:
+      - operation: group_by
+        # function: sum
+        group_by_columns:
+          - animal
+          - species_name
+        create_columns:
+          count: count()
+      - operation: duplicate_columns
+        columns:
+          species_name: name
+      - operation: keep_columns
+        columns:
+          - name
+          - count
+      - operation: add_columns
+        columns:
+          entity: species
+          count_column: total_count
+
+  {% set months = ["January","February","March","April","May","June","July","August","September","October","November","December"] %}
+  cities_avg_weather_wide:
+    source: $sources.cities
+    operations:
+      - operation: keep_columns
+        columns:
+          - city
+          - state
+          - weather
+      - operation: add_columns
+        columns:
+          {% for month in months %}
+          avg_days_rain_{{month}}: "{%raw%}{{weather.avg_days_of_rain.{%endraw%}{{month}}{%raw%}}}{%endraw%}"
+          avg_high_temp_{{month}}: "{%raw%}{{weather.temperatures.avg_highs.{%endraw%}{{month}}{%raw%}}}{%endraw%}"
+          avg_low_temp_{{month}}: "{%raw%}{{weather.temperatures.avg_lows.{%endraw%}{{month}}{%raw%}}}{%endraw%}"
+          {% endfor %}
+          avg_days_rain_year: "{%raw%}{{{%endraw%}{%for month in months%}weather.avg_days_of_rain.{{month}}|int{%if not loop.last%} + {%endif%}{%endfor%}{%raw%}}}{%endraw%}"
+          avg_high_temp: "{%raw%}{{(({%endraw%}{%for month in months%}weather.temperatures.avg_highs.{{month}}|int{%if not loop.last%} + {%endif%}{%endfor%}{%raw%})/12)|int}}{%endraw%}"
+          avg_low_temp: "{%raw%}{{(({%endraw%}{%for month in months%}weather.temperatures.avg_lows.{{month}}|int{%if not loop.last%} + {%endif%}{%endfor%}{%raw%})/12)|int}}{%endraw%}"
+      - operation: drop_columns
+        columns:
+          - weather
+  cities_area_codes:
+    source: $sources.cities
+    operations:
+      - operation: keep_columns
+        columns:
+          - city
+          - state
+          - area_codes
+      - operation: flatten
+        flatten_column: area_codes
+        value_column: area_code
+      - operation: group_by
+        group_by_columns:
+          - city
+          - state
+        create_columns:
+          num_area_codes: count()
+  cities_zip_codes:
+    source: $sources.cities
+    operations:
+      - operation: keep_columns
+        columns:
+          - city
+          - state
+          - zip_codes
+      - operation: flatten
+        flatten_column: zip_codes
+        value_column: zip_code
+      - operation: group_by
+        group_by_columns:
+          - city
+          - state
+        create_columns:
+          num_zip_codes: count()
+  cities_code_stats:
+    source: $transformations.cities_area_codes
+    operations:
+      - operation: join
+        sources:
+          - $transformations.cities_zip_codes
+        join_type: inner
+        left_keys:
+          - city
+          - state
+        right_keys:
+          - city
+          - state
+      - operation: debug
+        function: head
+        rows: 2
+        transpose: True
+  families:
+    source: $transformations.animal_species
+    operations:
+      - operation: group_by
+        group_by_columns:
+          - family
+        create_columns:
+          all_lifespans: json_array_agg(avg_lifespan_yrs)
+          all_lifespans_quoted: json_array_agg(avg_lifespan_yrs,str)
+      - operation: keep_columns
+        columns:
+          - family
+          - all_lifespans
+          - all_lifespans_quoted
+
+  # Test wildcard matching on column names:
+  wildcards:
+    source: $sources.wildcards
+    operations:
+      # this should remove just `d_4`
+      - operation: keep_columns
+        columns:
+          - a_*
+          - b_*
+          - c_*
+          - e_*
+          - "*_1"
+          - "*_2"
+          - "*_3"
+      # this should remove `d_1`, `d_2`, and `d_3`
+      - operation: drop_columns
+        columns:
+          - d_*
+      - operation: combine_columns
+        columns:
+          - a_*
+        new_column: a1234
+        separator: "-"
+      - operation: map_values
+        columns:
+          - a_*
+          - "*_2"
+        mapping:
+          "1": 101
+          "2": 102
+          "3": 103
+          "5": 105
+          "8": 108
+      - operation: modify_columns
+        columns:
+          a_*: '{%raw%}{{value|int + 1000}}{%endraw%}'
+          "*_2": '{%raw%}{{value|int + 1000}}{%endraw%}'
+      - operation: date_format
+        columns:
+          - e_*
+        from_format: "%m/%d/%Y"
+        to_format: "%Y-%m-%d"
+
+
+destinations:
+
+  animals:
+    source: $transformations.animal_species
+    template: ${BASE_DIR}/templates/animal.jsont
+    extension: jsonl
+    linearize: True
+
+  big_cats:
+    source: $transformations.big_cats
+    template: ${BASE_DIR}/templates/cats.jsont
+    extension: jsonl
+    linearize: True
+
+  {% set count_outputs = [
+      'species_count_by_zoo',
+      'zoo_count_by_species',
+      'zoo_count_by_year_founded',
+      'total_of_each_species',
+  ] %}
+  {% for output_type in count_outputs %}
+  {{ output_type }}:
+    source: $transformations.{{ output_type }}
+    template: ${BASE_DIR}/templates/count.jsont
+    extension: jsonl
+    linearize: True
+  {% endfor %}
+
+  cities_weather:
+    source: $transformations.cities_avg_weather_wide
+    template: ${BASE_DIR}/templates/verbatim.jsont
+    extension: jsonl
+    linearize: False
+
+  cities_code_stats:
+    source: $transformations.cities_code_stats
+    template: ${BASE_DIR}/templates/verbatim.jsont
+    extension: jsonl
+    linearize: True
+
+  families:
+    source: $transformations.families
+    template: ${BASE_DIR}/templates/families.jsont
+    extension: jsonl
+    linearize: True
+
+  wildcards:
+    source: $transformations.wildcards
+    template: ${BASE_DIR}/templates/verbatim.jsont
+    extension: jsonl
+    linearize: True
