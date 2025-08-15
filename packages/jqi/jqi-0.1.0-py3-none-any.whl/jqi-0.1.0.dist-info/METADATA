@@ -1,0 +1,56 @@
+Metadata-Version: 2.4
+Name: jqi
+Version: 0.1.0
+Summary: An interactive wrapper for jq
+Home-page: https://github.com/jan-g/jqi
+Author: jan grant 
+Author-email: jqi@ioctl.org
+License: Apache License 2.0
+Description-Content-Type: text/markdown
+License-File: LICENCE.md
+Requires-Dist: argparse_helper>=0.9.1
+Requires-Dist: config-dir>=0.0.5
+Requires-Dist: parsy
+Requires-Dist: prompt_toolkit>=3.0.5
+Requires-Dist: pyyaml
+Requires-Dist: sh
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+# An interactive wrapper for jq
+
+This can be used as part of a pipeline, or take a file as input.
+
+Use control-space to toggle compact mode; use control-R to toggle
+raw output.
+
+Use:
+
+    somthing-that-produces-json | jqi
+
+or
+
+    jqi /tmp/foo.json file
+
+Use control-C to exit.
+
+## Keys
+
+- `^X`: exit (dumping the result to stdout)
+- `^C`: quit
+- `^ space`: toggle compact mode
+- `^r`: toggle raw mode
+- `^y`: set yaml mode
+- `^j`: set JSON mode
+
+- `^ LEFT`: word left
+- `^ RIGHT`: work right
+
+- `alt-arrow`, `alt-page up/down`, `alt-home/end`: scroll the output window
