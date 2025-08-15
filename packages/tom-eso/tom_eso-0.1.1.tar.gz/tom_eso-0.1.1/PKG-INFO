@@ -1,0 +1,67 @@
+Metadata-Version: 2.3
+Name: tom-eso
+Version: 0.1.1
+Summary: TOM Toolkit Facility module for the European Southern Observatory telescopes
+License: GPL-3.0-or-later
+Author: Lindy Lindstrom
+Author-email: llindstrom@lco.global
+Requires-Python: >=3.9.0,<3.13
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: p2api (>=1,<2)
+Requires-Dist: phase1api (>=0,<1)
+Requires-Dist: tomtoolkit (>=2.22)
+Description-Content-Type: text/markdown
+
+# tom_eso
+European Southern Obervatory Facility modules for TOM Toolkit
+
+## Installation
+
+Install the module into your TOM environment:
+
+```shell
+pip install tom-eso
+```
+
+1. In your project `settings.py`, add `tom_eso` to your `INSTALLED_APPS` setting:
+
+    ```python
+    INSTALLED_APPS = [
+        ...
+        'tom_eso',
+    ]
+    ```
+
+2. Add `tom_eso.eso.ESOFacility` to the `TOM_FACILITY_CLASSES` in your TOM's
+`settings.py`:
+   ```python
+    TOM_FACILITY_CLASSES = [
+        'tom_observations.facilities.lco.LCOFacility',
+        ...
+        'tom_eso.eso.ESOFacility',
+    ]
+   ```   
+
+## Configuration
+
+Include the following settings inside the `FACILITIES` dictionary inside `settings.py`:
+
+```python
+    FACILITIES = {
+        ...
+        # defaults set from ESO p2 API Tutorial
+        # https://www.eso.org/sci/observing/phase2/p2intro/Phase2API/api--python-programming-tutorial.html
+        # You should have your own credentials.
+        'ESO': {
+            'environment': os.getenv('ESO_ENVIRONMENT', 'demo'),
+            'username': os.getenv('ESO_USERNAME', '52052'),
+            'password': os.getenv('ESO_PASSWORD', 'tutorial'),
+        },
+    }
+```
+
