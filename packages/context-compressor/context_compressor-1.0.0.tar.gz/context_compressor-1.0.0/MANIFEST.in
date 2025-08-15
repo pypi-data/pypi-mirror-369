@@ -1,0 +1,42 @@
+# Include important documentation files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include SUMMARY.md
+
+# Include configuration files
+include pyproject.toml
+include requirements.txt
+
+# Include example scripts
+recursive-include examples *.py
+
+# Include test files (optional, but good for development)
+recursive-include tests *.py
+
+# Include any additional documentation
+recursive-include docs *.md *.rst *.txt
+
+# Exclude unnecessary files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude .git*
+global-exclude .DS_Store
+global-exclude *.so
+global-exclude .pytest_cache
+global-exclude .coverage
+global-exclude htmlcov
+
+# Exclude development and build artifacts
+exclude .gitignore
+exclude .pre-commit-config.yaml
+exclude test_installation.py
+prune .git
+prune .pytest_cache
+prune htmlcov
+prune build
+prune dist
+prune *.egg-info
