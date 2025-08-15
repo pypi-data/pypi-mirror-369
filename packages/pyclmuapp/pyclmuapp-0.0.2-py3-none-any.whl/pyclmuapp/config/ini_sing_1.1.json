@@ -1,0 +1,8 @@
+{
+    "pull": "singularity pull docker://{image_name}",
+    "chomd": "singularity run --hostname clmu-app -B {input_path}:/p/clmuapp -B {output_path}:/p/scratch/CESMDATAROOT/Archive -B {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -B {scripts_path}:/p/scripts {container_name} chmod +x {command}",
+    "run": "singularity run --hostname clmu-app -B {input_path}:/p/clmuapp -B {output_path}:/p/scratch/CESMDATAROOT/Archive -B {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -B {scripts_path}:/p/scripts {container_name} bash -c {command}",
+    "exec": "singularity run --hostname clmu-app -B {input_path}:/p/clmuapp -B {output_path}:/p/scratch/CESMDATAROOT/Archive -B {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -B {scripts_path}:/p/scripts {container_name} bash -c {command}",
+    "usp": "singularity run --hostname clmu-app -B {input_path}:/p/clmuapp -B {output_path}:/p/scratch/CESMDATAROOT/Archive -B {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -B {scripts_path}:/p/scripts {container_name} bash -c '{command}'",
+    "usp-exec": "singularity run --hostname clmu-app -B {input_path}:/p/clmuapp -B {output_path}:/p/scratch/CESMDATAROOT/Archive -B {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -B {scripts_path}:/p/scripts {container_name} bash -c '{command}'"
+}

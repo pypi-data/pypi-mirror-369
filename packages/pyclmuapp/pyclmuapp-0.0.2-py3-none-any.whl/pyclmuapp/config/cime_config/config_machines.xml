@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<config_machines version="2.0">
+    <machine MACH="clmu-app">
+        <DESC>clmu container</DESC>
+        <NODENAME_REGEX>clmu-app.*</NODENAME_REGEX>
+        <OS>LINUX</OS>
+        <COMPILERS>gnu</COMPILERS>
+        <MPILIBS>mpi-serial</MPILIBS>
+        <CIME_OUTPUT_ROOT>$ENV{CESMDATAROOT}/CaseOutputs</CIME_OUTPUT_ROOT>
+        <DIN_LOC_ROOT>$ENV{CESMDATAROOT}/inputdata</DIN_LOC_ROOT>
+        <DIN_LOC_ROOT_CLMFORC>$ENV{CESMDATAROOT}/inputdata/atm/datm7</DIN_LOC_ROOT_CLMFORC>
+        <DOUT_S_ROOT>$ENV{CESMDATAROOT}/Archive</DOUT_S_ROOT>
+        <BASELINE_ROOT>$ENV{CESMDATAROOT}/BaselineTests</BASELINE_ROOT>
+        <CCSM_CPRNC>$CCSMROOT/tools/cprnc/build/cprnc</CCSM_CPRNC>
+        <GMAKE>make</GMAKE>
+        <GMAKE_J>32</GMAKE_J>
+        <BATCH_SYSTEM>none</BATCH_SYSTEM>
+        <SUPPORTED_BY>The_Uinversity_of_Manchester</SUPPORTED_BY>
+        <MAX_TASKS_PER_NODE>32</MAX_TASKS_PER_NODE>
+        <MAX_MPITASKS_PER_NODE>32</MAX_MPITASKS_PER_NODE>
+        <module_system type="none"/>
+    </machine>
+</config_machines>

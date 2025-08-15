@@ -1,0 +1,16 @@
+{
+    "pull": "docker pull {image_name}",
+    "run": "docker run --hostname clmu-app -v {input_path}:/p/clmuapp -v {output_path}:/p/scratch/CESMDATAROOT/Archive -v {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -v {scripts_path}:/p/scripts -itd --name {container_name} {image_name}",
+    "stop": "docker stop {container_name}",
+    "start": "docker start {container_name}",
+    "rm": "docker rm {container_name}",
+    "rmi": "docker rmi {image_name}",
+    "ps": "docker ps",
+    "psa": "docker ps -a",
+    "logs": "docker logs {container_name}",
+    "exec": "docker exec {container_name} bash -c {command}",
+    "chmod": "docker exec {container_name} chmod +x {command}",
+    "case" : "docker run --hostname clmu-app -v {input_path}:/p/clmuapp -v {output_path}:/p/scratch/CESMDATAROOT/Archive -v {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -v {scripts_path}:/p/scripts {image_name} chmod +x {command} && bash -c {command}",
+    "usp": "docker run --rm --hostname clmu-app -v {input_path}:/p/clmuapp -v {output_path}:/p/scratch/CESMDATAROOT/Archive -v {log_path}:/p/scratch/CESMDATAROOT/CaseOutputs -v {scripts_path}:/p/scripts {image_name} bash -c '{command}'",
+    "usp-exec": "docker exec {container_name} bash -c '{command}'"
+}
