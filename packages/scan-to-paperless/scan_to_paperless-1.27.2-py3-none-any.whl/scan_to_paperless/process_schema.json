@@ -1,0 +1,831 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/camptocamp/tilecloud-chain/master/tilecloud_chain/schema.json",
+  "type": "object",
+  "title": "Configuration",
+  "additionalProperties": false,
+  "definitions": {
+    "contour": {
+      "Editor note": "The properties of this object should be modified in the config_schema.json file",
+      "type": "object",
+      "title": "Contour",
+      "properties": {
+        "min_box_size": {
+          "type": "number",
+          "default": {
+            "crop": 3,
+            "empty": 10,
+            "limit": 10
+          },
+          "description": "The minimum box size to find the content [mm]",
+          "title": "Min box size"
+        },
+        "min_box_black": {
+          "type": "number",
+          "default": 2,
+          "description": "The minimum black in a box on content find [%]",
+          "title": "Min box black"
+        },
+        "contour_kernel_size": {
+          "type": "number",
+          "default": 1.5,
+          "description": "The block size used in a box on content find [mm]",
+          "title": "Contour kernel size"
+        },
+        "threshold_block_size": {
+          "type": "number",
+          "default": 1.5,
+          "description": "The block size used in a box on threshold for content find [mm]",
+          "title": "Threshold block size"
+        },
+        "threshold_value_c": {
+          "type": "number",
+          "default": 70,
+          "description": "A variable used on threshold, should be low on low contrast image, used in a box on content find on witch one we will crop",
+          "title": "Threshold value c"
+        }
+      }
+    },
+    "auto_mask": {
+      "Editor note": "The properties of this object should be modified in the config_schema.json file",
+      "type": "object",
+      "title": "Auto mask",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable the auto detection of the mask",
+          "title": "Auto detection enabled"
+        },
+        "lower_hsv_color": {
+          "type": "array",
+          "description": "The lower color in HSV representation",
+          "default": [0, 0, 250],
+          "items": {
+            "type": "integer"
+          },
+          "title": "Lower hsv color"
+        },
+        "upper_hsv_color": {
+          "type": "array",
+          "description": "The upper color in HSV representation",
+          "default": [255, 10, 255],
+          "items": {
+            "type": "integer"
+          },
+          "title": "Upper hsv color"
+        },
+        "de_noise_morphology": {
+          "type": "boolean",
+          "description": "Apply a morphology operation to remove noise",
+          "default": true,
+          "title": "De noise morphology"
+        },
+        "inverse_mask": {
+          "type": "boolean",
+          "description": "Inverse the mask",
+          "default": false,
+          "title": "Inverse mask"
+        },
+        "de_noise_size": {
+          "type": "integer",
+          "description": "The size of the artifact that will be de noise",
+          "default": 1000,
+          "title": "De noise size"
+        },
+        "de_noise_level": {
+          "type": "integer",
+          "description": "The threshold level used in de noise on the blurry image",
+          "default": 220,
+          "title": "De noise level"
+        },
+        "buffer_size": {
+          "type": "integer",
+          "description": "The size of the buffer add on the mask",
+          "default": 20,
+          "title": "Buffer size"
+        },
+        "buffer_level": {
+          "type": "integer",
+          "description": "The threshold level used in buffer on the blurry image",
+          "default": 20,
+          "title": "Buffer level"
+        }
+      }
+    },
+    "args": {
+      "Editor note": "The properties of this object should be modified in the config_schema.json file",
+      "type": "object",
+      "title": "Arguments",
+      "properties": {
+        "level": {
+          "type": "object",
+          "title": "Level",
+          "description": "The level configuration",
+          "properties": {
+            "value": {
+              "type": ["boolean", "integer"],
+              "description": "true: => do level on 15% - 85% (under 15 % will be black above 85% will be white), false: => 0% - 100%, <number>: => (0 + <number>)% - (100 - number)%",
+              "title": "Level value",
+              "default": false
+            },
+            "auto": {
+              "type": "boolean",
+              "description": "If no level specified, do auto level",
+              "default": false,
+              "title": "Auto level"
+            },
+            "min": {
+              "type": "number",
+              "description": "Min level if no level end no auto-level",
+              "default": 0,
+              "title": "Min level"
+            },
+            "max": {
+              "type": "number",
+              "description": "Max level if no level end no auto-level",
+              "default": 100,
+              "title": "Max level"
+            }
+          }
+        },
+        "cut_white": {
+          "type": "number",
+          "description": "Set the near white pixels on the image to white",
+          "default": 255,
+          "title": "Cut white"
+        },
+        "cut_black": {
+          "type": "number",
+          "description": "Set the near black pixels on the image to black",
+          "default": 0,
+          "title": "Cut black"
+        },
+        "crop": {
+          "type": "object",
+          "title": "Crop",
+          "description": "The crop configuration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable the crop",
+              "title": "Crop enabled"
+            },
+            "margin_horizontal": {
+              "type": "number",
+              "default": 9,
+              "description": "The horizontal margin used on auto-detect content [mm]",
+              "title": "Margin horizontal"
+            },
+            "margin_vertical": {
+              "type": "number",
+              "default": 6,
+              "description": "The vertical margin used on auto-detect content [mm]",
+              "title": "Margin vertical"
+            },
+            "contour": {
+              "$ref": "#/definitions/contour"
+            }
+          }
+        },
+        "dpi": {
+          "type": "number",
+          "default": 300,
+          "description": "The DPI used to convert the mm to pixel",
+          "title": "Dpi"
+        },
+        "sharpen": {
+          "type": "object",
+          "description": "Sharpen configuration",
+          "title": "Sharpen",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable the sharpen",
+              "title": "Sharpen enabled"
+            }
+          }
+        },
+        "dither": {
+          "type": "object",
+          "title": "Dither",
+          "description": "The dither configuration",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable the dither",
+              "title": "Dither enabled"
+            }
+          }
+        },
+        "tesseract": {
+          "type": "object",
+          "title": "Tesseract",
+          "description": "The Tesseract configuration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Use Tesseract to to an OCR on the document",
+              "title": "Tesseract enabled"
+            },
+            "lang": {
+              "type": "string",
+              "default": "fra+eng",
+              "description": "The used language for tesseract",
+              "title": "Tesseract lang"
+            }
+          }
+        },
+        "append_credit_card": {
+          "type": "boolean",
+          "default": false,
+          "description": "Do an assisted split",
+          "title": "Append credit card"
+        },
+        "assisted_split": {
+          "type": "boolean",
+          "default": false,
+          "description": "Do an assisted split",
+          "title": "Assisted split"
+        },
+        "empty": {
+          "type": "object",
+          "title": "Empty",
+          "description": "The empty page detection configuration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable the empty page detection",
+              "title": "Empty enabled"
+            },
+            "contour": {
+              "$ref": "#/definitions/contour"
+            }
+          }
+        },
+        "limit_detection": {
+          "type": "object",
+          "title": "Limit detection",
+          "description": "The limit page detection configuration",
+          "properties": {
+            "contour": {
+              "$ref": "#/definitions/contour"
+            },
+            "line": {
+              "type": "object",
+              "title": "Line detection",
+              "description": "The line detection used in assisted split",
+              "properties": {
+                "low_threshold": {
+                  "type": "integer",
+                  "default": 0,
+                  "description": "The low threshold used in the Canny edge detector",
+                  "title": "Line detection low threshold"
+                },
+                "high_threshold": {
+                  "type": "integer",
+                  "default": 1000,
+                  "description": "The high threshold used in the Canny edge detector",
+                  "title": "Line detection high threshold"
+                },
+                "aperture_size": {
+                  "type": "integer",
+                  "default": 3,
+                  "description": "The aperture size used in the Canny edge detector",
+                  "title": "Line detection aperture size"
+                },
+                "rho": {
+                  "type": "integer",
+                  "default": 1,
+                  "description": "The rho used in the Hough transform",
+                  "title": "Line detection rho"
+                },
+                "threshold": {
+                  "type": "integer",
+                  "default": 100,
+                  "description": "The threshold used in the Hough transform",
+                  "title": "Line detection threshold"
+                },
+                "min_line_length": {
+                  "type": "integer",
+                  "default": 50,
+                  "description": "The minimum line length in percentage of the image size used in the Hough transform",
+                  "title": "Line detection min line length"
+                },
+                "max_line_gap": {
+                  "type": "integer",
+                  "default": 100,
+                  "description": "The maximum line gap in percentage of the image size used in the Hough transform",
+                  "title": "Line detection max line gap"
+                }
+              }
+            }
+          }
+        },
+        "colors": {
+          "type": "integer",
+          "default": 0,
+          "description": "The number of colors in the png",
+          "title": "Colors"
+        },
+        "optipng": {
+          "type": "object",
+          "title": "Optipng",
+          "description": "The optipng optimization tool configuration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Use the optipng optimizer",
+              "title": "Optipng enabled"
+            }
+          }
+        },
+        "pngquant": {
+          "type": "object",
+          "title": "Pngquant",
+          "description": "The pngquant optimization tool configuration",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Use the pngquant optimizer",
+              "title": "Pngquant enabled"
+            },
+            "options": {
+              "type": "array",
+              "description": "The pngquant options",
+              "default": ["--force", "--speed=1", "--strip", "--quality=0-32"],
+              "items": {
+                "type": "string"
+              },
+              "title": "Pngquant options"
+            }
+          }
+        },
+        "exiftool": {
+          "type": "object",
+          "title": "Exiftool",
+          "description": "The exiftool optimization tool configuration",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Use the exiftool optimizer",
+              "title": "Exiftool enabled"
+            }
+          }
+        },
+        "ps2pdf": {
+          "type": "object",
+          "title": "Ps2pdf",
+          "description": "The ps2pdf optimization tool configuration",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Use the ps2pdf optimizer (=> JPEG)",
+              "title": "Ps2pdf enabled"
+            }
+          }
+        },
+        "auto_rotate": {
+          "type": "object",
+          "title": "Auto rotate",
+          "description": "The auto rotate configuration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable the auto rotate detected by Tesseract",
+              "title": "Auto rotate enabled"
+            }
+          }
+        },
+        "jpeg": {
+          "type": "object",
+          "description": "Convert images to JPEG configuration",
+          "title": "Jpeg",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Convert images to JPEG",
+              "title": "Jpeg enabled"
+            },
+            "quality": {
+              "type": "integer",
+              "default": 90,
+              "description": "The JPEG quality",
+              "title": "Jpeg quality"
+            }
+          }
+        },
+        "background_color": {
+          "type": "array",
+          "default": [255, 255, 255],
+          "description": "The background color",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Background color"
+        },
+        "mask": {
+          "type": "object",
+          "title": "Mask operation",
+          "description": "The mask configuration, the a is used to mask the image on crop and skew calculation",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable the mask",
+              "title": "mask enabled"
+            },
+            "auto_mask": {
+              "$ref": "#/definitions/auto_mask"
+            },
+            "additional_filename": {
+              "type": ["string", "null"],
+              "description": "An image file used to add on the mask"
+            }
+          }
+        },
+        "cut": {
+          "type": "object",
+          "title": "Cut operation",
+          "description": "The cut configuration, a mask is used to definitively mask the source image",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable the cut",
+              "title": "Auto cut enabled"
+            },
+            "auto_mask": {
+              "$ref": "#/definitions/auto_mask"
+            },
+            "additional_filename": {
+              "type": ["string", "null"],
+              "description": "An image file used to add on the mask"
+            }
+          }
+        },
+        "no_remove_to_continue": {
+          "type": "boolean",
+          "default": false,
+          "description": "Don't wait for the deletion of the REMOVE_TO_CONTINUE file before exporting the PDF.",
+          "title": "No REMOVE_TO_CONTINUE"
+        },
+        "deskew": {
+          "type": "object",
+          "description": "The deskew configuration",
+          "properties": {
+            "min_angle": {
+              "type": "number",
+              "default": -45,
+              "description": "The minimum angle to detect the image skew [degree]",
+              "title": "Deskew min angle"
+            },
+            "max_angle": {
+              "type": "number",
+              "default": 45,
+              "description": "The maximum angle to detect the image skew [degree]",
+              "title": "Deskew max angle"
+            },
+            "angle_derivation": {
+              "type": "number",
+              "default": 0.1,
+              "description": "The step of angle to detect the image skew [degree]",
+              "title": "Deskew angle derivation"
+            },
+            "sigma": {
+              "title": "Deskew sigma",
+              "description": "Used in the `canny` function",
+              "default": 3.0,
+              "type": "number"
+            },
+            "num_peaks": {
+              "title": "Deskew num peaks",
+              "description": "number of peaks we ask for",
+              "default": 20,
+              "type": "integer"
+            },
+            "angle_pm_90": {
+              "title": "Deskew angle pm 90",
+              "description": "Detect an angle of +/- 90 degree, also +/- 45 degree",
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        },
+        "rule": {
+          "type": "object",
+          "title": "Rule",
+          "description": "Configuration of rule displayed in assisted split images",
+          "properties": {
+            "enabled": {
+              "title": "Rule enable",
+              "type": "boolean",
+              "default": true
+            },
+            "minor_graduation_space": {
+              "title": "Rule minor graduation space",
+              "type": "integer",
+              "default": 10
+            },
+            "major_graduation_space": {
+              "title": "Rule major graduation space",
+              "type": "integer",
+              "default": 100
+            },
+            "lines_space": {
+              "title": "Rule lines space",
+              "type": "integer",
+              "default": 100
+            },
+            "minor_graduation_size": {
+              "title": "Rule minor graduation size",
+              "type": "integer",
+              "default": 10
+            },
+            "major_graduation_size": {
+              "title": "Rule major graduation size",
+              "type": "integer",
+              "default": 30
+            },
+            "graduation_color": {
+              "title": "Rule graduation color",
+              "type": "array",
+              "default": [0, 0, 0],
+              "items": {
+                "type": "integer"
+              }
+            },
+            "lines_color": {
+              "title": "Rule lines color",
+              "type": "array",
+              "default": [0, 0, 0],
+              "items": {
+                "type": "integer"
+              }
+            },
+            "lines_opacity": {
+              "title": "Rule lines opacity",
+              "type": "number",
+              "default": 0.2
+            },
+            "graduation_text_font_filename": {
+              "title": "Rule graduation text font filename",
+              "type": "string",
+              "default": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+            },
+            "graduation_text_font_size": {
+              "title": "Rule graduation text font size",
+              "type": "number",
+              "default": 17
+            },
+            "graduation_text_font_color": {
+              "title": "Rule graduation text font color",
+              "type": "array",
+              "default": [0, 0, 0],
+              "items": {
+                "type": "integer"
+              }
+            },
+            "graduation_text_margin": {
+              "title": "Rule graduation text margin",
+              "type": "integer",
+              "default": 6
+            }
+          }
+        },
+        "rest_upload": {
+          "type": "object",
+          "title": "REST upload",
+          "description": "Upload the final PDF via Paperless REST API",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Enable the upload of the PDF via REST API",
+              "title": "REST upload enabled"
+            },
+            "api_url": {
+              "type": "string",
+              "description": "The URL address of the REST API, usually http://server.name/api",
+              "title": "REST upload API url"
+            },
+            "api_token": {
+              "type": "string",
+              "description": "The API token",
+              "title": "REST upload API token"
+            }
+          },
+          "required": ["api_url", "api_token"]
+        },
+        "consume_folder": {
+          "type": "object",
+          "title": "Consume folder",
+          "description": "Send the final PDF to Paperless using the consume folder",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable using the consume folder",
+              "title": "Consume folder enabled"
+            }
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The images"
+    },
+    "args": {
+      "$ref": "#/definitions/args"
+    },
+    "progress": {
+      "type": "boolean",
+      "description": "Run in progress mode",
+      "default": false,
+      "title": "Progress"
+    },
+    "steps": {
+      "type": "array",
+      "description": "The carried out steps description",
+      "items": {
+        "type": "object",
+        "title": "Step",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The step name"
+          },
+          "sources": {
+            "type": "array",
+            "description": "The images obtain after the current step",
+            "items": {
+              "type": "string"
+            }
+          },
+          "process_count": {
+            "type": "integer",
+            "description": "The step number"
+          }
+        }
+      }
+    },
+    "assisted_split": {
+      "type": "array",
+      "items": {
+        "title": "Assisted split",
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Assisted split configuration",
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "The source image name"
+          },
+          "destinations": {
+            "type": "array",
+            "title": "The destination image positions",
+            "items": {
+              "type": ["integer", "string"]
+            }
+          },
+          "image": {
+            "type": "string",
+            "title": "The enhanced image name"
+          },
+          "limits": {
+            "type": "array",
+            "title": "Limits",
+            "description": "The (proposed) limits to do the assisted split, You should keep only the right one",
+            "items": {
+              "type": "object",
+              "title": "Limit",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name visible on the generated image"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The kind of split"
+                },
+                "value": {
+                  "type": "integer",
+                  "description": "The split position"
+                },
+                "vertical": {
+                  "type": "boolean",
+                  "description": "Is vertical?"
+                },
+                "margin": {
+                  "type": "integer",
+                  "description": "The margin around the split, can be used to remove a fold"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "transformed_images": {
+      "type": "array",
+      "description": "The transformed image, if removed the jobs will rag again from start",
+      "items": {
+        "type": "string"
+      }
+    },
+    "intermediate_error": {
+      "type": "array",
+      "description": "The ignored errors",
+      "items": {
+        "type": "object",
+        "title": "Intermediate error",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "traceback": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "images_config": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "angle": {
+            "type": ["number", "null"],
+            "description": "The used angle to deskew, can be change, restart by deleting one of the generated images"
+          },
+          "status": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "angle": {
+                "type": "number",
+                "description": "The measured deskew angle"
+              },
+              "size": {
+                "type": "array",
+                "description": "The image dimensions",
+                "items": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["images", "args"]
+}
