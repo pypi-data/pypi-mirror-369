@@ -1,0 +1,58 @@
+Metadata-Version: 2.4
+Name: haja_workers
+Version: 0.1.0
+Summary: Haja Workers SDK - Python implementation for workflow functions
+Author: Fatshark Studios AB
+Project-URL: Homepage, https://github.com/FatsharkStudiosAB/haja-workers
+Project-URL: Repository, https://github.com/FatsharkStudiosAB/haja-workers
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: grpcio>=1.60
+Requires-Dist: grpcio-tools>=1.60
+Requires-Dist: pydantic>=2
+Requires-Dist: python-dotenv>=1.0.0
+
+# Haja Workers SDK
+
+Python SDK for building workers that integrate with the Haja workflow system.
+
+## Installation
+
+```bash
+pip install haja_workers
+```
+
+## Quick Start
+
+```python
+import asyncio
+from haja_workers import Server, SimpleFunction
+
+async def main():
+    server = Server()
+    
+    # Define a simple function
+    echo = SimpleFunction[dict, dict](
+        name="echo", 
+        version="1.0.0", 
+        description="Echoes input"
+    ).with_handler(lambda inputs: inputs)
+    
+    # Register and start
+    server.register_function(echo)
+    await server.start()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Features
+
+- Create input functions
+- Store chat history
+- Handle workflow events
+- Communicate with the Haja workflow system
+
+## Examples
+
+See the `examples/` directory for more detailed usage examples.
