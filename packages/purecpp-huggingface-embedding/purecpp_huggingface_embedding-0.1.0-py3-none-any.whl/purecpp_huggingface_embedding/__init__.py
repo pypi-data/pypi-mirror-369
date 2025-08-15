@@ -1,0 +1,1 @@
+from purecpp_huggingface_embedding.embedding import HuggingFaceEmbeddings
