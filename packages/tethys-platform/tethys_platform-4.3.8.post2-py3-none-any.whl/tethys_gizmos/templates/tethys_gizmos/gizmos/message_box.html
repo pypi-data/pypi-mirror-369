@@ -1,0 +1,26 @@
+{% load tethys %}
+
+<div id="{{ name }}" class="modal fade{% if classes %} {{ classes }}{% endif %}" tabindex="-1" role="dialog" aria-labelledby="{{ name|add:'Label' }}" aria-hidden="true"
+        {% if attributes %}
+            {% for key, value in attributes.items %}
+                {{ key }}="{{ value }}"
+            {% endfor %}
+        {% endif %}>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="{{ name|add:'Label' }}" class="modal-title">{% if title %}{{ title }}{% else %}Title{% endif %}</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="lead">
+          {{ message }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-hidden="true">{% if dismiss_button %}{{ dismiss_button }}{% else %}Cancel{% endif %}</button>
+        <a class="btn btn-primary" data-bs-dismiss="modal" aria-hidden="true" {% if affirmative_attributes %}{{ affirmative_attributes }}{% endif %}>{% if affirmative_button %}{{ affirmative_button }}{% else %}OK{% endif %}</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% load static tethys %}
+
+{% block title %}{{ block.super }} - {% if site_globals.apps_library_title %}{{ site_globals.apps_library_title }}{% else %}Apps{% endif %}{% endblock %}
+
+{% block styles %}
+  {{ block.super }}
+  {{ tethys.select2.link_tag|safe }}
+  <style id="app-library-styles">
+    .no-apps-loaded-message {
+      width: 50%;
+      margin: 100px auto;
+      margin-bottom: 150px;
+      text-align: center;
+    }
+
+    /* Tag Search */
+    .tag-search-field {
+      width: 100%;
+    }
+
+    .select2 {
+      width: 100%!important;
+    }
+
+    .select2-container .select2-search--inline .select2-search__field {
+      height: 22px!important;
+    }
+
+    /* App Cards */
+    .app-link-wrapper {
+      text-decoration: none;
+      color:#666666;
+    }
+    .app-link-wrapper:hover {
+      color: #666666;
+    }
+    .app-link-wrapper.unconfigured .app-card {
+      background: #666666;
+    }
+    .app-link-wrapper.unconfigured:hover .app-card {
+      background: #555555;
+    }
+    .app-link-wrapper.unconfigured .app-card .app-title {
+      color: #ffffff;
+    }
+    .app-link-wrapper.veiled .app-card {
+      opacity: 0.6;
+    }
+    .app-card {
+        width: 200px;
+    }
+    .app-card:hover {
+        background: #dddddd;
+    }
+
+    /* App Card Description */
+    .app-help-icon,
+    .redirect-icon{
+      border-radius: 50%;
+      font-size: 10pt;
+      line-height: 1;
+      margin-top: 3px;
+      margin-right: 3px;
+      background: white;
+    }
+
+    .app-help-icon:hover{
+        background: #dddddd;
+        cursor: pointer;
+    }
+
+    .app-help-info .btn-close {
+      width: 0.25em;
+      height: 0.25em;
+    }
+
+  </style>
+  {{ site_globals.apps_library_css|load_custom_css|safe }}
+{% endblock %}
+
+{% block global_scripts %}
+  {{ block.super }}
+  {{ tethys.select2.script_tag|safe }}
+{% endblock %}
+
+{% block primary_content %}
+  {# Push content below header #}
+  <div class="app-libary-wrapper">
+    {% if apps.configured or apps.unconfigured %}
+      {# Tag Search #}
+      {% if apps|get_tags_from_apps %}
+      <div class="container-xl">
+        <div class="row justify-content-center mt-4">
+          <div class="col-md-6">
+            <select class="tag-search-field" name="tags" multiple="multiple">
+              {% for tag in apps|get_tags_from_apps %}
+              <option value="{{ tag.0 }}">{{ tag.1 }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {# App List #}
+      <div class="container-xl">
+        <div class="row row-cols-auto justify-content-center mb-4 mx-4">
+          {% for app in apps.configured %}
+            <div class="col">
+              {% include 'tethys_apps/app_card.html' with app=app unconfigured=False %}
+            </div>
+          {% endfor %}
+          {% for app in apps.unconfigured %}
+            <div class="col">
+              {% include 'tethys_apps/app_card.html' with app=app unconfigured=True %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <h2 class="no-apps-loaded-message">There are no apps loaded.</h2>
+    {% endif %}
+  </div>
+  <div id="app-library-curtain"></div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'tethys_apps/js/app_library.js' %}" type="text/javascript"></script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}{{ block.super }} - Error{% endblock %}
+
+{% block styles %}
+  {{ block.super }}
+  <style id="error-styles">
+    #site-wrapper {
+      height: 100%;
+    }
+    #site-wrapper::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: -1;
+      opacity: 0.2;
+      content: "";
+      background-image: url("{{ error_image }}");
+      background-position: left 50% top;
+      background-size: auto;
+      background-repeat: no-repeat;
+    }
+    #content {
+      height: 100%;
+    }
+    .error-code {
+      color: {{ error_color }};
+    }
+    .error-message-container {
+      padding: 0;
+      /* padding-bottom: 100px; */
+    }
+    .error-message-container p {
+      text-align: justify;
+    }
+  </style>
+{% endblock %}
+
+{% block primary_content %}
+  <div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-lg-8">
+        <div class="error-message-container">
+          <h1 class="display-1 fw-bold text-center"><span class="error-code">{{ error_code }}</span> {{ error_title }}</h1>
+          <p class="fs-2">{{ error_message }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Override TOS block, b/c some errors prevent middleware from running and TOS can't handle it #}
+  {% block tos_override %}{% endblock %}
+{% endblock %}

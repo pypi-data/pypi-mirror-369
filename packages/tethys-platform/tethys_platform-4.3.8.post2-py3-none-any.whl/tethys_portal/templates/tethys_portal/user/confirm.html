@@ -1,0 +1,32 @@
+{% extends "tethys_portal/user/base.html" %}
+
+{% load static django_bootstrap5 tethys %}
+
+{% block title %}{{ block.super }} - Confirmation{% endblock %}
+
+{% bootstrap_messages %}
+
+{% block styles %}
+  {{ block.super }}
+  <link href="{% static '/tethys_portal/css/account_form.min.css' %}"  rel="stylesheet" />
+{% endblock %}
+
+{% block secondary_content %}
+  {% block account_content_top %}
+  {% endblock %}
+  <div class="container-xl mt-3">
+    <div class="row justify-content-center">
+      <div class="col-xl-6">
+        <div class="account-form-wrapper">
+          <div class="account-form-header">
+            <h1>{% block account_form_title %}Accounts Form Base{% endblock %}</h1>
+          </div>
+          <div class="account-form-body">
+            {% block account_form_body %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

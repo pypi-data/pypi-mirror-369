@@ -1,0 +1,34 @@
+ServerName {{ hostname }}
+
+Listen {% if ip_address %}{{ ip_address }}:{%- endif %}{{ server_port }}{% if ssl %} https{% endif %}
+
+<VirtualHost *:{{ server_port }}>
+{%- if ssl %}
+    SSLEngine on
+    SSLProxyEngine On
+    SSLCertificateFile {{ ssl_cert }}
+    SSLCertificateKeyFile {{ ssl_key }}
+{%- endif %}
+
+    ProxyPass /static !
+    Alias /static {{ static_root }}
+    ProxyPass /media !
+    Alias /media {{ media_root }}
+
+    <Directory {{ static_root }}>
+        Require all granted
+    </Directory>
+    <Directory {{ media_root }}>
+        Require all granted
+    </Directory>
+    {% for directive in additional_directives %}
+    {{ directive }}
+    {%- endfor %}
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+
+    ProxyPassMatch ^/(.*/ws)$ ws://127.0.0.1:{{ port }}/$1
+    ProxyPass / http://127.0.0.1:{{ port }}/
+    ProxyPassReverse / http://127.0.0.1:{{ port }}/
+</VirtualHost>

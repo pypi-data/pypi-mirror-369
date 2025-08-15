@@ -1,0 +1,45 @@
+{% if not original %}
+  {% load static tethys %}
+{% endif %}
+{% if display_text %}
+<label class="form-label" for="{{ name }}">{{ display_text }}</label>
+{% endif %}
+<div class="input-group mb-3{% if error or success %} has-validation{% endif %}">
+  <select id="{{ name }}" 
+    class="{% if not original %}tethys-select2{% else %}form-select{% endif %}{% if error %} is-invalid{% endif %}{% if success %} is-valid{% endif %}{% if classes %} {{ classes }}{% endif %}"
+    name="{{ name }}" {% if not original %}style="width:100%;"{% endif %}
+    {% if multiple %}multiple{% endif %} {% if disabled %}disabled{% endif %}
+    {% if attributes %}
+        {% for key, value in attributes.items %}
+            {{ key }}="{{ value }}"
+        {% endfor %}
+    {% endif %}
+    {% if select2_options %}
+      data-select2-options="{{ select2_options }}"
+    {% endif %}>
+    {% if placeholder %}
+        <option></option>
+    {% endif %}
+    {% for option, value in options %}
+      {% if initial_is_iterable %}
+        {% if option in initial or value in initial %}
+        <option value="{{value}}" selected="selected">{{ option }}</option>
+        {% else %}
+        <option value="{{value}}">{{ option }}</option>
+        {% endif %}
+      {% else %}
+        {% if option == initial or value == initial %}
+        <option value="{{value}}" selected="selected">{{ option }}</option>
+        {% else %}
+        <option value="{{value}}">{{ option }}</option>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </select>
+  {% if error %}
+  <div class="invalid-feedback">{{ error }}</div>
+  {% endif %}
+  {% if success %}
+  <div class="valid-feedback">{{ success }}</div>
+  {% endif %}
+</div>

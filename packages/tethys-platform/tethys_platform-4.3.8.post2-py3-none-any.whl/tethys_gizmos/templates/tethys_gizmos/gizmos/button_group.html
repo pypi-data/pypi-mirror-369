@@ -1,0 +1,10 @@
+<div class="{% if vertical %}btn-group-vertical{% else %}btn-group{% endif %}{% if classes %} {{ classes }}{% endif %}" role="group"
+    {% if attributes %}
+         {% for key, value in attributes.items %}
+             {{ key }}="{{ value }}"
+         {% endfor %}
+    {% endif %}>
+{% for button in buttons %}
+  {% include 'tethys_gizmos/gizmos/button.html' with name=button.name display_text=button.display_text href=button.href submit=button.submit style=button.style classes=button.classes attributes=button.attributes disabled=button.disabled icon=button.icon %}
+{% endfor %}
+</div>

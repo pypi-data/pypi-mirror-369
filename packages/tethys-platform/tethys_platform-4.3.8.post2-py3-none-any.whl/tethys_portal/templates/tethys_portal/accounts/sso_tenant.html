@@ -1,0 +1,31 @@
+{% extends "tethys_portal/accounts/base.html" %}
+
+{% load django_bootstrap5 static %}
+
+{% block title %}{{ block.super }} - {{ page_title }}{% endblock %}
+
+{% block styles %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'tethys_portal/css/sso_tenant.min.css' %}">
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script type="text/javascript" src="{% static 'tethys_portal/js/sso_tenant.js' %}"></script>
+{% endblock %}
+
+{% block account_form_title %}{{ form_title }}{% endblock %}
+
+{% block account_form_body %}
+  <form id="sso-tenant-form" role="form" method="post">
+    {% csrf_token %}
+    {# Backend added as a hidden field to be used in save tenant feature #}
+    <input id="backend" type="hidden" value="{{ backend }}">
+    {% bootstrap_form form %}
+    <a class="btn btn-outline-secondary" href="{% url 'accounts:login' %}">Back</a>
+    <button type="submit" id="sso-tenant-submit" class="btn btn-primary" name="sso-tenant-submit">Next</button>
+  </form>
+{% endblock %}
+
+{% block terms-of-service-override %}
+{% endblock %}
