@@ -1,0 +1,20 @@
+{% extends 'base/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Operation Result</h2>
+
+    {% if success %}
+    <div class="alert alert-success">
+        <strong>Success!</strong> {{ message }}
+    </div>
+    {% else %}
+    <div class="alert alert-danger">
+        <strong>Error!</strong> {{ message }}
+    </div>
+    {% endif %}
+
+    <a href="{% url 'plugins:verity_import:veritysourcelogin_list' %}" class="btn btn-primary">Back to credentials
+        list</a>
+</div>
+{% endblock %}
