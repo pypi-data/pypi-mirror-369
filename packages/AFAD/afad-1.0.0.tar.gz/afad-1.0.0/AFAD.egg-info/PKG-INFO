@@ -1,0 +1,160 @@
+Metadata-Version: 2.4
+Name: AFAD
+Version: 1.0.0
+Summary: Nothing but a human leveraging the power of threads to save time. See the below diagram and try to get it.
+Author: Henil Rakeshbhai Mistry
+Author-email: henil@arista.com
+Description-Content-Type: text/markdown
+Requires-Dist: pika>=1.3.2
+Requires-Dist: fabric>=3.2.2
+Requires-Dist: packaging>=25.0
+Requires-Dist: pyeapi>=1.0.4
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: summary
+
+# AutoFetch
+Nothing but a human leveraging the power of threads to save time. See the below diagram and try to get it.
+
+![AutoFetchDiag Image will be here](./AutoFetchDiag.png)
+
+# AutoFetcher OSPF Configuration Checker
+
+This script is an example of how to leverage the `AutoFetcher` Python library to remotely connect to a list of network devices (DUTs - Devices Under Test) and determine if OSPF (Open Shortest Path First) routing protocol is configured on them. It's designed for efficient, concurrent checking across a large number of devices.
+
+## 🚀 Features
+
+* **Automated OSPF Detection:** Connects to devices and checks their running configuration for OSPF.
+* **`AutoFetcher` Integration:** Demonstrates the use of `DutFetcher` for retrieving device lists and `DutGrabber` for parallel execution of custom logic.
+* **Concurrent Execution:** Utilizes multithreading to check OSPF configuration on up to 'n' (configurable) devices simultaneously.
+* **Structured Output:** Saves the results for each device in a clear JSON format.
+* **Robust Error Handling:** Catches `AutoFetchException` for connectivity/command issues and general exceptions for unexpected errors.
+
+## 📋 Requirements
+
+This script requires the `AutoFetcher` library. You can install it via pip:
+
+```bash
+pip install AFAD
+```
+
+# 🛠️ Setup
+
+To get started with this script, follow these steps:
+
+### 1. Save the Script
+
+Save the provided Python code into a file named `check_ospf.py` (or any other `.py` file name you prefer).
+
+### 2. Create `strings.json`
+
+In the same directory as your `check_ospf.py` script, create a file named `strings.json`. This file stores your **TAC server credentials**, which AutoFetcher uses to authenticate and retrieve the device list.
+
+#### Example `strings.json` Format:
+
+```json
+{
+  "TAC_ART_SERVER": "your_tac_server_address",
+  "TAC_HOST": "your_tac_host_username",
+  "PASSWORD": "your_tac_host_password"
+}
+```
+
+* Replace `"your_tac_server_address"` with the actual TAC server address.
+* Replace `"your_tac_host_username"` with your TAC username.
+* Replace `"your_tac_host_password"` with your TAC password.
+
+### ⚠️ Security Warning
+
+> `strings.json` contains sensitive credentials. Please:
+
+* **Do NOT commit** this file to public repositories.
+* **Set file permissions** to restrict access on your local machine.
+
+---
+
+# 💡 Usage
+
+Once you have set up the script and the `strings.json` file, run the OSPF configuration checker:
+
+```bash
+python check_ospf.py
+```
+
+### What Happens:
+
+* Initializes `DutFetcher` with credentials from `strings.json`.
+* Fetches the full device list using: `Art list --domain=all`.
+* Runs `filter_for_affected_dut` for each device concurrently (default: 500 threads).
+* Saves results to `output.json`.
+
+---
+
+# 📊 Output: `output.json`
+
+The file will look like this:
+
+```json
+{
+  ...,
+  "[AUTO-FETCH] Failure: OSPF is not configured!": [
+    "dut123",
+    "dut456"
+    ],
+  ...,
+  "[AUTO-FETCH] Success: OSPF is configured!": [
+    "dut-a",
+    "dut-b",
+    "dut-x"
+  ],
+  ...
+  
+}
+```
+
+Each key is a reason/message string, and the value under that key is list of DUTs affected for that key.
+
+---
+
+# 🔍 `filter_for_affected_dut` Function
+
+Here’s the core logic used for checking OSPF config:
+
+```python
+def filter_for_affected_dut(device: str, grabber: DutGrabber):
+    try:
+        show_running_config_output = grabber.execute_to_dut(device, ['enable', 'show running-config'])
+        commands = show_running_config_output[1]['cmds']
+
+        is_ospf_configured = any(line.startswith("router ospf ") for line in commands)
+        
+        if is_ospf_configured:
+            return "[AUTO-FETCH] Success: OSPF is configured!"
+        else:
+            return "[AUTO-FETCH] Failure: OSPF is not configured!"
+
+    except AutoFetchException as e:
+        return f"[AUTO-FETCH] Exception from command execution : {e}"
+    except Exception as e:
+        print("[AUTO-FETCH] Exception occurred!")
+        return f"[AUTO-FETCH] Exception : {e}"
+```
+
+This function:
+
+* Executes `show running-config`
+* Parses returned lines to check for `"router ospf "`
+* Returns a result string
+
+---
+
+# 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+Feel free to check the [issues page](https://gitlab.aristanetworks.com/henil/afad/-/issues) or open a [pull request](https://gitlab.aristanetworks.com/henil/afad/-/merge_requests).
+
+---
+
