@@ -1,0 +1,58 @@
+Metadata-Version: 2.4
+Name: vathos
+Version: 2.1.5
+Summary: Vathos Vision Python API.
+Home-page: https://www.vathos-robotics.com
+Author: Jonathan Balzer
+Author-email: jonathan.balzer@vathos.net
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.27.0
+Requires-Dist: numpy>=1.22.0
+Requires-Dist: imageio>=2.14.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+# python.vathos.net
+
+## Installation
+
+### Dependencies
+
+- [Python](https://www.python.org/) version 3.8 or higher
+- [requests](https://requests.readthedocs.io/en/latest/)
+- [numpy](https://numpy.org/)
+- [imageio](https://imageio.readthedocs.io/en/stable/)
+
+### Installation with pip
+
+The latest official version of the library is available on PyPi and can be installed by calling
+
+```bash
+pip install vathos
+```
+
+## Quick start
+
+```python
+from vathos_vision.authentication import get_service_account_token
+from vathos_vision.products import list_products
+
+# get an API access token
+token = get_service_account_token('client_id', 'client_secret')
+
+# list all products
+products = list_products(token)
+```
+
+[Get in touch with us](https://www.vathos-robotics.com) to receive a test account with a set of credentials consisting of a client id and a client secret.
+
+## Further reading
+
+- [Developers Guide](https://docs.vathos.net/guides)
