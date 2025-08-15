@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cfn-cur"
+dynamic = ["version"]
+description = "A tool to generate CLI Command to continue update rollback of CloudFormation stacks"
+readme = "README.md"
+authors = [
+    {name = "S Murali Krishnan", email = "mrlikrsh@gmail.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Utilities",
+]
+license-files = [
+    "LICENSE",
+]
+keywords = ["aws", "cloudformation", "update", "rollback", "failed", "continue"]
+dependencies = [
+    "botocore",
+    "typer"
+]
+requires-python = ">=3.9"
+
+[project.urls]
+Homepage = "https://github.com/mrlikl/continue-update-rollback"
+
+[project.scripts]
+cfn-cur = "source.app:cli"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["source"]
