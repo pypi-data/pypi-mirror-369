@@ -1,0 +1,602 @@
+/*
+ * =============================================================================
+ *
+ *  Copyright (c) 2023-2024 Qualcomm Technologies, Inc.
+ *  All Rights Reserved.
+ *  Confidential and Proprietary - Qualcomm Technologies, Inc.
+ *
+ * ==============================================================================
+ */
+
+/* Netron Colors */
+.node path {
+  stroke: #333;
+  fill: none;
+  stroke-width: 1px;
+}
+.node line {
+  stroke: #333;
+  fill: none;
+  stroke-width: 1px;
+}
+
+.node-item path {
+  stroke-width: 0;
+  stroke: #000;
+  fill: #fff;
+}
+.node-item text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
+    "Ubuntu", "Droid Sans", sans-serif, "PingFang SC";
+  font-size: 11px;
+  text-rendering: geometricPrecision;
+  user-select: none;
+}
+
+.node-item-function path {
+  fill: #fff;
+}
+.node-item-function text {
+  fill: #000;
+}
+.node-item-function:hover {
+  cursor: pointer;
+}
+
+.node-item-type path {
+  fill: #000;
+}
+.node-item-type text {
+  fill: #fff;
+}
+.node-item-type:hover {
+  cursor: pointer;
+}
+
+.node-item-type-constant path {
+  fill: #eee;
+}
+.node-item-type-constant text {
+  fill: #000;
+}
+
+.node-item-type-control path {
+  fill: #eee;
+}
+.node-item-type-control text {
+  fill: #000;
+}
+
+.node-item-type-layer path {
+  fill: rgb(51, 85, 136);
+}
+.node-item-type-activation path {
+  fill: rgb(112, 41, 33);
+}
+.node-item-type-pool path {
+  fill: rgb(51, 85, 51);
+}
+.node-item-type-normalization path {
+  fill: rgb(51, 85, 68);
+}
+.node-item-type-dropout path {
+  fill: rgb(69, 71, 112);
+}
+.node-item-type-shape path {
+  fill: rgb(108, 79, 71);
+}
+.node-item-type-tensor path {
+  fill: rgb(89, 66, 59);
+}
+.node-item-type-transform path {
+  fill: rgb(51, 85, 68);
+}
+.node-item-type-data path {
+  fill: rgb(85, 85, 85);
+}
+.node-item-type-quantization path {
+  fill: rgb(80, 40, 0);
+}
+.node-item-type-attention path {
+  fill: rgb(120, 60, 0);
+}
+
+.node-item-input path {
+  fill: #fff;
+}
+.node-item-input:hover {
+  cursor: pointer;
+}
+
+.node-item-constant path {
+  fill: #eee;
+}
+.node-item-constant:hover {
+  cursor: pointer;
+}
+
+.node-item-undefined path {
+  fill: #f00;
+}
+.node-item-undefined:hover {
+  cursor: pointer;
+}
+
+.node-argument-list > path {
+  fill: #fff;
+  stroke-width: 0;
+  stroke: #000;
+}
+.node-argument-list:hover {
+  cursor: pointer;
+}
+.node-argument-list:hover > path {
+  fill: #f6f6f6;
+}
+.node-argument > text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
+    "Ubuntu", "Droid Sans", sans-serif, "PingFang SC";
+  font-size: 9px;
+  font-weight: normal;
+  text-rendering: geometricPrecision;
+  user-select: none;
+}
+.node-argument > rect {
+  fill: transparent;
+}
+
+.graph-item-input path {
+  fill: #eee;
+}
+.graph-item-input:hover {
+  cursor: pointer;
+}
+
+.graph-item-output path {
+  fill: #eee;
+}
+.graph-item-output:hover {
+  cursor: pointer;
+}
+
+#arrowhead {
+  fill: #000;
+}
+#arrowhead-hover {
+  fill: rgba(220, 0, 0, 0.9);
+}
+#arrowhead-select {
+  fill: rgba(220, 0, 0, 0.9);
+}
+
+.edge-paths {
+  pointer-events: none;
+}
+.edge-path {
+  stroke: #000;
+  stroke-width: 1px;
+  fill: none;
+  marker-end: url("#arrowhead");
+}
+.edge-paths-hit-test {
+  pointer-events: stroke;
+  stroke-width: 0.5em;
+  fill: none;
+  stroke: #000;
+  stroke-opacity: 0.001;
+}
+
+.select > .node.node-border {
+  stroke: rgba(220, 0, 0, 0.9);
+  stroke-width: 2px;
+}
+.select.edge-path {
+  stroke: rgba(220, 0, 0, 0.9);
+  stroke-width: 1px;
+  marker-end: url("#arrowhead-select");
+}
+.select.node-argument > rect {
+  fill: transparent;
+  stroke: rgba(220, 0, 0, 0.9);
+}
+
+.edge-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
+    "Ubuntu", "Droid Sans", sans-serif, "PingFang SC";
+  font-size: 10px;
+}
+.edge-path-control-dependency {
+  stroke-dasharray: 3, 2;
+}
+
+.cluster rect {
+  stroke: #000;
+  fill: #000;
+  fill-opacity: 0.02;
+  stroke-opacity: 0.06;
+  stroke-width: 1px;
+}
+
+@keyframes pulse {
+  from {
+    stroke-dashoffset: 100px;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .edge-path {
+    stroke: #888;
+  }
+
+  .node path {
+    stroke: #1d1d1d;
+  }
+  .node line {
+    stroke: #1d1d1d;
+  }
+
+  .select > .node.node-border {
+    stroke: rgba(192, 0, 0, 0.8);
+  }
+  .select.edge-path {
+    stroke: rgba(192, 0, 0, 0.8);
+  }
+  .select.node-argument > rect {
+    fill: transparent;
+    stroke: rgba(192, 0, 0, 0.8);
+  }
+  #arrowhead {
+    fill: #888;
+  }
+  #arrowhead-hover {
+    fill: rgba(192, 0, 0, 0.8);
+  }
+  #arrowhead-select {
+    fill: rgba(192, 0, 0, 0.8);
+  }
+
+  .edge-label {
+    fill: #b2b2b2;
+  }
+
+  .node-item-function path {
+    fill: #404040;
+  }
+  .node-item-function text {
+    fill: #dfdfdfdf;
+  }
+  .node-item-function:hover {
+    cursor: pointer;
+  }
+
+  .node-item-type path {
+    fill: #303030;
+  }
+  .node-item-type text {
+    fill: #dfdfdf;
+  }
+  .node-item-type:hover {
+    cursor: pointer;
+  }
+
+  .node-item path {
+    stroke: #fff;
+  }
+  .node-item text {
+    fill: #dfdfdf;
+  }
+
+  .node-argument > text {
+    fill: #b2b2b2;
+  }
+  .node-argument-list > path {
+    fill: #2d2d2d;
+  }
+  .node-argument-list:hover > path {
+    fill: #303030;
+  }
+
+  .graph-item-input path {
+    fill: #404040;
+  }
+  .graph-item-input:hover {
+    cursor: pointer;
+  }
+
+  .graph-item-output path {
+    fill: #404040;
+  }
+  .graph-item-output:hover {
+    cursor: pointer;
+  }
+  .node-item-input path {
+    fill: #404040;
+  }
+  .node-item-constant path {
+    fill: #4b4b4b;
+  }
+
+  .node-item-type-layer path {
+    fill: rgba(51, 85, 136, 0.7);
+  }
+  .node-item-type-activation path {
+    fill: rgba(75, 27, 22, 0.7);
+  }
+  .node-item-type-activation path {
+    fill: rgba(75, 27, 22, 0.7);
+  }
+  .node-item-type-pool path {
+    fill: rgba(51, 85, 51, 0.7);
+  }
+  .node-item-type-pool path {
+    fill: rgba(51, 85, 51, 0.7);
+  }
+  .node-item-type-normalization path {
+    fill: rgba(51, 85, 68, 0.7);
+  }
+  .node-item-type-dropout path {
+    fill: rgba(69, 71, 112, 0.7);
+  }
+  .node-item-type-shape path {
+    fill: rgba(108, 79, 71, 0.7);
+  }
+  .node-item-type-tensor path {
+    fill: rgba(89, 66, 59, 0.7);
+  }
+  .node-item-type-transform path {
+    fill: rgba(51, 85, 68, 0.7);
+  }
+  .node-item-type-data path {
+    fill: rgba(85, 85, 85, 0.7);
+  }
+  .node-item-type-quantization path {
+    fill: rgb(80, 40, 0, 0.7);
+  }
+  .node-item-type-attention path {
+    fill: rgb(100, 50, 0, 0.7);
+  }
+  .node-item-type-custom path {
+    fill: rgb(64, 64, 64, 0.7);
+  }
+}
+/* Netron Colors */
+
+/* QDS Colors */
+.node path {
+  stroke: none;
+  fill: none;
+}
+.node line {
+  stroke: none;
+}
+
+.node-item text {
+  font-family: "Roboto Flex";
+  font-size: 10px;
+  text-rendering: geometricPrecision;
+  font-weight: 400;
+  fill: #ffffff;
+}
+
+.node-item-function text {
+  fill: #ffffff;
+}
+.node-item-function:hover path {
+  opacity: 0.7;
+}
+
+.node-item-type path {
+  fill: #555b6a;
+}
+.node-item-type text {
+  fill: #ffffff;
+}
+.node-item-type:hover path {
+  opacity: 0.7;
+}
+
+.node-item-type-constant path {
+  fill: rgba(85, 91, 106, 1);
+}
+.node-item-type-constant text {
+  fill: #000000;
+}
+.node-item-type-constant:hover path {
+  opacity: 0.7;
+}
+
+.node-item-type-control path {
+  fill: rgba(85, 91, 106, 1);
+}
+.node-item-type-control text {
+  fill: #000000;
+}
+.node-item-type-control:hover path {
+  opacity: 0.7;
+}
+
+.node-item-type-layer path {
+  fill: rgba(40, 62, 249, 1);
+}
+.node-item-type-wrapper path {
+  fill: rgba(85, 91, 106, 1);
+}
+.node-item-type-wrapper text {
+  fill: #000000;
+}
+.node-item-type-activation path {
+  fill: rgba(187, 0, 37, 1);
+}
+.node-item-type-pool path {
+  fill: rgba(0, 120, 45, 1);
+}
+.node-item-type-normalization path {
+  fill: rgba(81, 111, 0, 1);
+}
+.node-item-type-dropout path {
+  fill: rgba(93, 38, 243, 1);
+}
+.node-item-type-shape path {
+  fill: rgba(151, 76, 0, 1);
+}
+.node-item-type-tensor path {
+  fill: rgba(130, 91, 0, 1);
+}
+.node-item-type-transform path {
+  fill: rgba(0, 113, 120, 1);
+}
+.node-item-type-data path {
+  fill: rgba(181, 0, 90, 1);
+}
+.node-item-type-quantization path {
+  fill: rgba(152, 0, 185, 1);
+}
+.node-item-type-custom path {
+  fill: rgba(85, 91, 106, 1);
+}
+
+.node-item-input path {
+  fill: rgba(181, 0, 90, 1);
+}
+.node-item-input:hover path {
+  opacity: 0.7;
+}
+
+.node-item-constant path {
+  fill: rgba(181, 0, 90, 1);
+}
+.node-item-constant:hover path {
+  opacity: 0.7;
+}
+
+.node-item-undefined:hover path {
+  opacity: 0.7;
+}
+
+.node-argument-list > path {
+  fill: #ffffff;
+  stroke-width: 1px;
+  stroke: #cacaca;
+}
+.node-argument-list:hover > path {
+  opacity: 0.7;
+}
+.node-argument > text {
+  font-family: "Roboto Flex";
+  font-size: 8px;
+  font-weight: 400;
+  text-rendering: geometricPrecision;
+  fill: #000000;
+}
+
+.graph-item-input path {
+  fill: rgba(181, 0, 90, 1);
+}
+.graph-item-input:hover path {
+  opacity: 0.7;
+}
+
+.graph-item-output path {
+  fill: rgba(181, 0, 90, 1);
+}
+.graph-item-output:hover path {
+  opacity: 0.7;
+}
+
+#arrowhead {
+  fill: #7e7e7e;
+}
+#arrowhead-select {
+  fill: black;
+}
+
+.edge-path {
+  stroke: #7e7e7e;
+  stroke-width: 1px;
+  fill: none;
+  marker-end: url("#arrowhead");
+}
+
+.select {
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8));
+}
+.select > .node.node-border {
+  stroke: black;
+  stroke-width: 3.5px;
+}
+.select.edge-path {
+  stroke: black;
+  stroke-width: 1.5px;
+  marker-end: url("#arrowhead-select");
+}
+
+.edge-label {
+  fill: rgba(0, 0, 0, 0.98);
+  font-family: "Roboto Flex";
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.hidden-edges-marker {
+  fill: #ffffff;
+  stroke-width: 1px;
+  stroke: #7e7e7e;
+}
+.hidden-edges-marker:hover {
+  fill: #edf0f2;
+  cursor: pointer;
+}
+.hidden-edges-marker-plus line {
+  stroke: #7e7e7e;
+}
+
+@media (prefers-color-scheme: dark) {
+  .edge-path {
+    stroke: #8c8c8c;
+  }
+
+  .select > .node.node-border {
+    stroke: white;
+    stroke-width: 3.5px;
+  }
+  .select.edge-path {
+    stroke: white;
+    stroke-width: 1.5px;
+    marker-end: url("#arrowhead-select");
+  }
+
+  .node-argument-list > path {
+    fill: #202021;
+    stroke-width: 1px;
+    stroke: #474747;
+  }
+  .node-argument > text {
+    fill: #ffffff;
+  }
+
+  #arrowhead {
+    fill: #8c8c8c;
+  }
+  #arrowhead-select {
+    fill: white;
+  }
+
+  .edge-label {
+    fill: rgba(255, 255, 255, 0.98);
+  }
+
+  .hidden-edges-marker {
+    fill: #202021;
+    stroke: #474747;
+  }
+  .hidden-edges-marker:hover {
+    fill: #434345;
+  }
+  .hidden-edges-marker-plus line {
+    stroke: #ffffff;
+  }
+}
+/* QDS Colors */

@@ -1,0 +1,69 @@
+// =============================================================================
+//
+//  Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+//  All Rights Reserved.
+//  Confidential and Proprietary - Qualcomm Technologies, Inc.
+//
+// ==============================================================================
+node("QAIRT_TOOLS_CI_AGENTS") {
+    // clear workspace so that we can repo initialize a tree in directory
+    cleanWs()
+    // checkout ci repository to load QAIRT Tools Project
+    sh 'mkdir -p aisw_ci'
+    dir("aisw_ci")
+    {
+        script {
+            git branch: "mainline",
+                url: 'git@github.qualcomm.com:MLG/aisw-ci-tools.git'
+        }
+
+        if ( "${env.BRANCH_NAME}".contains("rel/") ) {
+            sh """
+               echo "Release build for ${env.BRANCH_NAME} branch, checking out branch for build..."
+               git checkout "${env.BRANCH_NAME}"
+            """
+        }
+        else if ( "${env.CHANGE_TARGET}" != "null" && "${env.CHANGE_TARGET}".contains("rel/") ) {
+            sh """
+               echo "Release branch PR for ${env.CHANGE_TARGET}, checking out release branch for build..."
+               git checkout "${env.CHANGE_TARGET}"
+            """
+        }
+
+        def changeBranch = "${env.CHANGE_BRANCH}"
+        if ("${changeBranch}" != "null" && "${changeBranch}" != "") {
+            sh """
+               if git branch --list | grep -q "${changeBranch}" || git ls-remote --heads origin "${changeBranch}" | grep -q "${changeBranch}"; then
+                 echo "Found PR ${changeBranch} branch for repo, checking out for build..."
+                 git checkout "${changeBranch}"
+               else
+                  echo "No PR branch "${changeBranch}" found for repo, proceeding..."
+               fi
+            """
+        }
+    }
+    // pass the required environment variables to the CI pipeline for QAIRT Tools
+    withEnv([
+             // 4 hours for build timeout
+             "BUILD_TIMEOUT=4",
+             // Identical previously-deployed tag and artifacts will be overwritten
+             "OVERWRITE_PREVIOUS=true",
+             // The location for the QAIRT Tools project's manifest repository
+             "MANIFEST_URL=git@github.qualcomm.com:MLG/qairt-tools-manifest.git",
+             // The manifest xml file to use from above manifest repository
+             "MANIFEST_FILE=qairt_tools.xml",
+             // Root folder when tree with manifest is synced
+             "PROJECT_ROOT=QAIRT_Tools",
+             // The project name to build.
+             "PROJECT_NAME=QAIRT_Tools",
+             // Location of mapping for current PR's repository inside QAIRT Tools tree
+             "PR_REPO_IN_TREE=.",
+             // The PR branch that triggerd current build
+             "PR_BRANCH=${env.CHANGE_BRANCH}",
+             "DOCKER_DEPLOY_MAILING_LIST=aisw.tools.visualizer, aisw.tools.apis",
+             "PRODUCT_DEV_MAILING_LIST=aisw.tools.visualizer, aisw.tools.apis"
+             ]) {
+		// load Jenkinsfile Pipeline file from aisw ci repository which builds the QAIRT Tools CI/CD stages
+		load 'aisw_ci/jenkins/Jenkinsfile'
+    }
+}
