@@ -1,0 +1,871 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js" integrity="sha512-zInFF17qBFVvvvFpIfeBzo7Tj7+rQxLeTJDmbxjBz5/zIr89YVbTNelNhdTT+/DCrxoVzBeUPVFJsczKbB7sew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.1/d3.min.js" integrity="sha256-SQJ/nCYPXFPuqoS56EfnesDBPNiitndOIfN2WdPRi/o=" crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://unpkg.com/browse/human-number@2.0.4/src/index.js"></script>
+    <title>Document</title>
+    <style>
+      html {
+        height: 100%;
+      }
+      body { margin: 0 }
+      body {
+        height: 100%;
+      }
+      body * {
+        font-family: "roboto";
+      }
+    
+      @page {
+          size: A3 landscape;
+      }
+    
+      .score-card {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        padding: 25px 25px;
+        font-size: 1.1vw;
+        color: #202528;
+      }
+      .section {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-column-gap: 10%;
+          margin-left: 40px;
+      }
+      .score-card .project-details-wrapper {
+          padding-bottom: 10px;
+          border-bottom: 1px solid #111;
+    
+      }
+      .score-card .project-details-wrapper .project-details {
+        display: grid;
+        grid-template-columns: 36em auto 11.03em;
+        grid-column-gap: 4%;
+        align-items: end;
+      }
+      .score-card .project-details-wrapper .project-details .project-title {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 1.9em;
+        font-weight: initial;
+        text-transform: capitalize;
+      }
+      .score-card .project-details-wrapper .project-details .logo {
+          margin: 0;
+          width: 100px;
+          padding-bottom: 10px;
+          transform: translateY(5pt);
+      }
+      .score-card .project-details-wrapper .project-details .logo img {
+          width: 9.03em;
+          padding-bottom:25px;
+          padding-right:25px;
+      }
+      .score-card .project-details-wrapper .project-details div > div {
+        display: grid;
+        grid-template-columns: 10em 1fr;
+        grid-column-gap: 10px;
+        font-size: 0.8em;
+        color: #202528;
+      }
+      .score-card .project-details-wrapper .project-details div > div span {
+        text-align: right;
+      }
+      .score-card .project-description {
+        padding-bottom:3px;
+      }
+      .score-card .project-details-wrapper .project-details div > div span:nth-of-type(2) {
+        text-align: left;
+        font-weight: 600;
+      }
+      .score-card .ok {
+        color: #00a25f;
+      }
+      .score-card .seq {
+          color: #00a25f;
+      }
+    
+    </style>
+    <style>
+      .score-card {
+          display: grid;
+          padding-top: 40px;
+          grid-template-rows: auto auto 1fr;
+      }
+      .score-card .section-header {
+          text-transform: uppercase;
+          font-size: 1.1em;
+          font-weight: 600;
+      }
+    
+      .score-card .section-header.extra-space {
+          margin-top: 16px;
+      }
+      .score-card .main {
+        padding-top: 20px;
+        margin-left: 40px;
+        margin-right: 40px;
+        display: grid;
+        grid-template-columns: 40% 50%;
+        grid-column-gap: 10%;
+      }
+      .score-card .data-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          justify-content: space-between;
+          margin: 5px 0;
+          font-size: 0.9em;
+      }
+      .score-card .data-row:has(.title) {
+          margin: 11px 0;
+      }
+      .score-card .data-row > *:nth-child(2) {
+         text-align: right;
+      }
+      .score-card .info-row {
+          display: grid;
+          grid-template-columns: 1fr;
+          justify-content: space-between;
+          margin: 5px 0;
+          font-size: 0.9em;
+      }
+      .score-card .info-row:has(.title) {
+          margin: 11px 0;
+      }
+      .score-card .statistics div.title {
+        font-size: 1.1em !important;
+        font-weight: 600;
+      }
+      .score-card .benefits.statistics {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-column-gap: 10%;
+      }
+      .score-card .chart-titles span {
+        font-size: 1.2em !important;
+        font-weight: 600;
+      }
+      .score-card .impact-chart .chart-titles .years-to-positive {
+          margin-left: 20px;
+          font-size: 1.6em !important;
+      }
+      .score-card .impact-chart .chart-titles .years-to-positive .inf-fixed {
+          position: relative;
+          top: 9px;
+      }
+      .score-card .impact-chart .chart-titles .years-to-positive .astr-fixed {
+          font-size: 0.7em !important;
+          position: relative;
+          top: -7px;
+      }
+      .score-card .impact-chart .chart-titles .years-to-positive-text {
+          margin-left: 5px;
+          font-size: 0.9em !important;
+          font-weight: 400;
+      }
+      .chart-descriptor {
+        font-size: 0.7em;
+      }
+      .chart-descriptor-value {
+        font-size: 1.2em;
+      }
+      .chart-descriptor-value tspan:not(:first-of-type) {
+        font-size: 0.45em;
+      }
+      .x-axis-label {
+        font-size: 0.8em;
+      }
+      .score-card > .charts {
+          display: grid;
+          margin-top: 8px;
+          margin-left: 40px;
+          margin-right: 40px;
+          grid-column-gap: 10%;
+          flex-basis: 50%;
+          grid-template-columns: 40% 50%;
+      }
+      .score-card .impact-chart .bar-chart {
+        overflow:visible !important;
+      }
+      .score-card .emissions-chart {
+          width: 100% !important;
+          margin-top: 10px;
+          overflow: visible !important;
+      }
+      .pie-chart {
+        overflow: visible !important;
+      }
+      .highcharts-container {
+        margin: 0 40px 0 40px;
+        padding: 0;
+        overflow: visible !important;
+      }
+      svg { overflow: visible; !important;}
+    </style>
+</head>
+<body>
+
+<div class="score-card" ref="scorecard" :style="{ 'font-size': fontSize; page-break-inside: avoid; }">
+    <div class="project-details-wrapper" id="project-details-wrapper">
+      <div class="project-details">
+        <h2 class="project-title">Climate positive design <strong>scorecard</strong></h2>
+        <div class="project-description">
+          <div>
+            <span>Project Name</span>
+            <span>Saginaw Riverfront Park</span>
+          </div>
+          <div>
+            <span>Type of Project</span>
+            <span>Park</span>
+          </div>
+        </div>
+        <div class="logo">
+          <img src="https://app.climatepositivedesign.com/img/pathfinder-dark-color.png">
+        </div>
+      </div>
+    </div>
+    <div class="main" id="main-wrapper">
+        <div>
+            <div class="section-header">
+                Carbon Impact
+            </div>
+            <div class="statistics" id="column1">
+                <div class="data-row">
+                    <div class="title">
+                        Net Impact over 60 years
+                    </div>
+                    <div class="title emit">7,125 Metric Tons</div>
+                </div>
+                <div class="data-row">
+                    <span>Total Embodied Emissions</span>
+                    <span class="">5,027,008 kgCO?e</span>
+                </div>
+                <div class="data-row">
+                    <span>Total Biogenic <span style="font-size:x-small">(Sequestration + Emissions)</span></span>
+                    <span class="seq">131,932 kgCO?e</span>
+                </div>
+                <div class="data-row">
+                    <span>Total Operational Emissions</span>
+                    <span class="">2,229,791 kgCO?e</span>
+                </div>
+                <div class="data-row">
+                    <span>Total Carbon Stored</span>
+                    <span class="ok">14,513 kgCO?e</span>
+                </div>
+            </div>
+            <div class="section-header extra-space">
+                Project Area
+            </div>
+            <div class="profile statistics">
+                <div class="data-row">
+                    <div class="title">
+                        Site Area
+                    </div>
+                    <div class="title">276,101 ft� (6.00 acres)</div>
+                </div>
+                <div class="data-row">
+                    <span>Planted Area</span>
+                    <span>199,493 ft� (72% of total area)</span>
+                </div>
+                <div class="data-row">
+                    <span>Emissions per Area</span>
+                    <span>53 kgCO?e/ft�</span>
+                </div>
+                <div class="data-row">
+                    <span>Sequestration per Area</span>
+                    <span class="ok">1 kgCO?e/ft�</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="section-header">
+                Benefits
+            </div>
+            <div class="statistics benefits" id="column2">
+                <div>
+                    <div class="info-row">
+                        <div class="title">
+                            <span>Biodiversity</span>
+                        </div>
+                    </div>
+                    <div class="info-row ">
+                            0%
+                        Existing Native Ecosystem Preserved
+                    </div>
+                    <div class="info-row ok">
+                            24%
+                        Biodiversity Net Impact
+                    </div>
+                </div>
+                <div>
+                    <div class="info-row">
+                        <div class="title">
+                            <span>Cooling</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                         Not
+                                                Designated Severe Heat Zone
+                    </div>
+                    <div class="info-row">
+                        35% of Project Site Shaded
+                    </div>
+                </div>
+                <div>
+                    <div class="info-row">
+                        <div class="title">
+                            <span>Water</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="ok">44% Water Use Reduction from Baseline</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="info-row">
+                        <div class="title">
+                            <span>Equity</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        Designated Underserved Community
+                    </div>
+                </div>
+            </div>
+            <div class="section-header extra-space">
+                IMPROVEMENTS
+            </div>
+            <div class="statistics benefits">
+                <div>
+                    <div class="info-row">From Baseline Project: N/A*</div>
+                    <div class="info-row">N/A* Total Emissions Reduction</div>
+                    <div class="info-row">N/A* Total Sequestration Increase</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="charts">
+        <div class="emissions-chart" id="emissions-chart">
+            <div class="chart-titles">
+                <span>Project Emissions</span>
+            </div>
+            <div id="pie-chart" class="pie-chart" data-highcharts-chart="1" style="overflow: hidden;"><div id="highcharts-3ipkp1z-17" dir="ltr" style="position: relative; overflow: hidden; width: 527px; height: 279px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); user-select: none; touch-action: manipulation; outline: none; padding: 0px;" class="highcharts-container "><svg version="1.1" class="highcharts-root" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, sans-serif; font-size: 1rem;" xmlns="http://www.w3.org/2000/svg" width="527" height="279" viewBox="0 0 527 279" role="img" aria-label=""><desc>Created with Highcharts 12.3.0</desc><defs><filter id="highcharts-drop-shadow-1"><feDropShadow dx="1" dy="1" flood-color="#000000" flood-opacity="0.75" stdDeviation="2.5"></feDropShadow></filter></defs><rect fill="none" class="highcharts-background" filter="none" x="0" y="0" width="527" height="279" rx="0" ry="0"></rect><rect fill="none" class="highcharts-plot-background" x="50" y="50" width="427" height="179" filter="none"></rect><rect fill="none" class="highcharts-plot-border" data-z-index="1" stroke="#cccccc" stroke-width="0" x="50" y="50" width="427" height="179"></rect><g class="highcharts-series-group" data-z-index="3" filter="none"><g class="highcharts-series highcharts-series-0 highcharts-pie-series highcharts-tracker" data-z-index="0.1" opacity="1" transform="translate(50,50) scale(1 1)" filter="none" clip-path="none" style="cursor: pointer;"><path fill="#d6dade" d="M 213.48443098530376 13.058847748050127 A 3 3 0 0 1 216.60146742986706 10.060520521711169 A 79.5 79.5 0 0 1 292.8850837918595 93.77299325525429 A 3 3 0 0 1 289.61082225715774 96.59878407470887 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-0"></path><path fill="#cdd1d5" d="M 289.61082225715774 96.59878407470887 A 3 3 0 0 1 292.30603697791935 99.98134227257201 A 79.5 79.5 0 0 1 224.516687664155 168.23298287827316 A 3 3 0 0 1 221.11589016726052 165.5608191972728 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-1"></path><path fill="#c4c8cb" d="M 221.11589016726052 165.5608191972728 A 3 3 0 0 1 218.31241738936683 168.8542099631174 A 79.5 79.5 0 0 1 153.09732210549544 141.18913331806533 A 3 3 0 0 1 153.51702164966744 136.88451549001567 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-2"></path><path fill="#babec1" d="M 153.51702164966744 136.88451549001567 A 3 3 0 0 1 149.2321738722447 136.29633024941822 A 79.5 79.5 0 0 1 136.63495952847825 69.20183374510582 A 3 3 0 0 1 140.41465417235267 67.09950390609188 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-3"></path><path fill="#b0b3b7" d="M 140.41465417235267 67.09950390609188 A 3 3 0 0 1 138.46216482974495 63.240272412653795 A 79.5 79.5 0 0 1 156.27035073706722 34.31832509571953 A 3 3 0 0 1 160.5953762725311 34.32436417896995 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-4"></path><path fill="#a5a8ac" d="M 160.5953762725311 34.32436417896995 A 3 3 0 0 1 160.77101955486017 30.002902413512125 A 79.5 79.5 0 0 1 186.94170816102383 14.567315978968352 A 3 3 0 0 1 190.8086831408748 16.5044238381614 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-5"></path><path fill="#999ca0" d="M 190.8086831408748 16.5044238381614 A 3 3 0 0 1 192.8959469945199 12.716388468974927 A 79.5 79.5 0 0 1 197.96964288806916 11.531685871913965 A 3 3 0 0 1 201.51861380192278 14.003666415033607 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-6"></path><path fill="#8c9093" d="M 201.51861380192278 14.003666415033607 A 3 3 0 0 1 204.12786815122132 10.554365892665686 A 79.5 79.5 0 0 1 206.3059838421709 10.326165107903904 A 3 3 0 0 1 209.57349578072535 13.159757895222668 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-7"></path><path fill="#7e8184" d="M 209.48320397004284 11.404278134435472 A 1.290399848742813 1.290399848742813 0 0 1 210.72688873008886 10.04838042000219 A 79.5 79.5 0 0 1 210.72688873008892 10.048380420002175 A 1.290399848742813 1.290399848742813 0 0 1 212.06208200971102 11.314267184459439 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-8"></path><path fill="#6f7274" d="M 212.04399415331437 10.330753300507098 A 0.31673222647326005 0.31673222647326005 0 0 1 212.3561155325362 10.008229807576342 A 79.5 79.5 0 0 1 212.3561155325362 10.008229807576342 A 0.31673222647326005 0.31673222647326005 0 0 1 212.67738796309482 10.321638780361909 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-9"></path><path fill="#5c5f62" d="M 212.67697655133497 10.282039421892279 A 0.2772789575365949 0.2772789575365949 0 0 1 212.9523303913298 10.001886450056318 A 79.5 79.5 0 0 1 212.9523303913298 10.001886450056318 A 0.2772789575365949 0.2772789575365949 0 0 1 213.2315179107582 10.278219136910096 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-10"></path><path fill="#45484b" d="M 213.23098040748636 10.119616503351097 A 0.11907134832574856 0.11907134832574856 0 0 1 213.34982614872672 10.00014183777185 A 79.5 79.5 0 0 1 213.34982614872672 10.00014183777185 A 0.11907134832574856 0.11907134832574856 0 0 1 213.469122411352 10.119166657241962 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-11"></path><path fill="#202528" d="M 213.46907606019695 10.00000601440307 A 0 0 0 0 1 213.46907606019695 10.00000601440307 A 79.5 79.5 0 0 1 213.46907606019695 10.00000601440307 A 0 0 0 0 1 213.46907606019695 10.00000601440307 L 213.5 89.5 A 0 0 0 0 1 213.5 89.5 A 0 0 0 0 0 213.5 89.5 A 0 0 0 0 1 213.5 89.5 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-12"></path></g><g class="highcharts-markers highcharts-series-0 highcharts-pie-series" data-z-index="0.1" opacity="1" transform="translate(50,50) scale(1 1)" clip-path="none"></g></g><text x="264" class="highcharts-title" data-z-index="4" text-align="center" y="25" text-anchor="middle" transform-origin="10 22" transform="translate(0,0) scale(1 1)" style="font-size: 1.2em;"></text><text x="264" class="highcharts-subtitle" data-z-index="4" text-align="center" y="24" text-anchor="middle" transform-origin="10 15" transform="translate(0,0) scale(1 1)" style="font-size: 0.8em; fill: rgb(102, 102, 102);"></text><text x="10" text-anchor="start" class="highcharts-caption" data-z-index="4" style="font-size: 0.8em; fill: rgb(102, 102, 102);" text-align="left" y="276" transform-origin="10 15" transform="translate(0,0) scale(1 1)"></text><g class="highcharts-datalabels-group" data-z-index="6"><g class="highcharts-data-labels highcharts-series-0 highcharts-pie-series highcharts-tracker" data-z-index="6" opacity="1" transform="translate(50,50) scale(1 1)" style="cursor: pointer;"><path fill="none" class="highcharts-data-label-connector highcharts-color-0" stroke-width="1" stroke="#d6dade" d="M 299.4343769067809 15.7444806491668 L 294.4343769067809 15.7444806491668 L 276.6953353929659 31.9100739315412 L 272.26057501451214 35.9514722521348"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-1" stroke-width="1" stroke="#cdd1d5" d="M 296.2127966532755 166.64253843585035 L 291.2127966532755 166.64253843585035 L 274.1798549210508 149.73458480607493 L 269.9216194879946 145.50759639863108"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-2" stroke-width="1" stroke="#c4c8cb" d="M 160.762663007906 185.5 L 166.99618578354915 185.5 L 176.22564097877594 166.44720371499469 L 178.84138547149342 161.04739994552136"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-3" stroke-width="1" stroke="#babec1" d="M 102.64042320129936 117.5 L 129.46480409799162 105.25867537932909 L 135.3620108279571 104.15280342288494"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-4" stroke-width="1" stroke="#b0b3b7" d="M 99.37048978392691 80.5 L 140.6984803260151 44.66487166118082 L 145.80735889962807 47.81119645688743"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-5" stroke-width="1" stroke="#a5a8ac" d="M 109.13073915943623 43.5 L 170.0656767916441 15.854161234784778 L 173.11369947293224 21.022290270940232"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-6" stroke-width="1" stroke="#999ca0" d="M 137.07696450023985 6.5 L 194.0658083573928 6.2379906848362365 L 195.429611279681 12.080938706952992"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-7" stroke-width="1" stroke="#8c9093" d="M 197.07787139806595 -12.902639904645472 L 202.759616450138 -12.902639904645472 L 204.58135163958576 4.466431855276823 L 205.20722169996571 10.433699795257397" visibility="hidden"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-8" stroke-width="1" stroke="#7e8184" d="M 204.68162702288103 -13.4334045335683 L 209.90842636680216 -13.4334045335683 L 210.51853068909887 4.0519991998165334 L 210.72775660565333 10.048350133162742" visibility="hidden"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-9" stroke-width="1" stroke="#6f7274" d="M 206.9363967987671 -13.488835709532943 L 212.02922289142094 -13.488835709532943 L 212.27910434972318 4.008717322693455 L 212.3647812374619 10.008105580750055" visibility="hidden"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-10" stroke-width="1" stroke="#5c5f62" d="M 207.77232156424446 -13.497582092455978 L 212.8155180416653 -13.497582092455978 L 212.9318127282463 4.001887955205604 L 212.97168551924656 10.001755467121" visibility="hidden"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-11" stroke-width="1" stroke="#45484b" d="M 208.31047160655507 -13.499835976991658 L 213.3217221673094 -13.499835976991658 L 213.35201207635012 4.000128072759939 L 213.36239719379924 10.000119085197838" visibility="hidden"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-12" stroke-width="1" stroke="#202528" d="M 208.4725804341155 -13.499996566974396 L 213.47420807959068 -13.499996566974396 L 213.47859020194795 4.000002680581634 L 213.48009264391652 10.000002492470642" visibility="hidden"></path><g class="highcharts-label highcharts-data-label highcharts-data-label-color-0" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(304,-3)"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Playground &amp; Athletic</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>26.5 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-1" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(301,148)"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Soil Amendments &amp; Mulch</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>21.9 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-2" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(-13,167)"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Aggregate &amp; Asphalt Hardscape</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>16.0 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-3" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(-13,99)"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Concrete Hardscape</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>15.4 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-4" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(-23,62)"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Landscape Water Use</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>8.1 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-5" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(26,25)"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Site Elements</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>7.4 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-6" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(95,-12)"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Lawn</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>2.3 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-7" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(36,-31)" visibility="hidden"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Demolition &amp; Site Preparation</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>1.7 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-8" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(65,-32)" visibility="hidden"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Metal &amp; Wood Hardscape</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>0.5 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-9" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(69,-32)" visibility="hidden"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Brick &amp; Stone Hardscape</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>0.1 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-10" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(134,-32)" visibility="hidden"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Furnishings</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>0.1 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-11" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(56,-32)" visibility="hidden"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Infrastructure &amp; Subsurface</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>0.0 %</text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-12" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(158,-32)" visibility="hidden"><text x="5" data-z-index="1" y="16" style="font-size: 11px; font-weight: bold; fill: rgb(51, 51, 51);"><tspan style="font-weight: bold;">Shrubs</tspan><tspan class="highcharts-br" dy="14" x="5">?</tspan>0.0 %</text></g></g></g><g class="highcharts-legend highcharts-no-tooltip" data-z-index="7" visibility="hidden"><rect fill="none" class="highcharts-legend-box" rx="0" ry="0" stroke="#999999" stroke-width="0" filter="none" x="0" y="0" width="8" height="8"></rect><g data-z-index="1"><g></g></g></g></svg></div></div>
+        </div>
+        <div class="impact-chart">
+            <div class="chart-titles">
+                <span>Project Impact</span>
+                <span class="years-to-positive"><span class="material-icons inf-fixed">?</span><span class="astr-fixed">**</span></span>
+                <span class="years-to-positive-text">years to positive</span>
+            </div>
+            <div>
+                <svg class="bar-chart" viewport="0 0 671 315" width="685.1" height="279">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7"></polygon>
+                        </marker>
+                    </defs>
+                    <g class="inner-box" transform="translate(68.51, 30)"><g class="x axis" transform="translate(0, 204.36)" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle"><path class="domain" stroke="currentColor" d="M0.5,6V0.5H552.835V6"></path><g class="tick" opacity="1" transform="translate(26.285244731245168,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2030</text></g><g class="tick" opacity="1" transform="translate(73.08634496326373,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2035</text></g><g class="tick" opacity="1" transform="translate(119.8874451952823,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2040</text></g><g class="tick" opacity="1" transform="translate(166.71417582173243,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2045</text></g><g class="tick" opacity="1" transform="translate(213.51527605375097,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2050</text></g><g class="tick" opacity="1" transform="translate(260.31637628576954,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2055</text></g><g class="tick" opacity="1" transform="translate(307.11747651778813,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2060</text></g><g class="tick" opacity="1" transform="translate(353.94420714423825,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2065</text></g><g class="tick" opacity="1" transform="translate(400.7453073762568,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2070</text></g><g class="tick" opacity="1" transform="translate(447.54640760827533,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2075</text></g><g class="tick" opacity="1" transform="translate(494.34750784029393,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2080</text></g><g class="tick" opacity="1" transform="translate(541.1742384667441,0)"><line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">2085</text></g></g><g class="y axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="currentColor" d="M-6,204.86H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,204.86)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">0.00</text></g><g class="tick" opacity="1" transform="translate(0,179.315)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">1.00</text></g><g class="tick" opacity="1" transform="translate(0,153.77)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">2.00</text></g><g class="tick" opacity="1" transform="translate(0,128.22500000000002)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">3.00</text></g><g class="tick" opacity="1" transform="translate(0,102.68)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">4.00</text></g><g class="tick" opacity="1" transform="translate(0,77.135)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">5.00</text></g><g class="tick" opacity="1" transform="translate(0,51.59)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">6.00</text></g><g class="tick" opacity="1" transform="translate(0,26.045)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">7.00</text></g><g class="tick" opacity="1" transform="translate(0,0.5)"><line stroke="currentColor" x2="-6"></line><text fill="currentColor" x="-9" dy="0.32em">8.00</text></g></g><text class="x-axis-label" transform="translate(0, 239.36)" text-anchor="middle">Construction Completion</text><text class="x-axis-label" transform="translate(532.335, 239.36)" text-anchor="middle">60 Year Lifespan</text><text transform="translate(-47.957, 102.18) rotate(-90)" text-anchor="middle">Metric Tons (tCO?e)</text><path d="M0,68.64726609377725L9.380724361948957,67.69332749909424L18.735818329466362,66.73938890441121L28.09091229698376,65.7854503097282L37.446006264501165,64.8315117150452L46.826730626450114,63.87757312036223L56.18182459396752,62.92363452567922L65.53691856148492,61.96969593099621L74.89201252900233,61.01575733631316L84.27273689095128,60.06181874163017L93.62783085846868,59.10788014694716L102.98292482598609,58.15394155226415L112.3380187935035,57.20000295758117L121.71874315545244,56.24606436289811L131.07383712296985,55.2921257682151L140.42893109048725,54.33818717353209L149.78402505800466,53.38424857884913L159.1647494199536,52.43030998416612L168.519843387471,51.47637138948309L177.8749373549884,50.5085347293586L187.23003132250582,49.55459613467559L196.61075568445477,48.60065753999258L205.96584965197218,47.64671894530957L215.32094361948958,46.69278035062654L224.676037587007,45.73884175594353L234.05676194895594,44.784903161260544L243.4118559164733,43.830964566577535L252.76694988399075,42.877025971894504L262.1220438515081,41.923087377211495L271.5027682134571,40.969148782528514L280.8578621809745,40.015210187845504L290.2129561484919,39.061271593162516L299.5680501160093,38.107332998479485L308.94877447795824,37.153394403796476L318.3038684454757,36.199455809113466L327.6589624129931,35.24551721443046L337.01405638051045,34.29157861974745L346.39478074245943,33.33764002506444L355.7498747099768,32.38370143038143L365.10496867749424,31.413780060440736L374.46006264501165,30.459841123403855L383.84078700696057,29.50590252039062L393.195880974478,28.55196391737743L402.55097494199543,27.59802531436422L411.9060689095128,26.644086711350987L421.28679327146176,25.69014810833773L430.64188723897917,24.736209505324517L439.9969812064965,23.782270902311282L449.352075174014,22.828332299298072L458.7327995359629,21.874393696284837L468.0878935034803,20.92045509327158L477.4429874709977,19.96651649025837L486.7980814385151,19.012577887245136L496.1788058004641,18.058639284231948L505.5338997679815,17.104700681218713L514.8889937354988,16.150762078205478L524.2440877030162,15.196823475192266L533.6248120649652,14.242884872179033L542.9799060324826,13.288946269165821L552.335,12.33500766615261" stroke="#8a97a2" stroke-width="2" stroke-dasharray="8" fill="none"></path><circle cx="0" cy="68.64726609377725" r="5" fill="#8a97a2"></circle><path d="M0,203.38453053178046L9.380724361948957,203.24664846513403L18.735818329466362,203.10522507243365L28.09091229698376,202.9601851637781L37.446006264501165,202.81146954589576L46.826730626450114,202.64906328441108L56.18182459396752,202.4829204122468L65.53691856148492,202.31304389738608L74.89201252900233,202.1394619346854L84.27273689095128,201.96222992622103L93.62783085846868,201.78293267472137L102.98292482598609,201.60018428132616L112.3380187935035,201.41413053769398L121.71874315545244,201.22494887810265L131.07383712296985,201.03284826337205L140.42893109048725,200.8323153394447L149.78402505800466,200.6293724548662L159.1647494199536,200.42431629549267L168.519843387471,200.21746837803272L177.8749373549884,200.00917182193342L187.23003132250582,199.79430819378547L196.61075568445477,199.57873144248376L205.96584965197218,199.3628251518564L215.32094361948958,199.1469771020127L224.676037587007,198.93157433019582L234.05676194895594,198.7219786089706L243.4118559164733,198.51358048758036L252.76694988399075,198.30673599442753L262.1220438515081,198.10178214059837L271.5027682134571,197.89903330618407L280.8578621809745,197.7008208649053L290.2129561484919,197.50536270735307L299.5680501160093,197.31288947277451L308.94877447795824,197.12360071128984L318.3038684454757,196.93766435029082L327.6589624129931,196.76441339881484L337.01405638051045,196.59475659602617L346.39478074245943,196.42876942403026L355.7498747099768,196.26649892959293L365.10496867749424,196.10796552111876L374.46006264501165,195.9575086060916L383.84078700696057,195.81075804600178L393.195880974478,195.66766725776682L402.55097494199543,195.52817200083265L411.9060689095128,195.39219274411505L421.28679327146176,195.27132331818504L430.64188723897917,195.1537741058507L439.9969812064965,195.03943315920708L449.352075174014,194.92818180365384L458.7327995359629,194.81989642307943L468.0878935034803,194.7214173928071L477.4429874709977,194.62564857361014L486.7980814385151,194.5324605356245L496.1788058004641,194.44172434977727L505.5338997679815,194.35331253815372L514.8889937354988,194.2819052448804L524.2440877030162,194.21257479556894L533.6248120649652,194.14520234316936L542.9799060324826,194.07967292637898L552.335,194.0158757957386" stroke="#00a25f" stroke-width="2" fill="none"></path><circle cx="0" cy="203.38453053178046" r="5" fill="#00a25f"></circle><path class="area" d="M0,68.64726609377725L9.380724361948957,67.69332749909424L18.735818329466362,66.73938890441121L28.09091229698376,65.7854503097282L37.446006264501165,64.8315117150452L46.826730626450114,63.87757312036223L56.18182459396752,62.92363452567922L65.53691856148492,61.96969593099621L74.89201252900233,61.01575733631316L84.27273689095128,60.06181874163017L93.62783085846868,59.10788014694716L102.98292482598609,58.15394155226415L112.3380187935035,57.20000295758117L121.71874315545244,56.24606436289811L131.07383712296985,55.2921257682151L140.42893109048725,54.33818717353209L149.78402505800466,53.38424857884913L159.1647494199536,52.43030998416612L168.519843387471,51.47637138948309L177.8749373549884,50.5085347293586L187.23003132250582,49.55459613467559L196.61075568445477,48.60065753999258L205.96584965197218,47.64671894530957L215.32094361948958,46.69278035062654L224.676037587007,45.73884175594353L234.05676194895594,44.784903161260544L243.4118559164733,43.830964566577535L252.76694988399075,42.877025971894504L262.1220438515081,41.923087377211495L271.5027682134571,40.969148782528514L280.8578621809745,40.015210187845504L290.2129561484919,39.061271593162516L299.5680501160093,38.107332998479485L308.94877447795824,37.153394403796476L318.3038684454757,36.199455809113466L327.6589624129931,35.24551721443046L337.01405638051045,34.29157861974745L346.39478074245943,33.33764002506444L355.7498747099768,32.38370143038143L365.10496867749424,31.413780060440736L374.46006264501165,30.459841123403855L383.84078700696057,29.50590252039062L393.195880974478,28.55196391737743L402.55097494199543,27.59802531436422L411.9060689095128,26.644086711350987L421.28679327146176,25.69014810833773L430.64188723897917,24.736209505324517L439.9969812064965,23.782270902311282L449.352075174014,22.828332299298072L458.7327995359629,21.874393696284837L468.0878935034803,20.92045509327158L477.4429874709977,19.96651649025837L486.7980814385151,19.012577887245136L496.1788058004641,18.058639284231948L505.5338997679815,17.104700681218713L514.8889937354988,16.150762078205478L524.2440877030162,15.196823475192266L533.6248120649652,14.242884872179033L542.9799060324826,13.288946269165821L552.335,12.33500766615261L552.335,194.0158757957386L542.9799060324826,194.07967292637898L533.6248120649652,194.14520234316936L524.2440877030162,194.21257479556894L514.8889937354988,194.2819052448804L505.5338997679815,194.35331253815372L496.1788058004641,194.44172434977727L486.7980814385151,194.5324605356245L477.4429874709977,194.62564857361014L468.0878935034803,194.7214173928071L458.7327995359629,194.81989642307943L449.352075174014,194.92818180365384L439.9969812064965,195.03943315920708L430.64188723897917,195.1537741058507L421.28679327146176,195.27132331818504L411.9060689095128,195.39219274411505L402.55097494199543,195.52817200083265L393.195880974478,195.66766725776682L383.84078700696057,195.81075804600178L374.46006264501165,195.9575086060916L365.10496867749424,196.10796552111876L355.7498747099768,196.26649892959293L346.39478074245943,196.42876942403026L337.01405638051045,196.59475659602617L327.6589624129931,196.76441339881484L318.3038684454757,196.93766435029082L308.94877447795824,197.12360071128984L299.5680501160093,197.31288947277451L290.2129561484919,197.50536270735307L280.8578621809745,197.7008208649053L271.5027682134571,197.89903330618407L262.1220438515081,198.10178214059837L252.76694988399075,198.30673599442753L243.4118559164733,198.51358048758036L234.05676194895594,198.7219786089706L224.676037587007,198.93157433019582L215.32094361948958,199.1469771020127L205.96584965197218,199.3628251518564L196.61075568445477,199.57873144248376L187.23003132250582,199.79430819378547L177.8749373549884,200.00917182193342L168.519843387471,200.21746837803272L159.1647494199536,200.42431629549267L149.78402505800466,200.6293724548662L140.42893109048725,200.8323153394447L131.07383712296985,201.03284826337205L121.71874315545244,201.22494887810265L112.3380187935035,201.41413053769398L102.98292482598609,201.60018428132616L93.62783085846868,201.78293267472137L84.27273689095128,201.96222992622103L74.89201252900233,202.1394619346854L65.53691856148492,202.31304389738608L56.18182459396752,202.4829204122468L46.826730626450114,202.64906328441108L37.446006264501165,202.81146954589576L28.09091229698376,202.9601851637781L18.735818329466362,203.10522507243365L9.380724361948957,203.24664846513403L0,203.38453053178046Z" fill="#8a97a2" style="opacity: 0.2;"></path><path class="area" d="M0,68.64726609377725L9.380724361948957,67.69332749909424L18.735818329466362,66.73938890441121L28.09091229698376,65.7854503097282L37.446006264501165,64.8315117150452L46.826730626450114,63.87757312036223L56.18182459396752,62.92363452567922L65.53691856148492,61.96969593099621L74.89201252900233,61.01575733631316L84.27273689095128,60.06181874163017L93.62783085846868,59.10788014694716L102.98292482598609,58.15394155226415L112.3380187935035,57.20000295758117L121.71874315545244,56.24606436289811L131.07383712296985,55.2921257682151L140.42893109048725,54.33818717353209L149.78402505800466,53.38424857884913L159.1647494199536,52.43030998416612L168.519843387471,51.47637138948309L177.8749373549884,50.5085347293586L187.23003132250582,49.55459613467559L196.61075568445477,48.60065753999258L205.96584965197218,47.64671894530957L215.32094361948958,46.69278035062654L224.676037587007,45.73884175594353L234.05676194895594,44.784903161260544L243.4118559164733,43.830964566577535L252.76694988399075,42.877025971894504L262.1220438515081,41.923087377211495L271.5027682134571,40.969148782528514L280.8578621809745,40.015210187845504L290.2129561484919,39.061271593162516L299.5680501160093,38.107332998479485L308.94877447795824,37.153394403796476L318.3038684454757,36.199455809113466L327.6589624129931,35.24551721443046L337.01405638051045,34.29157861974745L346.39478074245943,33.33764002506444L355.7498747099768,32.38370143038143L365.10496867749424,31.413780060440736L374.46006264501165,30.459841123403855L383.84078700696057,29.50590252039062L393.195880974478,28.55196391737743L402.55097494199543,27.59802531436422L411.9060689095128,26.644086711350987L421.28679327146176,25.69014810833773L430.64188723897917,24.736209505324517L439.9969812064965,23.782270902311282L449.352075174014,22.828332299298072L458.7327995359629,21.874393696284837L468.0878935034803,20.92045509327158L477.4429874709977,19.96651649025837L486.7980814385151,19.012577887245136L496.1788058004641,18.058639284231948L505.5338997679815,17.104700681218713L514.8889937354988,16.150762078205478L524.2440877030162,15.196823475192266L533.6248120649652,14.242884872179033L542.9799060324826,13.288946269165821L552.335,12.33500766615261L552.335,12.33500766615261L542.9799060324826,13.288946269165821L533.6248120649652,14.242884872179033L524.2440877030162,15.196823475192266L514.8889937354988,16.150762078205478L505.5338997679815,17.104700681218713L496.1788058004641,18.058639284231948L486.7980814385151,19.012577887245136L477.4429874709977,19.96651649025837L468.0878935034803,20.92045509327158L458.7327995359629,21.874393696284837L449.352075174014,22.828332299298072L439.9969812064965,23.782270902311282L430.64188723897917,24.736209505324517L421.28679327146176,25.69014810833773L411.9060689095128,26.644086711350987L402.55097494199543,27.59802531436422L393.195880974478,28.55196391737743L383.84078700696057,29.50590252039062L374.46006264501165,30.459841123403855L365.10496867749424,31.413780060440736L355.7498747099768,32.38370143038143L346.39478074245943,33.33764002506444L337.01405638051045,34.29157861974745L327.6589624129931,35.24551721443046L318.3038684454757,36.199455809113466L308.94877447795824,37.153394403796476L299.5680501160093,38.107332998479485L290.2129561484919,39.061271593162516L280.8578621809745,40.015210187845504L271.5027682134571,40.969148782528514L262.1220438515081,41.923087377211495L252.76694988399075,42.877025971894504L243.4118559164733,43.830964566577535L234.05676194895594,44.784903161260544L224.676037587007,45.73884175594353L215.32094361948958,46.69278035062654L205.96584965197218,47.64671894530957L196.61075568445477,48.60065753999258L187.23003132250582,49.55459613467559L177.8749373549884,50.5085347293586L168.519843387471,51.47637138948309L159.1647494199536,52.43030998416612L149.78402505800466,53.38424857884913L140.42893109048725,54.33818717353209L131.07383712296985,55.2921257682151L121.71874315545244,56.24606436289811L112.3380187935035,57.20000295758117L102.98292482598609,58.15394155226415L93.62783085846868,59.10788014694716L84.27273689095128,60.06181874163017L74.89201252900233,61.01575733631316L65.53691856148492,61.96969593099621L56.18182459396752,62.92363452567922L46.826730626450114,63.87757312036223L37.446006264501165,64.8315117150452L28.09091229698376,65.7854503097282L18.735818329466362,66.73938890441121L9.380724361948957,67.69332749909424L0,68.64726609377725Z" fill="#00a25f" style="opacity: 0.2;"></path><line class="tracker" x1="-2.280037171307038" x2="-2.280037171307038" y1="0" y2="204.36" stroke-dasharray="4" stroke="#82b977" style="opacity: 1;"></line><path d="M0,-8 V8 M-8,0 H8" stroke-width="5" stroke="#00a25f" transform="translate(-2.280037171307038, 204.36)"></path><g class="zero-text" transform="translate(3, 108.64726609377725)" text-anchor="start" font-weight="bold"><rect width="51" height="16" y="-13"></rect><line x1="55" x2="100" y1="-9" y2="-9" stroke="#000" marker-end="url(#arrowhead)"></line><path d="M0,-4 V4 M-4,0 H4" stroke-width="2" stroke="#00a25f" transform="translate(51, 10)"></path><text x="4" y="-1" font-size="10.7"><tspan x="3" fill="#fff">CLIMATE</tspan><tspan x="0" dy="15">POSITIVE</tspan></text></g><text transform="translate(406.55097494199543, 204.36)" class="chart-descriptor-value" font-weight="bold" fill="#8a97a2" text-anchor="middle"><tspan x="0">7124.9</tspan><tspan dx="2"><tspan>tCO?e</tspan></tspan><tspan dy="1em" x="0">NET IMPACT</tspan></text><text transform="translate(4, 50.64726609377725)" class="chart-descriptor-value" font-weight="bold" fill="#8a97a2"><tspan>12745.2</tspan><tspan dx="2"><tspan>tCO?e</tspan></tspan></text><text dx="5" dy="60.64726609377725" transform="rotate(-5.821367276045251)" font-weight="bold" fill="#8a97a2" font-size="10">PROJECT EMISSIONS</text><line x1="552.335" x2="552.335" y1="0" y2="204.36" stroke="#999" stroke-width="1.5" stroke-dasharray="8"></line></g>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+  /* eslint no-undef: 0 */
+  /* eslint import/extensions: 0 */
+  /* eslint import/no-unresolved: 0 */
+
+  import { schemeYlOrBr } from 'https://cdn.skypack.dev/d3-scale-chromatic@3';
+
+  function loadCharts({ hcChartWidth, d3ChartWidth, chartHeight, print }) {
+    return new Promise((resolve, reject) => {
+      hcChartWidth *= 1;
+      d3ChartWidth *= 1;
+      chartHeight *= 1;
+      // load bar chart
+      const svg = d3.select('.bar-chart').attr('width', d3ChartWidth).attr('height', chartHeight);
+
+      const margin = {
+        left: Math.max(d3ChartWidth * 0.1, 60), top: 30, right: d3ChartWidth * 0.05 + 30, bottom: chartHeight * 0.16,
+      };
+      const w = d3ChartWidth - (margin.left + margin.right);
+      const h = chartHeight - (margin.top + margin.bottom);
+
+      const g = svg
+        .select('.inner-box')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+      g.selectAll('*').remove();
+
+      const completionDate = new Date('Thu Apr 01 2027 04:00:00 GMT+0000 (Coordinated Universal Time)');
+      const addYearsToDate = (date, yearsToAdd) => {
+        const year = completionDate.getFullYear();
+        const month = completionDate.getMonth();
+        const day = completionDate.getDate();
+        return new Date(year + yearsToAdd, month, day);
+      };
+      const lifespanDate = addYearsToDate(completionDate, 60 - 1);
+
+      let ytp = '?**' || 60 - 1;
+      if (ytp === 'N/A') {
+        ytp = 1;
+      } else if (ytp === '?') {
+        ytp = 60 - 1;
+      }
+      ytp = Math.min(ytp, 60 - 1);
+
+      const yearByYear = JSON.parse('[{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.01053,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-38.18631701779484,"operations":27.147003673900315,"emissions":5312.692656340683,"shadedArea":8889.835000000001,"waterUseCO2Impact":10.016182106666665,"waterUse":8346818.422222221,"overall":5274.506339322888},"year":1,"_id":"687e9e758d6f952fc7c8ecc9"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.02106,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-43.58393168393001,"operations":54.29400734780063,"emissions":5350.036112777677,"shadedArea":8889.835000000001,"waterUseCO2Impact":20.03236421333333,"waterUse":16693636.844444443,"overall":5306.452181093747},"year":2,"_id":"687e9e758d6f952fc7c8ecca"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.03158999999999999,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-49.12017723884697,"operations":81.44101102170094,"emissions":5387.379569214672,"shadedArea":8889.835000000001,"waterUseCO2Impact":30.048546319999993,"waterUse":25040455.266666666,"overall":5338.259391975825},"year":3,"_id":"687e9e758d6f952fc7c8eccb"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.04211999999999999,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-54.79799711183783,"operations":108.58801469560126,"emissions":5424.723025651666,"shadedArea":8889.835000000001,"waterUseCO2Impact":40.06472842666666,"waterUse":33387273.688888885,"overall":5369.9250285398275},"year":4,"_id":"687e9e758d6f952fc7c8eccc"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.05264999999999999,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-60.61970851846752,"operations":135.73501836950157,"emissions":5462.0664820886595,"shadedArea":8889.835000000001,"waterUseCO2Impact":50.08091053333333,"waterUse":41734092.111111104,"overall":5401.446773570192},"year":5,"_id":"687e9e758d6f952fc7c8eccd"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.06317999999999999,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-66.97736212914168,"operations":162.8820220434019,"emissions":5499.409938525652,"shadedArea":8889.835000000001,"waterUseCO2Impact":60.09709263999999,"waterUse":50080910.533333324,"overall":5432.432576396511},"year":6,"_id":"687e9e758d6f952fc7c8ecce"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.07370999999999998,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-73.48129135851235,"operations":190.0290257173022,"emissions":5536.753394962646,"shadedArea":8889.835000000001,"waterUseCO2Impact":70.11327474666666,"waterUse":58427728.95555554,"overall":5463.272103604134},"year":7,"_id":"687e9e758d6f952fc7c8eccf"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.08423999999999998,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-80.13138002011934,"operations":217.17602939120252,"emissions":5574.0968513996395,"shadedArea":8889.835000000001,"waterUseCO2Impact":80.12945685333332,"waterUse":66774547.37777776,"overall":5493.965471379521},"year":8,"_id":"687e9e758d6f952fc7c8ecd0"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.09476999999999998,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-86.92652438107694,"operations":244.32303306510286,"emissions":5611.440307836635,"shadedArea":8889.835000000001,"waterUseCO2Impact":90.14563895999999,"waterUse":75121365.79999998,"overall":5524.513783455558},"year":9,"_id":"687e9e758d6f952fc7c8ecd1"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.10529999999999998,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-93.86455563824552,"operations":271.47003673900315,"emissions":5648.783764273629,"shadedArea":8889.835000000001,"waterUseCO2Impact":100.16182106666665,"waterUse":83468184.22222221,"overall":5554.919208635383},"year":10,"_id":"687e9e758d6f952fc7c8ecd2"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.11582999999999999,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-100.88343414674623,"operations":298.61704041290346,"emissions":5686.127220710622,"shadedArea":8889.835000000001,"waterUseCO2Impact":110.1780031733333,"waterUse":91815002.64444444,"overall":5585.243786563876},"year":11,"_id":"687e9e758d6f952fc7c8ecd3"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.12635999999999997,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-108.03741314049128,"operations":325.7640440868038,"emissions":5723.470677147616,"shadedArea":8889.835000000001,"waterUseCO2Impact":120.19418527999996,"waterUse":100161821.06666666,"overall":5615.433264007124},"year":12,"_id":"687e9e758d6f952fc7c8ecd4"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.13688999999999996,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-115.32078537115085,"operations":352.91104776070415,"emissions":5760.814133584609,"shadedArea":8889.835000000001,"waterUseCO2Impact":130.21036738666663,"waterUse":108508639.48888889,"overall":5645.493348213459},"year":13,"_id":"687e9e758d6f952fc7c8ecd5"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.14741999999999997,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-122.72660488930782,"operations":380.0580514346044,"emissions":5798.157590021605,"shadedArea":8889.835000000001,"waterUseCO2Impact":140.2265494933333,"waterUse":116855457.91111112,"overall":5675.430985132297},"year":14,"_id":"687e9e758d6f952fc7c8ecd6"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.15794999999999995,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-130.24669158848886,"operations":407.2050551085047,"emissions":5835.5010464585985,"shadedArea":8889.835000000001,"waterUseCO2Impact":150.24273159999996,"waterUse":125202276.33333334,"overall":5705.25435487011},"year":15,"_id":"687e9e758d6f952fc7c8ecd7"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.16847999999999996,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-138.09687455687222,"operations":434.35205878240504,"emissions":5872.844502895592,"shadedArea":8889.835000000001,"waterUseCO2Impact":160.25891370666665,"waterUse":133549094.75555557,"overall":5734.74762833872},"year":16,"_id":"687e9e758d6f952fc7c8ecd8"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.17900999999999997,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-146.0413993006003,"operations":461.49906245630535,"emissions":5910.187959332585,"shadedArea":8889.835000000001,"waterUseCO2Impact":170.2750958133333,"waterUse":141895913.1777778,"overall":5764.146560031984},"year":17,"_id":"687e9e758d6f952fc7c8ecd9"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.18953999999999996,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-154.06865157593776,"operations":488.6460661302057,"emissions":5947.531415769578,"shadedArea":8889.835000000001,"waterUseCO2Impact":180.29127792,"waterUse":150242731.60000002,"overall":5793.462764193641},"year":18,"_id":"687e9e758d6f952fc7c8ecda"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.20006999999999997,"plantOperationalCarbonInTonnes":248.3411849355925,"plants":-162.16604509560716,"operations":515.7930698041059,"emissions":5984.874872206573,"shadedArea":8889.835000000001,"waterUseCO2Impact":190.30746002666666,"waterUse":158589550.02222225,"overall":5822.708827110966},"year":19,"_id":"687e9e758d6f952fc7c8ecdb"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.21059999999999995,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-170.32014789847653,"operations":542.9400734780063,"emissions":6022.762390708217,"shadedArea":8889.835000000001,"waterUseCO2Impact":200.32364213333335,"waterUse":166936368.44444448,"overall":5852.4422428097405},"year":20,"_id":"687e9e758d6f952fc7c8ecdc"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.22112999999999997,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-178.73132927048533,"operations":570.0870771519067,"emissions":6060.105847145211,"shadedArea":8889.835000000001,"waterUseCO2Impact":210.33982424,"waterUse":175283186.8666667,"overall":5881.374517874726},"year":21,"_id":"687e9e758d6f952fc7c8ecdd"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.23165999999999998,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-187.17042699222023,"operations":597.2340808258069,"emissions":6097.449303582205,"shadedArea":8889.835000000001,"waterUseCO2Impact":220.3560063466667,"waterUse":183630005.28888893,"overall":5910.278876589984},"year":22,"_id":"687e9e758d6f952fc7c8ecde"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.24218999999999996,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-195.6224250594484,"operations":624.3810844997072,"emissions":6134.792760019199,"shadedArea":8889.835000000001,"waterUseCO2Impact":230.37218845333337,"waterUse":191976823.71111116,"overall":5939.17033495975},"year":23,"_id":"687e9e758d6f952fc7c8ecdf"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.25271999999999994,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-204.07214319778063,"operations":651.5280881736076,"emissions":6172.136216456193,"shadedArea":8889.835000000001,"waterUseCO2Impact":240.38837056000003,"waterUse":200323642.13333338,"overall":5968.0640732584125},"year":24,"_id":"687e9e758d6f952fc7c8ece0"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.26324999999999993,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-212.50443021351336,"operations":678.6750918475078,"emissions":6209.479672893187,"shadedArea":8889.835000000001,"waterUseCO2Impact":250.40455266666672,"waterUse":208670460.5555556,"overall":5996.975242679674},"year":25,"_id":"687e9e758d6f952fc7c8ece1"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.2737799999999999,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-220.70939091913897,"operations":705.8220955214083,"emissions":6246.823129330181,"shadedArea":8889.835000000001,"waterUseCO2Impact":260.4207347733334,"waterUse":217017278.97777784,"overall":6026.113738411042},"year":26,"_id":"687e9e758d6f952fc7c8ece2"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.2843099999999999,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-228.86746965823664,"operations":732.9690991953086,"emissions":6284.166585767174,"shadedArea":8889.835000000001,"waterUseCO2Impact":270.43691688,"waterUse":225364097.40000007,"overall":6055.299116108938},"year":27,"_id":"687e9e758d6f952fc7c8ece3"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.2948399999999999,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-236.96472912791086,"operations":760.1161028692088,"emissions":6321.510042204169,"shadedArea":8889.835000000001,"waterUseCO2Impact":280.4530989866667,"waterUse":233710915.8222223,"overall":6084.545313076257},"year":28,"_id":"687e9e758d6f952fc7c8ece4"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.3053699999999998,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-244.9879764886139,"operations":787.2631065431092,"emissions":6358.853498641163,"shadedArea":8889.835000000001,"waterUseCO2Impact":290.4692810933334,"waterUse":242057734.24444452,"overall":6113.86552215255},"year":29,"_id":"687e9e758d6f952fc7c8ece5"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.3158999999999998,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-252.92490482740055,"operations":814.4101102170094,"emissions":6396.196955078156,"shadedArea":8889.835000000001,"waterUseCO2Impact":300.4854632000001,"waterUse":250404552.66666675,"overall":6143.2720502507555},"year":30,"_id":"687e9e758d6f952fc7c8ece6"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.3264299999999998,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-260.68424878037627,"operations":841.5571138909098,"emissions":6433.54041151515,"shadedArea":8889.835000000001,"waterUseCO2Impact":310.5016453066667,"waterUse":258751371.08888897,"overall":6172.8561627347735},"year":31,"_id":"687e9e758d6f952fc7c8ece7"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.33695999999999976,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-268.3357718789179,"operations":868.7041175648101,"emissions":6470.883867952143,"shadedArea":8889.835000000001,"waterUseCO2Impact":320.5178274133334,"waterUse":267098189.5111112,"overall":6202.548096073226},"year":32,"_id":"687e9e758d6f952fc7c8ece8"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.34748999999999974,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-275.87044537974117,"operations":895.8511212387103,"emissions":6508.227324389138,"shadedArea":8889.835000000001,"waterUseCO2Impact":330.5340095200001,"waterUse":275445007.9333334,"overall":6232.356879009396},"year":33,"_id":"687e9e758d6f952fc7c8ece9"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.35801999999999967,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-283.2804575733085,"operations":922.9981249126107,"emissions":6545.570780826131,"shadedArea":8889.835000000001,"waterUseCO2Impact":340.55019162666673,"waterUse":283791826.3555556,"overall":6262.290323252822},"year":34,"_id":"687e9e758d6f952fc7c8ecea"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.36854999999999966,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-290.55923467250693,"operations":950.145128586511,"emissions":6582.914237263125,"shadedArea":8889.835000000001,"waterUseCO2Impact":350.5663737333334,"waterUse":292138644.7777778,"overall":6292.355002590618},"year":35,"_id":"687e9e758d6f952fc7c8eceb"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.37907999999999964,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-297.3414210681224,"operations":977.2921322604114,"emissions":6620.2576937001195,"shadedArea":8889.835000000001,"waterUseCO2Impact":360.5825558400001,"waterUse":300485463.2,"overall":6322.916272631997},"year":36,"_id":"687e9e758d6f952fc7c8ecec"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.3896099999999996,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-303.9829087482427,"operations":1004.4391359343117,"emissions":6657.601150137113,"shadedArea":8889.835000000001,"waterUseCO2Impact":370.5987379466668,"waterUse":308832281.6222222,"overall":6353.618241388871},"year":37,"_id":"687e9e758d6f952fc7c8eced"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.4001399999999996,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-310.4807428447742,"operations":1031.5861396082119,"emissions":6694.944606574107,"shadedArea":8889.835000000001,"waterUseCO2Impact":380.61492005333344,"waterUse":317179100.0444444,"overall":6384.463863729333},"year":38,"_id":"687e9e758d6f952fc7c8ecee"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.41066999999999954,"plantOperationalCarbonInTonnes":248.88524700024252,"plants":-316.8330816366062,"operations":1058.7331432821122,"emissions":6732.288063011101,"shadedArea":8889.835000000001,"waterUseCO2Impact":390.6311021600001,"waterUse":325525918.4666666,"overall":6415.454981374494},"year":39,"_id":"687e9e758d6f952fc7c8ecef"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.4211999999999995,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-323.03912620400206,"operations":1085.8801469560126,"emissions":6770.257190822442,"shadedArea":8889.835000000001,"waterUseCO2Impact":400.6472842666668,"waterUse":333872736.8888888,"overall":6447.218064618441},"year":40,"_id":"687e9e758d6f952fc7c8ecf0"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.4317299999999995,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-328.9290034804628,"operations":1113.0271639999999,"emissions":6807.600660661426,"shadedArea":8889.835000000001,"waterUseCO2Impact":410.66346637333345,"waterUse":342219555.311111,"overall":6478.671657180963},"year":41,"_id":"687e9e758d6f952fc7c8ecf1"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.4422599999999995,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-334.67378954778746,"operations":1140.174168,"emissions":6844.94411742452,"shadedArea":8889.835000000001,"waterUseCO2Impact":420.67964848000014,"waterUse":350566373.7333332,"overall":6510.270327876733},"year":42,"_id":"687e9e758d6f952fc7c8ecf2"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.45278999999999947,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-340.2753079754629,"operations":1167.321172,"emissions":6882.287574187613,"shadedArea":8889.835000000001,"waterUseCO2Impact":430.69583058666683,"waterUse":358913192.15555537,"overall":6542.01226621215},"year":43,"_id":"687e9e758d6f952fc7c8ecf3"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.4633199999999994,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-345.73607356302136,"operations":1194.4681759999999,"emissions":6919.631030950706,"shadedArea":8889.835000000001,"waterUseCO2Impact":440.7120126933335,"waterUse":367260010.57777756,"overall":6573.894957387685},"year":44,"_id":"687e9e758d6f952fc7c8ecf4"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.4738499999999994,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-351.05919968232394,"operations":1221.61518,"emissions":6956.9744877138,"shadedArea":8889.835000000001,"waterUseCO2Impact":450.72819480000015,"waterUse":375606828.99999976,"overall":6605.915288031477},"year":45,"_id":"687e9e758d6f952fc7c8ecf5"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.48437999999999937,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-355.7908272387936,"operations":1248.762184,"emissions":6994.317944476895,"shadedArea":8889.835000000001,"waterUseCO2Impact":460.74437690666684,"waterUse":383953647.42222196,"overall":6638.527117238101},"year":46,"_id":"687e9e758d6f952fc7c8ecf6"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.49490999999999935,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-360.39247970833156,"operations":1275.9091879999999,"emissions":7031.661401239988,"shadedArea":8889.835000000001,"waterUseCO2Impact":470.76055901333353,"waterUse":392300465.84444416,"overall":6671.268921531656},"year":47,"_id":"687e9e758d6f952fc7c8ecf7"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5054399999999993,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-364.8685394712445,"operations":1303.056192,"emissions":7069.004858003082,"shadedArea":8889.835000000001,"waterUseCO2Impact":480.77674112000017,"waterUse":400647284.26666635,"overall":6704.136318531837},"year":48,"_id":"687e9e758d6f952fc7c8ecf8"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5159699999999994,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-369.22365223512077,"operations":1330.203196,"emissions":7106.348314766175,"shadedArea":8889.835000000001,"waterUseCO2Impact":490.79292322666686,"waterUse":408994102.68888855,"overall":6737.124662531054},"year":49,"_id":"687e9e758d6f952fc7c8ecf9"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5264999999999993,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-373.4626571509324,"operations":1357.3501999999999,"emissions":7143.691771529268,"shadedArea":8889.835000000001,"waterUseCO2Impact":500.80910533333355,"waterUse":417340921.11111075,"overall":6770.229114378337},"year":50,"_id":"687e9e758d6f952fc7c8ecfa"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5370299999999993,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-377.3177767544694,"operations":1384.497204,"emissions":7181.035228292363,"shadedArea":8889.835000000001,"waterUseCO2Impact":510.82528744000024,"waterUse":425687739.53333294,"overall":6803.717451537894},"year":51,"_id":"687e9e758d6f952fc7c8ecfb"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5475599999999993,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-381.06680079819455,"operations":1411.644208,"emissions":7218.378685055456,"shadedArea":8889.835000000001,"waterUseCO2Impact":520.8414695466669,"waterUse":434034557.95555514,"overall":6837.311884257261},"year":52,"_id":"687e9e758d6f952fc7c8ecfc"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5580899999999992,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-384.71479602174725,"operations":1438.7912119999999,"emissions":7255.72214181855,"shadedArea":8889.835000000001,"waterUseCO2Impact":530.8576516533336,"waterUse":442381376.37777734,"overall":6871.007345796803},"year":53,"_id":"687e9e758d6f952fc7c8ecfd"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5686199999999992,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-388.26680956049006,"operations":1465.938216,"emissions":7293.065598581642,"shadedArea":8889.835000000001,"waterUseCO2Impact":540.8738337600001,"waterUse":450728194.79999954,"overall":6904.798789021152},"year":54,"_id":"687e9e758d6f952fc7c8ecfe"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5791499999999992,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-391.72783174187964,"operations":1493.08522,"emissions":7330.409055344736,"shadedArea":8889.835000000001,"waterUseCO2Impact":550.8900158666668,"waterUse":459075013.22222173,"overall":6938.681223602856},"year":55,"_id":"687e9e758d6f952fc7c8ecff"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.5896799999999992,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-394.5231847766538,"operations":1520.2322239999999,"emissions":7367.752512107831,"shadedArea":8889.835000000001,"waterUseCO2Impact":560.9061979733334,"waterUse":467421831.6444439,"overall":6973.229327331176},"year":56,"_id":"687e9e758d6f952fc7c8ed00"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.6002099999999991,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-397.23723642321636,"operations":1547.379228,"emissions":7405.095968870924,"shadedArea":8889.835000000001,"waterUseCO2Impact":570.92238008,"waterUse":475768650.0666661,"overall":7007.858732447707},"year":57,"_id":"687e9e758d6f952fc7c8ed01"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.6107399999999991,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-399.8746391399752,"operations":1574.526232,"emissions":7442.439425634017,"shadedArea":8889.835000000001,"waterUseCO2Impact":580.9385621866667,"waterUse":484115468.4888883,"overall":7042.564786494042},"year":58,"_id":"687e9e758d6f952fc7c8ed02"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.6212699999999991,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-402.4398932715219,"operations":1601.6732359999999,"emissions":7479.78288239711,"shadedArea":8889.835000000001,"waterUseCO2Impact":590.9547442933333,"waterUse":492462286.9111105,"overall":7077.342989125588},"year":59,"_id":"687e9e758d6f952fc7c8ed03"},{"totals":{"materials":5027.008014968097,"materialCarbonStoredInTonnes":-12.40653078946944,"plantCarbonStoredInTonnes":0.631799999999999,"plantOperationalCarbonInTonnes":249.51091837459003,"plants":-404.93733428308497,"operations":1628.82024,"emissions":7517.126339160203,"shadedArea":8889.835000000001,"waterUseCO2Impact":600.9709263999998,"waterUse":500809105.3333327,"overall":7112.189004877118},"year":60,"_id":"687e9e758d6f952fc7c8ed04"}]');
+      const data = yearByYear.map((x) => ({
+        ...x,
+        year: addYearsToDate(completionDate, x.year - 1),
+      }));
+
+
+
+      const yearPositive = '2027';
+      let yearPositiveDate;
+      if (yearPositive) {
+        yearPositiveDate = new Date(+yearPositive, 0, 2);
+      } else if (ytp === 0) {
+        yearPositiveDate = data[0]?.year;
+      } else {
+        yearPositiveDate = lifespanDate;
+      }
+
+      const xValue = (d) => d.year;
+
+      // the values in plants and materials are kg co2, the values should be in 1000 kg co2
+      // https://climatepositivedesign.atlassian.net/browse/PAT-304
+      const sequestrationValue = (d) => {
+        return ((d?.totals?.plants || 0) / 1000) * -1;
+      }
+      const emissionsValue = (d) => ((d?.totals?.emissions || 0)) / 1000;
+
+      const extent = d3.extent(data.map((d) => [sequestrationValue(d), emissionsValue(d)]).flat());
+
+      const xScale = d3.scaleTime().domain([completionDate, lifespanDate]).range([0, w]);
+      const yScale = d3.scaleLinear().domain(extent).range([h, 0]).nice();
+
+      // X AXIS
+      const xAxis = d3.axisBottom(xScale).ticks(10);
+      g.append('g').attr('class', 'x axis').attr('transform', `translate(0, ${h})`).call(xAxis);
+
+      // const xAxisLabel = g.append('text')
+      //   .attr('transform', `translate(${w / 2}, ${chartHeight - margin.bottom + chartHeight * 0.03 + 10})`)
+      //   .attr('text-anchor', 'middle')
+      //   .text('Year')
+      // .attr('font-size', 14)
+
+      // Y AXIS
+      const yAxis = d3.axisLeft(yScale).ticks(8).tickFormat((x) => {
+        return d3.format(".3s")(x);
+      });
+      g.append('g').attr('class', 'y axis').call(yAxis);
+
+      g.append('text')
+        .attr('class', 'x-axis-label')
+        .attr('transform', `translate(0, ${h + 35})`)
+        .text('Construction Completion')
+        .attr('text-anchor', 'middle');
+
+      g.append('text')
+        .attr('class', 'x-axis-label')
+        .attr('transform', `translate(${w - 20}, ${h + 35})`)
+        .text('60 Year Lifespan')
+        .attr('text-anchor', 'middle');
+
+      g.append('text')
+        .attr('transform', `translate(${-margin.left * 0.7}, ${h / 2}) rotate(-90)`)
+        .attr('text-anchor', 'middle')
+        .text('Metric Tons (tCO?e)');
+
+      // EMISSIONS LINE AND CIRCLE
+      //const embodiedColor = '#f92d34';
+      const embodiedColor = '#8a97a2';
+      g.append('path')
+        .datum(data)
+        .attr('d', d3.line().x((d) => xScale(xValue(d))).y((d) => yScale(emissionsValue(d))))
+        .attr('stroke', embodiedColor)
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', 8)
+        .attr('fill', 'none');
+      g.append('circle')
+        .attr('cx', 0)
+        .attr('cy', yScale(emissionsValue(data[0])))
+        .attr('r', 5)
+        .attr('fill', embodiedColor);
+
+      // SEQUESTRATION LINE AND CIRCLE
+      const gwpColor = '#00a25f';
+      g.append('path')
+        .datum(data)
+        .attr('d', d3.line()
+          .x((d) => xScale(xValue(d)))
+          .y((d) => {
+            return yScale(sequestrationValue(d))
+          })
+        )
+        .attr('stroke', gwpColor)
+        .attr('stroke-width', 2)
+        .attr('fill', 'none');
+      g.append('circle')
+        .attr('cx', 0)
+        .attr('cy', yScale(sequestrationValue(data[0])))
+        .attr('r', 5)
+        .attr('fill', gwpColor);
+
+      // EMBODIED AREA
+      const embodiedArea = d3.area()
+        .x((d) => xScale(xValue(d)))
+        .y0((d) => yScale(sequestrationValue(d)))
+        .y1((d) => Math.min(yScale(emissionsValue(d)), yScale(sequestrationValue(d))))
+      g.append('path')
+        .data([data])
+        .attr('class', 'area')
+        .attr('d', embodiedArea)
+        .attr('fill', embodiedColor)
+        .style('opacity', 0.2);
+
+      // SEQUESTERED AREA
+      const sequesteredArea = d3.area()
+        .x((d) => xScale(xValue(d)))
+        .y0((d) => {
+          return Math.min(yScale(sequestrationValue(d)), yScale(emissionsValue(d)))
+        })
+        .y1((d) => yScale(emissionsValue(d)))
+      g.append('path')
+        .data([data])
+        .attr('class', 'area')
+        .attr('d', sequesteredArea)
+        .attr('fill', gwpColor)
+        .style('opacity', 0.2);
+
+      // ZERO LINE
+      if (yearPositiveDate < lifespanDate) {
+        const trackerColor = '#82b977';
+        // vertical zero line
+        g.append('line')
+          .attr('class', 'tracker')
+          .style('opacity', 0)
+          .attr('x1', xScale(yearPositiveDate))
+          .attr('x2', xScale(yearPositiveDate))
+          .attr('y1', 0)
+          .attr('y2', h)
+          .attr('stroke-dasharray', 4)
+          .attr('stroke', trackerColor);
+        // plus symbol
+        g.append('path')
+          .attr('d', 'M0,-8 V8 M-8,0 H8') // draw a plus
+          .attr('stroke-width', 5)
+          .attr('stroke', gwpColor)
+          .attr('transform', `translate(${xScale(yearPositiveDate)}, ${yScale(emissionsValue(data[ytp]))})`);
+
+        // depending on space below the embodied line, shift the zero text below or above.
+        let zeroTextYPosition;
+        // if (ytp < 4) {
+        //   zeroTextYPosition = yScale(emissionsValue(data[0])) - 45
+        // } else if (yScale(0) - yScale(emissionsValue(data[0])) > 35) {
+        //   zeroTextYPosition = yScale(emissionsValue(data[0])) + 19
+        // } else {
+        //   zeroTextYPosition = yScale(emissionsValue(data[0])) - 35
+        // }
+        if (ytp < 40) {
+          zeroTextYPosition = yScale(emissionsValue(data[0])) + 19;
+        } else {
+          zeroTextYPosition = yScale(emissionsValue(data[0])) + 40;
+        }
+        if (zeroTextYPosition > (h - 40)) {
+          zeroTextYPosition = yScale(emissionsValue(data[0])) - 55;
+        }
+        const zeroTextXPosition = Math.max(3, xScale(yearPositiveDate) - 25);
+        // zero text
+        g.append('g')
+          .attr('class', 'zero-text')
+          .attr('transform', `translate(${zeroTextXPosition}, ${zeroTextYPosition})`)
+          .attr('text-anchor', 'start')
+          .attr('font-weight', 'bold')
+          // .attr('font-size', 15)
+          // .call(g => g.append('tspan').text('Carbon neutral in '))
+          // .call(g => g.append('tspan').attr('font-weight', 'bold').text(yearPositiveDate.getFullYear()))
+          .call((_g) => _g.append('rect')
+            .attr('width', 51)
+            .attr('height', 16)
+            .attr('y', -13))
+          .call((_g) => _g.append('line')
+            .attr('x1', 55)
+            .attr('x2', 100)
+            .attr('y1', -9)
+            .attr('y2', -9)
+            .attr('stroke', '#000')
+            .attr('marker-end', 'url(#arrowhead)'))
+          .call((_g) => _g.append('path')
+            .attr('d', 'M0,-4 V4 M-4,0 H4') // draw a plus
+            .attr('stroke-width', 2)
+            .attr('stroke', gwpColor)
+            .attr('transform', 'translate(51, 10)'))
+          .call((_g) => _g.append('text')
+            .attr('x', 4)
+            .attr('y', -1)
+            .attr('font-size', 10.7)
+            .call((text) => text.append('tspan').text('CLIMATE').attr('x', 3).attr('fill', '#fff'))
+            .call((text) => text.append('tspan').text('POSITIVE').attr('x', 0).attr('dy', 15)));
+      }
+
+      // SEQUESTRATION TEXT
+
+      const getLineAngle = (xDifference, yDifference) => {
+        // work out predicted line angle
+        // tan(?) = opposite / adjacent = yDistance / xDistance
+        const xDistance = xDifference;
+        const yDistance = Math.abs(yDifference);
+        const tanTheta = yDistance / xDistance;
+
+        const theta = Math.atan(tanTheta) * (180 / Math.PI);
+        return theta * Math.sign(yDifference);
+      };
+      // let textYear = Math.round(+ytp + ((50 - +ytp) / 2))
+      // textYear = Math.min(textYear, 35)
+      const textYear = Math.min(Math.max(ytp, 43), 45);
+      const textFullYear = completionDate.getFullYear() + (textYear || 43);
+      const textDatapoint = data.find((d) => d.year.getFullYear() === textFullYear);
+
+      const totalImpact = +'7124.867';
+      const impactColor = totalImpact <= 0 ? gwpColor : embodiedColor;
+      const textHorizontalPoint = xScale(xValue(textDatapoint));
+      // get midpoint between y value of both lines to place the net impact text
+      const getTextVerticalPoint = () => {
+        const emi = yScale(emissionsValue(data[textYear]));
+        const seq = yScale(sequestrationValue(data[textYear]));
+        const diff = Math.abs(emi - seq);
+        const heightOfLabel = 30;
+        if (ytp < 40 || !ytp || ytp >= 60  - 1) {
+          return Math.min(emi, seq) + (diff / 2) - (heightOfLabel / 2);
+        }
+        return Math.max(emi, seq) + (heightOfLabel / 2);
+      };
+      const textVerticalPoint = getTextVerticalPoint();
+      if (textDatapoint) {
+        g.append('text')
+          .attr('transform', `translate(${textHorizontalPoint + 4}, ${textVerticalPoint + 15})`)
+          .attr('class', 'chart-descriptor-value')
+          .attr('font-weight', 'bold')
+          .attr('fill', impactColor)
+          .attr('text-anchor', 'middle')
+          .call((text) => text.append('tspan')
+            .attr('x', 0)
+            .text(() => Math.round(totalImpact * 10) / 10))
+          .call((text) => text.append('tspan')
+            .attr('dx', 2)
+            .call((tspan) => tspan.append('tspan')
+              .text('tCO?e')))
+          .call((text) =>
+            text.append('tspan').attr("dy", "1em").attr('x', 0).text(() => 'NET IMPACT')
+          );
+
+      }
+      if (ytp) {
+        const sequestrationLineAngle = getLineAngle(
+          Math.abs(xScale(lifespanDate) - xScale(xValue(data[ytp - 1]))),
+          yScale(sequestrationValue(data[data.length - 1])) - yScale(sequestrationValue(data[ytp - 1])),
+        );
+
+        g.append('text')
+          // .attr('transform', `translate(${xScale(xValue(textDatapoint))}, ${yScale(emissionsValue(data[0]))+ 32}) rotate(0)`)
+          .attr('dy', yScale(emissionsValue(data[0])) - 8)
+          .attr('dx', xScale(xValue(textDatapoint)))
+          .attr('class', 'chart-descriptor')
+          .attr('font-weight', 'bold')
+          .attr('text-anchor', 'middle')
+          .attr('fill', gwpColor)
+          .text('PROJECT SEQUESTRATION');
+      }
+
+      // EMBODIED TEXT
+      g.append('text')
+        .attr('transform', `translate(4, ${yScale(emissionsValue(data[0])) - 18})`)
+        .attr('class', 'chart-descriptor-value')
+        .attr('font-weight', 'bold')
+        .attr('fill', embodiedColor)
+        .call((text) => text.append('tspan')
+          .text(Math.round(JSON.parse('12745.21025865997') * 10) / 10))
+        .call((text) => text.append('tspan')
+          .attr('dx', 2)
+          .call((tspan) => tspan.append('tspan')
+            .text('tCO?e')));
+      const emissionsLineAngle = getLineAngle(
+        Math.abs(xScale(lifespanDate) - xScale(completionDate)),
+        yScale(emissionsValue(data[data.length - 1])) - yScale(emissionsValue(data[0])),
+      );
+      g.append('text')
+        .attr('dx', 5)
+        .attr('dy', yScale(emissionsValue(data[0])) - 8)
+        // .attr('transform', `translate(40, ${yScale(emissionsValue(data[0])) - 10}) rotate(${emissionsLineAngle})`)
+        .attr('transform', `rotate(${emissionsLineAngle})`)
+        .attr('font-weight', 'bold')
+        .attr('fill', embodiedColor)
+        // .attr('class', 'chart-descriptor')
+        .text('PROJECT EMISSIONS')
+        .attr('font-size', 10);
+
+      const lifespanColor = '#999';
+      // lifespan line
+      g.append('line')
+        .attr('x1', xScale(lifespanDate))
+        .attr('x2', xScale(lifespanDate))
+        .attr('y1', 0)
+        .attr('y2', h)
+        .attr('stroke', lifespanColor)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', 8);
+      // const lifespanRect = g.append('rect')
+      //   .attr('transform', `translate(${xScale(lifespanDate) + 5}, 0)`)
+      //   .attr('fill', '#fff')
+      //   .attr('height', h)
+      //   .attr('width', 18)
+      // const lifespanText = g.append('text')
+      //   .attr('transform', `translate(${xScale(lifespanDate) + 10}, ${h / 2}) rotate(90)`)
+      //   .attr('text-anchor', 'middle')
+      //   .text('Project lifespan (50 years)')
+      //   .attr('fill', lifespanColor)
+      //   // .attr('font-size', 15)
+
+      g.selectAll('.tracker').style('opacity', 1);
+
+      // load pie chart
+      const emissionTotals = JSON.parse('{"Playground & Athletic":1966437,"Soil Amendments & Mulch":1628820,"Aggregate & Asphalt Hardscape":1184881,"Concrete Hardscape":1142277,"Landscape Water Use":600971,"Site Elements":547853,"Lawn":169811,"Demolition & Site Preparation":125242,"Metal & Wood Hardscape":39359,"Brick & Stone Hardscape":9338,"Furnishings":8711,"Infrastructure & Subsurface":2908,"Shrubs":592}');
+      Highcharts.chart('pie-chart', {
+        chart: {
+          backgroundColor: null,
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          reflow: true,
+          height: chartHeight,
+          width: hcChartWidth,
+          margin: [50, 50, 50, 50]
+        },
+        colors: (function () {
+          // This is generated via AI Assistant
+          var colors = [],
+            targetColor = chroma("#202528"),
+            baseColor = chroma("#d6dade"), // Modify to your target color
+            i,
+            len = Object.keys(emissionTotals).length; // total number of steps between base and target color
+
+          colors.push(baseColor.hex());
+          for (i = 1; i < len; i += 1) {
+            // Interpolate between baseColor and targetColor
+            colors.push(chroma.mix(baseColor, targetColor, i / (len - 1)).hex());
+          }
+          return colors;
+        }()),
+        title: false,
+        tooltip: {
+          pointFormat: '<b>{point.y} kgCO?e</b>',
+        },
+        accessibility: {
+          point: {
+            valueSuffix: '%',
+          },
+        },
+        plotOptions: {
+          series: {
+            animation: false,
+          },
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              crop: false,
+              overflow: 'allow',
+              enabled: true,
+              color: '#333333',
+              style: {
+                fontSize: print ? 12 : 11,
+                textOutline: 'none',
+              },
+              format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
+            },
+          },
+        },
+        series: [{
+          name: 'Emissions',
+          colorByPoint: true,
+          fillColor: '#d6dade',
+          data: Object.entries(emissionTotals).map(([key, value]) => ({ name: key, y: value })),
+        }],
+        credits: {
+          enabled: false,
+        },
+      });
+
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
+
+  const loadChartsWithWidths = async () => {
+    // TODO: Rewrite this and the pdf rendering logic to better support page width detection.
+
+    // the D3 and HC sizes aren't not being properly sized from the dom.
+    // This computes and uses sizes that are related to the columns defined in the
+    // scorecard.
+
+    const column1Div = document.getElementById('column1');
+    const computedStyle1 = window.getComputedStyle(column1Div);
+    const computedWidth1 = computedStyle1.width;
+
+    const columnWidth1 = parseInt(computedWidth1, 10);
+    const columnWidth2 = columnWidth1 * 1.3;
+
+    const detailWrapper = document.getElementById('project-details-wrapper');
+    const mainWrapper = document.getElementById('main-wrapper');
+    const detailHeight = parseInt(detailWrapper.offsetHeight);
+    const mainHeight = parseInt(mainWrapper.offsetHeight);
+    const mainWidth = parseInt(mainWrapper.offsetWidth);
+    const docHeight = document.documentElement.clientHeight;
+
+    // these values will be 0 if the scorecard modal is hidden.
+    if (!columnWidth1 || !columnWidth2 || !docHeight) return;
+
+    try {
+      // calc(95% - 6.76vw - 64px);
+      const verticalSpaceAvailable = docHeight - 10;
+      const chartHeightBase = verticalSpaceAvailable - detailHeight - mainHeight;
+
+      // print media doesn't seem to work properly with D3.  It could be that when the pdf render grabs the page
+      // a zoom is applied? the 1.4 multiplier seems to adjust the graphs to the correct width.
+
+      await loadCharts({ hcChartWidth: columnWidth1, d3ChartWidth: columnWidth2, chartHeight: chartHeightBase - 60 , print: false});
+        // eslint-disable-next-line no-mixed-operators
+
+    } catch (err) {
+      console.warn('failed to load charts - %o', err.message);
+    }
+  };
+
+  window.addEventListener('load', async () => {
+    setTimeout(() => {
+      loadChartsWithWidths();
+      if (window.location.search.includes('print=true')) {
+        window.print();
+      }
+    }, 500);
+  });
+
+  window.addEventListener('resize', () => {
+    setTimeout(() => {
+      loadChartsWithWidths();
+    }, 200);
+  });
+</script>
+</body>
