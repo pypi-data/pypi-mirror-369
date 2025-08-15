@@ -1,0 +1,803 @@
+Metadata-Version: 2.3
+Name: unrealon
+Version: 1.0.8
+Summary: AI-powered web scraping platform with real-time orchestration
+License: MIT
+Author: Unrealon Team
+Author-email: dev@unrealon.com
+Requires-Python: >=3.9
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: aiohttp (>=3.8.0)
+Requires-Dist: asyncio-extras (>=1.3.0)
+Requires-Dist: beautifulsoup4 (>=4.12.0)
+Requires-Dist: cachetools (>=5.3.0)
+Requires-Dist: click (>=8.1.0)
+Requires-Dist: fast-langdetect (>=0.3.2)
+Requires-Dist: httpx (>=0.23.0,<0.24.0)
+Requires-Dist: langdetect (>=1.0.9)
+Requires-Dist: langid (>=1.1.6)
+Requires-Dist: openai (>=1.0.0)
+Requires-Dist: pathlib2 (>=2.3.0)
+Requires-Dist: playwright (>=1.40.0)
+Requires-Dist: playwright-stealth (>=1.0.5)
+Requires-Dist: pydantic (>=2.0.0)
+Requires-Dist: pydantic-settings (>=2.0.0)
+Requires-Dist: python-dateutil (>=2.8)
+Requires-Dist: python-dotenv (>=1.0.0)
+Requires-Dist: python-socketio (>=5.0)
+Requires-Dist: pyyaml (>=6.0)
+Requires-Dist: questionary (>=2.0.0)
+Requires-Dist: rich (>=13.0.0)
+Requires-Dist: tiktoken (>=0.9.0)
+Requires-Dist: typing-extensions (>=4.0)
+Requires-Dist: websockets (>=10.0)
+Description-Content-Type: text/markdown
+
+# UnrealOn SDK
+
+**Enterprise-grade web scraping platform with AI-powered automation and real-time orchestration capabilities.**
+
+[![PyPI version](https://badge.fury.io/py/unrealon.svg)](https://badge.fury.io/py/unrealon)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Overview
+
+UnrealOn SDK is a comprehensive Python framework for building production-ready web scrapers with integrated AI capabilities, real-time monitoring, and enterprise orchestration features. The platform combines traditional web scraping techniques with modern AI-powered extraction, providing developers with a unified solution for data collection at scale.
+
+**This SDK is designed to work with the [UnrealOn Server](https://unrealon.com/) - a B2B Commercial Parsing Platform that provides enterprise-grade web scraping infrastructure with anti-bot protection, proxy management, and real-time orchestration capabilities.**
+
+**No Vendor Lock-in**: The SDK works both with and without the UnrealOn Server. You can use it as a standalone library for local development and testing, or connect to the server for enterprise features like real-time orchestration, proxy management, and monitoring.
+
+**Key Features:**
+- **AI-Powered Extraction**: Automatic selector generation and content analysis
+- **Real-Time Orchestration**: Active Connection-based parser management and monitoring
+- **Enterprise Architecture**: Clean Architecture with modular design patterns
+- **Zero Configuration**: Production-ready defaults with minimal setup
+- **Anti-Detection**: Advanced browser automation with proxy rotation
+
+## Why Choose UnrealOn?
+
+### 🆚 **Competitive Comparison**
+
+| Feature | UnrealOn | Scrapy Cloud | ScrapingBee | Apify | Custom Solutions |
+|---------|-------------|--------------|-------------|-------|------------------|
+| **Real-time Communication** | ✅ Active Connection | ❌ HTTP Polling | ❌ HTTP Polling | ❌ HTTP Polling | ❌ Manual Setup |
+| **Self-hosting** | ✅ Full Control | ❌ Vendor Lock-in | ❌ Vendor Lock-in | ❌ Vendor Lock-in | ✅ Full Control |
+| **Pricing Model** | ✅ Free SDK + LLM costs | ❌ Pay per request | ❌ Pay per request | ❌ Pay per request | ❌ High dev costs |
+| **AI-Powered Extraction** | ✅ Built-in | ❌ Manual | ❌ Manual | ❌ Manual | ❌ Custom AI Dev |
+| **Enterprise Orchestration** | ✅ Active Connection | ❌ Limited | ❌ Limited | ❌ Limited | ❌ Custom Dev |
+| **Proxy Management** | ✅ Auto-rotation | ✅ Managed | ✅ Managed | ✅ Managed | ❌ Manual Setup |
+| **Data Ownership** | ✅ Your Servers | ❌ Their Servers | ❌ Their Servers | ❌ Their Servers | ✅ Your Servers |
+| **Development Time** | ✅ Days | ❌ Weeks | ❌ Weeks | ❌ Weeks | ❌ Months |
+| **Maintenance Overhead** | ✅ Minimal | ❌ High | ❌ High | ❌ High | ❌ Very High |
+
+### 💎 **Key Advantages**
+
+#### **1. No Vendor Lock-in**
+**Problem**: Scrapy Cloud, Apify lock you into their platforms  
+**Solution**: Same code runs locally, self-hosted, or managed
+```python
+# This exact code works everywhere:
+class MyParser(BaseParser):
+    async def run_once(self, **kwargs):
+        return await self.parse_data()
+```
+
+#### **2. Predictable Economics**
+**Problem**: Per-request pricing becomes expensive at scale  
+**Solution**: Flat monitoring costs with unlimited requests
+```
+Traditional: Pay per request (expensive at scale)
+UnrealOn:    Free + optional monitoring
+```
+
+**Note**: SDK is completely free. You only pay for LLM services (OpenRouter, OpenAI, etc.) using your own API keys.
+
+#### **3. Developer Experience Excellence**
+**Problem**: Manual CLI development, boilerplate code  
+**Solution**: Auto-generated everything with clean architecture
+```python
+# Write parser logic only - CLI generated automatically
+# TypeScript clients generated from OpenAPI
+# Active Connection handlers created from decorators
+```
+
+#### **4. Real-time Capabilities**
+**Problem**: Batch processing with delayed results  
+**Solution**: Instant command execution with live monitoring
+```javascript
+// Active Connection provides real-time updates
+socket.on('parser_status', (data) => {
+  console.log(`Parser ${data.parser_id}: ${data.status}`);
+});
+```
+
+#### **5. Enterprise-Grade Architecture**
+**Problem**: Simple tools don't scale to enterprise needs  
+**Solution**: Clean Architecture with production patterns
+- Multi-tenant authentication
+- Audit trails and compliance
+- Horizontal auto-scaling
+- Performance monitoring
+- Graceful error handling
+
+## Architecture
+
+### Core Components
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Parser SDK    │◄──►│  UnrealOn       │◄──►│  Target         │
+│   (Client)      │    │  Server         │    │  Websites       │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   AI Services   │    │   Database &    │    │   Proxy &       │
+│   (LLM)         │    │   Cache         │    │   Browser       │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Module Structure
+
+- **`unrealon_sdk`**: Core server communication and client SDK
+- **`unrealon_browser`**: Browser automation with anti-detection capabilities
+- **`unrealon_driver`**: Parser development tools
+- **`unrealon_llm`**: AI-powered extraction and content analysis
+
+**Note**: The SDK connects to the **UnrealOn Server** platform for real-time orchestration.
+
+## Installation
+
+### Prerequisites
+
+- Python 3.9 or higher
+- Poetry for dependency management
+- Valid API keys for LLM services (OpenRouter, OpenAI, etc.)
+
+### Installation
+
+```bash
+# Install with Poetry
+poetry add unrealon
+
+# Install development dependencies
+poetry add --group dev unrealon[dev]
+```
+
+## Configuration
+
+### Environment Variables
+
+Create a `config.env` file in your project directory:
+
+```bash
+# System Paths
+UNREALON_SYSTEM_DIR=system
+UNREALON_BROWSER_PROFILE_DIR=system/browser_profiles
+
+# API Keys
+UNREALON_OPENROUTER_API_KEY=sk-or-v1-your-openrouter-key
+UNREALON_SERVER_URL=wss://api.unrealon.com
+UNREALON_API_KEY=up_dev_your-api-key
+
+# Runtime Limits
+UNREALON_LLM_DAILY_LIMIT=1.0
+UNREALON_MAX_PAGES=2
+
+# Browser Settings
+UNREALON_BROWSER_HEADLESS=true
+UNREALON_BROWSER_TIMEOUT=30
+UNREALON_SAVE_SCREENSHOTS=false
+
+# Logging Settings
+UNREALON_LOG_LEVEL=INFO
+UNREALON_LOG_TO_FILE=true
+```
+
+### Custom Configuration
+
+Extend the base configuration for project-specific settings:
+
+```python
+import os
+from pathlib import Path
+from typing import Optional
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from unrealon_driver.src.config.auto_config import AutoConfig
+from unrealon_driver.src.dto.services import DriverBrowserConfig
+from unrealon_driver.src.dto.execution import DaemonModeConfig
+from unrealon_driver.src.dto.cli import ParserInstanceConfig
+
+# Paths
+THIS_DIR = Path(__file__).resolve().parent
+SYSTEM_DIR = THIS_DIR / "system"
+
+# Parser instance configuration
+parser_instance_config = ParserInstanceConfig(
+    parser_id="my_parser",
+    parser_name="My Custom Parser",
+    description="Custom parser with specific requirements"
+)
+
+class ParserSettings(BaseSettings):
+    """Environment settings from config.env"""
+    
+    model_config = SettingsConfigDict(
+        env_file=THIS_DIR / "config.env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+        env_prefix="UNREALON_",
+        case_sensitive=False,
+    )
+    
+    # System Paths
+    SYSTEM_DIR: str = Field(default="system")
+    BROWSER_PROFILE_DIR: str = Field(default="system/browser_profiles")
+    
+    # API Keys
+    OPENROUTER_API_KEY: str
+    SERVER_URL: str
+    API_KEY: str
+    
+    # Runtime Limits
+    LLM_DAILY_LIMIT: float = Field(default=1.0)
+    MAX_PAGES: int = Field(default=2)
+    
+    # Browser Settings
+    BROWSER_HEADLESS: bool = Field(default=False)
+    BROWSER_TIMEOUT: int = Field(default=30)
+    SAVE_SCREENSHOTS: bool = Field(default=False)
+    
+    # Logging Settings
+    LOG_LEVEL: str = Field(default="INFO")
+    LOG_TO_FILE: bool = Field(default=True)
+
+# Load settings globally
+parser_settings = ParserSettings()
+
+class CustomAutoConfig(AutoConfig):
+    """Custom AutoConfig that extends driver config."""
+    
+    def __init__(self):
+        super().__init__()
+        self.parser_id = parser_instance_config.parser_id
+        
+        # Force custom system directory
+        self.system_dir = SYSTEM_DIR
+        self.project_root = THIS_DIR.parent
+        
+        # Ensure system directories exist
+        SYSTEM_DIR.mkdir(exist_ok=True)
+        for dir in ["logs", "results", "browser_profiles"]:
+            (SYSTEM_DIR / dir).mkdir(exist_ok=True)
+        
+        # Reinitialize configs with custom paths
+        self._initialize_configs()
+    
+    def _create_browser_config(self):
+        """Override browser config with custom settings from config.env."""
+        return DriverBrowserConfig(
+            parser_id=self.parser_id,
+            headless=parser_settings.BROWSER_HEADLESS,
+            timeout=parser_settings.BROWSER_TIMEOUT,
+            user_data_dir=str(SYSTEM_DIR / "browser_profiles"),
+            page_load_strategy="normal",
+            wait_for_selector_timeout=10,
+            network_idle_timeout=3,
+            enable_javascript=True,
+            enable_images=True,
+            enable_css=True,
+            debug_mode=False,
+            save_screenshots=parser_settings.SAVE_SCREENSHOTS,
+        )
+    
+    def _create_llm_config(self):
+        """Override LLM config with custom settings from config.env."""
+        config = super()._create_llm_config()
+        
+        # Force custom LLM settings from config.env
+        config.provider = "openrouter"
+        config.model = "anthropic/claude-3.5-sonnet"
+        config.api_key = parser_settings.OPENROUTER_API_KEY
+        config.enable_caching = True
+        
+        return config
+    
+    def _create_daemon_config(self):
+        """Override daemon config with custom settings."""
+        return DaemonModeConfig(
+            server_url=parser_settings.SERVER_URL,
+            api_key=parser_settings.API_KEY,
+            auto_reconnect=True,
+            connection_timeout=30,
+            heartbeat_interval=30,
+            max_reconnect_attempts=3,
+            health_check_interval=60,
+            enable_metrics=True,
+        )
+
+# Global custom config instance
+custom_config = CustomAutoConfig()
+```
+
+### AI-Powered Parser Implementation
+
+```python
+from unrealon_driver.src.core.parser import Parser
+from custom_config import custom_config, parser_instance_config
+
+class ProductExtractor(Parser):
+    """AI-powered product data extractor."""
+    
+    def __init__(self):
+        # Pass the extended config directly to Parser
+        super().__init__(
+            parser_id=parser_instance_config.parser_id,
+            parser_name="Product Extractor",
+            config=custom_config,  # Pass the whole extended config!
+        )
+    
+    async def extract_products(self, url: str) -> dict:
+        """Extract product information from a listing page."""
+        try:
+            # AI-powered extraction with automatic selector generation
+            result = await self.browser_llm.extract_listing(url)
+            
+            return {
+                "products": result.data,
+                "cost_usd": result.cost_usd,
+                "processing_time": result.total_duration_seconds,
+                "success": True
+            }
+        except Exception as e:
+            self.logger.error(f"Extraction failed: {e}")
+            return {"success": False, "error": str(e)}
+    
+    async def extract_complete_data(self, listing_url: str) -> dict:
+        """Extract complete product data including details."""
+        try:
+            # Extract listing page data
+            listing_result = await self.browser_llm.extract_listing(listing_url)
+            
+            if not listing_result.data or not listing_result.data.get("products"):
+                return {"success": False, "error": "No products found"}
+            
+            # Extract details for first product
+            first_product = listing_result.data["products"][0]
+            details_result = await self.browser_llm.extract_details(
+                first_product["url"]
+            )
+            
+            return {
+                "listing_data": listing_result.data,
+                "details_data": details_result.data,
+                "total_cost": listing_result.cost_usd + details_result.cost_usd,
+                "processing_time": listing_result.total_duration_seconds,
+                "success": True
+            }
+        except Exception as e:
+            self.logger.error(f"Advanced extraction failed: {e}")
+            return {"success": False, "error": str(e)}
+
+# Usage
+async def main():
+    extractor = ProductExtractor()
+    await extractor.setup()
+    
+    # Simple extraction
+    result = await extractor.extract_products("https://example.com/products")
+    print(f"Extracted {len(result.get('products', []))} products")
+    print(f"Cost: ${result.get('cost_usd', 0):.4f}")
+    
+    # Complete extraction with details
+    complete_result = await extractor.extract_complete_data("https://example.com/products")
+    print(f"Complete extraction cost: ${complete_result.get('total_cost', 0):.4f}")
+    
+    await extractor.cleanup()
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+```
+
+### AI Extraction Results
+
+The AI-powered extraction generates comprehensive results including selectors, documentation, and processing metrics:
+
+#### **Extraction Result Example**
+
+```json
+{
+  "data": {
+    "extraction_result": {
+      "detected_item_type": "product_listing",
+      "confidence": 0.95,
+      "selectors": {
+        "items_container": [
+          "div.s-main-slot.s-result-list",
+          "div.s-result-item",
+          "div.sg-col-20-of-24"
+        ],
+        "product_title": [
+          "h2.a-size-medium",
+          "span.a-size-base-plus",
+          "a.a-link-normal.s-link-style h2"
+        ],
+        "product_price": [
+          "span.a-price",
+          "span.a-offscreen",
+          "span.a-price-whole"
+        ],
+        "product_image": [
+          "img.s-image",
+          "div.a-section.aok-relative.s-image-fixed-height img"
+        ],
+        "product_url": [
+          "a.a-link-normal.s-no-outline",
+          "a.a-link-normal.s-underline-text"
+        ],
+        "ratings": [
+          "i.a-icon.a-icon-star-mini",
+          "span.a-icon-alt"
+        ],
+        "reviews_count": [
+          "span.a-size-base.s-underline-text"
+        ],
+        "pagination": [
+          "ul.a-pagination",
+          "span.s-pagination-strip"
+        ]
+      }
+    }
+  },
+  "url": "https://example.com/search?q=products",
+  "success": true,
+  "cost_usd": 0.080241,
+  "processing_time": 50.79724
+}
+```
+
+#### **Auto-Generated Documentation**
+
+The AI generates comprehensive documentation for the extraction pattern:
+
+```markdown
+# Product Listing Extraction
+
+## Overview
+This pattern extracts product listings from search results pages.
+
+## Key Elements
+- Product containers use s-result-item class
+- Titles are in h2 tags with a-size-medium class
+- Prices use span.a-price structure
+- Images in s-image class
+- Ratings use star icon classes
+
+## Extraction Tips
+1. Handle sponsored and organic listings
+2. Extract both main and sale prices
+3. Get review counts when available
+4. Follow pagination for complete results
+5. Handle variable layouts and responsive design
+
+## Common Patterns
+- Product grid layout
+- Sponsored product placement
+- Price range variations
+- Rating and review counts
+- Multiple image sizes
+```
+
+#### **Performance Metrics**
+
+- **Confidence**: 95% accuracy in selector generation
+- **HTML Optimization**: 65% size reduction (1.6MB → 554KB)
+- **Token Savings**: 66% reduction in LLM tokens
+- **Processing Time**: ~50 seconds total (18s browser + 25s LLM)
+- **LLM Cost**: $0.08 per extraction (developer pays directly to LLM provider)
+
+**Note**: SDK is free to use. LLM costs are paid directly to providers (OpenRouter, OpenAI, etc.) using your own API keys.
+
+### Traditional BeautifulSoup Parsing
+
+```python
+from bs4 import BeautifulSoup
+from unrealon_driver.src.core.parser import Parser
+from custom_config import custom_config, parser_instance_config
+
+class TraditionalParser(Parser):
+    """Traditional parser using BeautifulSoup with browser automation."""
+    
+    def __init__(self, **kwargs):
+        super().__init__(
+            parser_id=parser_instance_config.parser_id,
+            parser_name=parser_instance_config.parser_name,
+            **kwargs,
+        )
+    
+    async def parse_listing_page(self, url: str) -> dict:
+        """Parse listing page using BeautifulSoup and CSS selectors."""
+        try:
+            # Get HTML content using browser service (includes proxy rotation)
+            html_content = await self.browser_llm.browser_service.get_html(url)
+            
+            # Parse with BeautifulSoup
+            soup = BeautifulSoup(html_content, "html.parser")
+            
+            # Extract products using CSS selectors
+            products = []
+            for item in soup.select("div.product-item"):
+                product = {
+                    "title": self._extract_text(item, "h2.product-title"),
+                    "price": self._extract_text(item, "span.product-price"),
+                    "image_url": self._extract_attribute(item, "img.product-image", "src"),
+                    "product_url": self._extract_attribute(item, "a.product-link", "href"),
+                    "rating": self._extract_text(item, "span.product-rating"),
+                    "review_count": self._extract_text(item, "span.review-count")
+                }
+                products.append(product)
+            
+            return {
+                "products": products,
+                "total_count": len(products),
+                "success": True
+            }
+        except Exception as e:
+            self.logger.error(f"Parsing failed: {e}")
+            return {"success": False, "error": str(e)}
+    
+    def _extract_text(self, element, selector: str) -> str:
+        """Extract text content from element using CSS selector."""
+        found = element.select_one(selector)
+        return found.get_text(strip=True) if found else None
+    
+    def _extract_attribute(self, element, selector: str, attribute: str) -> str:
+        """Extract attribute value from element using CSS selector."""
+        found = element.select_one(selector)
+        return found.get(attribute) if found else None
+```
+
+### Scheduled Parser with CLI
+
+```python
+from unrealon_driver.src.cli.simple import SimpleParser
+from unrealon_driver.src.core.parser import Parser
+from custom_config import parser_instance_config
+
+class ScheduledProductParser(Parser):
+    """Parser with scheduling capabilities."""
+    
+    def __init__(self, **kwargs):
+        super().__init__(
+            parser_id=parser_instance_config.parser_id,
+            parser_name=parser_instance_config.parser_name,
+            **kwargs,
+        )
+    
+    async def parse(self) -> dict:
+        """Main parsing method for scheduled execution."""
+        try:
+            # Your parsing logic here
+            result = await self.extract_products("https://example.com/products")
+            return {"success": True, "data": result}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+class SchedulerWrapper(SimpleParser):
+    """SimpleParser wrapper for ScheduledProductParser."""
+    
+    def __init__(self):
+        super().__init__(parser_instance_config)
+        self.parser = ScheduledProductParser()
+    
+    async def setup(self) -> None:
+        """Setup - delegate to actual parser."""
+        await self.parser.setup()
+    
+    async def cleanup(self) -> None:
+        """Cleanup - delegate to actual parser."""
+        await self.parser.cleanup()
+        await super().cleanup()
+    
+    async def parse_data(self) -> dict:
+        """Parse data - delegate to actual parser."""
+        result = await self.parser.parse()
+        return {"success": result.get("success", False), "data": result}
+
+# Run with scheduling capabilities
+if __name__ == "__main__":
+    scheduler = SchedulerWrapper()
+    cli = scheduler.create_click_cli()
+    cli()  # Provides: scheduled, test, daemon, interactive modes
+```
+
+### Daemon Mode for Real-Time Processing
+
+```python
+from unrealon_driver.src.core.parser import Parser
+from custom_config import custom_config, parser_instance_config
+
+class DaemonParser(Parser):
+    """Parser running in daemon mode for real-time command processing."""
+    
+    def __init__(self, **kwargs):
+        super().__init__(
+            parser_id=parser_instance_config.parser_id,
+            parser_name=parser_instance_config.parser_name,
+            **kwargs,
+        )
+    
+    async def parse(self) -> dict:
+        """Main parsing method for daemon mode."""
+        return {"success": True, "status": "daemon_running"}
+
+class DaemonService:
+    """Daemon service with Active Connection connectivity."""
+    
+    def __init__(self):
+        self.parser = None
+    
+    async def start_daemon(self):
+        """Start daemon mode with Active Connection connectivity."""
+        try:
+            # Initialize parser with custom config
+            self.parser = DaemonParser()
+            await self.parser.setup()
+            
+            # Daemon configuration from custom_config
+            daemon_config = {}
+            if hasattr(custom_config, 'daemon_config') and custom_config.daemon_config:
+                daemon_config = {
+                    "server": custom_config.daemon_config.server_url,
+                    "api_key": custom_config.daemon_config.api_key,
+                    "heartbeat_interval": custom_config.daemon_config.heartbeat_interval,
+                    "reconnect_attempts": custom_config.daemon_config.max_reconnect_attempts,
+                }
+            
+            # Start daemon mode
+            await self.parser.daemon(**daemon_config)
+            
+        except Exception as e:
+            print(f"Daemon error: {e}")
+            return False
+        finally:
+            if self.parser:
+                await self.parser.cleanup()
+        
+        return True
+
+# Run in daemon mode
+async def run_daemon():
+    daemon = DaemonService()
+    await daemon.start_daemon()
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(run_daemon())
+```
+
+## Real-Time Orchestration
+
+### Active Connection Communication
+
+The SDK establishes persistent Active Connection with the UnrealOn Server for real-time communication:
+
+```python
+class OrchestratedParser(Parser):
+    """Parser with real-time command processing capabilities."""
+    
+    @self.client.on_command("parse_products")
+    async def handle_parse_command(self, command):
+        """Handle remote parse commands from server."""
+        query = command.data.get("query")
+        pages = command.data.get("pages", 1)
+        
+        results = []
+        for page in range(pages):
+            url = f"https://example.com/search?q={query}&page={page}"
+            result = await self.parse_products_page(url)
+            results.append(result)
+        
+        return {"success": True, "products": results}
+```
+
+### Monitoring and Management
+
+- **Live Status Monitoring**: Real-time parser status and health checks
+- **Performance Metrics**: Response times, success rates, error tracking
+- **Cost Analytics**: LLM usage monitoring and cost optimization
+- **Proxy Management**: Automatic rotation and health monitoring
+- **Log Streaming**: Real-time log analysis and debugging
+
+## Enterprise Features
+
+### Security and Compliance
+
+- **API Key Authentication**: Secure authentication with role-based access
+- **Data Encryption**: End-to-end encryption for sensitive data
+- **Audit Logging**: Comprehensive audit trails for compliance
+- **Rate Limiting**: Built-in rate limiting and abuse prevention
+
+### Scalability and Performance
+
+- **Horizontal Scaling**: Add parser instances without code changes
+- **Load Balancing**: Automatic distribution of parsing tasks
+- **Caching**: Intelligent caching for improved performance
+- **Failover**: Automatic failover and recovery mechanisms
+
+### Development Tools
+
+- **Testing Framework**: Built-in testing utilities and fixtures
+- **Documentation**: Auto-generated API documentation
+
+## Examples and Use Cases
+
+### E-commerce Data Extraction
+
+- **Product Listings**: Extract product information from search results
+- **Price Monitoring**: Track price changes and availability
+- **Review Analysis**: Collect and analyze customer reviews
+- **Inventory Tracking**: Monitor stock levels and product availability
+
+### Financial Data Collection
+
+- **Market Data**: Extract stock prices and market information
+- **News Analysis**: Collect and analyze financial news
+- **Economic Indicators**: Monitor economic data and trends
+
+### Research and Analytics
+
+- **Competitive Intelligence**: Monitor competitor activities
+- **Market Research**: Collect market data and insights
+- **Academic Research**: Support research data collection
+
+## Real Projects Built on UnrealOn
+
+### 🚗 **CarAPIs** - Automotive Data Platform
+**Platform**: [carapis.com](https://carapis.com)  
+**Use Case**: Vehicle information extraction from dealerships and marketplaces  
+**Features**: Real-time car listings, pricing analysis, market trends  
+**Technology**: AI-powered vehicle data extraction with 95% accuracy
+
+### 🛒 **ShopAPIs** - E-commerce Intelligence  
+**Platform**: [shopapis.com](https://shopapis.com)  
+**Use Case**: Product monitoring and competitive analysis  
+**Features**: Price tracking, inventory monitoring, competitor analysis  
+**Technology**: Multi-platform e-commerce data collection
+
+### 📊 **StockAPIs** - Financial Data Platform
+**Platform**: [stockapis.com](https://stockapis.com)  
+**Use Case**: Market data and financial information extraction  
+**Features**: Real-time stock data, financial news analysis  
+**Technology**: High-frequency financial data collection
+
+### 🏠 **PropAPIs** - Real Estate Data Platform
+**Platform**: [propapis.com](https://propapis.com)  
+**Use Case**: Property listings and market analysis  
+**Features**: Real estate listings, price monitoring, market trends  
+**Technology**: Multi-source property data extraction
+
+**All platforms built with UnrealOn for reliable, scalable data extraction.**
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Commercial Platform
+
+For enterprise features, managed hosting, and professional support, visit [unrealon.com](https://unrealon.com/).
+
+---
+
+**UnrealOn** - Enterprise-grade web scraping with AI-powered automation.
