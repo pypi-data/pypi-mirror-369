@@ -1,0 +1,30 @@
+[project]
+name = "pyobs-qhyccd"
+version = "1.5.0"
+description = "pyobs module for QHYCCD cameras"
+authors = [{ name = "Tim-Oliver Husser", email = "thusser@uni-goettingen.de" }]
+requires-python = ">=3.11,<3.14"
+license = "MIT"
+dependencies = [
+    "astropy>=7.0.1,<8",
+    "numpy>=2.2.5,<3",
+    "pyobs-core>=1,<2",
+]
+
+[tool.poetry.group.dev.dependencies]
+black = ">=25.1.0,<26"
+pre-commit = ">=4.2.0,<5"
+flake8 = ">=7.3.0"
+cython = ">=3.0.0,<4"
+
+[tool.poetry.build]
+script = "build.py"
+generate-setup-file = false
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "Cython>=0.29.0", "numpy>=1.21.0", "setuptools"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
