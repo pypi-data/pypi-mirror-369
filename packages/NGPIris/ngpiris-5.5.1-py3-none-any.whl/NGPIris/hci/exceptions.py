@@ -1,0 +1,3 @@
+class VPNConnectionError(Exception):
+    pass
+
