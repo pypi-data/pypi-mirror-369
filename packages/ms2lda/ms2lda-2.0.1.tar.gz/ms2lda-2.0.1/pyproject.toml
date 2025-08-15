@@ -1,0 +1,149 @@
+[tool.poetry]
+name        = "ms2lda"
+version     = "2.0.1"
+description = "Unsupervised Substructure Discovery using Topic Modelling with Automated Annotation."
+authors     = [
+  "MS2LDA Development Team <justin.vanderhooft@wur.nl>"
+]
+maintainers = [
+  "MS2LDA Development Team <justin.vanderhooft@wur.nl>"
+]
+license     = "MIT"
+readme      = "README.md"
+homepage    = "https://github.com/vdhooftcompmet/MS2LDA"
+repository  = "https://github.com/vdhooftcompmet/MS2LDA"
+documentation = "https://ms2lda.org"
+keywords    = ["mass spectrometry", "metabolomics", "topic modeling", "LDA", "substructure discovery", "cheminformatics"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Scientific/Engineering :: Chemistry",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Environment :: Console",
+  "Environment :: Web Environment"
+]
+
+packages = [
+  { include = "MS2LDA" },
+  { include = "App" },
+  { include = "scripts" },          # for scripts.ms2lda_runfull
+  { include = "massql4motifs" }     # Vendored until merged upstream
+]
+
+include = [
+  "LICENSE",
+  "README.md"
+]
+
+exclude = [
+  # Spec2Vec models (HUGE files, get them from Zenodo)
+  "MS2LDA/**/Spec2Vec/model_positive_mode/**",
+  "MS2LDA/**/Spec2Vec/model_negative_mode/**",
+
+  # Fingerprint JARs – 43 MB combined
+  "MS2LDA/Add_On/Fingerprints/FP_calculation/cdk-*.jar",
+  "MS2LDA/Add_On/Fingerprints/FP_calculation/jCMapperCLI.jar",
+
+  # Optional: strip heavy notebooks you don’t need in production
+  "MS2LDA/Add_On/Fingerprints/FP_calculation/*.ipynb",
+
+    # MotifDB entire folder (now fetched at runtime)
+  "MS2LDA/MotifDB/**"
+]
+
+[tool.poetry.dependencies]
+python        = ">=3.11,<3.13"
+
+# scientific / data stack
+matplotlib    = "^3.9.1"
+seaborn       = "^0.13.2"
+pandas        = "^2.2.2"
+scipy         = "^1.10.1"
+networkx      = "^3.3"
+gensim        = "^4.3.3"
+psims         = "^1.3.3"
+pubchempy     = "^1.0.4"
+requests      = "^2.32.3"
+matchms       = ">=0.27,<1"
+plotly        = "^5.23.0"
+pyarrow       = "^17.0.0"
+pymzml        = "^2.5.10"
+scikit-learn  = "^1.5.1"
+openpyxl      = "3.1.5"
+
+# Dash UI
+dash                      = "^2.18.1"
+dash-cytoscape            = "^1.0.2"
+dash-bootstrap-components = "^1.6.0"
+
+# modelling / embeddings
+tomotopy   = ">=0.12.7"
+spec2vec   = "^0.8.0"
+PyQt6      = "^6.7.1"
+faiss-cpu  = "1.10.0"
+
+# cheminformatics (required)
+rdkit      = ">=2023.9.6,<2026"
+
+# massql4motifs is vendored in the massql4motifs/ directory to enable PyPI distribution
+# See massql4motifs/README.vendored.md for details
+# Dependencies from massql4motifs:
+lark-parser = "^0.12.0"
+py_expression_eval = "^0.3.0"
+pydot = "^3.0.0"
+pyyaml = "^6.0.2"
+
+# optional notebook tooling
+ipython    = { version = "^8.26.0", optional = true }
+jupyterlab = { version = "^4.2.4", optional = true }
+
+# Plotly static-image backend.
+# 0.2.1 still has wheels for Linux, Windows and universal-2 macOS; 0.2.1.post1 dropped the macOS-arm64 wheel.
+kaleido = { version = "0.2.1", optional = true }
+diskcache = ">=5.6.3"
+dash-extensions = "==1.0.20"
+
+[tool.poetry.extras]
+notebook = ["ipython", "jupyterlab", "kaleido"]
+lite     = []          # enables:  pip install ms2lda[lite] --no-binary rdkit
+
+[tool.poetry.group.dev.dependencies]
+black      = "^24.3.0"
+flake8     = "^7.0.0"
+pytest     = "^8.3.2"
+pre-commit = "^3.7.0"
+mypy       = "^1.10.0"
+ruff = "^0.11.13"
+# Documentation
+mkdocs = "^1.6.1"
+mkdocstrings = "^0.29.1"
+mkdocstrings-python = "^1.16.12"
+mkdocs-material = "^9.5.48"
+
+[tool.poetry.group.deploy.dependencies]
+gunicorn = "^23.0.0"
+
+[tool.ruff]
+line-length = 88
+exclude = [
+  "build",
+  "dist",
+  ".ipynb_checkpoints",
+  "MS2LDA/Add_On/Fingerprints/FP_calculation/*"
+]
+unsafe-fixes = true
+select = ["ALL"]
+ignore = ["D", "ANN"]
+
+[tool.poetry.scripts]
+ms2lda      = "scripts.ms2lda_runfull:main"
+ms2lda-viz  = "App.app:app.run_server"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
