@@ -1,0 +1,52 @@
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "ascend-community"
+version = "0.1.0"
+description = "Ascend Community code"
+readme = "README.md"
+authors = [
+  { name = "Cody", email = "cody.peterson@ascend.io" },
+  { name = "Shifra", email = "shifra@ascend.io" },
+]
+requires-python = ">=3.13"
+dependencies = [
+  "ibis-framework[bigquery,duckdb,postgres,snowflake,sqlite]>=10.6.0",
+  "pandas>=2.2.3",
+  "plotly>=6.3.0",
+  "polars>=1.32.2",
+  "pyyaml>=6.0.2",
+  "rich>=14.1.0",
+  "typer>=0.16.0",
+]
+
+[project.scripts]
+ac = "ascend_community.cli:app"
+ascend-community = "ascend_community.cli:app"
+
+[dependency-groups]
+dev = [
+  "ascend-core[all]",
+  "ipython>=9.4.0",
+  "pre-commit>=4.3.0",
+  "ruff>=0.12.8",
+]
+
+[tool.uv.sources]
+ascend-core = { path = "ascend-core", editable = true }
+# NOTE: You cannot add `ascend-backend` as a dependency
+# without shenanigans because it pins `ascend-core` to a
+# specific version from the private PyPI registry.
+# Defined for future use.
+ascend-backend = { path = "ascend-backend", editable = true }
+
+[tool.ruff]
+exclude = [
+  "ascend-backend",
+  "ascend-core",
+  "ascend-community-public",
+  "ascend-ui",
+  "projects/backups",        # TODO: remove
+]
