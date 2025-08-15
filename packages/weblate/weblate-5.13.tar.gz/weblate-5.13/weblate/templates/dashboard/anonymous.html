@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags i18n translations %}
+
+{% block content %}
+
+  <p class="alert alert-info">
+    {% blocktranslate %}This site runs {{ weblate_name_link }} for translating the software projects listed below.{% endblocktranslate %}
+    {% translate "You need to be signed in to translate, otherwise you can only make suggestions." %}
+  </p>
+
+  {% announcements %}
+
+  {% include "list-projects.html" with projects=top_projects %}
+
+  <p>
+    <a class="btn btn-primary" id="browse-projects" href="{% url 'projects' %}">{% blocktranslate count count=all_projects %}Browse {{ count }} project{% plural %}Browse all {{ count }} projects{% endblocktranslate %}</a>
+  </p>
+
+{% endblock content %}
