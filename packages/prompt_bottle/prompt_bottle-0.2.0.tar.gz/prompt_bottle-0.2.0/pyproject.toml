@@ -1,0 +1,86 @@
+[project]
+name = "prompt_bottle"
+version = "0.2.0"
+description = "Prompt template engine, built upon Jinja"
+authors = [
+    { name = "Yanli", email = "mail@yanli.one" },
+]
+dependencies = [
+    "qwq-tag>=0.1.2",
+    "minijinja>=2.11.0",
+    "pydantic-ai-slim>=0.7.2",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Repository = "https://github.com/BeautyyuYanli/Prompt-Bottle"
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.scripts.fix]
+shell = "ruff check --fix && ruff format"
+
+[tool.pdm.scripts.check]
+shell = "ruff check && ruff format --check"
+
+[tool.pdm.scripts.test]
+shell = "pytest"
+
+[tool.pyright]
+venvPath = ".venv"
+
+[tool.ruff]
+target-version = "py310"
+exclude = [
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "G",
+    "B",
+    "I",
+    "SIM",
+    "TID",
+    "PL",
+    "RUF",
+]
+ignore = [
+    "RUF001",
+    "RUF003",
+    "E501",
+    "E402",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "SIM105",
+    "SIM102",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "prompt_bottle",
+]
+
+[dependency-groups]
+dev = [
+    "rich>=13.9.4",
+    "ruff>=0.8.1",
+    "pytest>=8.3.3",
+    "rich>=13.9.4",
+    "pydantic-ai-slim[openai]>=0.7.2",
+]
