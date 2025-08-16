@@ -1,0 +1,32 @@
+# Include documentation and configuration files
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+include setup.py
+
+# Include documentation
+recursive-include docs *
+include *.md
+
+# Include batch files and scripts
+include *.bat
+include *.ps1
+
+# Include data directories
+recursive-include data *
+recursive-include charts *
+
+# Exclude cache and build files
+global-exclude __pycache__/*
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.so
+global-exclude *.egg-info/*
+global-exclude dist/*
+global-exclude build/*
+
+# Exclude logs and downloads
+global-exclude logs/*
+global-exclude downloaded_files/*
+global-exclude downloads/*

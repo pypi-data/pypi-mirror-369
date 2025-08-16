@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "marketswimmer"
+version = "2.5.1"
+authors = [
+    {name = "Jeremy Evans", email = "jeremyevans@hey.com"},
+]
+description = "Warren Buffett's Owner Earnings Analysis Tool - Calculate true economic earnings for any stock"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Developers",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+keywords = ["finance", "warren-buffett", "owner-earnings", "stocks", "investment", "financial-analysis"]
+dependencies = [
+    "pandas>=1.3.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "numpy>=1.21.0",
+    "openpyxl>=3.0.0",
+    "PyQt6>=6.0.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "requests>=2.25.0",
+    "click>=8.0.0",
+    "shellingham>=1.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.950",
+]
+gui = [
+    "PyQt6>=6.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/jeremevans/MarketSwimmer"
+"Bug Reports" = "https://github.com/jeremevans/MarketSwimmer/issues"
+"Source" = "https://github.com/jeremevans/MarketSwimmer"
+"Documentation" = "https://github.com/jeremevans/MarketSwimmer/blob/main/README.md"
+
+[project.scripts]
+marketswimmer = "marketswimmer.cli:main"
+ms = "marketswimmer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["marketswimmer*"]
+
+[tool.setuptools.package-data]
+marketswimmer = ["*.md", "*.txt", "*.bat", "*.ps1"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

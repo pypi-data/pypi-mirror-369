@@ -1,0 +1,146 @@
+Metadata-Version: 2.4
+Name: marketswimmer
+Version: 2.5.1
+Summary: Warren Buffett's Owner Earnings Analysis Tool - Calculate true economic earnings for any stock
+Home-page: https://github.com/jeremevans/MarketSwimmer
+Author: Jeremy Evans
+Author-email: Jeremy Evans <jeremyevans@hey.com>
+License: MIT
+Project-URL: Homepage, https://github.com/jeremevans/MarketSwimmer
+Project-URL: Bug Reports, https://github.com/jeremevans/MarketSwimmer/issues
+Project-URL: Source, https://github.com/jeremevans/MarketSwimmer
+Project-URL: Documentation, https://github.com/jeremevans/MarketSwimmer/blob/main/README.md
+Keywords: finance,warren-buffett,owner-earnings,stocks,investment,financial-analysis
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Office/Business :: Financial :: Investment
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: seaborn>=0.11.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: openpyxl>=3.0.0
+Requires-Dist: PyQt6>=6.0.0
+Requires-Dist: typer>=0.9.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: requests>=2.25.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: shellingham>=1.3.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: flake8>=4.0.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+Provides-Extra: gui
+Requires-Dist: PyQt6>=6.0.0; extra == "gui"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# MarketSwimmer - Owner Earnings Analysis Tool 🏊‍♂️📈
+
+A comprehensive tool for analyzing Warren Buffett's "Owner Earnings" from financial statement data with **NEW Fair Value Calculation** using DCF methodology.
+
+## 🆕 **v2.2.3 - Fair Value Analysis**
+
+**NEW FEATURE**: Calculate intrinsic fair value using Owner Earnings DCF methodology!
+
+- 📊 **DCF Analysis**: Uses 10-year average Owner Earnings as future cash flow
+- 💰 **Fair Value Calculation**: Discounts cash flows using 10-year Treasury rate
+- 🎯 **Scenario Analysis**: Conservative, Base Case, Optimistic, and Pessimistic valuations
+- 💡 **Balance Sheet Adjustments**: Accounts for cash, investments, and debt
+- 📈 **Per-Share Valuation**: Calculates intrinsic value per share
+- 🖥️ **GUI Integration**: Easy-to-use interface with input dialogs
+- 💻 **CLI Support**: Full command-line interface for power users
+
+### Quick Fair Value Example:
+
+````bash
+# Calculate fair value for Apple
+ms fair-value --ticker AAPL --growth 0.03 --cash 100000000000 --debt 20000000000 --shares 15000
+
+# Or use the GUI
+ms gui
+```ketSwimmer - Owner Earnings Analysis Tool 🏊‍♂️📈
+
+A comprehensive tool for analyzing Warren Buffett's "Owner Earnings" from financial statement data.
+
+## � **v2.1.0 - What's New**
+
+✅ **Complete Data Processing Pipeline**: Automated XLSX-to-CSV conversion for seamless workflow
+✅ **Real Quarterly Data**: Proper quarter-by-quarter financial analysis (not just annual duplicates)
+✅ **Professional Visualizations**: 3 chart types with recent years focus
+✅ **Smart Download Detection**: Automatically detects XLSX files in Downloads folder
+✅ **Clean Color Scheme**: Improved white/blue theme for better readability
+
+## 📦 **Installation**
+
+```bash
+pip install marketswimmer
+````
+
+## � Quick Start
+
+### Command Line Usage
+
+```bash
+# Launch GUI
+marketswimmer gui
+
+# Process downloaded data
+python process_financial_data.py TICKER
+
+# Create visualizations
+marketswimmer visualize --ticker TICKER
+
+# Full analysis
+marketswimmer analyze TICKER
+```
+
+### GUI Workflow
+
+1. **Launch GUI**: `marketswimmer gui` or double-click `launch_clean_gui.bat`
+2. **Select Ticker**: Choose a stock symbol (e.g., AAPL, MSFT, BRK.B)
+3. **Download Data**: System opens StockRow page for manual data download
+4. **Process Data**: Run `python process_financial_data.py TICKER`
+5. **Analyze**: Use GUI "Calculate Owner Earnings" and "Create Visualizations" buttons
+
+## 📊 Output Files
+
+- **Charts**: `charts/[ticker]_*.png` - Visual analysis charts
+- **Data**: `data/owner_earnings_*.csv` - Raw analysis data
+- **Logs**: `logs/marketswimmer_*.log` - Application logs
+
+## 💡 Owner Earnings Formula
+
+```
+Owner Earnings = Net Income + Depreciation/Amortization - CapEx - Working Capital Changes
+```
+
+## 🎯 Features
+
+- ✅ Ticker-specific analysis
+- ✅ Annual and quarterly data processing
+- ✅ Professional visualizations
+- ✅ Automated chart generation
+- ✅ Clean directory organization
+- ✅ Comprehensive logging
+
+## 📋 Requirements
+
+- Python 3.12+
+- pandas, matplotlib, seaborn
+- PyQt6 (for GUI)
+- Internet connection (for data download)
