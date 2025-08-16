@@ -1,0 +1,146 @@
+# High-Level Space Field (HLSF) Toolkit
+
+[![CI](https://github.com/awlondon/YOWR-RR5-ht8h3/actions/workflows/ci.yml/badge.svg)](https://github.com/awlondon/YOWR-RR5-ht8h3/actions/workflows/ci.yml)
+
+This repository provides minimal building blocks for an audio-driven High-Level Space Field (HLSF) engine. The code tokenises audio or text into frequency-band motifs, maps those motifs to simple polygonal geometry, optionally visualises the results, and outputs a response after recursive field collapse, reweighting, and backpropagation.
+
+## Installation
+
+Install the package from PyPI:
+
+```bash
+pip install hlsf_module
+```
+
+Optional extras provide additional functionality:
+
+```bash
+pip install "hlsf_module[audio]"       # microphone support
+pip install "hlsf_module[fft]"         # FFT helpers
+pip install "hlsf_module[gpu]"         # GPU acceleration via CuPy
+pip install "hlsf_module[visualization]"  # plotting utilities
+```
+
+Sample vocabulary and weight files are bundled under `hlsf_module/data` for quick experiments.
+
+## Features and objectives
+- **Core utilities** – audio and text tokenisers, geometry generators and visualisation helpers provide the foundation for HLSF research.
+- **Recent additions** – microphone and text front ends, asynchronous capture, semantic adjacency expansion via an LLM bridge, live viewers and a lightweight web UI with persistent weight caching broaden the modality mix.
+- **Forthcoming goals** – richer cross-modal training, web-based viewers and optional GPU acceleration are planned to streamline larger-scale experiments.
+
+## Roadmap
+Planned enhancements include:
+- richer cross-modal training;
+- expanded web-based viewers; and
+- optional GPU acceleration to speed up large experiments.
+
+Track progress on the [Project board](https://github.com/YOWR-RR5-ht8h3/YOWR-RR5-ht8h3/projects/1) or search [open issues labelled `roadmap`](https://github.com/YOWR-RR5-ht8h3/YOWR-RR5-ht8h3/issues?q=label%3Aroadmap).
+
+## Repository structure
+### Core package: `hlsf_module`
+- `__init__.py` – package marker for the toolkit【F:hlsf_module/__init__.py†L1-L1】
+- `adjacency_expander.py` – retrieve semantic neighbours via an LLM and cache results【F:hlsf_module/adjacency_expander.py†L1-L38】
+- `adjacency_mapping.py` – manage relationship symbols and adjacency caches【F:hlsf_module/adjacency_mapping.py†L8-L25】
+- `agency_gates.py` – resonance-based gate deciding when motifs are externalised【F:hlsf_module/agency_gates.py†L1-L26】
+- `cli.py` – command-line interface wiring geometry and visualisation options【F:hlsf_module/cli.py†L1-L35】
+- `clusterer.py` – merge low-energy bands into stronger motifs【F:hlsf_module/clusterer.py†L1-L22】
+- `enc_audio.py` – convert audio frames to `SymbolToken` objects with optional resonance scores【F:hlsf_module/enc_audio.py†L3-L58】
+- `fft_tokenizer.py` – minimal FFT tokenizer tracking magnitudes and unwrapped phase deltas【F:hlsf_module/fft_tokenizer.py†L1-L38】
+- `geometry.py` – polygonal motif utilities without external dependencies【F:hlsf_module/geometry.py†L1-L33】
+- `history_viewer.py` – Tk viewer for navigating token history snapshots【F:hlsf_module/history_viewer.py†L15-L38】
+- `llm_client.py` – protocol and clients for language-model neighbour lookups【F:hlsf_module/llm_client.py†L3-L33】
+- `llm_weights.py` – lightweight LLM bridge and training database for token weights【F:hlsf_module/llm_weights.py†L1-L33】【F:hlsf_module/llm_weights.py†L61-L76】
+- `live_visualizer.py` – asynchronous Matplotlib visualiser for resonance and geometry【F:hlsf_module/live_visualizer.py†L1-L26】
+- `main.py` – entry point invoking the command-line interface【F:hlsf_module/main.py†L1-L7】
+- `modal_stream.py` – modal stream helpers for 1-D, 2-D and 3-D data【F:hlsf_module/modal_stream.py†L1-L27】
+- `multimodal_out.py` – export pipeline state and resynthesise bands as audio【F:hlsf_module/multimodal_out.py†L1-L33】
+- `ngram_text_encoder.py` – n‑gram tokenizer emitting multi-level token lists【F:hlsf_module/ngram_text_encoder.py†L1-L27】
+- `pipeline_frame.py` – Tk frame exposing save/load controls for HLSF snapshots【F:hlsf_module/pipeline_frame.py†L1-L27】
+- `pruning.py` – utilities for pruning weak bands and deduplicating text tokens【F:hlsf_module/pruning.py†L1-L35】
+- `prototypes.py` – trainer enforcing minimum spectral distance between prototypes【F:hlsf_module/prototypes.py†L1-L27】
+- `recursion_ctrl.py` – sliding-window heuristic that stops recursion when gains diminish【F:hlsf_module/recursion_ctrl.py†L1-L25】
+- `resonator.py` – maintain symbol prototypes and compute resonance scores【F:hlsf_module/resonator.py†L1-L18】
+- `rotation_rules.py` – derive motif rotation angles from phase deltas【F:hlsf_module/rotation_rules.py†L1-L20】
+- `signal_io.py` – normalised `SignalStream` and asynchronous capture helpers【F:hlsf_module/signal_io.py†L1-L27】【F:hlsf_module/signal_io.py†L59-L78】
+- `stream_pipeline.py` – asynchronous audio processing pipeline with gating and mapping【F:hlsf_module/stream_pipeline.py†L1-L49】
+- `tensor_mapper.py` – collect token metrics and map them to triangle geometry【F:hlsf_module/tensor_mapper.py†L1-L28】【F:hlsf_module/tensor_mapper.py†L77-L80】
+- `text_encoder.py` – encode characters into deterministic symbolic tokens【F:hlsf_module/text_encoder.py†L1-L18】
+- `text_fft.py` – text‑driven FFT pipeline and adjacency expansion utilities【F:hlsf_module/text_fft.py†L1-L28】【F:hlsf_module/text_fft.py†L67-L72】
+- `text_signal.py` – represent text tokens as synthetic audio frames【F:hlsf_module/text_signal.py†L1-L33】
+- `verification.py` – inverse synthesis and residual comparison helpers【F:hlsf_module/verification.py†L1-L12】
+- `weights_bp.py` – integer weight back‑propagation for band metrics【F:hlsf_module/weights_bp.py†L1-L20】
+- `visualization.py` – minimal polygon visualisation helpers and GUI wrappers【F:hlsf_module/visualization.py†L1-L23】【F:hlsf_module/visualization.py†L45-L58】
+- `weight_cache.py` – persist numeric weights and expose rotation/collapse helpers【F:hlsf_module/weight_cache.py†L1-L80】
+- `web_api.py` – FastAPI server wiring the weight cache and helper endpoints【F:hlsf_module/web_api.py†L1-L68】
+
+#### `symbols` subpackage
+- `encoding.py` – encode/decode symbol IDs using band/phase sequences【F:hlsf_module/symbols/encoding.py†L1-L24】
+- `graph.py` – sliding‑window graph tracking token weights and frequency【F:hlsf_module/symbols/graph.py†L1-L33】
+- `resonator.py` – resonate modality vectors against weighted prototypes【F:hlsf_module/symbols/resonator.py†L3-L65】
+- `schema.py` – shared token schema with JSON helpers【F:hlsf_module/symbols/schema.py†L1-L28】
+- `vocab.py` – deterministic vocabulary mapping `(mod, code)` pairs to IDs【F:hlsf_module/symbols/vocab.py†L1-L38】
+
+### Stand-alone GUI
+- `PDCo_Generate_Space_Field__FFT-Integration.py` – Tkinter GUI and visualiser integrating the text FFT pipeline【F:PDCo_Generate_Space_Field__FFT-Integration.py†L1-L31】
+
+### Example scripts
+- `adjacency_relationships.py` – expand tokens using a stub LLM for semantic neighbours【F:examples/adjacency_relationships.py†L1-L13】
+- `async_capture.py` – demonstrate asynchronous file and socket capture【F:examples/async_capture.py†L1-L23】
+- `custom_edges_mel.py` – show mel banding with a custom edge file【F:examples/custom_edges_mel.py†L1-L16】
+- `demo_audio_loop.py` – synthesize a sine sweep and run the full pipeline【F:examples/demo_audio_loop.py†L1-L24】
+- `mixed_media_demo.py` – mix microphone, text and live visualisation【F:examples/mixed_media_demo.py†L1-L10】
+- `stream_pipeline_demo.py` – real-time streaming with `StreamPipeline` and `LiveVisualizer`【F:examples/stream_pipeline_demo.py†L1-L29】
+- `text_fft_pipeline_gui.py` – Tkinter interface for the text FFT pipeline【F:examples/text_fft_pipeline_gui.py†L1-L38】
+- `tokenize_multilevel.py` – run the n‑gram tokenizer and print results【F:examples/tokenize_multilevel.py†L1-L13】
+- `web_ui_demo.py` – start the FastAPI server and interact with its endpoints【F:examples/web_ui_demo.py†L1-L47】
+- `color_encoding_demo.py` – minimal encoder translating RGB tuples【F:examples/color_encoding_demo.py†L1-L28】
+- `image_encoding_demo.py` – tokenise a small image via `ImageEncoder`【F:examples/image_encoding_demo.py†L1-L12】
+
+## Tests and documentation
+Comprehensive unit tests cover tokenisation, geometry mapping, pruning and more【F:tests/test_fft_tokenizer.py†L1-L32】. Benchmark tests reside under `tests/benchmarks` for deterministic performance checks【F:tests/benchmarks/bench_fft.py†L1-L36】. Additional documentation including architectural notes, web UI usage and troubleshooting guides lives in the `docs/` directory【F:docs/architecture.md†L1-L10】【F:docs/web_ui.md†L1-L34】【F:docs/troubleshooting.md†L1-L14】. A quick start guide for the plugin system is available in `docs/getting_started_plugins.md`【F:docs/getting_started_plugins.md†L1-L20】.
+
+## Architecture
+The pipeline flows from tokenisation to mapping and finally visualisation, as outlined in the architecture notes【F:docs/architecture.md†L1-L10】.
+
+## Usage examples
+Generate a synthetic sine sweep and process it through the FFT pipeline:
+```bash
+python examples/demo_audio_loop.py --enable-fft --fft-size 256 --banding linear
+```
+Record two seconds from the default microphone with a custom front end:
+```bash
+python -m hlsf_module.cli --mic 2.0 --norm-mode rms --preemphasis 0.95 --window blackman --fft-size 4096 --banding linear
+```
+Run the multi-stage text→FFT pipeline on a string:
+```bash
+HLSF_GATE_DURATION=4 python -m hlsf_module.cli --text "hello world"
+```
+Use the n‑gram tokenizer directly:
+```bash
+python examples/tokenize_multilevel.py
+```
+Stream frames asynchronously from files or sockets:
+```bash
+python examples/async_capture.py
+```
+
+Start the FastAPI server and open the web viewer:
+```bash
+uvicorn hlsf_module.server:app
+# In another terminal:
+curl -X POST http://127.0.0.1:8000/text -H "Content-Type: application/json" -d '{"prompt": "hello"}'
+```
+Then browse to ``http://127.0.0.1:8000/viewer`` to see geometry and gating scores.
+
+## JSON output
+Use `multimodal_out.snapshot_state` to export the current `HLSFState` to JSON and `resynth_bands` to generate synthetic audio from band magnitudes【F:hlsf_module/multimodal_out.py†L12-L33】. `symbols.schema.SymbolBatch` offers `to_json`/`from_json` helpers for serialising token batches【F:hlsf_module/symbols/schema.py†L20-L31】.
+
+## Training procedure
+`llm_weights.TrainingDB` accumulates pairwise weights between tokens by calling a lightweight LLM bridge and updating its in-memory database【F:hlsf_module/llm_weights.py†L61-L76】.
+
+## Benchmarks
+Deterministic micro‑benchmarks reside under `tests/benchmarks` and compare naive DFT against the mixed‑radix FFT implementation【F:tests/benchmarks/bench_fft.py†L1-L37】.
+
+## Troubleshooting
+Common issues and fixes are collected in the troubleshooting guide【F:docs/troubleshooting.md†L1-L14】.
+
