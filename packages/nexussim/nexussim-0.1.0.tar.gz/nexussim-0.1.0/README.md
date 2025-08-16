@@ -1,0 +1,149 @@
+NexusSim
+
+NexusSim is a flexible and powerful Python framework for agent-based modeling of dynamic spatial processes. Designed for modularity and scientific reproducibility, it allows users to simulate complex emergent phenomena on customizable landscapes - from disease epidemics and invasive species to wildlife spread and information diffusion.
+
+The framework is built on a decoupled, file-based architecture: the simulation engine produces a series of GeoTIFF raster files, which are then consumed by a comprehensive analysis toolbox to generate plots, animations, and statistics.
+
+Key Features
+
+    * Agent-Centric Simulation: Models complex behaviors by         focusing on individual agent states and interactions (nexussim.core).
+
+    * Raster-Based I/O: Works seamlessley with standard geospatial data formats for defining landscapes and initial conditions.
+    * Comprehensive Analysis Suite: A rich set of tools (nexussim.analysis) to generate epidemic curves, animations, persistence "hotspot" maps, and calculate the rate of spread.
+    * Reproducibility First: The file-based output creates a permanent, reproducible record of every simulation run.
+    * Scalable: By not holding the entire simulation history in memory, NexusSim can hanlde longer and larger simulations.
+
+Installation
+
+NexusSim is available on PyPI. Install it using pip:
+
+`pip install nexussim`
+
+To install the latest development version directly from GitHub:
+
+`pip install git+https://github.com/mrmarcelino/nexussim.git`
+
+Quickstart: From Simulation to Analysis
+
+This example demonstrates the complete NexusSim workflow. It will:
+
+    1. Create dummy input rasters for a landscape and initial infections.
+    2. Run a 50-step simulation, saving the output to a results/ directory.
+    3. Use the analysis module to generate an epidemic curve plot and an animated GIF from the results.
+
+import os
+import shutil
+import numpy as np
+import rasterio
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+# nexussim/
+# |- __init__.py
+# |- core.py
+# |- analysis.py
+from nexussim.core import DiseaseModel
+import nexussim.analysis as nxs_analysis
+
+# Helper function to create dummy input data
+def create_dummy_raster(path, width, height, data, crs='EPSG:3857'):
+  """
+  Creates a simple GeoTIFF file for demonstration purposes.
+  """
+  profile ={
+      'driver': 'GTiff',
+      'dtype': 'float32',
+      'width': width,
+      'height': height,
+      'count': 1,
+      'crs': crs,
+      'transform': rasterio.transform.from_origin(0, height, 1, 1),
+      'nodata': -9999
+  }
+  with rasterio.open(path, 'w', **profile) as dst:
+    dst.write(data.astype(profile['dtype']), 1)
+
+# 1. Setup Environment and Input Data
+print("--- Setting up simulation environment ---")
+# Create directories for inputs, simulation outputs, and analysis outputs
+os.makedirs('inputs', exist_ok=True)
+os.makedirs('sim_results', exist_ok=True)
+os.makedirs('analysis_outputs', exist_ok=True)
+
+# Define file paths
+cost_path = 'inputs/cost.tif'
+initial_infection_path = 'inputs/initial_infection.tif'
+width, height = 100, 100
+
+# Create a uniform cost surface (all areas are equally passable)
+cost_data = np.ones((height, width))
+create_dummy_raster(cost_path, width, height, cost_data)
+
+# Create an initial infection raster with a small cluster of infected cells
+initial_infection_data = np.zeros((height, width))
+initial_infection_data[45:55, 45:55] = 1
+create_dummy_raster(initial_infection_path, width, height, initial_infection_data)
+print(" > Dummy input rasters created.")
+
+# 2. Run the Simulation
+print("\n--- Running the NexusSim simulation ---")
+model_params = {
+    'cost_threshold': 1.0, # Agents can move anywhere
+    'spread_probability': 0.6,
+    'infection_duration': 5,
+    'recovery_time_min': 10,
+    'recovery_time_max': 20
+}
+
+# Initialize the model
+model = DiseaseModel(cost_path, initial_infection_path, model_params)
+
+# Run the simulation, which saves raster files to 'sim_results/'
+model.run_simulation(time_steps=50, output_dir='sim_results')
+
+# 3. Analyze the Results
+print("\n--- Analyzing simulation results ---")
+# First, get the list of generated files
+tif_files = nxs_analysis.get_simulation_files('sim_results')
+
+if tif_files:
+  # Generate and save an epidemic curve plot
+  curve_plot_path = 'analysis_outputs/epidemic_curve.png'
+  nxs_analysis.generate_epidemic_curve(tif_files, curve_plot_path)
+
+  # Create and save an animation
+  animation_path = 'analysis_outputs/animation.gif'
+  nxs_analysis.create_animation(tif_files, animation_path, duration=0.1)
+  print(" > Analysis complete. Outputs are in 'analysis_outputs\'.")
+
+  # 4. Display one of the generated plots
+  print("\n--- Displaying generated epidemic curve ---")
+  img = mpimg.imread(curve_plot_path)
+  plt.figure(figsize=(10, 6))
+  plt.imshow(img)
+  plt.axis('off') # Hide axes as the image already has them
+  plt.show()
+else:
+  print("Analysis skipped: No simulation files were found.")
+
+The NexusSim Workflow
+
+NexusSim is intentionally designed to separate the simulation from the analysis. This provides several key advantages for scientific modeling:
+
+    1. Reproducibility: The output rasters serve as a permanent, shareable record of the simulation.
+    2. Flexibility: You can run multiple analyses on a single simulation output without having to re-run the entire model.
+    3. Extensibility: It's easy to write your own custom analysis functions that operate on the standardized GeoTIFF outputs.
+The standard workflow looks like this: [Input Rasters] → nexussim.core.DiseaseModel → [Output Rasters] → nexussim.analysis → [Plots, GIFs, & Stats]
+
+Core Components
+
+    * nexussim.core: Contains the Agent and DiseaseModel classes. This is the heart of the simulation engine responsible for running the model and saving the state at each time step.
+    * nexussim.analysis: A toolbox of standalone functions that take a list of raster file paths as input and produce high-level outputs like plots, statistics, or animations.
+
+Contributing
+
+Contributions are welcome! If you have ideas for new features, analysis tools, or improvements, please open an issue or submit a pull request.
+
+License
+
+This project is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0) - see the LICENSE.md file for details.
