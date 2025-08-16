@@ -1,0 +1,42 @@
+Metadata-Version: 2.1
+Name: tunnelify
+Version: 0.1.0
+Summary: A simple package for easily creating Cloudflared Tunnels.
+Home-page: https://github.com/MYusufY/tunnelify
+Author: Yusuf YILDIRIM
+Author-email: yusuf@tachion.tech
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Internet :: Proxy Servers
+Classifier: Topic :: System :: Networking
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# Tunnelify
+
+Tunnelify is a Python library to easily create and manage Cloudflare tunnels, powered by Cloudflared.
+
+# Example
+
+```python
+from tunnelify import tunnel
+
+url, proc = tunnel(8000) # Create a tunnel on port 8000
+print(url) # trycloudflare.com URL
+
+while True:
+    val = input("'exit' to exit: ")
+
+    if val == "e":
+        proc.terminate()
+        break
+    else: pass
+```
+
+# Installation
+
+Just:
+`pip install tunnelify`
+
+Tunnelify requires Cloudflared package to work. If it doesn't exist on your system, Tunnelify will automatically install it.
