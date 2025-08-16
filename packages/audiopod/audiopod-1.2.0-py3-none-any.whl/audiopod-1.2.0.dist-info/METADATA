@@ -1,0 +1,454 @@
+Metadata-Version: 2.4
+Name: audiopod
+Version: 1.2.0
+Summary: Professional Audio Processing API Client for Python
+Home-page: https://github.com/audiopod-ai/audiopod-python
+Author: AudioPod AI
+Author-email: AudioPod AI <support@audiopod.ai>
+Project-URL: Homepage, https://audiopod.ai
+Project-URL: Repository, https://github.com/audiopod-ai/audiopod
+Project-URL: Bug Tracker, https://github.com/audiopod-ai/audiopod/issues
+Project-URL: API Reference, https://docs.audiopod.ai/
+Keywords: audio,processing,ai,voice,cloning,transcription,translation,music,generation,denoising,api,sdk
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Multimedia :: Sound/Audio
+Classifier: Topic :: Multimedia :: Sound/Audio :: Analysis
+Classifier: Topic :: Multimedia :: Sound/Audio :: Conversion
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.28.0
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: pydantic>=1.10.0
+Requires-Dist: python-dotenv>=0.19.0
+Requires-Dist: tqdm>=4.64.0
+Requires-Dist: websockets>=10.4
+Requires-Dist: click>=8.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: flake8>=5.0.0; extra == "dev"
+Requires-Dist: mypy>=0.991; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+Requires-Dist: build>=0.10.0; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=5.0.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.2.0; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints>=1.19.0; extra == "docs"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# AudioPod Python SDK
+
+The official Python SDK for the AudioPod API - Professional Audio Processing powered by AI.
+
+[![PyPI version](https://badge.fury.io/py/audiopod.svg)](https://badge.fury.io/py/audiopod)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+- 🎵 **Music Generation** - Create music from text prompts, lyrics, or audio samples
+- 🎤 **Voice Cloning** - Clone voices from audio samples and generate speech
+- 📝 **Transcription** - Convert speech to text with speaker diarization
+- 🌍 **Translation** - Translate audio and video content between languages
+- 🎬 **Karaoke Generation** - Create karaoke videos with synchronized lyrics
+- 🔊 **Audio Enhancement** - Denoise and improve audio quality
+- 👥 **Speaker Analysis** - Identify and separate speakers in audio
+- 💰 **Credit Management** - Track usage and manage API credits
+
+## Installation
+
+```bash
+pip install audiopod
+```
+
+## Quick Start
+
+### Authentication
+
+Get your API key from the [AudioPod Dashboard](https://app.audiopod.ai/dashboard) and set it as an environment variable:
+
+```bash
+export AUDIOPOD_API_KEY="ap_your_api_key_here"
+```
+
+Or pass it directly to the client:
+
+```python
+import audiopod
+
+client = audiopod.Client(api_key="ap_your_api_key_here")
+```
+
+### Basic Usage
+
+#### Voice Generation (Unified TTS & Cloning)
+
+```python
+import audiopod
+
+# Initialize client
+client = audiopod.Client()
+
+# Generate voice using file cloning (unified approach)
+job = client.voice.generate_voice(
+    text="Hello! This is voice generation using a cloned voice.",
+    voice_file="path/to/voice_sample.wav",  # For voice cloning
+    language="en",
+    audio_format="mp3",
+    generation_params={
+        "speed": 1.0
+    },
+    wait_for_completion=True
+)
+
+print(f"Generated audio URL: {job.output_url}")
+
+# Generate speech with existing voice profile (unified approach)
+speech = client.voice.generate_voice(
+    text="Hello from my voice profile!",
+    voice_id="voice-profile-id",  # For existing voice profiles
+    language="en",
+    audio_format="mp3",
+    generation_params={
+        "speed": 1.0
+    },
+    wait_for_completion=True
+)
+
+# Backward compatibility methods (deprecated - use generate_voice instead)
+legacy_clone = client.voice.clone_voice(
+    voice_file="path/to/voice_sample.wav",
+    text="Hello! This is a cloned voice speaking.",
+    language="en",
+    wait_for_completion=True
+)
+```
+
+#### Music Generation
+
+```python
+# Generate music from text
+music_job = client.music.generate_music(
+    prompt="upbeat electronic dance music with heavy bass",
+    duration=120.0,  # 2 minutes
+    wait_for_completion=True
+)
+
+print(f"Generated music URL: {music_job.output_url}")
+```
+
+#### Audio Transcription
+
+```python
+# Transcribe audio with speaker diarization
+transcript = client.transcription.transcribe_audio(
+    audio_file="path/to/audio.mp3",
+    language="en",
+    enable_speaker_diarization=True,
+    wait_for_completion=True
+)
+
+print(f"Transcript: {transcript.transcript}")
+print(f"Detected {len(transcript.segments)} speakers")
+```
+
+#### Speech-to-Speech Translation
+
+```python
+# Translate speech while preserving voice characteristics
+translation = client.translation.translate_speech(
+    audio_file="path/to/english_audio.wav",
+    target_language="es",  # Spanish
+    source_language="en",  # English (optional - auto-detect)
+    wait_for_completion=True
+)
+
+print(f"Translated audio URL: {translation.translated_audio_url}")
+
+# Or translate from URL
+url_translation = client.translation.translate_speech(
+    url="https://example.com/audio.mp3",
+    target_language="fr",  # French
+    wait_for_completion=True
+)
+```
+
+### Async Support
+
+The SDK supports async/await for better performance:
+
+```python
+import asyncio
+import audiopod
+
+async def main():
+    async with audiopod.AsyncClient() as client:
+        # All the same methods are available with async support
+        job = await client.voice.clone_voice(
+            voice_file="voice.wav",
+            text="Async voice cloning!",
+            wait_for_completion=True
+        )
+        print(f"Async result: {job['output_url']}")
+
+asyncio.run(main())
+```
+
+### Advanced Examples
+
+#### Create Voice Profile for Reuse
+
+```python
+# Create a reusable voice profile
+voice_profile = client.voice.create_voice_profile(
+    name="My Custom Voice",
+    voice_file="voice_sample.wav",
+    description="A professional voice for narration",
+    wait_for_completion=True
+)
+
+# Use the voice profile for speech generation (unified approach - recommended)
+speech = client.voice.generate_voice(
+    text="This uses my custom voice profile with the unified method!",
+    voice_id=voice_profile.id,
+    language="en",
+    audio_format="mp3",
+    generation_params={
+        "speed": 1.0
+    },
+    wait_for_completion=True
+)
+
+# Legacy method (still works - uses generate_voice internally)
+legacy_speech = client.voice.generate_speech(
+    voice_id=voice_profile.id,
+    text="This uses the legacy method.",
+    wait_for_completion=True
+)
+```
+
+#### Batch Processing
+
+```python
+# Process multiple files
+audio_files = ["file1.mp3", "file2.wav", "file3.m4a"]
+jobs = []
+
+for audio_file in audio_files:
+    job = client.transcription.transcribe_audio(
+        audio_file=audio_file,
+        language="en"
+    )
+    jobs.append(job)
+
+# Wait for all jobs to complete
+for job in jobs:
+    completed_job = client.transcription.get_transcription_job(job.id)
+    while completed_job.job.status != "completed":
+        time.sleep(5)
+        completed_job = client.transcription.get_transcription_job(job.id)
+    
+    print(f"Transcript for {job.id}: {completed_job.transcript}")
+```
+
+#### Music Generation with Custom Parameters
+
+```python
+# Generate rap music with specific parameters
+rap_job = client.music.generate_rap(
+    lyrics="""
+    Started from the bottom now we're here
+    Building dreams with every single year
+    AI music generation so clear
+    AudioPod making magic appear
+    """,
+    style="modern",
+    tempo=120,
+    wait_for_completion=True
+)
+
+# Share the generated music
+share_result = client.music.share_music_track(
+    job_id=rap_job.job.id,
+    platform="social",
+    message="Check out this AI-generated rap!"
+)
+print(f"Shareable URL: {share_result['share_url']}")
+```
+
+#### Karaoke Video Generation
+
+```python
+# Generate karaoke video from YouTube URL
+karaoke_job = client.karaoke.generate_karaoke(
+    youtube_url="https://www.youtube.com/watch?v=example",
+    video_style="modern",
+    wait_for_completion=True
+)
+
+print(f"Karaoke video URL: {karaoke_job.result['karaoke_video_path']}")
+```
+
+## Error Handling
+
+```python
+import audiopod
+from audiopod.exceptions import (
+    AudioPodError,
+    AuthenticationError,
+    RateLimitError,
+    ValidationError,
+    ProcessingError
+)
+
+try:
+    client = audiopod.Client(api_key="invalid_key")
+    job = client.voice.clone_voice("voice.wav", "Test text")
+    
+except AuthenticationError:
+    print("Invalid API key")
+except RateLimitError as e:
+    print(f"Rate limit exceeded. Retry after: {e.retry_after} seconds")
+except ValidationError as e:
+    print(f"Invalid input: {e.message}")
+except ProcessingError as e:
+    print(f"Processing failed: {e.message}")
+except AudioPodError as e:
+    print(f"General API error: {e.message}")
+```
+
+## Credit Management
+
+```python
+# Check credit balance
+credits = client.credits.get_credit_balance()
+print(f"Available credits: {credits.total_available_credits}")
+print(f"Next reset: {credits.next_reset_date}")
+
+# Get usage history
+usage = client.credits.get_usage_history()
+for record in usage:
+    print(f"Service: {record['service_type']}, Credits: {record['credits_used']}")
+
+# Get credit multipliers
+multipliers = client.credits.get_credit_multipliers()
+print(f"Voice cloning: {multipliers['voice_cloning']} credits/second")
+```
+
+## Configuration
+
+### Environment Variables
+
+- `AUDIOPOD_API_KEY`: Your AudioPod API key
+- `AUDIOPOD_BASE_URL`: Custom API base URL (optional)
+- `AUDIOPOD_TIMEOUT`: Request timeout in seconds (default: 30)
+
+### Client Configuration
+
+```python
+client = audiopod.Client(
+    api_key="your_api_key",
+    base_url="https://api.audiopod.ai",  # Custom base URL
+    timeout=60,  # 60 second timeout
+    max_retries=5,  # Retry failed requests
+    verify_ssl=True,  # SSL verification
+    debug=True  # Enable debug logging
+)
+```
+
+## API Reference
+
+### Client Classes
+
+- `audiopod.Client`: Synchronous client
+- `audiopod.AsyncClient`: Asynchronous client
+
+### Services
+
+- `client.voice`: **Voice generation operations** (unified TTS & cloning using `generate_voice()`)
+- `client.music`: Music generation and editing
+- `client.transcription`: Speech-to-text transcription
+- `client.translation`: Audio/video translation
+- `client.speaker`: Speaker analysis and diarization  
+- `client.denoiser`: Audio denoising and enhancement
+- `client.karaoke`: Karaoke video generation
+- `client.credits`: Credit management and usage tracking
+
+#### Voice Service Methods
+
+**Recommended (Unified Approach):**
+- `client.voice.generate_voice()` - Generate speech with voice file (cloning) or voice ID (TTS)
+
+**Legacy Methods (Backward Compatibility):**
+- `client.voice.clone_voice()` - Clone voice from audio file (deprecated, uses `generate_voice` internally)
+- `client.voice.generate_speech()` - Generate speech with voice profile (deprecated, uses `generate_voice` internally)
+
+**Voice Management:**
+- `client.voice.create_voice_profile()` - Create reusable voice profiles
+- `client.voice.list_voice_profiles()` - List available voice profiles
+- `client.voice.delete_voice_profile()` - Delete voice profiles
+
+### Models
+
+- `Job`: Base job information and status
+- `VoiceProfile`: Voice profile details
+- `TranscriptionResult`: Transcription results and metadata
+- `MusicGenerationResult`: Music generation results
+- `TranslationResult`: Translation job results
+- `CreditInfo`: User credit information
+
+## CLI Usage
+
+The SDK includes a command-line interface:
+
+```bash
+# Check API status
+audiopod health
+
+# Get credit balance  
+audiopod credits balance
+
+# Clone a voice
+audiopod voice clone voice.wav "Hello world!" --language en
+
+# Generate music
+audiopod music generate "upbeat electronic music" --duration 60
+
+# Transcribe audio
+audiopod transcription transcribe audio.mp3 --language en
+```
+
+## Requirements
+
+- Python 3.8+
+- Active AudioPod account with API access
+- Valid API key
+
+## Support
+
+- 📖 [API Reference](https://docs.audiopod.ai)
+- 💬 [Discord Community](https://discord.gg/audiopod)
+- 📧 [Email Support](mailto:support@audiopod.ai)
+- 🐛 [Bug Reports](https://github.com/AudiopodAI/audiopod)
+
+## License
+
+This SDK is released under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+Made with ❤️ by the AudioPod team
