@@ -1,0 +1,24 @@
+[project]
+name = "agentbeacon"
+version = "0.1.0"
+description = "Semantic code search for AI agents via Model Context Protocol"
+authors = [{name = "Adrian Quiroga", email = "git@adrq.net"}]
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "fastmcp>=2.11.3",
+    "pre-commit>=4.3.0",
+]
+
+[project.scripts]
+agentbeacon = "agentbeacon.main:mcp.run"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
