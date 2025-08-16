@@ -1,0 +1,125 @@
+Metadata-Version: 2.4
+Name: localfiletransfer
+Version: 0.1.0
+Summary: A simple local network file transfer tool
+Home-page: https://github.com/bivab0/localfiletransfer
+Author: Bivab Das
+Author-email: bivabdas@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: gunicorn
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# localfiletransfer
+
+A lightweight, no-framework LAN/same WiFi file transfer server written in pure Python WSGI. No Flask, no Django — just fast, clean file sharing on your local network.
+
+## 🔧 Features
+
+- 📁 Upload files via browser
+- 📥 Download files (inline or direct link)
+- 🔐 Basic HTTP authentication (username/password)
+- 🚫 Upload size limit (default: 2GB)
+- ♻️ Automatic deletion of uploaded files after 1 hour
+- ⚙️ No external web frameworks — pure WSGI
+- 🔥 Gunicorn-ready
+
+---
+
+## 📦 Installation
+
+```bash
+pip install localfiletransfer
+````
+
+---
+
+## ▶️ Usage
+
+```bash
+localfiletransfer --bind 0.0.0.0:5000
+```
+
+By default, this will start a file server on `http://<your-local-ip>:5000`.
+
+### Access from any device on the same LAN
+
+Just open the URL in a browser on any device connected to the same WiFi/network.
+
+---
+
+## 🔐 Authentication
+
+Basic HTTP Authentication is enabled by default.
+
+| Variable   | Default |
+| ---------- | ------- |
+| `LFS_USER` | `admin` |
+| `LFS_PASS` | `admin` |
+
+You can override credentials by setting environment variables before running:
+
+```bash
+LFS_USER=myuser LFS_PASS=mypass localfiletransfer --bind 0.0.0.0:5000
+```
+
+---
+
+## 📤 File Upload
+
+* Uploads are done via browser using a simple form.
+* The **Upload** button is only enabled when a file is selected.
+* Maximum upload size is **2GB** (configurable in code).
+* All uploaded files are automatically **deleted after 1 hour**.
+
+---
+
+## 🧹 Cleanup Behavior
+
+A background thread checks every 10 minutes and deletes files older than **1 hour** to keep the system clean.
+
+No database or metadata is stored — pure file system handling.
+
+---
+
+## 🐍 Requirements
+
+* Python 3.6+
+* `gunicorn`
+
+---
+
+## 📦 Packaging
+
+If you're installing from source:
+
+```bash
+git clone https://github.com/bivab0/localfiletransfer
+cd localfiletransfer
+pip install .
+```
+
+---
+
+## 📄 License
+
+MIT License © [Bivab Das](https://github.com/bivab0)
+
+---
+
+## 🤝 Contributing
+
+PRs are welcome! Just keep it lightweight and dependency-free.
