@@ -1,0 +1,224 @@
+Metadata-Version: 2.4
+Name: beets-lyrics-manager
+Version: 0.0.3
+Summary: A beets plugin for managing lyrics files alongside music files
+Home-page: https://github.com/zytx/beets-lyrics-manager
+Author: zytx
+Author-email: zywsad@gmail.com
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Multimedia :: Sound/Audio
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: beets>=1.6.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# beets-lyrics-manager
+
+A beets plugin for automatically managing lyrics files (.lrc) when importing music files and synchronizing lyrics files when moving songs.
+
+[中文文档](README_CN.md) | [English](README.md)
+
+## Features
+
+- **Copy lyrics on import**: Automatically find and copy lyrics files (.lrc) with the same name when importing music files
+- **Synchronize on move**: Automatically move corresponding lyrics files when using beets to move music files
+- **Rename lyrics**: Automatically rename lyrics files according to new music file names
+- **Support multiple operations**: Support all beets file operations including copy, move, link, hardlink, reflink
+- **Unified processing logic**: All lyrics file operations use unified methods to ensure consistent behavior and error handling
+- **Configurable**: Support custom lyrics file extensions and other options
+
+## Installation
+
+### Method 1: Install with pip (Recommended)
+
+```bash
+git clone https://github.com/yourusername/beets-lyrics-manager.git
+cd beets-lyrics-manager
+pip install -e .
+```
+
+This is the most recommended installation method as it correctly installs the plugin into beets' namespace package.
+
+### Method 2: Manual installation
+
+Copy the `beetsplug/lyricsmanager.py` file to your beets plugin directory:
+
+```bash
+# Find beets plugin directory
+python -c "import beets; print(beets.__file__)"
+# Then copy the plugin file to beets/plugins/ directory
+cp beetsplug/lyricsmanager.py /path/to/beets/plugins/
+```
+
+### Uninstall
+
+```bash
+# If installed with pip
+pip uninstall beets-lyrics-manager
+
+# If manually installed, delete the plugin file directly
+rm /path/to/beets/plugins/lyricsmanager.py
+```
+
+### Verify installation
+
+After installation, check if beets can find the plugin:
+
+```bash
+beet config -e
+```
+
+If you see `lyricsmanager` in the plugins list, the installation was successful.
+
+## Configuration
+
+Add the following to your beets configuration file (usually `~/.config/beets/config.yaml`):
+
+```yaml
+plugins:
+  - lyricsmanager
+
+# Optional: Custom configuration
+lyricsmanager:
+  # Supported lyrics file extensions (default: [.lrc])
+  extensions: [.lrc, .txt]
+  
+  # Whether to copy lyrics files on import (default: true)
+  copy_lyrics: true
+  
+  # Whether to move lyrics files on move (default: true)
+  move_lyrics: true
+```
+
+## Usage
+
+After installing and configuring the plugin, it will work automatically:
+
+### Import music files
+
+```bash
+beet import /path/to/music/directory
+```
+
+If there are .lrc files with the same name next to music files, the plugin will automatically copy the lyrics files to the target directory.
+
+### Move music files
+
+```bash
+beet move artist:"Artist Name"
+```
+
+When music files are moved, the corresponding lyrics files will also be moved to the new location.
+
+### Copy music files
+
+```bash
+beet copy artist:"Artist Name" /new/destination
+```
+
+Lyrics files will also be copied to the new location.
+
+## How it works
+
+The plugin listens to the following beets events and uses unified lyrics file processing logic:
+
+- `item_imported`: Copy lyrics files on import
+- `item_moved`: Synchronize and move lyrics files on move
+- `item_copied`: Copy lyrics files on copy
+- `item_linked`: Copy lyrics files on link
+- `item_hardlinked`: Copy lyrics files on hardlink
+- `item_reflinked`: Copy lyrics files on reflink
+
+All operations are handled through the unified `_handle_lyrics_operation` method to ensure consistent behavior and error handling.
+
+## File matching rules
+
+The plugin looks for lyrics files with the same name as music files:
+
+- Music file: `song.mp3` → Look for: `song.lrc`
+- Music file: `album_track.flac` → Look for: `album_track.lrc`
+
+Supports multiple extensions, searched in the order specified in the configuration.
+
+## Logging
+
+The plugin records detailed operation logs:
+
+- `INFO` level: Successfully copied/moved lyrics files, formatted as "Operation type lyrics file: source path -> target path"
+- `DEBUG` level: Detailed operation information, including cases where lyrics files already exist
+- `ERROR` level: Error information for failed operations, including specific error reasons
+
+Use `beet -v` to view detailed logs.
+
+## Examples
+
+Suppose you have the following file structure:
+
+```
+/music/
+  ├── song1.mp3
+  ├── song1.lrc
+  ├── song2.flac
+  └── song2.lrc
+```
+
+After running `beet import /music`:
+
+```
+/beets_library/
+  ├── Artist/
+  │   └── Album/
+  │       ├── 01 - Song1.mp3
+  │       ├── 01 - Song1.lrc
+  │       ├── 02 - Song2.flac
+  │       └── 02 - Song2.lrc
+```
+
+## Troubleshooting
+
+### Lyrics files are not copied/moved
+
+1. Check if the lyrics file has the same name as the music file (except for the extension)
+2. Check if the lyrics file extension is in the configured `extensions` list
+3. Check if the plugin is loaded correctly: `beet config -e`
+4. Use `beet -v` to view detailed logs
+5. Check if the configuration items `copy_lyrics` and `move_lyrics` are set to `true`
+
+### Permission errors
+
+Ensure beets has permission to read source lyrics files and write to target directories.
+
+### Log information
+
+- If you see "Lyrics file already in correct location" DEBUG message, it means the lyrics file is already in the correct location and no operation is needed
+- If you see "Failed to copy/move lyrics file" ERROR message, check file permissions and disk space
+
+## Contributing
+
+Issues and Pull Requests are welcome!
+
+## License
+
+MIT License
+
+## Acknowledgments
+
+- Inspired by the design approach of [beets-extrafiles](https://github.com/Holzhaus/beets-extrafiles) plugin
+- Based on the [beets](https://beets.io/) plugin development framework 
