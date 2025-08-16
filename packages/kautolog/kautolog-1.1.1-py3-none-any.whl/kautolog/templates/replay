@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+replay() {
+  local base_raw="$1"; shift || true
+  local base="${base_raw%.log}" # remove .log if passed
+  local timing="$(realpath -m "${base}.timing")"
+  local log="$(realpath -m "${base}.log")"
+
+  local speed_args=() target= maxdelay=
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -d) speed_args+=("-d" "$2"); shift 2 ;;
+      --maxdelay|-m) maxdelay="$2"; shift 2 ;;
+      --target) target="$2"; shift 2 ;;
+      *) speed_args+=("$1"); shift ;;
+    esac
+  done
+
+  # Resolve live log path
+  local live_log="$(realpath -m "${logbase:-nonexistent}.log" 2>/dev/null || true)"
+
+  if [[ -n "${logbase:-}" && "$log" == "$live_log" ]]; then
+    echo "❌ Refusing to replay the current live session log due to recursion."
+    return 1
+  fi
+
+  [[ -f "$timing" && -f "$log" ]] || { echo "missing files: $timing or $log"; return 1; }
+
+  local total; total="$(awk '{s+=$1} END{print int(s+0.5)}' "$timing")"; (( total<=0 )) && total=1
+  if [[ -n "${target:-}" && "$target" -gt 0 ]]; then
+    local d=$(( total / target )); (( d<1 )) && d=1
+    speed_args=( "-d" "$d" )
+    [[ -z "${maxdelay:-}" ]] && maxdelay="0.12"
+  fi
+
+  local cmd=( /usr/bin/scriptreplay )
+  if [[ ${#speed_args[@]} -gt 0 ]]; then cmd+=( "${speed_args[@]}" ); fi
+  if [[ -n "${maxdelay:-}" ]]; then cmd+=( --maxdelay "$maxdelay" ); fi
+  cmd+=( -t "$timing" "$log" )
+
+  local saved; saved=$(stty -g 2>/dev/null || true)
+  _restore() {
+    stty "$saved" 2>/dev/null || true
+    printf '\e[?7h\e[?25h'
+    echo
+    echo "✅ Back to your shell."
+    trap - INT EXIT
+  }
+  trap _restore INT EXIT
+
+  echo "Replaying: $log"
+  echo "Tips: Ctrl+C to stop early; you’ll stay on this screen."
+
+  "${cmd[@]}"
+
+  _restore
+  echo
+  echo "✅ Back to your shell."
+}
+
+replay_instant() {
+  if [[ -z "${1:-}" ]]; then
+    echo "Usage: replay -i <basename>"
+    return 2
+  fi
+
+  local base_raw="$1"
+  local base="${base_raw%.log}"
+  local log="$(realpath -m "${base}.log")"
+  local live_log="$(realpath -m "${logbase:-nonexistent}.log" 2>/dev/null || true)"
+
+  if [[ -n "${logbase:-}" && "$log" == "$live_log" ]]; then
+    echo "❌ Refusing to replay the current live session log due to recursion."
+    return 1
+  fi
+
+  if [[ ! -f "$log" ]]; then
+    echo "Missing: $log"
+    return 1
+  fi
+
+  local saved; saved=$(stty -g 2>/dev/null || true)
+  _restore() {
+    stty "$saved" 2>/dev/null || true
+    printf '\e[?7h\e[?25h'
+    trap - INT EXIT;
+  }
+  trap _restore INT EXIT
+
+  echo "Instant dump of: $log"
+  cat -- "$log"
+
+  _restore
+  echo
+  echo "✅ Back to your shell."
+}
+
+# --- dispatcher ---
+if [[ "${1:-}" == "-i" || "${1:-}" == "--instant" ]]; then
+  shift
+  replay_instant "$@"
+else
+  replay "$@"
+fi
