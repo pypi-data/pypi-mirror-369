@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aerocaps"
+authors = [
+    {name = "Matthew G Lauer", email = "mlauer2015@gmail.com"}
+]
+description = "Toolkit for design of Class-A, parametric design of aerodynamic surfaces"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+    "aerodynamics",
+    "MDAO",
+    "MDO",
+    "parametric",
+    "airfoil system",
+    "surface modeling",
+    "surface design",
+    "NURBS",
+    "B-Spline"
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Topic :: Scientific/Engineering",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+dependencies = [
+    "scipy",
+    "numpy",
+    "matplotlib",
+    "pyvista",
+    "pyiges",
+    "shapely",
+    "rust-nurbs>=0.23",
+    "triangle"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest"
+]
+
+[tool.setuptools]
+packages = [
+    "aerocaps",
+    "aerocaps.examples",
+    "aerocaps.geom",
+    "aerocaps.iges",
+    "aerocaps.scripts",
+    "aerocaps.stl",
+    "aerocaps.tests",
+    "aerocaps.units",
+    "aerocaps.utils"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "aerocaps.version.__version__"}
