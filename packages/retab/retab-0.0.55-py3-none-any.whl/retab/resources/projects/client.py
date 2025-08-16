@@ -1,0 +1,267 @@
+from typing import Any, Dict, List
+
+from ..._resource import AsyncAPIResource, SyncAPIResource
+from ...types.projects import Project, PatchProjectRequest, BaseProject
+from ...types.standards import PreparedRequest, DeleteResponse, FieldUnset
+from .documents import Documents, AsyncDocuments
+from .iterations import Iterations, AsyncIterations
+
+
+class ProjectsMixin:
+    def prepare_create(
+        self,
+        name: str,
+        json_schema: dict[str, Any],
+    ) -> PreparedRequest:
+        # Use BaseProject model
+        eval_dict = {
+            "name": name,
+            "json_schema": json_schema,
+        }
+
+        eval_data = BaseProject(**eval_dict)
+        return PreparedRequest(method="POST", url="/v1/projects", data=eval_data.model_dump(exclude_unset=True, mode="json"))
+
+    def prepare_get(self, project_id: str) -> PreparedRequest:
+        return PreparedRequest(method="GET", url=f"/v1/projects/{project_id}")
+
+    def prepare_update(
+        self,
+        project_id: str,
+        name: str = FieldUnset,
+        json_schema: dict[str, Any] = FieldUnset,
+    ) -> PreparedRequest:
+        """
+        Prepare a request to update an evaluation with partial updates.
+
+        Only the provided fields will be updated. Fields set to None will be excluded from the update.
+        """
+        # Build a dictionary with only the provided fields
+        update_dict = {}
+        if name is not FieldUnset:
+            update_dict["name"] = name
+        if json_schema is not FieldUnset:
+            update_dict["json_schema"] = json_schema
+
+        data = PatchProjectRequest(**update_dict).model_dump(exclude_unset=True, mode="json")
+
+        return PreparedRequest(method="PATCH", url=f"/v1/projects/{project_id}", data=data)
+
+    def prepare_list(self) -> PreparedRequest:
+        """
+        Prepare a request to list evaluations.
+
+        Usage:
+        >>> client.evaluations.list()                          # List all evaluations
+
+        Returns:
+            PreparedRequest: The prepared request
+        """
+        return PreparedRequest(method="GET", url="/v1/projects")
+
+    def prepare_delete(self, id: str) -> PreparedRequest:
+        return PreparedRequest(method="DELETE", url=f"/v1/projects/{id}")
+
+
+class Projects(SyncAPIResource, ProjectsMixin):
+    """Projects API wrapper"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.documents = Documents(self._client)
+        self.iterations = Iterations(self._client)
+
+    def create(
+        self,
+        name: str,
+        json_schema: dict[str, Any],
+    ) -> Project:
+        """
+        Create a new evaluation.
+
+        Args:
+            name: The name of the evaluation
+            json_schema: The JSON schema for the evaluation
+            documents: The documents to associate with the evaluation
+
+        Returns:
+            Project: The created evaluation
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_create(name, json_schema)
+        response = self._client._prepared_request(request)
+        return Project(**response)
+
+    def get(self, project_id: str) -> Project:
+        """
+        Get an evaluation by ID.
+
+        Args:
+            project_id: The ID of the evaluation to retrieve
+
+        Returns:
+            Project: The evaluation
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_get(project_id)
+        response = self._client._prepared_request(request)
+        return Project(**response)
+
+    def update(
+        self,
+        project_id: str,
+        name: str = FieldUnset,
+        json_schema: dict[str, Any] = FieldUnset,
+    ) -> Project:
+        """
+        Update an evaluation with partial updates.
+
+        Args:
+            project_id: The ID of the evaluation to update
+            name: Optional new name for the evaluation
+            json_schema: Optional new JSON schema
+            documents: Optional list of documents to update
+            iterations: Optional list of iterations to update
+
+        Returns:
+            Project: The updated evaluation
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_update(
+            project_id=project_id,
+            name=name,
+            json_schema=json_schema,
+        )
+        response = self._client._prepared_request(request)
+        return Project(**response)
+
+    def list(self) -> List[Project]:
+        """
+        List evaluations for a project.
+
+        Args:
+        Returns:
+            List[Project]: List of evaluations
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_list()
+        response = self._client._prepared_request(request)
+        return [Project(**item) for item in response.get("data", [])]
+
+    def delete(self, project_id: str) -> DeleteResponse:
+        """
+        Delete an evaluation.
+
+        Args:
+            project_id: The ID of the evaluation to delete
+
+        Returns:
+            DeleteResponse: The response containing success status and ID
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_delete(project_id)
+        return self._client._prepared_request(request)
+
+
+class AsyncProjects(AsyncAPIResource, ProjectsMixin):
+    """Async Projects API wrapper"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.documents = AsyncDocuments(self._client)
+        self.iterations = AsyncIterations(self._client)
+
+    async def create(self, name: str, json_schema: Dict[str, Any]) -> Project:
+        """
+        Create a new evaluation.
+
+        Args:
+            name: The name of the evaluation
+            json_schema: The JSON schema for the evaluation
+
+        Returns:
+            Project: The created evaluation
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_create(name, json_schema)
+        response = await self._client._prepared_request(request)
+        return Project(**response)
+
+    async def get(self, project_id: str) -> Project:
+        """
+        Get an evaluation by ID.
+
+        Args:
+            project_id: The ID of the evaluation to retrieve
+
+        Returns:
+            Project: The evaluation
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_get(project_id)
+        response = await self._client._prepared_request(request)
+        return Project(**response)
+
+    async def update(
+        self,
+        project_id: str,
+        name: str = FieldUnset,
+        json_schema: dict[str, Any] = FieldUnset,
+    ) -> Project:
+        """
+        Update an evaluation with partial updates.
+
+        Args:
+            id: The ID of the evaluation to update
+            name: Optional new name for the evaluation
+            json_schema: Optional new JSON schema
+            documents: Optional list of documents to update
+            iterations: Optional list of iterations to update
+
+        Returns:
+            Project: The updated evaluation
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_update(
+            project_id=project_id,
+            name=name,
+            json_schema=json_schema,
+        )
+        response = await self._client._prepared_request(request)
+        return Project(**response)
+
+    async def list(self) -> List[Project]:
+        """
+        List evaluations for a project.
+
+        Returns:
+            List[Project]: List of evaluations
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_list()
+        response = await self._client._prepared_request(request)
+        return [Project(**item) for item in response.get("data", [])]
+
+    async def delete(self, project_id: str) -> DeleteResponse:
+        """
+        Delete an evaluation.
+
+        Args:
+            project_id: The ID of the evaluation to delete
+
+        Returns:
+            DeleteResponse: The response containing success status and ID
+        Raises:
+            HTTPException if the request fails
+        """
+        request = self.prepare_delete(project_id)
+        return await self._client._prepared_request(request)
