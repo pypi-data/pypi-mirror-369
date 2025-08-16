@@ -1,0 +1,71 @@
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"
+
+[project]
+name = "eopod"
+version = "0.0.31"
+authors = [{ name = "Erfan Zare Chavoshi", email = "Erfanzare810@gmail.com" }]
+description = "eopod is a streamlined command execution tool designed to run and manage operations on Google Cloud Pods efficiently"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { text = "Apache-2.0" }
+keywords = ["eopod"]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Intended Audience :: Developers",
+	"Topic :: Scientific/Engineering :: Artificial Intelligence",
+	"License :: OSI Approved :: Apache Software License", 
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+	"click>=8.0",
+	"rich>=13.7.0",
+	"pyyaml>=6.0.1",
+	"tpu-info==0.4.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/erfanzar/eopod"
+Repository = "https://github.com/erfanzar/eopod"
+Documentation = "https://eopod.readthedocs.io/en/latest/"
+
+[project.scripts]
+eopod = "eopod:main"
+
+[tool.uv.build-backend]
+module-name = "eopod"
+module-root = "."
+
+[tool.setuptools]
+package-dir = { "" = "." }
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"eopod" = ["py.typed"]
+
+[tool.black]
+line-length = 121
+target-version = ["py310"]
+preview = true
+
+[tool.ruff]
+line-length = 121
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["A", "B", "E", "F", "I", "NPY", "RUF", "UP", "W"]
+ignore = ["F722", "B008", "UP015", "A005"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+exclude = ["eopod/"]
