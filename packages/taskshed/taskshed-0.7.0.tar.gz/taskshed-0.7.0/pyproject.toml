@@ -1,0 +1,69 @@
+# -------------------------------------------------------------------------------- build system requirements
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# -------------------------------------------------------------------------------- project metadata
+[project]
+name = "taskshed"
+version = "0.7.0"
+authors = [
+  { name = "Jacob Strauss", email = "jacob@meetchase.ai" }
+]
+description = "A high-performance, asynchronous, ready for production task scheduling framework written in Python."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = [
+    "task scheduling",
+    "job scheduling",
+    "scheduler",
+    "cron",
+    "background jobs",
+    "background tasks",
+    "periodic tasks",
+    "recurring tasks",
+    "asyncio",
+    "asynchronous",
+    "distributed",
+    "worker",
+    "queue",
+    "redis",
+    "mysql"
+]
+license = { text = "MIT" }
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13"
+]
+
+# -------------------------------------------------------------------------------- urls
+[project.urls]
+"Homepage" = "https://github.com/Chase-Labs/taskshed"
+"Documentation" = "https://chase-labs.github.io/taskshed/"
+"Bug Tracker" = "https://github.com/Chase-Labs/taskshed/issues"
+
+# -------------------------------------------------------------------------------- optional dependencies
+[project.optional-dependencies]
+mysql = [
+    "aiomysql>=0.2.0",
+]
+redis = [
+    "redis>=6.0.0",
+]
+all = [
+    "taskshed[mysql,redis]"
+]
+
+# -------------------------------------------------------------------------------- dependencies
+[tool.setuptools.packages.find]
+where = ["src"]
