@@ -1,0 +1,472 @@
+"""PyMaSC plotting utility for generating figures from pre-calculated results.
+
+This module provides the pymasc-plot command-line utility for generating
+PyMaSC visualization plots from previously calculated cross-correlation data.
+It can recreate plots from saved statistics, cross-correlation tables, and
+read count data without re-running the full analysis.
+
+The plotting utility supports:
+- Loading pre-calculated statistics and data tables
+- Generating cross-correlation and MSCC plots
+- Chromosome filtering and data validation
+- Output file management and overwrite protection
+"""
+from __future__ import annotations
+
+import argparse
+import logging
+import os
+import sys
+import json
+from pathlib import Path
+from dataclasses import dataclass
+from typing import Dict, List, Set, Optional, Tuple, Union
+
+from . import entrypoint, logging_version
+from .core.exceptions import ReadsTooFew
+from .utils.parsearg import get_plot_parser
+from .utils.logfmt import set_rootlogger
+from .utils.calc import filter_chroms
+from .pymasc import prepare_output, PLOTFILE_SUFFIX
+from .reader.bam import BAMFileProcessor
+from .reader.stats import load_stats
+from .reader.table import CCData, NreadData, load_cc_table, load_nreads_table
+from .interfaces.result import GenomeWideResultModel
+from .interfaces.output import (
+    OutputStats,
+    NCCResult, MSCCResult,
+    NCCGenomeWideResult, MSCCGenomeWideResult, BothGenomeWideResult
+)
+from .stats import make_genome_wide_stat
+from .output.stats import output_stats, STATSFILE_SUFFIX
+from .output.table import (output_cc, output_mscc,
+                           CCOUTPUT_SUFFIX, MSCCOUTPUT_SUFFIX, NREADOUTPUT_SUFFIX)
+from .output.figure import plot_figures
+
+logger = logging.getLogger(__name__)
+
+
+def _complete_path_arg(args: argparse.Namespace, attr: str, val: str) -> None:
+    """Auto-complete file path arguments based on base filename.
+
+    Sets an argument attribute to the provided value if the attribute
+    is not already set and the file exists.
+
+    Args:
+        args: Argument namespace to modify
+        attr: Attribute name to set
+        val: File path value to set if file exists
+    """
+    if not getattr(args, attr) and Path(val).exists():
+        setattr(args, attr, val)
+
+
+def _parse_args() -> argparse.Namespace:
+    """Parse and validate plot-specific command-line arguments.
+
+    Handles argument parsing for the plotting utility, including:
+    - Auto-completion of file paths from base names
+    - Validation of required input files
+    - File existence checks
+    - Logging configuration
+
+    Returns:
+        Parsed and validated argument namespace
+
+    Raises:
+        SystemExit: If argument validation fails or required files are missing
+    """
+    # parse args
+    parser = get_plot_parser()
+    args = parser.parse_args()
+
+    #
+    if args.statfile:
+        for attr, suffix in zip(("stats", "cc", "masc", "nreads"),
+                                (STATSFILE_SUFFIX, CCOUTPUT_SUFFIX, MSCCOUTPUT_SUFFIX, NREADOUTPUT_SUFFIX)):
+            _complete_path_arg(args, attr, args.statfile.with_name(args.statfile.stem + suffix))
+
+    #
+    if not args.stats:
+        parser.error("Statistics file path is not specified.")
+    if not args.nreads:
+        parser.error("# of reads table file path is not specified.")
+    elif not args.cc and not args.masc:
+        parser.error("Neither cross-correlation table file path nor mappability "
+                     "sensitive cross-correlation table file path is specified.")
+
+    #
+    if not args.stats.exists():
+        parser.error("Statistics file path does not exist: '{}'".format(args.stats))
+    if not args.nreads.exists():
+        parser.error("# of reads table file path does not exist: '{}'".format(args.nreads))
+    elif all((args.cc and not args.cc.exists(),
+              args.masc and not args.masc.exists())):
+        parser.error("Neither cross-correlation table file path '{}' nor "
+                     "mappability sensitive cross-correlation table file path "
+                     "'{}' exists.".format(args.cc, args.masc))
+    if args.cc:
+        if not args.cc.exists():
+            parser.error("Cross-correlation table file path does not exists: "
+                         "'{}'".format(args.cc))
+        elif not args.sizes or not args.sizes.exists():
+            parser.error("Please specify a chromosome sizes file using -s/--sizes option.")
+    if args.masc:
+        if not args.masc.exists():
+            parser.error("Mappability sensitive cross-correlation table file path "
+                         "does not exists: '{}'".format(args.cc))
+        else:
+            if args.mappability_stats and not args.mappability_stats.name.endswith(".json"):
+                setattr(args, "mappability_stats",
+                        str(args.mappability_stats.with_suffix("")) + "_mappability.json")
+            if not args.mappability_stats or not args.mappability_stats.exists():
+                parser.error("Please specify a JSON file which generated by PyMaSC "
+                             "for a BigWig file using -m/--mappability-stats option.")
+
+    #
+    if "all" in args.force_overwrite:
+        args.force_overwrite = ("stats", "cc", "mscc")
+
+    # set up logging
+    set_rootlogger(args.color, args.log_level)
+    logging_version(logger)
+
+    #
+    return args
+
+
+@dataclass
+class StatConfig:
+    read_length: int
+    chi2_pval: float
+    mv_avr_filter_len: int
+    filter_mask_len: int
+    min_calc_width: int
+    expected_library_length: Optional[int] = None
+
+
+@entrypoint(logger)
+def main() -> None:
+    """Main plotting workflow coordinator.
+
+    Orchestrates the complete plotting workflow:
+    1. Parse and validate command-line arguments
+    2. Load statistics and data tables
+    3. Filter chromosomes based on user criteria
+    4. Create StatisticsResult object from loaded data
+    5. Generate output files and plots
+
+    The workflow recreates PyMaSC analysis results from pre-calculated
+    data files without re-running the cross-correlation calculations.
+    """
+    args = _parse_args()
+
+    #
+    stats = _prepare_stats(args)
+    read_len = stats.stats.read_len
+    ref2genomelen = _load_chrom_sizes(args.sizes)
+    genomelen = sum(c for c in ref2genomelen.values())
+
+    #
+    try:
+        cc, masc, nread, references, ref2mappable_len = _load_tables(args, set(ref2genomelen.keys()))
+    except (IOError, KeyError, IndexError, StopIteration):
+        logger.critical("Failed to load tables.")
+        sys.exit(1)
+    references = list(filter_chroms(references, args.chromfilter))
+    checked_suffixes = _prepare_outputs(args)
+
+    #
+    assert cc is not None or masc is not None, "At least one of CC or MSCC tables must be provided."
+
+    if cc is not None:
+        chrom2ccresult: Dict[str, NCCResult] = {
+            chrom: NCCResult(
+                read_len=read_len,
+                genomelen=ref2genomelen[chrom],
+                forward_sum=nread.forward_sum[chrom],
+                reverse_sum=nread.reverse_sum[chrom],
+                cc=cc
+            ) for chrom, cc in cc.chrom.items()
+        }
+        forward_sum = sum(r.forward_sum for r in chrom2ccresult.values())
+        reverse_sum = sum(r.reverse_sum for r in chrom2ccresult.values())
+
+    if masc is not None:
+        assert ref2mappable_len is not None
+        chrom2mascresult: Dict[str, MSCCResult] = {
+            chrom: MSCCResult(
+                read_len=read_len,
+                genomelen=ref2genomelen[chrom],
+                forward_sum=nread.mappable_forward[chrom],
+                reverse_sum=nread.mappable_reverse[chrom],
+                cc=cc,
+                mappable_len=tuple(ref2mappable_len[chrom])
+            ) for chrom, cc in masc.chrom.items()
+        }
+
+    #
+    result: GenomeWideResultModel
+    if cc is not None and masc is not None:
+        result = BothGenomeWideResult(
+            genomelen=genomelen,
+            forward_sum=forward_sum,
+            reverse_sum=reverse_sum,
+            chroms=chrom2ccresult,
+            mappable_chroms=chrom2mascresult
+        )
+    elif cc is not None:
+        result = NCCGenomeWideResult(
+            genomelen=genomelen,
+            forward_sum=forward_sum,
+            reverse_sum=reverse_sum,
+            chroms=chrom2ccresult
+        )
+    else:
+        result = MSCCGenomeWideResult(
+            genomelen=genomelen,
+            chroms=chrom2mascresult
+        )
+
+    try:
+        stats_result = make_genome_wide_stat(
+            result,
+            config=StatConfig(
+                read_length=read_len,
+                chi2_pval=args.chi2_pval,
+                mv_avr_filter_len=args.smooth_window,
+                filter_mask_len=args.mask_size,
+                min_calc_width=args.bg_avr_width,
+                expected_library_length=args.library_length
+            ),
+            output_warnings=True
+        )
+    except ReadsTooFew:
+        logger.critical("Failed to process result.")
+        sys.exit(1)
+
+    #
+    for outputfunc, suffix in zip((output_stats, output_cc, output_mscc),
+                                  (STATSFILE_SUFFIX, CCOUTPUT_SUFFIX, MSCCOUTPUT_SUFFIX)):
+        if suffix in checked_suffixes:
+            outputfunc(args.outdir / args.name, stats_result)
+
+    #
+    plot_figures(args.outdir / (args.name + PLOTFILE_SUFFIX), stats_result)
+
+
+def _prepare_stats(args: argparse.Namespace) -> OutputStats:
+    """Load and validate statistics from stats file.
+
+    Loads essential statistics including read length, library length,
+    and sample name from the statistics file. Updates argument namespace
+    with loaded values.
+
+    Args:
+        args: Argument namespace to update with loaded statistics
+
+    Returns:
+        Read length value from statistics file
+
+    Raises:
+        SystemExit: If statistics file cannot be loaded or required values are missing
+    """
+    #
+    try:
+        stat = load_stats(args.stats)
+    except (IOError, ):
+        logger.critical("Failed to load stats.")
+        sys.exit(1)
+
+    if stat.stats.expected_lib_len != 'nan' and not args.library_length:
+        args.library_length = stat.stats.expected_lib_len
+
+    #
+    if args.name is None:
+        args.name = stat.stats.name
+
+    return stat
+
+
+def _load_tables(
+    args: argparse.Namespace,
+    references: Set[str]
+) -> Tuple[Optional[CCData], Optional[CCData], NreadData, list[str], Optional[Dict[str, List[int]]]]:
+    """Load all required data tables for plotting.
+
+    Loads cross-correlation tables, MSCC tables, read count tables,
+    and associated metadata files. Performs consistency checks between
+    tables to ensure compatible chromosome sets.
+
+    Args:
+        args: Parsed command-line arguments specifying input files
+
+    Returns:
+        Tuple containing:
+        - cc_table: Cross-correlation data by chromosome
+        - ref2genomelen: Chromosome lengths dictionary
+        - masc_table: MSCC data by chromosome
+        - ref2mappable_len: Mappable lengths dictionary
+        - references: Common chromosome names across all tables
+        - read_count_dicts: Tuple of forward/reverse read count dictionaries
+
+    Raises:
+        SystemExit: If table loading fails or chromosome names are incompatible
+    """
+    #
+    cc = None
+    cc_references = set()
+
+    if args.cc:
+        cc = load_cc_table(args.cc)
+        cc_references = set(cc.chrom.keys())
+        for ref in cc_references:
+            if ref not in references:
+                logger.critical("Reference '{}' not found in '{}'.".format(ref, args.sizes))
+                sys.exit(1)
+
+    #
+    masc = ref2mappable_len = None
+    masc_references = set()
+
+    if args.masc:
+        masc = load_cc_table(args.masc)
+        masc_references = set(masc.chrom.keys())
+        try:
+            ref2mappable_len = _load_mappable_lengths(args.mappability_stats)
+        except json.JSONDecodeError as e:
+            logger.critical("Failed to load '{}':".format(args.mappability_stats))
+            logger.error(e.msg)
+            sys.exit(1)
+        for ref in masc_references:
+            if ref not in ref2mappable_len:
+                logger.critical("Reference '{}' not found in '{}'.".format(ref, args.mappability_stats))
+                sys.exit(1)
+
+    nread = load_nreads_table(args.nreads)
+    if nread.forward_sum and nread.reverse_sum:
+        nreads_refs = set(nread.forward_sum.keys())
+        assert nreads_refs == set(nread.reverse_sum.keys())
+    else:
+        nreads_refs = set(nread.mappable_forward.keys())
+        assert nreads_refs == set(nread.mappable_reverse.keys())
+    nreads_refs.discard("whole")
+
+    refsets = [s for s in (cc_references, masc_references) if s]
+    union = nreads_refs.union(*refsets)
+    intersection = nreads_refs.intersection(*refsets)
+
+    if union != intersection:
+        logger.warning("Chromosome names in tables are unmatched.")
+        logger.warning("Trying use common names anyway: {}".format(intersection))
+
+    return cc, masc, nread, sorted(intersection), ref2mappable_len
+
+
+def _prepare_outputs(args: argparse.Namespace) -> List[str]:
+    """Prepare output files and handle overwrite protection.
+
+    Determines which output files will be generated and checks for
+    potential overwrites of input files. Handles force overwrite options.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        List of output file suffixes that will be generated
+    """
+    check_suffixes: List[str] = [PLOTFILE_SUFFIX]
+    output_base = str(args.outdir / args.name)
+
+    for source, suffix, force_overwrite in zip(
+            (args.stats, args.cc, args.masc),
+            (STATSFILE_SUFFIX, CCOUTPUT_SUFFIX, MSCCOUTPUT_SUFFIX),
+            tuple(n in args.force_overwrite for n in ("stats", "cc", "masc"))):
+        if source and _check_overwrite(source, str(Path(output_base + suffix).resolve()), force_overwrite):
+            check_suffixes.append(suffix)
+
+    prepare_output([args.name], [args.name], args.outdir, tuple(check_suffixes))
+
+    return check_suffixes
+
+
+def _check_overwrite(source: str, output: str, force_overwrite: bool) -> bool:
+    """Validate file overwrite permissions.
+
+    Checks if an output file would overwrite an input file and
+    handles the overwrite logic based on user preferences.
+
+    Args:
+        source: Source input file path
+        output: Target output file path
+        force_overwrite: Whether to force overwrite
+
+    Returns:
+        True if the output file should be written, False otherwise
+    """
+    if str(Path(source).resolve()) == output:
+        if force_overwrite:
+            logger.warning("Overwrite option was specified. '{}' will be overwritten!".format(output))
+            return True
+        else:
+            logger.warning("Prevent to overwrite input stats file '{}', "
+                           "output stats file will be skipped.".format(output))
+            return False
+    return True
+
+
+def _load_chrom_sizes(path: Union[str, os.PathLike[str]]) -> Dict[str, int]:
+    """Load chromosome sizes from BAM index or text file.
+
+    Attempts to load chromosome sizes from either a BAM file (using
+    pysam) or a tab-delimited text file format.
+
+    Args:
+        path: Path to BAM file or chromosome sizes text file
+
+    Returns:
+        Dictionary mapping chromosome names to their lengths
+
+    Raises:
+        IOError: If file cannot be read
+        ValueError: If file format is invalid
+    """
+    try:
+        with BAMFileProcessor(str(path)) as f:
+            return {r: l for r, l in zip(f.references, f.lengths)}
+    except ValueError:
+        ref2len: Dict[str, int] = {}
+        with open(path) as f:
+            for line in f:
+                cols = line.split('\t')
+                try:
+                    chrom = cols[0]
+                    length = cols[1]
+                    ref2len[chrom] = int(length)
+                except (IndexError, ValueError) as e:
+                    logger.error('Error occurred while parsing chromosome sizes file: %s', e)
+                    logger.critical('Failed to parse chrom size file.')
+                    sys.exit(1)
+            return ref2len
+
+
+def _load_mappable_lengths(path: os.PathLike[str]) -> Dict[str, List[int]]:
+    """Load mappable lengths from JSON statistics file.
+
+    Loads pre-calculated mappable length statistics from a JSON file
+    generated by PyMaSC's mappability analysis.
+
+    Args:
+        path: Path to JSON file containing mappability statistics
+
+    Returns:
+        Dictionary mapping chromosome names to mappable lengths
+
+    Raises:
+        json.JSONDecodeError: If JSON file is malformed
+        IOError: If file cannot be read
+        KeyError: If required 'references' key is missing
+    """
+    with open(path) as f:
+        references: Dict[str, List[int]] = json.load(f)["references"]
+        return references
