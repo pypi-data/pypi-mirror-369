@@ -1,0 +1,55 @@
+[build-system]
+requires = [
+  "setuptools>=64", "hy"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fvdb"
+description = "Thin porcelain around the FAISS vector database."
+authors = [
+    {name = "Ati Sharma", email = "ati+fvdb@agalmic.ltd"},
+]
+dynamic = ["version", "readme"]
+requires-python = ">=3.11"
+keywords = ["hy", "hylang"]
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
+]
+dependencies = [
+    "click",
+    "faiss-cpu",
+    "hy",
+    "hyjinx",
+    "hyrule",
+    "markdownify",
+    "platformdirs",
+    "sentence-transformers",
+    "sumy",
+    "tabulate",
+    "tiktoken",
+    "toolz"
+]
+
+[project.urls]
+Repository = "https://github.com/atisharma/fvdb"
+
+[project.scripts]
+fvdb = "fvdb.cli:cli"
+
+[tool.setuptools.dynamic]
+readme = {file = "README.md", content-type = "text/markdown"}
+version = {attr = "fvdb.__version__"}
+
+[tool.setuptools.package-data]
+"*" = ["*.hy", "*.md", "*.json", "*.toml"]
+
+# ... other project metadata fields as listed in:
+#     https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
