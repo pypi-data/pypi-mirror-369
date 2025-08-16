@@ -1,0 +1,105 @@
+site_name: skiba
+site_description: A python package for a foresters to query Google Earth Engine data
+site_author: taraskiba
+site_url: https://taraskiba.github.io/skiba
+repo_url: https://github.com/taraskiba/skiba
+
+copyright: "Copyright &copy; 2024 - 2024 Tara Skiba"
+
+theme:
+    palette:
+        # - scheme: iceberg
+        #         primary: iceberg
+        #         accent: light-blue
+        #   toggle:
+        #       icon: material/toggle-switch-off-outline
+        #       name: Switch to dark mode
+        - scheme: iceberg
+          primary: iceberg
+          accent: light-blue
+          toggle:
+              icon: material/toggle-switch
+              name: Switch to light mode
+    name: material
+    icon:
+        repo: fontawesome/brands/github
+    logo: files/logo.png
+    favicon: files/logo.png
+    features:
+        - navigation.instant
+        - navigation.tracking
+        - navigation.top
+        - search.highlight
+        - search.share
+    custom_dir: "docs/overrides"
+    font:
+        text: Montserrat
+        code: Roboto Mono
+
+plugins:
+    - search
+    - mkdocstrings
+    - git-revision-date
+    - git-revision-date-localized:
+          enable_creation_date: true
+          type: timeago
+    # - pdf-export
+    - mkdocs-jupyter:
+          include_source: True
+          ignore_h1_titles: True
+          execute: False
+          allow_errors: false
+          ignore: ["conf.py"]
+          execute_ignore: ["*ignore.ipynb", "data_process_demo.ipynb", "changelog_update.py"]
+
+markdown_extensions:
+    - admonition
+    - abbr
+    - attr_list
+    - def_list
+    - footnotes
+    - meta
+    - md_in_html
+    - pymdownx.superfences
+    - pymdownx.highlight:
+          linenums: true
+    - toc:
+          permalink: true
+
+# extra:
+#     analytics:
+#         provider: google
+#         property: UA-XXXXXXXXX-X
+
+nav:
+    - Home: index.md
+    - Installation: installation.md
+    - Usage: usage.md
+    - Contributing: contributing.md
+    - FAQ: faq.md
+    - Changelog: changelog.md
+    - Report Issues: https://github.com/taraskiba/skiba/issues
+    - Publication:
+        - Paper: paper/paper.md
+        - Bibliography: paper/paper.bib
+    - Examples:
+        - examples/intro.ipynb
+        - examples/data_process_demo.ipynb
+        - examples/data_process_full_walkthrough.ipynb
+        - examples/buffer_method.ipynb
+        - examples/map.ipynb
+        - examples/map_demo.ipynb
+        - examples/map_happy.ipynb
+        - examples/folium_demo.ipynb
+        - examples/ipyleaflet_demo.ipynb
+
+    - API Reference:
+          - skiba module: skiba.md
+          #- common module: common.md
+          #- folium: foliumcode.md
+          #- ipyleaflet: ipyleafletcode.md
+          - data_process: data_process.md
+          - buffer_coordinates: buffer_coordinates.md
+          - buffer_method: buffer_method.md
+          #- map_detail: map_detail.md
+          - interactive map: map.md
