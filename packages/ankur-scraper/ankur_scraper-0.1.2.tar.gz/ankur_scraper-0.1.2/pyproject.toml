@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ankur_scraper"
+dynamic = ["version"]
+description = "A robust website scraper that supports static and dynamic pages."
+readme = "README.md"
+authors = [
+    { name = "Ankur Dev", email = "Dev@ankursolutions.com" }
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests",
+    "beautifulsoup4",
+    "lxml",
+    "playwright",
+    "tldextract",
+    "rich",
+    "httpx"
+]
+
+[project.urls]
+Homepage = "https://github.com/AnkurSolutions/ankur-scraper"
+
+[project.scripts]
+ankur-scraper = "ankur_scraper.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "ankur_scraper.__version__" }
