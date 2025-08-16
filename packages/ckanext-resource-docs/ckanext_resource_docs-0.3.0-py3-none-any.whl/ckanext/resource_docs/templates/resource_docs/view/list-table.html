@@ -1,0 +1,33 @@
+{% set keys = data[0].keys() if data else [] %}
+{% set unique_id = h.generate_unique_element_id() %}
+
+<table
+    class="table table-bordered table-borderless table-header {% if nested %}table-sm table-inner{% endif %}"
+    {% if not nested %}data-module="table-toggle-more"{% endif %}>
+    <thead>
+        <tr>
+            {% for key in keys %}
+                <th scope="col" {% if loop.last and nested %}class="position-relative"{% endif %}>
+                    {{ key | capitalize }}
+
+                    {% if loop.last and nested %}
+                        <button class="btn btn-sm position-absolute end-0" data-bs-toggle="collapse" data-bs-target="{{ '#' + unique_id }}">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    {% endif %}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody {% if nested %}class="collapse" id="{{ unique_id }}"{% endif %}>
+        {% for row in data %}
+            <tr {% if loop.index > 10 and not nested %} class="toggle-more" {% endif %}>
+                {% for key in keys %}
+                    <td>
+                        {% snippet 'resource_docs/view/render.html', data=row[key], view_type=h.detect_view_type(row[key]), nested=1 %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

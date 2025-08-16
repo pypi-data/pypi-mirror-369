@@ -1,0 +1,9 @@
+{% if data and view_type == "kv-table" %}
+    {% snippet "resource_docs/view/kv-table.html", data=data, nested=nested %}
+{% elif data and view_type == "list-table" %}
+    {% snippet "resource_docs/view/list-table.html", data=data, nested=nested %}
+{% elif data and view_type == "sequence" %}
+    {% snippet "resource_docs/view/sequence.html", data=data, nested=nested %}
+{% else %}
+    {% snippet "resource_docs/view/value.html", data=data, nested=nested %}
+{% endif %}
