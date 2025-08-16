@@ -1,0 +1,119 @@
+[project]
+name = "clicycle"
+description = "A Python CLI framework built on Click, with self-spacing components and Rich theming"
+readme = "README.md"
+dynamic = ["version"]
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Living Content", email = "hello@livingcontent.co" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "rich>=14.1.0",
+    "click>=8.2.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Living-Content/clicycle"
+Repository = "https://github.com/Living-Content/clicycle"
+Issues = "https://github.com/Living-Content/clicycle/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.12.4",
+    "mypy>=1.17.0",
+    "types-click>=7.1.8",
+    "build",
+    "twine",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/clicycle/__init__.py"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+exclude = [
+    ".venv",
+    "migrations",
+    "node_modules",
+    "__pycache__",
+    "build",
+    "dist",
+    "*.ipynb"
+]
+
+[tool.ruff.lint]
+select = [
+    "F",    # pyflakes
+    "E",    # pycodestyle errors (includes E402 for module level imports)
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "S",    # bandit security checks
+    "T20",  # flake8-print
+    "C90",  # McCabe complexity
+    "N",    # pep8-naming
+    "A",    # flake8-builtins
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "LOG",  # flake8-logging
+]
+
+ignore = [
+    "E501",  # line too long
+    "B008",  # function call in default argument
+    "S101",  # assert used (common in tests)
+    "T201",  # print found (allow intentional CLI output)
+    "S603",  # subprocess call without shell=True (if you use subprocess safely)
+    "S607",  # starting process with partial executable path
+    # NOTE: E402 (module level import not at top) is NOT ignored - we want to catch inline imports
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "ARG001", "S105", "S106"]  # Allow asserts, unused args, hardcoded passwords in tests
+"**/migrations/*" = ["N806"]  # Allow non-lowercase variable names in migrations 
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=src/clicycle",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
