@@ -1,0 +1,80 @@
+[project]
+name = "pulse-scrapy-selenium-grid"
+dynamic = []
+description = "Scrapy + Selenium Grid integration."
+authors = [
+    { name = "Vlad Tiazhov", email = "vlad.tiazhov@pulseintelligence.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "Scrapy>=2.12.0",
+    "selenium>=4.27.1",
+    "aiohttp>=3.11.11",
+    "aiohttp_socks>=0.10.1"
+]
+version = "0.5.3"
+
+[project.urls]
+Repository = "https://github.com/Pulse-Intelligence-Partners/pulse-scrapy-selenium-grid/"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry]
+packages = [
+    { include = "pulse_scrapy_selenium_grid", from = "src" }
+]
+package-mode = true
+include = [
+    "src/pulse_scrapy_selenium_grid/web_driver/proxy/resources/*.json",
+    "src/pulse_scrapy_selenium_grid/web_driver/proxy/resources/*.js"
+]
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.3.4"
+pytest-cov = "6.0.0"
+pytest-xdist = "3.6.1"
+pytest-asyncio = "1.1.0"
+black = "24.10.0"
+pre-commit = "4.0.1"
+flake8 = "*"
+flake8-pyproject = "*"
+isort = "*"
+autoflake = "*"
+python-dotenv = "*"
+
+# Code Quality
+[tool.black]
+line-length = 120
+target-version = ["py312"]
+
+[tool.autoflake]
+exclude = [
+    ".git",
+    "__pycache__",
+]
+remove-all-unused-imports = true
+remove-unused-variables = true
+in-place = true
+recursive = true
+ignore-init-module-imports = true
+
+[tool.isort]
+line_length = 120
+py_version = 312
+include_trailing_comma = true
+multi_line_output = 3
+
+[tool.poetry-dynamic-versioning]
+enable = false
