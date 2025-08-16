@@ -1,0 +1,32 @@
+verify-install:
+  stage: verify
+  needs: [build-dist]                     
+  image: python:${DEFAULT_PYTHON_VERSION}
+  variables:
+    DIST_NAME: "agox"                  
+  script:
+    - set -euo pipefail
+    - python -m pip install -U pip
+    # Prefer wheel if present; otherwise fall back to sdist
+    - if ls dist/*.whl >/dev/null 2>&1; then
+        pip install dist/*.whl;
+      else
+        pip install dist/*.tar.gz;
+      fi
+    # Check if the package is installed correctly by running the CLI
+    - agox --version
+    - agox --help
+
+  rules:
+    # Pre-releases (required on tags)
+    - if: '$CI_COMMIT_TAG =~ /^v.*(a|b|rc)\d+$/'
+      when: on_success
+      allow_failure: false
+    # Stable releases (required on tags)
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+      when: on_success
+      allow_failure: false
+    # Merge requests: optional/manual
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: manual
+      allow_failure: true

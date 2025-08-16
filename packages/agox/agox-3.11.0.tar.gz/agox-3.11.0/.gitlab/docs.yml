@@ -1,0 +1,28 @@
+build_pages:
+  stage: docs
+  extends: .install_docs
+  needs: []
+  image: python:3.10
+  script:
+    - make -C docs html
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  when: manual
+
+pages:
+  stage: docs
+  extends: .install_docs
+  image: python:3.10
+  needs:
+    - test-python3.10
+  script:
+    - coverage html -d docs/source/_static/htmlcov
+    - make -C docs html
+  when: on_success
+  artifacts:
+    paths:
+      - docs/build/html
+  publish: docs/build/html
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'dev'
+

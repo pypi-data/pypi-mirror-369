@@ -1,0 +1,25 @@
+variables:
+  OMP_NUM_THREADS: "1"
+  DEFAULT_PYTHON_VERSION: "3.11"
+
+stages:
+  - test
+  - docs
+  - build
+  - verify
+  - publish
+
+.install_agox:
+  before_script:
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip setuptools 
+    - pip install pytest coverage
+    - pip install -e .[test]
+    - pip list
+
+.install_docs:    
+  before_script:
+    - !reference [.install_agox, before_script]
+    - pip install -e .[docs]

@@ -1,0 +1,27 @@
+build-dist:
+  stage: build
+  image: python:3.11
+  rules:
+    - if: $CI_COMMIT_TAG          # run only on tag pipelines in Phase 1
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: manual
+    # If you also want this on main to catch issues early, add:
+    # - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_DEPTH: "0"           # make tags visible to hatch-vcs / setuptools-scm
+  before_script:
+    - apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+    - python -m pip install -U pip build twine
+  script:
+    - git describe --tags --always || true
+    - python -m build --sdist --wheel --outdir dist
+    - twine check dist/*
+    # Sanity: print the version inside the built wheel (replace DISTNAME)
+    - python -c "import importlib.metadata as m; print('wheel version:', m.version('agox'))"
+  artifacts:
+    paths: [dist/]
+    expire_in: 1 week
+  needs:
+    - job: tests
+      optional: true   # if your tests job exists; remove if not needed

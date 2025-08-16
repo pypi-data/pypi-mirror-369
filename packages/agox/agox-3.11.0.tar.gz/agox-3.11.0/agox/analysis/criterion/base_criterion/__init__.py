@@ -1,0 +1,1 @@
+from agox.analysis.criterion.base_criterion.base_criterion import BaseCriterion

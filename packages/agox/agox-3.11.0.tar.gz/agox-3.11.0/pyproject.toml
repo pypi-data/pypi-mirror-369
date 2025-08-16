@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools>=70",
+            "wheel", 
+            "Cython==0.29.36", 
+            "cymem", 
+            "setuptools-scm[toml]>=8",
+            "numpy"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+# Keep if you tag as vX.Y.Z; else drop/loosen:
+tag_regex = "^v(?P<version>.+)$"
+fallback_version = "0.0.0"
+
+[tool.setuptools]
+include-package-data = true
+packages = ['agox']
+ext-modules = [
+     {name = "agox.models.GPR.priors.repulsive", sources = ["agox/models/GPR/priors/repulsive.pyx"], libraries=["numpy"]},
+     {name = "agox.models.descriptors.fingerprint_cython.angular_fingerprintFeature_cy", sources = ["agox/models/descriptors/fingerprint_cython/angular_fingerprintFeature_cy.pyx"], libraries=["numpy"]}
+     ]
+
+[project]
+name = 'agox'
+dynamic = ["version"]
+authors = [{ "name" = "Mads-Peter V. Christiansen", "email" = "machri@phys.au.dk"}, 
+            {'name' = "Nikolaj Rønne", "email" = "nronne@phys.au.dk"}, 
+            {"name" = "Bjørk Hammer", "email" = "hammer@phys.au.dk"},
+            {"name" = "AGOX Developers"}]
+readme = 'README.md'
+description = "Atomistic Global Optimziation X is a framework for structure optimization in materials science."
+urls = { "homepage" = "https://agox.gitlab.io/agox/", "Repository" = "https://gitlab.com/agox/agox"}
+license = "GPL-3.0-only"
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Science/Research',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+]
+
+requires-python = '>=3.10'
+
+dependencies = [    
+    "numpy<2",
+    "scipy",
+    "ase",    
+    "matplotlib",    
+    "cymem",    
+    "scikit-learn",    
+    "h5py",
+    "matscipy",    
+    "importlib-resources > 1.3 ; python_version < '3.9'",
+    "dscribe>=2.0.0",    
+    "nbformat",    
+    "typing_extensions",    
+    "ray",    
+    "rich-click>=1.8.3",
+]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-mock"]
+docs = ['sphinx', 'furo', 'sphinx-autoapi', 'sphinx-copybutton', 'sphinx-tabs', 'sphinx-design']
+torchjax = ["torch", "jax", "jaxlib"]
+all = ["agox[test,docs]"]
+
+[project.scripts]
+agox = "agox.cli.main:main"
+agox-graph-sorting = "agox.utils.graph_sorting:analysis"
+
+[tool.pytest.ini_options]
+markers = [
+    "slow",
+    "ray"
+]
+testpaths = ["agox/test"]
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["F", "E4", "E7", "E9", # Defaults
+          "ANN001", "ANN204", "ANN201", # Type annotations
+          "I001", "I002", # Imports
+          "N", # Naming
+          "ERA001", # Eradicate / Commented out code
+          "A" # Shadowing of builtins
+          ]
+
+[tool.coverage.run]
+include = ['agox/*']
+omit = ['agox/test/*']

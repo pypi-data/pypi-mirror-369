@@ -1,0 +1,55 @@
+.test:
+  extends: .install_agox
+  stage: test
+  script: 
+  - coverage run -m pytest -rsv --junit-xml=report.xml # Generate test report in junit format
+  - coverage report # for displaying coverage in job logs
+  - coverage xml    # for generating coverage.xml report
+  coverage: '/^TOTAL.+?(\d+\%)$/'
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+      junit: report.xml
+  interruptible: true
+  rules:
+    # Scheduled pipelines: required
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+      allow_failure: false
+    # Pre-releases (required on tags)
+    - if: '$CI_COMMIT_TAG =~ /^v.*(a|b|rc)\d+$/'
+      allow_failure: false
+    # Stable releases (required on tags)
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+      allow_failure: false
+    # Merge requests: optional/manual
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: manual
+      allow_failure: true
+
+test-python3.10:
+  extends: .test
+  image: python:3.10
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'dev'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+    - if: '$CI_COMMIT_TAG =~ /^v.*(a|b|rc)\d+$/'
+  artifacts:
+    paths:
+      - .coverage
+
+test-python3.11:
+  extends: .test
+  image: python:3.11
+
+test-python3.12:
+  extends: .test
+  image: python:3.12
+
+test-python3.13:
+  extends: .test
+  image: python:3.13

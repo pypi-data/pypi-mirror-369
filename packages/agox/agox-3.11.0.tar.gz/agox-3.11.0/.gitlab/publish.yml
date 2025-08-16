@@ -1,0 +1,37 @@
+# Release to PyPi
+publish-pypi:
+  stage: publish
+  needs: [build-dist, verify-install]
+  image: python:${DEFAULT_PYTHON_VERSION}
+  environment:
+    name: release           
+    action: start
+  when: manual
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: pypi
+  script:
+    - python -m pip install -U twine
+    # Should fix to include wheels.
+    - twine upload dist/*.tar.gz
+
+# Prelease - to TestPyPI
+publish-testpypi:
+  stage: publish
+  needs: [build-dist, verify-install]
+  image: python:${PYTHON_VERSION}
+  environment:
+    name: release                  
+    action: start
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v.*(a|b|rc)\d+$/'
+  when: manual
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: testpypi                   
+  script:
+    - python -m pip install --upgrade twine
+    # Should fix to include wheels
+    - twine upload --repository-url https://test.pypi.org/legacy/ dist/*.tar.gz
