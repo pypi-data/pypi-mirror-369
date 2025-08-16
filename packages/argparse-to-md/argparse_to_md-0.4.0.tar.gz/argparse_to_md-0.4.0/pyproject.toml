@@ -1,0 +1,74 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8.0"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_file = "argparse_to_md/_version.py"
+
+[tool.setuptools.packages.find]
+include = ["argparse_to_md"]
+
+[project]
+name = "argparse_to_md"
+description = "Pre-commit hook to generate markdown documentation from argparse-based CLI scripts"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Ivan Grokhotkov", email = "ivan@espressif.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only"
+]
+dynamic = ["version"]
+
+[project.urls]
+homepage = "https://github.com/igrr/argparse_to_md"
+repository = "https://github.com/igrr/argparse_to_md.git"
+issues = "https://github.com/igrr/argparse_to_md/issues"
+changelog = "https://github.com/igrr/argparse_to_md/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pre-commit",
+    "commitizen"
+]
+
+[project.scripts]
+argparse_to_md = "argparse_to_md.__main__:main"
+
+[tool.black]
+    line-length               = 120
+    skip-string-normalization = true
+
+[tool.ruff]
+    line-length    = 120
+    lint.select    = ['I', 'E', 'F', 'W']
+    target-version = "py39"
+    exclude = [ 'test/data/' ]
+    force-exclude = true
+
+[tool.mypy]
+    disallow_incomplete_defs = false # Disallows defining functions with incomplete type annotations
+    disallow_untyped_defs    = false # Disallows defining functions without type annotations or with incomplete type annotations
+    ignore_missing_imports   = true  # Suppress error messages about imports that cannot be resolved
+    python_version           = "3.9" # Specifies the Python version used to parse and check the target program
+    warn_no_return           = true  # Shows errors for missing return statements on some execution paths
+    warn_return_any          = true  # Shows a warning when returning a value with type Any from a function declared with a non- Any return type
+
+[tool.commitizen]
+    version_provider = "scm"
+    tag_format = "v$version"
+    major_version_zero = true
+    annotated_tag = true
+    update_changelog_on_bump = true
+    bump_message = "change: release v$new_version"
+    version_files = ["README.md"]
