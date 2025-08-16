@@ -1,0 +1,264 @@
+Metadata-Version: 2.4
+Name: awsup
+Version: 2.0.4
+Summary: 🚀 AWSUP - Lightning-fast AWS static website deployment
+Author-email: Ahmed Akram <eng.akramovic@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Ahmed Akram
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/Akramovic1/aws-website-quick-deployer
+Project-URL: Repository, https://github.com/Akramovic1/aws-website-quick-deployer
+Project-URL: Issues, https://github.com/Akramovic1/aws-website-quick-deployer/issues
+Project-URL: Documentation, https://github.com/Akramovic1/aws-website-quick-deployer#readme
+Keywords: aws,s3,cloudfront,route53,website,deployment,static-site
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: System :: Installation/Setup
+Classifier: Topic :: Utilities
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3>=1.34.0
+Requires-Dist: botocore>=1.34.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: click>=8.1.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: jinja2>=3.1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.11.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.5.0; extra == "dev"
+Requires-Dist: bandit>=1.7.0; extra == "dev"
+Provides-Extra: cdk
+Requires-Dist: aws-cdk-lib>=2.100.0; extra == "cdk"
+Requires-Dist: constructs>=10.0.0; extra == "cdk"
+Dynamic: license-file
+
+# 🚀 AWSUP - Lightning-Fast AWS Website Deployment
+
+Production-grade CLI tool for deploying static websites to AWS using S3, CloudFront, Route53, and ACM. Zero configuration, maximum automation.
+
+## ⚡ Quick Start
+
+```bash
+# Install globally
+pip install awsup
+
+# Deploy your website instantly
+cd /path/to/your/website
+awsup deploy yourdomain.com --website-path .
+
+# Or deploy with default "Coming Soon" page
+awsup deploy yourdomain.com
+```
+
+**That's it!** AWSUP handles all AWS infrastructure automatically.
+
+## ✨ Features
+
+- 🎯 **Zero Config** - Works out of the box
+- 🔒 **Secure by Default** - SSL, OAC, encryption enabled
+- ⚡ **Lightning Fast** - Global CloudFront CDN
+- 🛡️ **Production Ready** - Comprehensive validation & error handling
+- 🎨 **Beautiful CLI** - Rich terminal UI with progress bars
+- 🔄 **Smart State** - Resumes interrupted deployments
+- 🌍 **Global** - Works with any domain registrar
+
+## 🎯 Common Workflows
+
+**React/Next.js:**
+```bash
+npm run build
+awsup deploy myapp.com --website-path ./build
+```
+
+**Vue/Nuxt:**
+```bash
+npm run generate  
+awsup deploy myapp.com --website-path ./dist
+```
+
+**Static HTML:**
+```bash
+awsup deploy myapp.com --website-path ./public
+```
+
+**Jekyll/Hugo:**
+```bash
+awsup deploy myapp.com --website-path ./_site
+```
+
+## 📋 All Commands
+
+```bash
+# Deploy website
+awsup deploy yourdomain.com --website-path ./build
+
+# Check status
+awsup status yourdomain.com
+
+# Clear CDN cache
+awsup invalidate yourdomain.com
+
+# Remove all AWS resources
+awsup cleanup yourdomain.com
+
+# Advanced: Deploy in phases
+awsup phase1 yourdomain.com    # DNS setup
+awsup phase2 yourdomain.com    # Full deployment
+```
+
+## 🔄 How It Works
+
+1. **Route53** - Creates hosted zone and DNS records
+2. **ACM** - Requests and validates SSL certificate  
+3. **S3** - Creates secure bucket and uploads files
+4. **CloudFront** - Sets up global CDN with SSL
+5. **DNS** - Configures domain routing
+
+## 📋 Prerequisites
+
+1. **AWS Account** with appropriate permissions
+2. **Python 3.8+** installed  
+3. **AWS CLI** configured with credentials
+4. **Domain name** (registered with any registrar)
+
+### Required AWS Permissions
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "route53:*",
+        "s3:*", 
+        "cloudfront:*",
+        "acm:*",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+## 🔧 Domain Configuration
+
+After running `awsup deploy`, configure nameservers at your domain registrar:
+
+```
+Configure these nameservers at your registrar:
+  NS1: ns-123.awsdns-12.com
+  NS2: ns-456.awsdns-34.net
+  NS3: ns-789.awsdns-56.org
+  NS4: ns-012.awsdns-78.co.uk
+```
+
+**Steps:**
+1. Log into your domain registrar (GoDaddy, Namecheap, etc.)
+2. Go to DNS settings for your domain
+3. Change nameservers from default to custom
+4. Enter the NS records shown above
+5. Wait 5-30 minutes for DNS propagation
+
+## 🛡️ Security Features
+
+- **S3 buckets are private** (no public access)
+- **CloudFront Origin Access Control** (OAC)
+- **TLS 1.2+ enforced** with automatic SSL certificates
+- **Input validation** for domains and files
+- **Security scanning** of uploaded content
+
+## 🚨 Troubleshooting
+
+**DNS Not Resolving**
+- Verify NS records at your registrar
+- Wait up to 48 hours for propagation
+- Test: `dig yourdomain.com NS`
+
+**CloudFront Not Updating**
+- Clear cache: `awsup invalidate yourdomain.com`
+- Wait 15-20 minutes for changes
+
+**Certificate Issues**
+- Ensure NS records are configured
+- Wait up to 30 minutes for validation
+
+## 💰 Cost Estimates
+
+For a small website (<1GB, <100GB transfer/month): **~$5-10/month**
+
+- **Route53**: $0.50 per hosted zone
+- **S3**: ~$0.023 per GB stored
+- **CloudFront**: ~$0.085 per GB transferred
+- **ACM**: Free with CloudFront
+
+## 🎛️ Advanced Usage
+
+**Multiple environments:**
+```bash
+awsup deploy staging.myapp.com --website-path ./dist-staging
+awsup deploy myapp.com --website-path ./dist-production
+```
+
+**Custom configuration:**
+```bash
+awsup init yourdomain.com --region us-west-2 --environment prod
+```
+
+## 📊 Monitoring
+
+AWSUP automatically sets up:
+- CloudWatch dashboards
+- Resource tagging for cost tracking
+- Structured logging
+- State management
+
+## 🤝 Support
+
+For issues or feature requests:
+- GitHub Issues: https://github.com/Akramovic1/aws-website-quick-deployer/issues
+- Include error messages, AWS region, and domain details
+
+## 📄 License
+
+MIT License - Feel free to use and modify.
+
+---
+
+**Made with ❤️ for developers who want simple AWS deployments**
