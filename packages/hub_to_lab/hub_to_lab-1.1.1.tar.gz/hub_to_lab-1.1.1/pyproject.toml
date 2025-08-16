@@ -1,0 +1,31 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "hub_to_lab"
+version = "1.1.1"
+description = "Copy a Github public repository to a Gitlab self-hosted project"
+authors = ["RobinWoods"]
+license = "MIT"
+packages = [{include = "hub_to_lab"}]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+GitPython = "*"
+rich = "*"
+python-dotenv = "*"
+requests = "2.32.4"
+typer = "^0.16.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = ">=7.0.0"
+pytest-mock = ">=3.10.0"
+
+[tool.poetry.scripts]
+hub_to_lab = "hub_to_lab.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
