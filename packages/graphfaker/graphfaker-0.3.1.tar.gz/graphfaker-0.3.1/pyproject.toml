@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graphfaker"
+version = "0.3.1"
+description = "an open-source python library for generating, and loading both synthetic and real-world graph datasets"
+readme = "README.md"
+authors = [
+  {name = "Dennis Irorere", email = "denironyx@gmail.com"}
+]
+maintainers = [
+  {name = "Dennis Irorere", email = "denironyx@gmail.com"}
+]
+classifiers = [
+
+]
+license = "MIT"
+keywords = ["faker", "graph-data", "flights", "osmnx", "graphs", "graphfaker"]
+dependencies = [
+  "faker>=37.1.0",
+  "networkx>=3.4.2",
+  "osmnx==2.0.2",
+  "pandas>=2.2.2",
+  "requests>=2.32.3",
+  "typer",
+  "wikipedia>=1.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage",  # testing
+    "mypy",  # linting
+    "pytest",  # testing
+    "ruff"  # linting
+]
+
+[project.urls]
+
+bugs = "https://github.com/graphgeeks-lab/graphfaker/issues"
+changelog = "https://github.com/graphgeeks-lab/graphfaker/blob/master/changelog.md"
+homepage = "https://github.com/graphgeeks-lab/graphfaker/"
+
+[tool.setuptools]
+package-dir = {"graphfaker" = "graphfaker"}
+
+[tool.setuptools.package-data]
+"*" = ["*.*"]
+
+
+
+
+# Mypy
+# ----
+
+[tool.mypy]
+files = "."
+
+# Use strict defaults
+strict = true
+warn_unreachable = true
+warn_no_return = true
+
+
