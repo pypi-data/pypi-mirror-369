@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sedql"
+version = "1.0.9"
+description = "Python SDK for SED (Semantic Entities Designs) - Full TypeScript CLI Integration"
+readme = "README.md"
+license = "AGPL-3.0"
+authors = [
+    {name = "SED Team"}
+]
+maintainers = [
+    {name = "SED Team"}
+]
+keywords = ["semantic", "database", "ai", "dsl", "data-modeling", "automation", "sed", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=21.0",
+    "flake8>=3.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/holy182/sed-cli"
+Documentation = "https://github.com/holy182/sed-cli#readme"
+Repository = "https://github.com/holy182/sed-cli"
+"Bug Tracker" = "https://github.com/holy182/sed-cli/issues"
+
+[project.scripts]
+sedql-python = "sedql.cli:main"
+
+[tool.setuptools]
+packages = ["sedql"]
+
+[tool.setuptools.package-data]
+sedql = ["*.md", "*.txt"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+
+[tool.pytest.ini_options]
+testpaths = ["test-sedql"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-v --tb=short"
