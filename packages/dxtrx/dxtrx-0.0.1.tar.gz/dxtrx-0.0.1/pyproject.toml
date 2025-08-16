@@ -1,0 +1,52 @@
+[project]
+name = "dxtrx"
+version = "0.0.1"
+description = "Allows to download data files from Sharepoint, load them to PGSQL and then perform transformations on the data."
+readme = "README.md"
+requires-python = ">=3.11.8,<=3.12.10"
+dependencies = [
+    "polars==1.10",
+    "google-cloud-storage==2.18.2",
+    "requests==2.32.3",
+    "msal==1.31.1",
+    "pyyaml==6.0.1",
+    "pandas==2.2.3",
+    "python-dotenv==1.0.1",
+    "pyarrow==19.0.1",
+    "sqlalchemy==2.0.36",
+    "psycopg2-binary==2.9.10",
+    "fastexcel==0.12.0",
+    "orjson==3.10.16",
+    "sqlglot==26.13.1",
+    "aiohttp==3.11.16",
+    "openpyxl==3.1.5",
+    "fsspec==2025.5.1",
+    "gcsfs==2025.5.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-mock",
+    "pytest-cov",
+    "pytest-asyncio",
+    "pytest-watch"
+]
+
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+addopts = "-v --cov=dxtrx --cov-report html:htmlcov"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dxtrx*"]
+exclude = ["tests*"]
