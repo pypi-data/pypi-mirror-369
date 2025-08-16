@@ -1,0 +1,36 @@
+Metadata-Version: 2.4
+Name: hv_bie
+Version: 0.2.0
+Summary: HV Battle Intelligence Extractor: parse HentaiVerse battle HTML into structured Python dataclasses
+Author-email: Kuan-Lun Wang <polyphonicared@gmail.com>
+License-Expression: AGPL-3.0-or-later
+Project-URL: Homepage, https://github.com/Kuan-Lun/hv-bie
+Project-URL: Source, https://github.com/Kuan-Lun/hv-bie
+Project-URL: Tracker, https://github.com/Kuan-Lun/hv-bie/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: beautifulsoup4>=4.13.4
+Dynamic: license-file
+
+# HV-BIE
+
+HV Battle Intelligence Extractor parses a HentaiVerse battle HTML string into structured Python dataclasses.
+
+- Python 3.13+
+- Dependency: beautifulsoup4
+
+## Public API
+
+```python
+from hv_bie import parse_snapshot
+from hv_bie.types import BattleSnapshot
+
+snap = parse_snapshot(html)
+print(snap.player.hp_percent)
+```
+
+See [`SRS.md`](/SRS.md) for detailed requirements and data model.
