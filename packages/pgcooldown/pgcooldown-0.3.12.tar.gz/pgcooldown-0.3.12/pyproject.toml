@@ -1,0 +1,44 @@
+[project]
+name = "pgcooldown"
+description = "A cooldown/counter class to wait for stuff in games"
+version = "0.3.12"
+readme = "README.md"
+
+authors = [
+    { name="Michael Lamertz", email="michael.lamertz@gmail.com" }
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Games/Entertainment",
+    "Topic :: Software Development :: Libraries :: pygame",
+]
+
+license = "MIT"
+license-files = ["LICENSE"]
+
+dependencies = [
+    "rpeasings"
+]
+
+[project.urls]
+homepage = "https://github.com/dickerdackel/pgcooldown"
+bugtracker = "https://github.com/DickerDackel/pgcooldown/issues"
+changelog = "https://github.com/dickerdackel/pgcooldown/ChangeLog.md"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+#addopts = "-rA -s --cov-report term-missing -s --cov=pgcooldown"
+addopts = "-rA"
+testpaths = [
+    "tests",
+]
+
+[tool.cibuildwheel]
+# Don't build for pypy
+skip = "pp*"
+build = ["cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*"]
