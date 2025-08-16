@@ -1,0 +1,76 @@
+Metadata-Version: 2.4
+Name: unboil-fastapi-query
+Version: 0.1.2
+Summary: A library providing tools for easily querying a FastAPI application.
+Project-URL: homepage, https://github.com/eyueldk/unboil-fastapi-query
+Project-URL: repository, https://github.com/eyueldk/unboil-fastapi-query
+Author: eyueldk
+License: MIT
+License-File: LICENSE
+Keywords: fastapi,filter,pagination,query,sorting,sqlalchemy,unboil
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.9
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: sqlalchemy>=2.0.0
+Description-Content-Type: text/markdown
+
+# unboil-fastapi-query
+
+Easily add advanced filtering and sorting to your FastAPI endpoints using SQLAlchemy.
+
+## Installation
+
+```bash
+pip install unboil-fastapi-query
+```
+
+## Quick Start
+
+1. **Define your SQLAlchemy models** as usual.
+2. **Build a query model** using `build_query`:
+
+```python
+from unboil_fastapi_query import build_query, FilterOperation
+
+ExampleQuery = build_query(
+	filters={
+		Example.id: FilterOperation.EQ,
+		Example.name: "*",  # allow all operations
+	},
+	sortables=[Example.name]
+)
+```
+
+3. **Use `QueryDepends` in your FastAPI endpoint**:
+
+```python
+from unboil_fastapi_query import QueryDepends
+
+@app.get("/", response_model=list[ExampleRead])
+def list(query = QueryDepends(ExampleQuery)):
+	with Session(engine) as session:
+		stmt = select(Example)
+		stmt = apply_query(stmt, query)
+		result = session.execute(stmt)
+		return result.scalars().all()
+```
+
+4. **Enjoy automatic filtering and sorting** via query parameters:
+
+- `/api?filter.name.eq=Alice`  
+- `/api?sort=sort.name.asc`
+
+## Example
+
+See `examples/main.py` for a complete example.
+
+## Testing
+
+Run tests with:
+
+```bash
+pytest
+```
