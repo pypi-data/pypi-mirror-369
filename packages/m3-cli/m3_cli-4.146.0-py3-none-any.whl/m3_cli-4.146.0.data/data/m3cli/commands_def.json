@@ -1,0 +1,6169 @@
+{
+  "groups": [
+    "instance-management",
+    "instance-quota-management",
+    "volume-quota-management",
+    "describe-resource-quota",
+    "create-resource-quota",
+    "platform-service-management",
+    "schedule-management",
+    "image-management",
+    "describe-entities",
+    "cloud-console-access",
+    "billing-reports",
+    "init-script-management",
+    "terraform-management",
+    "private-tag-management",
+    "public-tag-management",
+    "keypair-management",
+    "volume-management",
+    "access-permission"
+  ],
+  "domain_parameters": {
+    "tenant": {
+      "alias": "tn",
+      "api_param_name": "tenantName",
+      "help": "The tenant name",
+      "required": true,
+      "validation": {
+        "type": "string"
+      },
+      "case": "upper"
+    },
+    "service": {
+      "alias": "sn",
+      "api_param_name": "serviceName",
+      "help": "The service name",
+      "required": true,
+      "validation": {
+        "type": "string"
+      }
+    },
+    "service-id": {
+      "help": "Service ID",
+      "alias": "sid",
+      "api_param_name": "serviceId",
+      "required": true,
+      "validation": {
+        "type": "string"
+      }
+    },
+    "region": {
+      "alias": "r",
+      "api_param_name": "region",
+      "help": "The region name",
+      "required": true,
+      "validation": {
+        "type": "string"
+      },
+      "case": "upper"
+    },
+    "cloud": {
+      "alias": "c",
+      "api_param_name": "cloud",
+      "help": "The cloud. \nAllowed values: [AWS, AZURE, GOOGLE, NUTANIX, OPEN_STACK, VSPHERE]",
+      "required": true,
+      "validation": {
+        "type": "string",
+        "allowed_values": [
+          "AWS",
+          "AZURE",
+          "GOOGLE",
+          "NUTANIX",
+          "OPEN_STACK",
+          "VSPHERE"
+        ]
+      },
+      "case": "upper"
+    }
+  },
+  "commands": {
+    "health-check": {
+      "api_action": "M3_STATUS",
+      "help": "Describes system status",
+      "help_file": true,
+      "alias": "status",
+      "integration_response": true,
+      "groups": [
+        "access-permission"
+      ],
+      "parameters": {
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "serverAvailable",
+          "mails",
+          "ownership",
+          "terraform",
+          "cliLatestVersion"
+        ]
+      }
+    },
+    "describe-insights": {
+      "api_action": "GET_RESOURCE_INSIGHTS",
+      "alias": "dins",
+      "help": "Describes insights for an instance in specific region for a specific tenant",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "instance-management",
+        "cli-create-schedule-help",
+        "cli-describe-schedules-help",
+        "cli-delete-schedule-help",
+        "cli-add-schedule-instances-help",
+        "cli-delete-schedule-instances-help",
+        "cli-create-image-help",
+        "cli-describe-storages-help",
+        "email-on_instance_state_changed-group",
+        "email-instance_run_report-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "resourceId",
+          "help": "The IDs of the instances",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "availability-zone": {
+          "alias": "az",
+          "api_param_name": "availabilityZone",
+          "help": "The availability zone name (required for Google)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "resource-group": {
+          "alias": "rgname",
+          "api_param_name": "resourceGroup",
+          "help": "The resource group name (required for Azure)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "Category",
+          "Risk status",
+          "Risk priority"
+        ]
+      }
+    },
+    "describe-resources": {
+      "api_action": "LIST_RESOURCES",
+      "alias": "drsc",
+      "help": "Describes resources existing in a specific region for a specific tenant",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "instance-management",
+        "cli-create-schedule-help",
+        "cli-describe-schedules-help",
+        "cli-delete-schedule-help",
+        "cli-add-schedule-instances-help",
+        "cli-delete-schedule-instances-help",
+        "cli-create-image-help",
+        "cli-describe-storages-help",
+        "email-on_instance_state_changed-group",
+        "email-instance_run_report-group"
+      ],
+      "parameters": {
+        "region": {
+          "parent": "region"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "group": {
+          "alias": "g",
+          "api_param_name": "group",
+          "help": "Filter for instances by insights group. Default value: ALL.\nAllowed values: ['ALL', 'UNTAGGED']",
+          "required": false,
+          "validation": {
+            "allowed_values": [
+              "ALL",
+              "UNTAGGED"
+            ],
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "tag": {
+          "api_param_name": "tag",
+          "help": "The tag to be used as a filter: test1key:test1value. Would not have an effect if 'group' parameter specified as 'UNTAGGED'",
+          "required": false,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "id",
+          "service",
+          "type",
+          "tags"
+        ],
+        "headers_customization": {
+          "id": {
+            "header_display_name": "Resource ID"
+          },
+          "type": {
+            "header_display_name": "Resource"
+          }
+        }
+      }
+    },
+    "describe-instances": {
+      "api_action": "DESCRIBE_INSTANCE",
+      "alias": "din",
+      "help": "Describes instances existing in a specific region for a specific tenant",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "instance-management",
+        "cli-create-schedule-help",
+        "cli-describe-schedules-help",
+        "cli-delete-schedule-help",
+        "cli-add-schedule-instances-help",
+        "cli-delete-schedule-instances-help",
+        "cli-create-image-help",
+        "cli-describe-storages-help",
+        "email-on_instance_state_changed-group",
+        "email-instance_run_report-group"
+      ],
+      "parameters": {
+        "insights": {
+          "alias": "I",
+          "api_param_name": "insights",
+          "help": "Instance criticality factor flag",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "group": {
+          "alias": "g",
+          "api_param_name": "group",
+          "help": "Filter for instances by insights group. \nAllowed values if 'insights' flag applied: ['ALL', 'INSTANCE_COSTS', 'SCHEDULES', 'TAGS', 'LIFE_TIME', 'OWNERSHIP', 'VULNERABLE']. \nAllowed values if 'insights' flag NOT applied ['ALL', 'UNTAGGED`]",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "risk-factor": {
+          "alias": "rf",
+          "api_param_name": "riskFactor",
+          "help": "Filter for instances by specific risk factor. Note: could be applied only with 'insights' flag",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "SCHEDULED",
+              "MIN",
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceIds",
+          "help": "The IDs of the instances. \nFor several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002).\nRequired for Azure cloud",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "owner": {
+          "alias": "own",
+          "api_param_name": "owner",
+          "help": "Owner name. Allows get all instances by owner",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "running": {
+          "alias": "R",
+          "api_param_name": "running",
+          "help": "A flag. Show only running instances",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "stopped": {
+          "alias": "S",
+          "api_param_name": "stopped",
+          "help": "A flag. Show only stopped instances",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "resource-tag": {
+          "alias": "tag",
+          "api_param_name": "resourceTag",
+          "help": "The tag to be used as a filter: test1key:test1value",
+          "required": false,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_configuration": {
+        "unmap_key": "instances",
+        "mutated_yaml": true,
+        "nullable": true,
+        "response_table_headers": [
+          "instanceId",
+          "state",
+          "privateIpAddress",
+          "keyName",
+          "imageId",
+          "owner",
+          "platform",
+          "publicDnsName",
+          "shape",
+          "instanceStopDate",
+          "instanceTerminationDate",
+          "insightsIndex"
+        ],
+        "headers_customization": {
+          "insightsIndex": {
+            "header_display_name": "Risk status"
+          }
+        }
+      }
+    },
+    "publish-platform-service": {
+      "api_action": "REGISTER_PLATFORM_SERVICE",
+      "help": "Publishes a new service based on the specified template to the catalog",
+      "help_file": true,
+      "request_wrapper": "platformService",
+      "integration_request": true,
+      "alias": "pubservice",
+      "groups": [
+        "platform-service-management",
+        "email-template_published_notification-group"
+      ],
+      "parameters": {
+        "service": {
+          "alias": "sn",
+          "api_param_name": "name",
+          "help": "The service name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "delivery-method": {
+          "alias": "dm",
+          "api_param_name": "deliveryMethod",
+          "help": " An identifier who provide this service. Maestro by default",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "operating-system": {
+          "alias": "os",
+          "api_param_name": "operatingSystem",
+          "help": "The name of the Operating System",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "category": {
+          "alias": "cat",
+          "api_param_name": "categories",
+          "help": "The categories names \nPass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "service-version": {
+          "alias": "servicev",
+          "api_param_name": "productVersion",
+          "help": "The version of the product",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "price": {
+          "help": "The pricing of the service",
+          "alias": "p",
+          "api_param_name": "price",
+          "required": false,
+          "validation": {
+            "type": "number",
+            "min_value": 0.001,
+            "max_value": 100000
+          }
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The template name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "alias": "d",
+          "api_param_name": "description",
+          "help": "The description of the service",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "summary-description": {
+          "alias": "sd",
+          "api_param_name": "summaryDescription",
+          "help": "The summary description of the service",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "discoverable-url": {
+          "alias": "durl",
+          "api_param_name": "discoverableUrl",
+          "help": "The URL where service description can be found",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenantDisplayName",
+          "help": "The tenant display name. Specifies which tenant the template belongs to",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud name. Specifies which cloud the template belongs to. Allowed values: [AWS, AZURE, GOOGLE, NUTANIX, OPEN_STACK, VSPHERE]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "GOOGLE",
+              "NUTANIX",
+              "OPEN_STACK",
+              "VSPHERE"
+            ]
+          },
+          "case": "upper"
+        },
+        "title": {
+          "alias": "t",
+          "api_param_name": "title",
+          "help": "Official name of the service",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "supported-cloud": {
+          "alias": "supcloud",
+          "api_param_name": "clouds",
+          "help": "The list of the cloud providers that support this service. It is a description for UI. Pass several values in the following format: value1,value2,value3",
+          "required": true,
+          "validation": {
+            "type": "list",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "GOOGLE",
+              "NUTANIX",
+              "OPEN_STACK",
+              "VSPHERE",
+              "ALL"
+            ]
+          },
+          "case": "upper"
+        },
+        "provider-version": {
+          "alias": "providerv",
+          "api_param_name": "providerVersion",
+          "help": "The version of the provider. The version of provider used in the template should be indicated with the letter 'v'. For example v0.14.9",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "regex": "^v{1}([\\d]{1,4}[.]?){1,4}$",
+            "regex_error": "The length of the provider version should be between 2 and 17 symbols and consist of no more than 4 groups separated by (.) The following characters are required in the provider version name: v, ., 0-9. Example: v0.14.9"
+          }
+        },
+        "icon-path": {
+          "alias": "ipath",
+          "api_param_name": "icon",
+          "help": "Path to the service icon file. The image extension should be .png. The size of the image should be: width<=190px, height<=130px",
+          "required": false,
+          "validation": {
+            "type": "file",
+            "file_extensions": [
+              ".png"
+            ],
+            "regex": "^[\\w\\-._ ]{1,32}$",
+            "regex_error": "Icon file name must be 1-32 characters long and can include only these characters in lower case: 'a-z', '0-9', .-_ "
+          }
+        },
+        "all-tenants": {
+          "alias": "AT",
+          "api_param_name": "allTenants",
+          "help": "Register service for all tenants of the customer",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "delete-platform-service": {
+      "api_action": "REMOVE_PLATFORM_SERVICE",
+      "help": "Deletes the specified service from the catalog",
+      "help_file": true,
+      "alias": "delservice",
+      "groups": [
+        "platform-service-management",
+        "email-on_platform_service_deleted_notification-group"
+      ],
+      "parameters": {
+        "service": {
+          "alias": "sn",
+          "api_param_name": "serviceName",
+          "help": "The service name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "describe-service-section": {
+      "api_action": "DESCRIBE_PLATFORM_SERVICE_SECTION",
+      "help": "Describes the section content of the certain published service",
+      "help_file": true,
+      "alias": "dssec",
+      "integration_response": true,
+      "groups": [
+        "platform-service-management"
+      ],
+      "parameters": {
+        "service": {
+          "parent": "service"
+        },
+        "section": {
+          "alias": "sec",
+          "api_param_name": "sectionType",
+          "help": "The section name. Allowed values: [USAGE, SUPPORT]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "USAGE",
+              "SUPPORT"
+            ],
+            "case": "lower"
+          }
+        },
+        "block-title": {
+          "alias": "bt",
+          "api_param_name": "blockTitle",
+          "help": "The title of the block",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "blockTitle",
+          "blockValue"
+        ]
+      }
+    },
+    "delete-service-section": {
+      "api_action": "DELETE_PLATFORM_SERVICE_SECTION",
+      "help": "Deletes the section content of the certain published service",
+      "help_file": true,
+      "integration_request": true,
+      "alias": "delsersec",
+      "groups": [
+        "platform-service-management"
+      ],
+      "parameters": {
+        "service": {
+          "parent": "service"
+        },
+        "section": {
+          "alias": "sec",
+          "api_param_name": "sectionType",
+          "help": "The section name. Allowed values: [USAGE, SUPPORT]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "USAGE",
+              "SUPPORT"
+            ],
+            "case": "lower"
+          }
+        },
+        "block-title": {
+          "alias": "bt",
+          "api_param_name": "blockTitle",
+          "help": "The title of the block which will be deleted",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "delete-all": {
+          "alias": "A",
+          "api_param_name": "deleteAllBlocks",
+          "help": "A flag. Deletes all blocks in a section",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "delete-empty": {
+          "alias": "E",
+          "api_param_name": "deleteBlockWithoutTitle",
+          "help": "A flag. Deletes all text in section without titles",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "add-service-section": {
+      "api_action": "ADD_PLATFORM_SERVICE_SECTION",
+      "help": "Adds usage/support section to the certain published service",
+      "help_file": true,
+      "alias": "addsers",
+      "integration_request": true,
+      "groups": [
+        "platform-service-management"
+      ],
+      "parameters": {
+        "service": {
+          "parent": "service"
+        },
+        "section": {
+          "alias": "sec",
+          "api_param_name": "sectionType",
+          "help": "The section name. Allowed values: [USAGE, SUPPORT]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "USAGE",
+              "SUPPORT"
+            ],
+            "case": "lower"
+          }
+        },
+        "block-title": {
+          "alias": "bt",
+          "api_param_name": "blockTitle",
+          "help": "The title of the block",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "block-value": {
+          "alias": "bv",
+          "api_param_name": "blockValue",
+          "help": "The value of the block Usage or Support",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "block-value-path": {
+          "alias": "bvpath",
+          "api_param_name": "blockValuePath",
+          "help": "The path to the file with a value of the block Usage or Support",
+          "required": false,
+          "validation": {
+            "type": "file",
+            "file_extensions": [
+              ".txt",
+              ".md"
+            ]
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "update-platform-service": {
+      "api_action": "UPDATE_PLATFORM_SERVICE",
+      "help": "Updates specified elements of the platform service",
+      "help_file": true,
+      "request_wrapper": "platformService",
+      "integration_request": true,
+      "integration_response": true,
+      "alias": "updpfs",
+      "groups": [
+        "platform-service-management"
+      ],
+      "parameters": {
+        "service": {
+          "alias": "sn",
+          "api_param_name": "name",
+          "help": "The service name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "delivery-method": {
+          "alias": "dm",
+          "api_param_name": "deliveryMethod",
+          "help": "The type of delivery",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "operating-system": {
+          "alias": "os",
+          "api_param_name": "operatingSystem",
+          "help": "The name of the Operating System",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "category": {
+          "alias": "cat",
+          "api_param_name": "categories",
+          "help": "The categories names \nPass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "service-version": {
+          "alias": "servicev",
+          "api_param_name": "productVersion",
+          "help": "The version of the product",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "price": {
+          "help": "The pricing of the service",
+          "alias": "p",
+          "api_param_name": "price",
+          "required": false,
+          "validation": {
+            "type": "number",
+            "min_value": 0.01,
+            "max_value": 100000
+          }
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The template name",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "template-type": {
+          "alias": "tpltype",
+          "api_param_name": "templateType",
+          "help": "The type of template that will be used for registering service. Allowed values: [TERRAFORM]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "TERRAFORM"
+            ],
+            "case": "upper"
+          }
+        },
+        "description": {
+          "alias": "d",
+          "api_param_name": "description",
+          "help": "The description of the service",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "summary-description": {
+          "alias": "sd",
+          "api_param_name": "summaryDescription",
+          "help": "The summary description of the service",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "discoverable-url": {
+          "alias": "durl",
+          "api_param_name": "discoverableUrl",
+          "help": "The URL where service description can be found",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "alias": "t",
+          "api_param_name": "title",
+          "help": "Official name of the service",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "supported-cloud": {
+          "alias": "supcloud",
+          "api_param_name": "clouds",
+          "help": "The list of the cloud names. Should be specified if you need \nPass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "provider-version": {
+          "alias": "poviderv",
+          "api_param_name": "providerVersion",
+          "help": "The version of the provider. The version of provider used in the template should be indicated with the letter 'v'. For example v0.14.9",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^v{1}([\\d]{1,4}[.]?){1,4}$",
+            "regex_error": "The length of the provider version should be between 2 and 17 symbols and consist of no more than 4 groups separated by (.) The following characters are required in the provider version name: v, ., 0-9. Example: v0.14.9"
+          }
+        },
+        "icon-path": {
+          "alias": "ipath",
+          "api_param_name": "icon",
+          "help": "Path to the service icon file. The image extension should be .png. The size of the image should be: width<=190px, height<=130px",
+          "required": false,
+          "validation": {
+            "type": "file",
+            "file_extensions": [
+              ".png"
+            ],
+            "regex": "^[\\w\\-._ ]{1,32}$",
+            "regex_error": "Icon file name must be 1-32 characters long and can include only these characters in lower case: 'a-z', '0-9', .-_ "
+          }
+        },
+        "support-proxy": {
+          "alias": "P",
+          "api_param_name": "supportProxy",
+          "help": "A flag. Supports proxy if specified",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "service-provider": {
+          "alias": "sprov",
+          "api_param_name": "serviceProvider",
+          "help": "The service provider",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "data-bag-name": {
+          "alias": "dbagname",
+          "api_param_name": "databagName",
+          "help": "The databag name",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "generate-platform-service-varfile": {
+      "alias": "genpfsvar",
+      "help": "Generates a file with variables for the specified platform service, or fills it with missing parameters if the file already exists",
+      "help_file": true,
+      "api_action": "NO_API",
+      "interactive_options": {
+        "parameters_handler": "GET_SERVICE_VARIABLES_INFO",
+        "generate_varfile": true
+      },
+      "parameters": {
+        "service": {
+          "parent": "service"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "variables-file": {
+          "help": "The path to a file with variables. The path is the current working directory by default with the filename '<service>.varfile.json'",
+          "alias": "vfile",
+          "no_api": true,
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "activate-platform-service": {
+      "api_action": "ACTIVATE_PLATFORM_SERVICE",
+      "help": "Activates a platform service for your tenant",
+      "help_file": true,
+      "integration_response": true,
+      "interactive_options": {
+        "option_name": "variables",
+        "parameters_handler": "GET_SERVICE_VARIABLES_INFO",
+        "validation_handler": "VALIDATE_SERVICE_VARIABLES"
+      },
+      "alias": "actpfs",
+      "groups": [
+        "platform-service-management",
+        "email-on_platform_service_deactivation-group",
+        "email-on_platform_service_activation-group"
+      ],
+      "parameters": {
+        "service": {
+          "parent": "service"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "interactive-mode": {
+          "help": "A flag. If specified the service-specific parameters will be asked interactively",
+          "alias": "I",
+          "no_api": true,
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "variables-file": {
+          "help": "The path to a file with variables for activation of a platform service",
+          "alias": "vfile",
+          "no_api": true,
+          "required": false,
+          "validation": {
+            "type": "file"
+          }
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "destroy-after": {
+          "help": "The number of hours after service will be expired automatically",
+          "alias": "expire",
+          "api_param_name": "expireAfter",
+          "required": false,
+          "validation": {
+            "type": "number",
+            "min_value": 1,
+            "max_value": 720
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "serviceName",
+          "serviceId",
+          "state",
+          "templateName",
+          "creationDate"
+        ],
+        "headers_customization": {
+          "serviceName": {
+            "header_display_name": "Service"
+          }
+        }
+      }
+    },
+    "deactivate-platform-service": {
+      "api_action": "DEACTIVATE_PLATFORM_SERVICE",
+      "help": "Deactivates a platform service running for your tenant",
+      "help_file": true,
+      "integration_response": true,
+      "alias": "dactpfs",
+      "groups": [
+        "platform-service-management",
+        "email-on_platform_service_deactivation-group",
+        "email-on_platform_service_activation-group"
+      ],
+      "parameters": {
+        "service-id": {
+          "help": "The ID of the service to be deactivated",
+          "alias": "sid",
+          "api_param_name": "serviceId",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "describe-platform-service-stacks": {
+      "api_action": "LIST_PLATFORM_SERVICE_ENTRIES",
+      "help": "List of the platform service stacks activated for a tenant",
+      "help_file": true,
+      "integration_response": true,
+      "integration_request": true,
+      "alias": "dplstack",
+      "groups": [
+        "platform-service-management"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "service": {
+          "alias": "sn",
+          "api_param_name": "serviceName",
+          "help": "The service name",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "service-id": {
+          "parent": "service-id",
+          "required": false
+        },
+        "all": {
+          "alias": "A",
+          "api_param_name": "all",
+          "help": "A flag. If specified, the services activated in all tenants of the current customer are displayed",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "serviceId",
+          "serviceName",
+          "state",
+          "stackId",
+          "serviceUrl",
+          "creationDate"
+        ]
+      }
+    },
+    "describe-platform-services": {
+      "api_action": "LIST_PLATFORM_SERVICES",
+      "help": "Provides details about the configuration of platform service available in a tenant",
+      "help_file": true,
+      "alias": "dplservice",
+      "integration_request": true,
+      "groups": [
+        "platform-service-management"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud",
+          "required": false
+        },
+        "tenant": {
+          "parent": "tenant",
+          "required": false,
+          "help": "Displaying the list of the available platform services in the tenant"
+        },
+        "template-type": {
+          "alias": "tpltype",
+          "api_param_name": "templateType",
+          "help": "The template type. Allowed values: [CLOUD_FORMATION, TERRAFORM]. If specified, displays services by template type",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "CLOUD_FORMATION",
+              "TERRAFORM"
+            ]
+          },
+          "case": "upper"
+        },
+        "service": {
+          "parent": "service",
+          "required": false,
+          "help": "The service name. Required if --tenant and --cloud are not specified"
+        }
+      },
+      "output_configuration": {
+        "nullable": true,
+        "response_table_headers": [
+          "name",
+          "productVersion",
+          "clouds",
+          "categories",
+          "summaryDescription",
+          "templateType",
+          "supportProxy"
+        ],
+        "headers_customization": {
+          "productVersion": {
+            "disable_numparse": true,
+            "header_display_name": "Service Version"
+          },
+          "clouds": {
+            "header_display_name": "Supported Cloud"
+          }
+        }
+      }
+    },
+    "run-instances": {
+      "api_action": "EXECUTE_APPROVAL_ACTION",
+      "alias": "run",
+      "integration_request": true,
+      "integration_response": true,
+      "request_wrapper": "params",
+      "help_file": true,
+      "help": "Creates instances of the specified configuration",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud. \nAllowed values: [AWS, AZURE, GOOGLE, NUTANIX, OPEN_STACK, VSPHERE, VMWARE, YANDEX]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "GOOGLE",
+              "NUTANIX",
+              "OPEN_STACK",
+              "VSPHERE",
+              "VMWARE",
+              "YANDEX"
+            ]
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenantDisplayName",
+          "help": "The tenant name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "Region",
+          "help": "The region name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "name": {
+          "alias": "n",
+          "api_param_name": "Instance Name",
+          "help": "The name of the instance",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "image": {
+          "alias": "imname",
+          "api_param_name": "Image Alias",
+          "help": "The name of the image that will be used to the instance configuration",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "shape": {
+          "alias": "shname",
+          "api_param_name": "Shape Alias",
+          "help": "Required in case of InstanceType not specified. Instance shape is a Maestro name of mapped to InstanceType and corresponding attributes in other CPs. Some possible values: LARGE, MICRO, SMALL, etc ",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "instance-type": {
+          "alias": "itype",
+          "api_param_name": "Instance type",
+          "help": "Required in case of Shape not specified. Instance type is a native attribute of instance used to determine the types and amount of hardware resources available to the instance",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "key-name": {
+          "alias": "kname",
+          "api_param_name": "Key Pair Name",
+          "help": "The SSH key name of the key pair. Optional for Azure cloud",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "number-of-instances": {
+          "alias": "count",
+          "api_param_name": "Count",
+          "help": "Number of the instances that will be run. If parameter is not specified, default value will be equal to 1",
+          "required": false,
+          "validation": {
+            "type": "number"
+          }
+        },
+        "stop-after": {
+          "alias": "safter",
+          "api_param_name": "Stop after",
+          "help": "Expiration parameter which specifies when the machine will stop",
+          "required": false,
+          "validation": {
+            "type": "number",
+            "min_value": 1,
+            "max_value": 720
+          }
+        },
+        "terminate-after": {
+          "alias": "tafter",
+          "api_param_name": "Terminate after",
+          "help": "Termination parameter which specifies when the machine will terminate",
+          "required": false,
+          "validation": {
+            "type": "number",
+            "min_value": 1,
+            "max_value": 720
+          }
+        },
+        "additional-storage": {
+          "alias": "storage",
+          "api_param_name": "Additional Storage (GB)",
+          "help": "The size of an additional storage storage in GB",
+          "required": false,
+          "validation": {
+            "type": "number",
+            "min_value": 1,
+            "max_value": 200
+          }
+        },
+        "script": {
+          "alias": "scname",
+          "api_param_name": "User script name",
+          "help": "The name of the script that will be applied",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[a-z0-9\\-_]{1,28}(\\.sh|\\.bat|\\.cmd|\\.ps1)$",
+            "regex_error": "Script names should consist of characters from 'a-z', '0-9', '-_', and be 6-32 characters in length, including a valid extension such as '.sh', '.bat', '.cmd', or '.ps1'"
+          }
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tags",
+          "help": "Tags. Pass several values in the following format: key1:val1,key2:val2,key3:val3",
+          "required": false,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "status",
+          "message"
+        ]
+      }
+    },
+    "stop-instances": {
+      "api_action": "STOP_INSTANCE",
+      "alias": "stop",
+      "help": "Stops an instance",
+      "help_file": true,
+      "groups": [
+        "instance-management",
+        "email-instance_low_utilization_report-group",
+        "email-on_run_instance-group",
+        "email-on_instance_state_changed-group",
+        "email-instance_optimization_note-group",
+        "email-optimization_report_attachment-group"
+      ],
+      "integration_response": true,
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The IDs of the instances. For several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": true,
+          "validation": {
+            "type": "list"
+          },
+          "batch_param": true
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "cloud",
+          "instanceId",
+          "state",
+          "instanceName",
+          "errorMessage"
+        ]
+      }
+    },
+    "backup": {
+      "api_action": "BACKUP_PLATFORM_SERVICE",
+      "alias": "bkup",
+      "help": "Provides assistance with using the Backup Platform Service for data backup and recovery",
+      "help_file": true,
+      "integration_response": true,
+      "integration_request": true,
+      "groups": [
+        "platform-service-management"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "service-id": {
+          "parent": "service-id",
+          "required": false
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instances",
+          "help": "The IDs of the instances. \nFor several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "backup-server-id": {
+          "alias": "bsid",
+          "api_param_name": "backupServer",
+          "help": "The ID of the backup server",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "instanceId",
+          "cloud",
+          "tenant",
+          "region",
+          "state",
+          "description"
+        ]
+      }
+    },
+    "terminate-instances": {
+      "api_action": "TERMINATE_INSTANCE",
+      "alias": "kill",
+      "help": "Terminates an instance",
+      "help_file": true,
+      "integration_response": true,
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group",
+        "email-on_instance_state_changed-group",
+        "email-optimization_report_attachment-group",
+        "email-suspicious_activity_alert-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The IDs of the instances. For several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": true,
+          "validation": {
+            "type": "list"
+          },
+          "batch_param": true
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "cloud",
+          "instanceId",
+          "state",
+          "instanceName",
+          "errorMessage"
+        ]
+      }
+    },
+    "describe-images": {
+      "api_action": "DESCRIBE_IMAGE",
+      "help": "Describes images",
+      "help_file": true,
+      "integration_response": true,
+      "alias": "dim",
+      "groups": [
+        "image-management",
+        "cli-describe-tenants-help",
+        "cli-describe-regions-help",
+        "cli-describe-shapes-help",
+        "cli-run-instances-help",
+        "email-instance_run_report-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "name",
+          "description",
+          "createdDate",
+          "imageId",
+          "imageType",
+          "imageState",
+          "minStorageSizeGb"
+        ],
+        "headers_customization": {
+          "imageState": {
+            "header_display_name": "State"
+          },
+          "createdDate": {
+            "header_display_name": "Creation Date\n"
+          }
+        }
+      }
+    },
+    "describe-storages": {
+      "api_action": "DESCRIBE_VOLUME",
+      "help": "Describes instance storages existing in the specific tenant",
+      "help_file": true,
+      "alias": "dstor",
+      "integration_response": true,
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance. Use to see the storages of the specified instance",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "storage-id": {
+          "alias": "storid",
+          "api_param_name": "volumeIds",
+          "help": "Storage IDs. Use to see the descriptions of the specific storages \nFor several storages, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "nullable": true,
+        "response_table_headers": [
+          "instanceId",
+          "sizeLabel",
+          "state",
+          "system",
+          "volumeId",
+          "volumeName",
+          "resourceGroup",
+          "googleAvailabilityZone"
+        ],
+        "headers_customization": {
+          "volumeName": {
+            "header_display_name": "Name"
+          },
+          "sizeLabel": {
+            "header_display_name": "Size"
+          },
+          "volumeId": {
+            "header_display_name": "Storage ID"
+          }
+        }
+      }
+    },
+    "create-attach-storage": {
+      "api_action": "CREATE_AND_ATTACH_VOLUME",
+      "help": "Creates the storage and attaches to the specified instance",
+      "help_file": true,
+      "alias": "addattstor",
+      "groups": [
+        "volume-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance to which the storage will be added",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "alias": "n",
+          "api_param_name": "volumeName",
+          "help": "The storage name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "size": {
+          "alias": "s",
+          "api_param_name": "sizeInGB",
+          "help": "The maximum size of a storage at creation, in GB",
+          "required": true,
+          "validation": {
+            "type": "number"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "instanceId",
+          "sizeLabel",
+          "state",
+          "volumeId",
+          "volumeName"
+        ],
+        "headers_customization": {
+          "volumeName": {
+            "header_display_name": "Name"
+          },
+          "sizeLabel": {
+            "header_display_name": "Size"
+          },
+          "volumeId": {
+            "header_display_name": "Storage ID"
+          }
+        }
+      }
+    },
+    "detach-storage": {
+      "api_action": "DETACH_VOLUME",
+      "help": "Detaches the specified storage from instance",
+      "help_file": true,
+      "alias": "detstor",
+      "integration_response": true,
+      "groups": [
+        "volume-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance from which the storage will be detached",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "storage-id": {
+          "alias": "storid",
+          "api_param_name": "volumeId",
+          "help": "The ID of the storage",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "delete-storage": {
+      "api_action": "REMOVE_VOLUME",
+      "help": "Deletes the specified storage",
+      "help_file": true,
+      "alias": "delstor",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "volume-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "storage-id": {
+          "alias": "storid",
+          "api_param_name": "volumeId",
+          "help": "The ID of storage",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "availability-zone": {
+          "alias": "az",
+          "api_param_name": "availabilityZone",
+          "help": "The availability zone name (for Google)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "decrypt-password": {
+      "api_action": "GET_INSTANCE_HASHED_PASSWORD",
+      "help": "Decrypts the password for windows instances",
+      "help_file": true,
+      "alias": "dp",
+      "integration_request": true,
+      "integration_response": true,
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance for which the password should be decrypted",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "private-key-path": {
+          "alias": "kpath",
+          "api_param_name": "privatePart",
+          "help": "The path to the file with the private key part",
+          "required": true,
+          "validation": {
+            "type": "file"
+          }
+        },
+        "availability-zone": {
+          "alias": "az",
+          "api_param_name": "availabilityZone",
+          "help": "The availability zone name (for Google)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "encrypted_password"
+        ]
+      }
+    },
+    "describe-schedules": {
+      "api_action": "DESCRIBE_SCHEDULES",
+      "help": "Describes the schedules set to instances in your tenant",
+      "help_file": true,
+      "alias": "dsch",
+      "integration_response": true,
+      "groups": [
+        "schedule-management",
+        "email-instance_optimization_note-group",
+        "email-optimization_report_attachment-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "schedule-type": {
+          "alias": "schtype",
+          "api_param_name": "scheduleType",
+          "required": false,
+          "help": "The schedule type. Allowed values: [Specified instances, My instances with tag, All my instances in region]",
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "Specified instances",
+              "My instances with tag",
+              "All my instances in region"
+            ]
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "action",
+          "displayName",
+          "nextRun",
+          "region",
+          "scheduleOwner",
+          "scheduleType",
+          "instances",
+          "tag",
+          "description"
+        ],
+        "headers_customization": {
+          "instances": {
+            "header_display_name": "Instance(s)"
+          },
+          "displayName": {
+            "header_display_name": "Name"
+          },
+          "nextRun": {
+            "header_display_name": "Next Execution"
+          }
+        }
+      }
+    },
+    "create-schedule": {
+      "api_action": "CREATE_SCHEDULE",
+      "alias": "csch",
+      "help": "Creates a new schedule for automatic instance state management",
+      "help_file": true,
+      "request_wrapper": "schedule",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "schedule-management",
+        "email-instance_low_utilization_report-group",
+        "email-instance_optimization_note-group",
+        "email-optimization_report_attachment-group"
+      ],
+      "parameters": {
+        "region": {
+          "parent": "region"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "name": {
+          "alias": "n",
+          "api_param_name": "displayName",
+          "help": "The display name of the schedule",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "cron": {
+          "alias": "cron",
+          "api_param_name": "cron",
+          "help": "The cron rule that will be used by the schedule. It should contain these parameters separated by spaces, in given order: seconds (optional), minutes, hours, days of month, months, days of weeks, year (optional). Example: s m d M d/w y. Accepted placeholders: * (all values), ? (no specific value), / (increments), - (range)",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Z-z0-9\\s*-?/#]*$"
+          }
+        },
+        "description": {
+          "alias": "d",
+          "api_param_name": "description",
+          "help": "The description of the schedule",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "action": {
+          "alias": "a",
+          "api_param_name": "action",
+          "help": "The action for the schedule. Allowed values: [START, STOP]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "START",
+              "STOP"
+            ]
+          },
+          "case": "upper"
+        },
+        "schedule-type": {
+          "alias": "schtype",
+          "api_param_name": "scheduleType",
+          "help": "The schedule type. Allowed values: [Specified instances, My instances with tag, All my instances in region]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "Specified instances",
+              "My instances with tag",
+              "All my instances in region"
+            ]
+          }
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instances",
+          "help": "The IDs of the instances. \nFor several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "tag-key": {
+          "alias": "tkey",
+          "api_param_name": "tagKey",
+          "help": "The key of the tag of the instance to which the schedule is to be applied. \nRequired for schedule type \"My instances with tag\"",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "tag-value": {
+          "alias": "tvalue",
+          "api_param_name": "tagValue",
+          "help": "The value of the tag of the instance to which the schedule is to be applied. \nRequired for schedule type \"My instances with tag\"",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "displayName",
+          "action",
+          "scheduleType",
+          "nextRun",
+          "cloud",
+          "tenantName",
+          "region"
+        ],
+        "headers_customization": {
+          "Instance": {
+            "header_display_name": "Instance(s)"
+          },
+          "tenantName": {
+            "header_display_name": "Tenant"
+          },
+          "displayName": {
+            "header_display_name": "Name"
+          },
+          "nextRun": {
+            "header_display_name": "Next Execution"
+          }
+        }
+      }
+    },
+    "delete-schedule": {
+      "api_action": "DELETE_SCHEDULE",
+      "alias": "delsch",
+      "help": "Deletes a schedule from your tenants schedule library",
+      "help_file": true,
+      "groups": [
+        "schedule-management",
+        "email-on_schedule_delete_warning-group",
+        "email-instance_optimization_note-group"
+      ],
+      "parameters": {
+        "region": {
+          "parent": "region"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "name": {
+          "alias": "n",
+          "api_param_name": "scheduleName",
+          "help": "The name of the schedule used for reference",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+          "action",
+          "cloud",
+          "nextRun",
+          "displayName",
+          "scheduleType"
+        ]
+      }
+    },
+    "total-report": {
+      "api_action": "GET_TOTAL_BILLING_REPORT",
+      "help": "Gets a total billing report for a tenant",
+      "help_file": true,
+      "alias": "treport",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "from": {
+          "alias": "from",
+          "api_param_name": "from",
+          "help": "Start date. Format (dd.mm.yyyy). Use with 'to' for a custom range",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "to": {
+          "alias": "to",
+          "api_param_name": "to",
+          "help": "End date. Format (dd.mm.yyyy). Use with 'from' for a custom range",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tag",
+          "help": "Collects only records with a specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Za-z0-9_.:/+-@.]+=[A-Za-z0-90-9_.:/+-@.]*$"
+          }
+        },
+        "report": {
+          "alias": "R",
+          "api_param_name": "reportFormat",
+          "help": "A flag. If specified the report will be sent by email",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "tenant-group": {
+          "alias": "tg",
+          "api_param_name": "tenantGroup",
+          "help": "The tenant group",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "clouds",
+          "help": "The list of the cloud names. Should be specified if you need \nPass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name.  Specify this parameter to filter report records by region",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "year": {
+          "alias": "y",
+          "api_param_name": "year",
+          "help": "Year. Format (yyyy). Use with 'month' for a 1-month range, or with 'month' and 'day' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "month": {
+          "alias": "m",
+          "api_param_name": "month",
+          "help": "Month. Format (mm). Use with 'year' for a 1-month range, or with 'day' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "day": {
+          "alias": "d",
+          "api_param_name": "day",
+          "help": "Day. Format (dd). Use with 'year' and 'month' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "adjustment": {
+          "alias": "A",
+          "api_param_name": "onlyAdjustments",
+          "help": "A flag. If specified, only adjustments will be shown",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "url": {
+          "alias": "U",
+          "api_param_name": "URL",
+          "help": "A flag. If specified, the presigned URL will be generated",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "type",
+          "tenant",
+          "region",
+          "productName",
+          "currencyCode",
+          "total"
+        ],
+        "nullable": true
+      }
+    },
+    "subtotal-report": {
+      "api_action": "GET_SUBTOTAL_BILLING_REPORT",
+      "help": "Gets subtotal billing report for the specified tenant",
+      "help_file": true,
+      "alias": "streport",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "from": {
+          "alias": "from",
+          "api_param_name": "from",
+          "help": "Start date. Format (dd.mm.yyyy). Use with 'to' for a custom range",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "to": {
+          "alias": "to",
+          "api_param_name": "to",
+          "help": "End date. Format (dd.mm.yyyy). Use with 'from' for a custom range",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tag",
+          "help": "Collects only records with a specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Za-z0-9_.:/+-@.]+=[A-Za-z0-90-9_.:/+-@.]*$"
+          }
+        },
+        "report": {
+          "alias": "R",
+          "api_param_name": "reportFormat",
+          "help": "A flag. If specified the report will be sent by email",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "tenant-group": {
+          "alias": "tg",
+          "api_param_name": "tenantGroup",
+          "help": "The tenant group",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name. (Can not be used with '--cloud' parameter)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "clouds",
+          "help": "The list of the cloud names. (Can not be used with '--region' parameter) \nPass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "year": {
+          "alias": "y",
+          "api_param_name": "year",
+          "help": "Year. Format (yyyy). Use with 'month' for a 1-month range, or with 'month' and 'day' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "month": {
+          "alias": "m",
+          "api_param_name": "month",
+          "help": "Month. Format (mm). Use with 'year' for a 1-month range, or with 'day' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "day": {
+          "alias": "d",
+          "api_param_name": "day",
+          "help": "Day. Format (dd). Use with 'year' and 'month' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "adjustment": {
+          "alias": "A",
+          "api_param_name": "onlyAdjustments",
+          "help": "A flag. If specified, only adjustments will be shown",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "url": {
+          "alias": "U",
+          "api_param_name": "URL",
+          "help": "A flag. If specified, the presigned URL will be generated",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "type",
+          "tenant",
+          "region",
+          "productName",
+          "usageType",
+          "quantity",
+          "currencyCode",
+          "total"
+        ]
+      }
+    },
+    "budgets-report": {
+      "api_action": "GET_QUOTAS_BY_TENANTS_AND_CRITERIA",
+      "help": "Gets a budgets billing report for a tenant",
+      "help_file": true,
+      "alias": "bgreport",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "keep-params-order": true,
+      "parameters": {
+        "tenant-group": {
+          "alias": "tg",
+          "api_param_name": "tenantGroup",
+          "help": "The tenant group",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "year": {
+          "alias": "y",
+          "api_param_name": "year",
+          "help": "Year. Format (yyyy). Use with 'month' for a 1-month range",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "month": {
+          "alias": "m",
+          "api_param_name": "month",
+          "help": "Month. Format (mm). Use with 'year' for a 1-month range",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name. Specify this parameter to filter report records by region",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "tag": {
+          "alias": "",
+          "api_param_name": "tag",
+          "help": "Collects only records with a specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Za-z0-9_.:/+-@.]+=[A-Za-z0-90-9_.:/+-@.]*$"
+          }
+        },
+        "filter": {
+          "alias": "f",
+          "api_param_name": "criteria",
+          "help": "Filter by criteria. \nAllowed values: [ALL(default), DEPLETED, ACTUAL, DISABLED]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ALL",
+              "DEPLETED",
+              "ACTUAL",
+              "DISABLED"
+            ]
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "mutated_yaml": true,
+        "response_table_headers": [
+          "type",
+          "tenant",
+          "monthlyBudget",
+          "currentMonthlyChargeback",
+          "monthlyUtilization %",
+          "dailyBudget",
+          "currentDailyChargeback",
+          "dailyUtilization %",
+          "actionPlan",
+          "status",
+          "tag",
+          "affectedRegions"
+        ],
+        "nullable": true
+      }
+    },
+    "cost-usage-report": {
+      "alias": "cureport",
+      "api_action": "GET_COST_AND_USAGE_REPORT",
+      "help": "Cost and usage optimization report. Command sends the report only to email",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "date": {
+          "alias": "date",
+          "api_param_name": "date",
+          "help": "The date. Format \"dd.mm.yyyy\"",
+          "required": true,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name for the AWS cloud provider",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "resource-type": {
+          "alias": "rt",
+          "help": "The type of the resource. Allowed values: \"HIGH_UTILIZED_WORKSPACES\", \"IDLE_ELBS\", \"IDLE_NAT_GATEWAYS\", \"IDLE_VPC_ENDPOINTS\",\n\"LOW_UTILIZED_ELBS\", \"LOW_UTILIZED_NAT_GATEWAYS\", \"LOW_UTILIZED_VPNS\", \"EBS_VOLUMES_MODERNIZE_GP2_TO_GP3\", \"EBS_SNAPSHOT_TRENDS\", \"S3_BUCKET_TRENDS_AND_OPTIMIZATIONS\"",
+          "api_param_name": "resourceType",
+          "required": true,
+          "validation": {
+            "allowed_values": [
+              "HIGH_UTILIZED_WORKSPACES",
+              "IDLE_ELBS",
+              "IDLE_NAT_GATEWAYS",
+              "IDLE_VPC_ENDPOINTS",
+              "LOW_UTILIZED_ELBS",
+              "LOW_UTILIZED_NAT_GATEWAYS",
+              "LOW_UTILIZED_VPNS",
+              "EBS_VOLUMES_MODERNIZE_GP2_TO_GP3",
+              "EBS_SNAPSHOT_TRENDS",
+              "S3_BUCKET_TRENDS_AND_OPTIMIZATIONS"
+            ],
+            "type": "string"
+          }
+        },
+        "report": {
+          "alias": "R",
+          "api_param_name": "reportFormat",
+          "help": "A flag. If specified the report will be sent by email",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "projectCode",
+          "zone",
+          "productName",
+          "usageType",
+          "quantity",
+          "recordType",
+          "totalPrice",
+          "currencyCode"
+        ]
+      }
+    },
+    "untagged-resource-report": {
+      "api_action": "GET_RESOURCE_BILLING_REPORT",
+      "help": "Gets untagged resource billing report",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "alias": "untagresreport",
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "from": {
+          "alias": "from",
+          "api_param_name": "from",
+          "help": "The start range date. Format \"dd.mm.yyyy\"",
+          "required": true,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "to": {
+          "alias": "to",
+          "api_param_name": "to",
+          "help": "The end range date. Format \"dd.mm.yyyy\"",
+          "required": true,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "clouds",
+          "help": "The list of the cloud names. Pass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenant",
+          "help": "The tenant name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name.  Specify this parameter to filter report records by region",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "report": {
+          "alias": "R",
+          "api_param_name": "reportFormat",
+          "help": "A flag. If specified the report will be sent by email",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "tenantName",
+          "zone",
+          "productName",
+          "recordType",
+          "totalPrice",
+          "currencyCode"
+        ],
+        "nullable": true
+      }
+    },
+    "resource-report": {
+      "api_action": "GET_RESOURCE_BILLING_REPORT",
+      "help": "Gets resource billing report for the specified tenant",
+      "help_file": true,
+      "alias": "resreport",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "from": {
+          "alias": "from",
+          "api_param_name": "from",
+          "help": "Start date. Format (dd.mm.yyyy). Use with 'to' for a custom range",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "to": {
+          "alias": "to",
+          "api_param_name": "to",
+          "help": "End date. Format (dd.mm.yyyy). Use with 'from' for a custom range",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tag",
+          "help": "Collects only records with a specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Za-z0-9_.:/+-@.]+=[A-Za-z0-90-9_.:/+-@.]*$"
+          }
+        },
+        "tenant-group": {
+          "alias": "tg",
+          "api_param_name": "tenantGroup",
+          "help": "The tenant group",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name. Specify this parameter to filter report records by region.\nCan not be provided with \"--cloud\" parameter",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "clouds",
+          "help": "The list of the cloud names. Can not be provided with \"--region\" parameter.\nPass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceIds",
+          "help": "The IDs of the instances by which a report will be generated.\nFor several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "report": {
+          "alias": "R",
+          "api_param_name": "reportFormat",
+          "help": "A flag. If specified the report will be sent by email",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "year": {
+          "alias": "y",
+          "api_param_name": "year",
+          "help": "Year. Format (yyyy). Use with 'month' for a 1-month range, or with 'month' and 'day' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "month": {
+          "alias": "m",
+          "api_param_name": "month",
+          "help": "Month. Format (mm). Use with 'year' for a 1-month range, or with 'day' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "day": {
+          "alias": "d",
+          "api_param_name": "day",
+          "help": "Day. Format (dd). Use with 'year' and 'month' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "alias": "U",
+          "api_param_name": "URL",
+          "help": "A flag. If specified, the presigned URL will be generated",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "tenantName",
+          "region",
+          "productName",
+          "billingPeriodStartDate",
+          "billingPeriodEndDate",
+          "type",
+          "total",
+          "currencyCode"
+        ],
+        "nullable": true
+      }
+    },
+    "cost-object-report": {
+      "api_action": "GET_RESOURCE_BILLING_REPORT",
+      "help": "Gets cost object report for the specified tenant",
+      "help_file": true,
+      "alias": "cosobreport",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "from": {
+          "alias": "from",
+          "api_param_name": "from",
+          "help": "The start range date. Format \"dd.mm.yyyy\"",
+          "required": true,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "to": {
+          "alias": "to",
+          "api_param_name": "to",
+          "help": "The end range date. Format \"dd.mm.yyyy\"",
+          "required": true,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tag",
+          "help": "Collects only records with a specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Za-z0-9_.:/+-@.]+=[A-Za-z0-90-9_.:/+-@.]*$"
+          }
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "clouds",
+          "help": "The list of the cloud names. Pass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenant",
+          "help": "The tenant name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name.  Specify this parameter to filter report records by region",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "report": {
+          "alias": "R",
+          "api_param_name": "reportFormat",
+          "help": "A flag. If specified the report will be sent by email",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "product": {
+          "alias": "pn",
+          "api_param_name": "productName",
+          "help": "The product name. If not specified, 'All' will be used",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "usage-type": {
+          "alias": "ut",
+          "api_param_name": "usageType",
+          "help": "The usage type. If not specified, 'All' will be used",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "resource-type": {
+          "alias": "rt",
+          "api_param_name": "resourceType",
+          "help": "The resource type. If not specified, 'All' will be used",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "tenantName",
+          "zone",
+          "productName",
+          "usageType",
+          "resourceId",
+          "billingPeriodStartDate",
+          "billingPeriodEndDate",
+          "recordType",
+          "totalPrice",
+          "currencyCode"
+        ],
+        "nullable": true
+      }
+    },
+    "hourly-report": {
+      "api_action": "GET_HOURLY_BILLING_REPORT",
+      "help": "Gets hourly billing report for the specified tenant",
+      "help_file": true,
+      "alias": "hreport",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "date": {
+          "alias": "date",
+          "api_param_name": "date",
+          "help": "Date. Format (dd.mm.yyyy). Or specify 'year, month and day' instead",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tag",
+          "help": "Collects only records with a specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Za-z0-9_.:/+-@.]+=[A-Za-z0-90-9_.:/+-@.]*$"
+          }
+        },
+        "tenant-group": {
+          "alias": "tg",
+          "api_param_name": "tenantGroup",
+          "help": "The tenant group",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name. Specify this parameter to filter report records by region",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "year": {
+          "alias": "y",
+          "api_param_name": "year",
+          "help": "Year. Format (yyyy). Use with 'month' and 'day'",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "month": {
+          "alias": "m",
+          "api_param_name": "month",
+          "help": "Month. Format (mm). Use with 'year' and 'day'",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "day": {
+          "alias": "d",
+          "api_param_name": "day",
+          "help": "Day. Format (dd). Use with 'year' and 'month'",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "alias": "U",
+          "api_param_name": "URL",
+          "help": "A flag. If specified, the presigned URL will be generated",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "aws-management-console": {
+      "api_action": "SEND_MANAGEMENT_CONSOLE_ACCESS",
+      "help": "AWS management console access",
+      "help_file": true,
+      "alias": "awsmc",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "cloud-console-access"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "access-type": {
+          "alias": "atype",
+          "api_param_name": "accessType",
+          "help": "The type of the access to be provided. Allowed values: [IAM_USER, ASSUME_ROLE, FEDERATED_USER, CLOUD_ADMIN_USER]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ASSUME_ROLE",
+              "FEDERATED_USER",
+              "CLOUD_ADMIN_USER",
+              "IAM_USER"
+            ]
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "azure-management-console": {
+      "api_action": "SEND_MANAGEMENT_CONSOLE_ACCESS",
+      "help": "Azure management console access",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "alias": "azuremc",
+      "groups": [
+        "cloud-console-access"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "google-management-console": {
+      "api_action": "SEND_MANAGEMENT_CONSOLE_ACCESS",
+      "help": "Google management console access",
+      "help_file": true,
+      "alias": "gcpmc",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "cloud-console-access"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "upload-script": {
+      "api_action": "UPLOAD_SCRIPT",
+      "help": "Uploads the user script to the specific tenant in Maestro",
+      "help_file": true,
+      "alias": "upscr",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "init-script-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "source-path": {
+          "alias": "spath",
+          "api_param_name": "filepath",
+          "help": "The path to the script file. The file extension should be either '.sh', '.bat', 'cmd' or '.ps1'",
+          "required": true,
+          "validation": {
+            "type": "file",
+            "file_extensions": [
+              ".sh",
+              ".bat",
+              ".cmd",
+              ".ps1"
+            ]
+          }
+        },
+        "script": {
+          "alias": "scname",
+          "api_param_name": "fileName",
+          "help": "The name of the script to be uploaded. The file extension(.sh, .cmd, ...) will be taken from 'spath'",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "regex": "^[\\w\\-_ ]{6,32}$",
+            "regex_error": "Script name must be 6-32 characters long and can include only these characters in lower case: 'a-z', '0-9', -_ "
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "tenantDisplayName",
+          "fileName",
+          "owner"
+        ],
+        "headers_customization": {
+          "fileName": {
+            "header_display_name": "Script"
+          }
+        }
+      }
+    },
+    "delete-scripts": {
+      "api_action": "REMOVE_SCRIPT",
+      "help": "Deletes the user script from the specific tenant in Maestro",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "alias": "delscr",
+      "groups": [
+        "init-script-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "script": {
+          "alias": "scname",
+          "api_param_name": "fileNames",
+          "help": "List of the name of the file to be deleted. Pass several values in the following format: value1,value2,value3",
+          "required": true,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": []
+      }
+    },
+    "describe-script": {
+      "api_action": "DESCRIBE_SCRIPT",
+      "help": "Describes the script files uploaded to Maestro and available for the specific tenant",
+      "help_file": true,
+      "alias": "dscript",
+      "integration_response": true,
+      "groups": [
+        "init-script-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "script": {
+          "alias": "scname",
+          "api_param_name": "fileName",
+          "help": "The file name. If this parameter is specified, the content of the script will be returned",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "tenantDisplayName",
+          "fileName",
+          "owner",
+          "content"
+        ],
+        "headers_customization": {
+          "fileName": {
+            "header_display_name": "Script"
+          }
+        }
+      }
+    },
+    "price": {
+      "api_action": "GET_PRICE_MODEL",
+      "help": "Describes the pricing policy",
+      "help_file": true,
+      "alias": "price",
+      "integration_request": true,
+      "integration_response": true,
+      "parameters": {
+        "region": {
+          "parent": "region"
+        },
+        "from": {
+          "alias": "from",
+          "api_param_name": "from",
+          "help": "The start range date. Format \"dd.mm.yyyy\"",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "to": {
+          "alias": "to",
+          "api_param_name": "to",
+          "help": "The end range date. Format \"dd.mm.yyyy\"",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "policy-type": {
+          "alias": "ptype",
+          "api_param_name": "policyType",
+          "help": "The pricing policy type. Allowed values: [DEFAULT, PROJECT, PERSONAL]",
+          "required": true,
+          "case": "upper",
+          "validation": {
+            "type": "string",
+            "help": "The pricing policy type. Allowed values: [DEFAULT, PROJECT, PERSONAL]",
+            "allowed_values": [
+              "DEFAULT",
+              "PROJECT",
+              "PERSONAL"
+            ]
+          }
+        },
+        "inactive": {
+          "alias": "N",
+          "api_param_name": "inactive",
+          "help": "A flag. If specified the price model for inactive resources will be returned",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "shape": {
+          "alias": "sh",
+          "api_param_name": "shapeName",
+          "help": "A shape name. Can be used to filter instance price model by specified shape",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "multiple_table": true,
+        "nullable": true,
+        "response_table_headers": [
+          {
+            "display_name": "Instance price model:",
+            "name": "instancePriceModel",
+            "headers": [
+              "osType",
+              "shape",
+              "initializationPrice",
+              "basePrice",
+              "vCoresPrice",
+              "memoryPrice",
+              "osPrice",
+              "systemStoragePrice",
+              "totalPrice"
+            ]
+          },
+          {
+            "display_name": "Storage price model:",
+            "name": "storagePriceModel",
+            "headers": [
+              "inactivePrice",
+              "activePrice"
+            ]
+          },
+          {
+            "display_name": "Machine image price model:",
+            "name": "machineImagePriceModel",
+            "headers": [
+              "totalPrice"
+            ]
+          },
+          {
+            "display_name": "Checkpoint price model:",
+            "name": "checkpointPriceModel",
+            "headers": [
+              "inactivePrice",
+              "activePrice"
+            ]
+          },
+          {
+            "display_name": "Hardware price model:",
+            "name": "hardwarePriceModel",
+            "headers": [
+              "cpuPrice",
+              "memoryPricePerGB",
+              "unitPerMonth",
+              "hddPrice",
+              "cpuPrice"
+            ]
+          }
+        ]
+      }
+    },
+    "create-image": {
+      "api_action": "CREATE_IMAGE",
+      "integration_response": true,
+      "help": "Creates an image based on an existing instance",
+      "help_file": true,
+      "alias": "cim",
+      "groups": [
+        "image-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "alias": "n",
+          "api_param_name": "name",
+          "help": "The image name.  Length: 3-63. \nRestrictions for Google regions: lowercase alphanumeric characters including hyphens if not on first or last place. \nEPAM, Azure and AWS regions: alphanumeric characters including .()[]-@_",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "alias": "d",
+          "api_param_name": "description",
+          "help": "The description for the image",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "imageId",
+          "name",
+          "osType",
+          "imageType",
+          "imageState",
+          "createdDate",
+          "attachedVolumes"
+        ],
+        "headers_customization": {
+          "imageState": {
+            "header_display_name": "State"
+          },
+          "createdDate": {
+            "header_display_name": "Creation Date\n"
+          },
+          "attachedVolumes": {
+            "header_display_name": "Attached Storages"
+          }
+        }
+      }
+    },
+    "delete-image": {
+      "api_action": "DELETE_IMAGE",
+      "help": "Deletes an image created from a project instance",
+      "help_file": true,
+      "alias": "delim",
+      "groups": [
+        "image-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "image-id": {
+          "alias": "imid",
+          "api_param_name": "imageId",
+          "help": "The ID of the image to be deleted",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "imageId",
+          "imageState"
+        ],
+        "headers_customization": {
+          "imageState": {
+            "header_display_name": "State"
+          }
+        }
+      }
+    },
+    "delete-key": {
+      "api_action": "DELETE_KEY",
+      "help": "Deletes a SSH key from your account",
+      "help_file": true,
+      "alias": "delkey",
+      "groups": [
+        "keypair-management",
+        "email-on_key_pair_processed-group"
+      ],
+      "parameters": {
+        "key-name": {
+          "alias": "kname",
+          "api_param_name": "name",
+          "help": "The SSH key name of the key to be deleted",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+        ]
+      }
+    },
+    "describe-keys": {
+      "api_action": "DESCRIBE_KEYS",
+      "help": "Describes your SSH keys existing for a specific tenant",
+      "integration_request": true,
+      "integration_response": true,
+      "help_file": true,
+      "alias": "dkey",
+      "groups": [
+        "keypair-management",
+        "email-on_key_pair_processed-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenantName",
+          "help": "The tenant name",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud to which the key is applied. \nAllowed values: [AWS, AZURE, GOOGLE, NUTANIX, OPEN_STACK]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "GOOGLE",
+              "NUTANIX",
+              "OPEN_STACK"
+            ]
+          },
+          "case": "upper"
+        },
+        "key-name": {
+          "alias": "kname",
+          "api_param_name": "name",
+          "help": "The SSH key name of the keypair to be described",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The name of the region where the key is applied",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "name",
+          "status",
+          "cloud",
+          "tenant",
+          "region",
+          "email"
+        ],
+        "headers_customization": {
+          "name": {
+            "header_display_name": "Key Name"
+          }
+        }
+      }
+    },
+    "import-key": {
+      "api_action": "ADD_KEY",
+      "help": "Imports public part of SSH keys for a specific cloud, region and tenant to Maestro",
+      "help_file": true,
+      "alias": "ikey",
+      "integration_request": true,
+      "groups": [
+        "keypair-management",
+        "email-on_key_pair_processed-group"
+      ],
+      "parameters": {
+        "key-name": {
+          "alias": "kname",
+          "api_param_name": "name",
+          "help": "The SSH key name of the new key. \nSSH key names must be 6-32 characters long, and include only these characters - '0-9', 'a-z', 'A-Z', '-_'",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "file-path": {
+          "alias": "fpath",
+          "api_param_name": "filepath",
+          "help": "The path to the RSA public key file",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud name where the key will be imported.  \nAllowed values: [AWS, AZURE, GOOGLE, NUTANIX, OPEN_STACK]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "GOOGLE",
+              "NUTANIX",
+              "OPEN_STACK"
+            ]
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenantName",
+          "help": "The tenant name where the key will be imported",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "all-tenants": {
+          "alias": "AT",
+          "api_param_name": "allTenants",
+          "help": "A flag. If specified the key pair for all tenants will be imported",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name where the key will be imported",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": []
+      }
+    },
+    "describe-events": {
+      "api_action": "GET_EVENTS",
+      "integration_response": true,
+      "integration_request": true,
+      "alias": "dev",
+      "help": "Lists the events that took place in your virtual infrastructure",
+      "help_file": true,
+      "groups": [
+        "email-event_details_report-group",
+        "email-weekly_instance_audit-group"
+      ],
+      "parameters": {
+        "event-id": {
+          "alias": "evid",
+          "api_param_name": "eventId",
+          "help": "Event ID. Use it to see more details about a specific event",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "search-type": {
+          "alias": "stype",
+          "api_param_name": "searchType",
+          "help": "Search type. \nAllowed values: [ALL(default), TENANT, SECURITY, BILLING, MANAGEMENT, AZURE_BICEP, TERRAFORM, CLOUD_FORMATION, VIOLATION]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ALL",
+              "TENANT",
+              "SECURITY",
+              "BILLING",
+              "MANAGEMENT",
+              "AZURE_BICEP",
+              "TERRAFORM",
+              "CLOUD_FORMATION",
+              "VIOLATION"
+            ]
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud. \nAllowed values: [AWS, AZURE, ENTERPRISE, GOOGLE, HARDWARE, NUTANIX, OPEN_STACK, VSPHERE]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "ENTERPRISE",
+              "GOOGLE",
+              "HARDWARE",
+              "NUTANIX",
+              "OPEN_STACK",
+              "VSPHERE"
+            ]
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "resource-id": {
+          "alias": "rid",
+          "api_param_name": "resourceId",
+          "help": "The ID of the resource for which the events should be retrieved. Required in case the RELATED search-type is specified",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "latest-event-date": {
+          "alias": "evdate",
+          "api_param_name": "latestEventDate",
+          "help": "The latest event date. Format \"dd.mm.yyyy\"",
+          "required": false,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "number-of-events": {
+          "alias": "count",
+          "api_param_name": "count",
+          "help": "The number of events to be displayed. \nAllowed values: 1-100. The default value: 10",
+          "required": false,
+          "validation": {
+            "type": "number",
+            "min_value": 1,
+            "max_value": 100
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "resourceId",
+          "initiator",
+          "group",
+          "eventDescription",
+          "dateDescription",
+          "eventId"
+        ],
+        "headers_customization": {
+          "dateDescription": {
+            "header_display_name": "Date"
+          },
+          "eventDescription": {
+            "header_display_name": "Description"
+          }
+        }
+      }
+    },
+    "upload-terraform-template-from-git": {
+      "api_action": "SETUP_TERRAFORM_TEMPLATE_WITH_GITHUB",
+      "alias": "upltplgit",
+      "integration_request": true,
+      "integration_response": true,
+      "help": "Uploads a Terraform template from Git",
+      "help_file": true,
+      "groups": [
+        "terraform-management",
+        "email-template_upload_notification-group",
+        "email-template_published_notification-group",
+        "email-template_diagnostics_notification-group",
+        "email-on_platform_service_deleted_notification-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the template that will be uploaded",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "regex": "^[\\w+!\\-_.*'()]{2,128}$",
+            "regex_error": "The length of template name should be between 2 and 128 symbols. The following characters are allowed in template names: 0-9, a-z, A-Z, !, -, _, ., *, ', (, )"
+          }
+        },
+        "git-url": {
+          "alias": "url",
+          "api_param_name": "gitUrl",
+          "help": "URL of the Git project with the template",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "token": {
+          "alias": "tkn",
+          "api_param_name": "gitPassword",
+          "help": "The personal access token to access the Git project",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "branch": {
+          "alias": "b",
+          "api_param_name": "gitBranch",
+          "help": "The name of a Git branch",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "folder": {
+          "alias": "f",
+          "api_param_name": "gitTerraformDirectoryPath",
+          "help": "The path to the Terraform template in the Git project",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "webhook": {
+          "api_param_name": "webHookAction",
+          "alias": "wh",
+          "help": "The Terraform action executed after receiving the push-webhook. Allowed values: [NONE, AUTO_PLAN, AUTO_APPLY]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "NONE",
+              "AUTO_PLAN",
+              "AUTO_APPLY"
+            ],
+            "case": "upper"
+          }
+        },
+        "provider-type": {
+          "alias": "ptype",
+          "api_param_name": "providerType",
+          "help": "The Git service provider. Allowed values: [GITHUB, GITLAB]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "GITHUB",
+              "GITLAB"
+            ],
+            "case": "upper"
+          }
+        },
+        "terraform-version": {
+          "alias": "terv",
+          "api_param_name": "terraformVersion",
+          "help": "The version of Terraform used in the template should be indicated with the letter 'v'. For example v0.14.9",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "regex": "^v{1}([\\d]{1,4}[.]?){1,4}$",
+            "regex_error": "The length of the Terraform template version should be between 2 and 17 symbols and consist of no more than 4 groups separated by (.) The following characters are required in the template version name: v, ., 0-9. Example: v0.14.9"
+          }
+        },
+        "description": {
+          "alias": "d",
+          "api_param_name": "description",
+          "help": "The description for the Terraform template",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "multistack": {
+          "alias": "M",
+          "api_param_name": "multistack",
+          "help": "Flag. If specified the template can be used to create multiple stacks",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "approver": {
+          "alias": "apr",
+          "api_param_name": "reviewers",
+          "help": "Template Approvers. For several template approvers, please specify each approver's email individually, separated by a comma without a space. For example: email1,email2",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "approval-policy": {
+          "alias": "aprpolicy",
+          "api_param_name": "approvalRule",
+          "help": "The approval rule. Allowed values: [ALL, ONE]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          "case": "upper"
+        },
+        "variables-file": {
+          "alias": "vfile",
+          "help": "Specify the path to the JSON file that contains the variables. Supported types: STRING, MAP, LIST, BOOL, NUMBER",
+          "no_api": true,
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "variables": {
+          "alias": "var",
+          "api_param_name": "variables",
+          "help": "Provide the variables along with their values. The format should be:\n\"key1:value1\" for strings, \"key2:\\\"value2_1,value2_2\\\"\" for lists and \"key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\" for objects.\nSimultaneous use is possible: \"key1:value1,key2:\\\"value2_1,value2_2\\\",key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\"\nNote: the example uses cmd syntax. If you use bash or powershell, update the parameter value specification accordingly",
+          "required": false,
+          "multiple_values": true,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+        ]
+      }
+    },
+    "describe-terraform-templates": {
+      "api_action": "DESCRIBE_TERRAFORM_TEMPLATE",
+      "alias": "dtpl",
+      "help": "Describes Terraform template",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management",
+        "email-template_upload_notification-group",
+        "email-template_remove_notification-group",
+        "email-template_published_notification-group",
+        "email-template_diagnostics_notification-group",
+        "email-on_success_template_validation_notification-group",
+        "email-template_applied_notification-group",
+        "email-template_planned_notification-group",
+        "email-on_failed_template_action_notification-group",
+        "email-on_approved_run_template_report-group",
+        "email-on_rejected_run_template_report-group",
+        "email-on_platform_service_deleted_notification-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateNames",
+          "help": "Names of templates. \nPass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "templateName",
+          "owner",
+          "status",
+          "templateType",
+          "templateUuid",
+          "terraformVersion",
+          "templateFormat"
+        ]
+      }
+    },
+    "describe-terraform-stacks": {
+      "api_action": "DESCRIBE_TERRAFORM_STACK",
+      "alias": "dterstack",
+      "help": "Describes a Terraform stack",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management",
+        "email-on_stack_destroying_notification-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "stack-id": {
+          "alias": "stid",
+          "api_param_name": "stacksId",
+          "help": "The list of stack identifiers. For several stacks, specify the IDs one by one, separated by a comma without space (e.g., st00000001,st00000002)",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "templateName",
+          "status",
+          "owner",
+          "stackId",
+          "creationDate",
+          "lastModificationDate",
+          "description"
+        ]
+      }
+    },
+    "reboot-instances": {
+      "api_action": "REBOOT_INSTANCE",
+      "alias": "reboot",
+      "help": "Reboots the specified instance",
+      "help_file": true,
+      "integration_response": true,
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group",
+        "email-on_instance_state_changed-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The IDs of the instances. For several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": true,
+          "validation": {
+            "type": "list"
+          },
+          "batch_param": true
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "cloud",
+          "instanceId",
+          "state",
+          "instanceName",
+          "errorMessage"
+        ]
+      }
+    },
+    "start-instances": {
+      "api_action": "START_INSTANCE",
+      "alias": "start",
+      "help": "Starts the specified instances",
+      "help_file": true,
+      "integration_response": true,
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group",
+        "email-on_instance_state_changed-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The IDs of the instances. For several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": true,
+          "validation": {
+            "type": "list"
+          },
+          "batch_param": true
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "cloud",
+          "instanceId",
+          "state",
+          "instanceName",
+          "errorMessage"
+        ]
+      }
+    },
+    "manage-termination-protection": {
+      "api_action": "MANAGE_TERMINATION_PROTECTION",
+      "help": "Manages termination protection for public cloud instances",
+      "help_file": true,
+      "integration_response": true,
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "action": {
+          "alias": "a",
+          "api_param_name": "action",
+          "help": "Action type, allowed values: [ENABLE, DISABLE]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ENABLE",
+              "DISABLE"
+            ]
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+        ]
+      }
+    },
+    "delete-terraform-template": {
+      "api_action": "DELETE_TERRAFORM_TEMPLATE",
+      "alias": "deltpl",
+      "help": "Deletes a Terraform template",
+      "help_file": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management",
+        "email-template_upload_notification-group",
+        "email-template_remove_notification-group",
+        "email-template_published_notification-group",
+        "email-template_diagnostics_notification-group",
+        "email-on_success_template_validation_notification-group",
+        "email-template_applied_notification-group",
+        "email-template_planned_notification-group",
+        "email-on_failed_template_action_notification-group",
+        "email-on_approved_run_template_report-group",
+        "email-on_rejected_run_template_report-group",
+        "email-on_platform_service_deleted_notification-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the template to be deleted",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "status"
+        ]
+      }
+    },
+    "plan-terraform-template": {
+      "api_action": "EXECUTE_TERRAFORM_TASK",
+      "alias": "plantpl",
+      "help": "Plans the selected Terraform template",
+      "help_file": true,
+      "integration_request": true,
+      "groups": [
+        "terraform-management",
+        "email-template_upload_notification-group",
+        "email-template_remove_notification-group",
+        "email-template_published_notification-group",
+        "email-template_diagnostics_notification-group",
+        "email-on_success_template_validation_notification-group",
+        "email-template_applied_notification-group",
+        "email-template_planned_notification-group",
+        "email-on_failed_template_action_notification-group",
+        "email-on_approved_run_template_report-group",
+        "email-on_platform_service_deleted_notification-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the template to be planned",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "variables-file": {
+          "alias": "vfile",
+          "help": "Specify the path to the JSON file that contains the variables. Supported types: STRING, MAP, LIST, BOOL, NUMBER",
+          "no_api": true,
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "variables": {
+          "alias": "var",
+          "api_param_name": "variables",
+          "help": "Provide the variables along with their values. The format should be:\n\"key1:value1\" for strings, \"key2:\\\"value2_1,value2_2\\\"\" for lists and \"key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\" for objects.\nSimultaneous use is possible: \"key1:value1,key2:\\\"value2_1,value2_2\\\",key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\"\nNote: the example uses cmd syntax. If you use bash or powershell, update the parameter value specification accordingly",
+          "required": false,
+          "multiple_values": true,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+        ]
+      }
+    },
+    "apply-terraform-template": {
+      "api_action": "START_APPROVAL_PROCESS_FOR_APPLY_TEMPLATE",
+      "alias": "applytpl",
+      "help": "Applies a Terraform template",
+      "help_file": true,
+      "integration_request": true,
+      "groups": [
+        "terraform-management",
+        "email-template_upload_notification-group",
+        "email-template_remove_notification-group",
+        "email-on_success_template_validation_notification-group",
+        "email-template_applied_notification-group",
+        "email-template_planned_notification-group",
+        "email-on_failed_template_action_notification-group",
+        "email-on_approved_run_template_report-group",
+        "email-on_rejected_run_template_report-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the template to be applied",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "variables-file": {
+          "alias": "vfile",
+          "help": "Specify the path to the JSON file that contains the variables. Supported types: STRING, MAP, LIST, BOOL, NUMBER",
+          "no_api": true,
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "variables": {
+          "alias": "var",
+          "api_param_name": "variables",
+          "help": "Provide the variables along with their values. The format should be:\n\"key1:value1\" for strings, \"key2:\\\"value2_1,value2_2\\\"\" for lists and \"key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\" for objects.\nSimultaneous use is possible: \"key1:value1,key2:\\\"value2_1,value2_2\\\",key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\"\nNote: the example uses cmd syntax. If you use bash or powershell, update the parameter value specification accordingly",
+          "required": false,
+          "multiple_values": true,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+          "status"
+        ]
+      }
+    },
+    "lock-terraform-template": {
+      "api_action": "LOCK_TERRAFORM_TEMPLATE",
+      "alias": "locktpl",
+      "help": "Lock a Terraform template to prevent any actions from other users",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the Terraform template that is to be locked",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "expiration": {
+          "alias": "exp",
+          "api_param_name": "expirationHours",
+          "help": "Expiration parameter which specifies time in hours. You can specify the lock time within the range of 1-168 hours",
+          "required": true,
+          "validation": {
+            "type": "number",
+            "min_value": 1,
+            "max_value": 168
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+          "status"
+        ]
+      }
+    },
+    "prolong-terraform-template-lock": {
+      "api_action": "PROLONG_TERRAFORM_TEMPLATE_LOCK",
+      "alias": "ptplock",
+      "help": "Prolong a Terraform template lock to prevent any actions from other users",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the Terraform template for which the lock is to be prolonged",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "expiration": {
+          "alias": "exp",
+          "api_param_name": "expirationHours",
+          "help": "Expiration parameter which specifies time in hours. You can prolong the locking time in the range of 1-168 hours",
+          "required": true,
+          "validation": {
+            "type": "number",
+            "min_value": 1,
+            "max_value": 168
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+          "status"
+        ]
+      }
+    },
+    "unlock-terraform-template": {
+      "api_action": "UNLOCK_TERRAFORM_TEMPLATE",
+      "alias": "unlocktpl",
+      "help": "Unlock a Terraform template to allow actions from other users",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the Terraform template that needs to be unlocked",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+          "status"
+        ]
+      }
+    },
+    "destroy-terraform-stack": {
+      "api_action": "EXECUTE_TERRAFORM_TASK",
+      "alias": "dtrterstack",
+      "help": "Destroys resources related to a Terraform template or stack",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management",
+        "email-template_remove_notification-group",
+        "email-on_stack_destroying_notification-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the template to be destroyed",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "stack-id": {
+          "alias": "stid",
+          "api_param_name": "stackId",
+          "help": "The ID of the stack which resources will be destroyed",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": []
+      }
+    },
+    "create-instance-quota": {
+      "api_action": "UPDATE_INSTANCE_QUOTA",
+      "help": "Sets up a number of instances allowed for creation on a specific tenant within a specific interval",
+      "help_file": true,
+      "alias": "cinquota",
+      "integration_request": true,
+      "groups": [
+        "instance-quota-management",
+        "create-resource-quota",
+        "email-on_new_quota_update_report-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "creation-interval-hours": {
+          "alias": "h",
+          "api_param_name": "creationIntervalHours",
+          "help": "The period in hours during which the specified amount of instances can be created",
+          "required": true,
+          "validation": {
+            "type": "number",
+            "min_value": 1
+          }
+        },
+        "instance-amount": {
+          "alias": "amount",
+          "api_param_name": "creationIntervalCount",
+          "help": "The number of instances one can create during creation interval",
+          "required": true,
+          "validation": {
+            "type": "number",
+            "min_value": 0
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": []
+      }
+    },
+    "describe-instance-quota": {
+      "api_action": "GET_INSTANCE_QUOTA",
+      "help": "Describes the limitation for the number of instances allowed for creation on a specific tenant within a specific interval",
+      "help_file": true,
+      "integration_response": true,
+      "alias": "dinquota",
+      "groups": [
+        "instance-quota-management",
+        "describe-resource-quota",
+        "email-on_new_quota_update_report-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "creationIntervalHours",
+          "creationIntervalCount"
+        ],
+        "headers_customization": {
+          "creationIntervalCount": {
+            "header_display_name": "Instance Amount"
+          }
+        }
+      }
+    },
+    "delete-instance-quota": {
+      "api_action": "REMOVE_INSTANCE_QUOTA",
+      "help": "Deletes the limitation for the number of instances allowed for creation on a specific tenant within a specific interval",
+      "help_file": true,
+      "alias": "delinquota",
+      "groups": [
+        "instance-quota-management",
+        "email-on_new_quota_update_report-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": []
+      }
+    },
+    "create-storage-quota": {
+      "api_action": "UPDATE_VOLUME_QUOTA",
+      "help": "Sets up an amount and size of storages allowed for creation on a specific tenant within a specific interval",
+      "help_file": true,
+      "alias": "cstorquota",
+      "integration_request": true,
+      "groups": [
+        "volume-quota-management",
+        "create-resource-quota",
+        "cli-describe-storages-help",
+        "email-on_new_quota_update_report-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "storage-max-size": {
+          "alias": "storsize",
+          "api_param_name": "maxSize",
+          "help": "The maximum size of a storage at creation, in GB",
+          "required": true,
+          "validation": {
+            "type": "number",
+            "min_value": 1
+          }
+        },
+        "creation-interval-hours": {
+          "alias": "h",
+          "api_param_name": "creationIntervalHours",
+          "help": "The period in hours during which the specified amount of storages can be created",
+          "required": true,
+          "validation": {
+            "type": "number",
+            "min_value": 1
+          }
+        },
+        "storage-amount": {
+          "alias": "amount",
+          "api_param_name": "creationIntervalCount",
+          "help": "The number of storages one can create during creation interval",
+          "required": true,
+          "validation": {
+            "type": "number",
+            "min_value": 0
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": []
+      }
+    },
+    "describe-storage-quota": {
+      "api_action": "GET_VOLUME_QUOTA",
+      "help": "Describes the limitation for the number and size of storages allowed for creation on a specific tenant within a specific interval",
+      "help_file": true,
+      "alias": "dstorquota",
+      "integration_response": true,
+      "groups": [
+        "volume-quota-management",
+        "describe-resource-quota"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "maxSizeGb",
+          "creationIntervalHours",
+          "creationIntervalCount"
+        ],
+        "headers_customization": {
+          "maxSizeGb": {
+            "header_display_name": "Storage Max Size"
+          },
+          "creationIntervalCount": {
+            "header_display_name": "Storage Amount"
+          }
+        }
+      }
+    },
+    "delete-storage-quota": {
+      "api_action": "REMOVE_VOLUME_QUOTA",
+      "help": "Deletes the limitations for an amount and size of storages allowed for creation on a specific tenant within a specific interval",
+      "help_file": true,
+      "alias": "delstorquota",
+      "groups": [
+        "volume-quota-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": []
+      }
+    },
+    "create-key": {
+      "api_action": "ADD_KEY",
+      "alias": "ckey",
+      "help": "Creates a SSH key used to access instances without need to provide login credentials",
+      "help_file": true,
+      "integration_response": true,
+      "integration_request": true,
+      "groups": [
+        "keypair-management",
+        "email-on_key_pair_processed-group"
+      ],
+      "parameters": {
+        "key-name": {
+          "alias": "kname",
+          "api_param_name": "name",
+          "help": "The SSH key name of the new key. \nSSH key names must be 6-32 characters long, and include only these characters - '0-9', 'a-z', 'A-Z', '-_'",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud name where the key will be applied. \nAllowed values: [AWS, AZURE, GOOGLE, NUTANIX, OPEN_STACK]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "GOOGLE",
+              "NUTANIX",
+              "OPEN_STACK"
+            ]
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenantName",
+          "help": "The tenant name where the key will be applied",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "all-tenants": {
+          "alias": "AT",
+          "api_param_name": "allTenants",
+          "help": "A flag. If specified the key pair for all tenants will be created",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name where the key will be applied",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "save-to-path": {
+          "alias": "path",
+          "api_param_name": "path",
+          "help": "The path to the directory where the new SSH keys will be saved",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "name",
+          "email",
+          "cloud",
+          "tenant",
+          "region",
+          "publicPart",
+          "path"
+        ],
+        "headers_customization": {
+          "publicPart": {
+            "header_display_name": "Public Key"
+          },
+          "name": {
+            "header_display_name": "Key Name"
+          }
+        }
+      }
+    },
+    "manage-key": {
+      "api_action": "UPDATE_KEYS",
+      "alias": "mkey",
+      "help": "Manage your SSH keys. Adds or deletes an SSH key in a region",
+      "help_file": true,
+      "integration_request": true,
+      "groups": [
+        "keypair-management",
+        "email-on_key_pair_processed-group"
+      ],
+      "parameters": {
+        "key-name": {
+          "alias": "kname",
+          "api_param_name": "name",
+          "help": "The SSH key name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "action": {
+          "alias": "a",
+          "api_param_name": "state",
+          "help": "An action to be done with a keypair. Allowed values: [ADD, REMOVE]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ADD",
+              "REMOVE"
+            ]
+          },
+          "case": "upper"
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud. Allowed_values: [AWS, AZURE, GOOGLE, NUTANIX, OPEN_STACK]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "GOOGLE",
+              "NUTANIX",
+              "OPEN_STACK"
+            ]
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name. Required if the all-region parameter is not specified. For several regions, specify the regions one by one, separated by a comma without space (e.g., value1,value2)",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "all-regions": {
+          "alias": "R",
+          "api_param_name": "allRegions",
+          "help": "A flag. If specified, the key will be updated in all regions of the cloud provider",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "none": true,
+        "response_table_headers": [
+        ]
+      }
+    },
+    "describe-tenants": {
+      "api_action": "DESCRIBE_TENANTS",
+      "alias": "dtn",
+      "help": "Describes the tenants available for the user",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "describe-entities",
+        "cli-run-instances-help",
+        "email-instance_run_report-group"
+      ],
+      "parameters": {
+        "inactive": {
+          "alias": "N",
+          "api_param_name": "inactive",
+          "help": "A flag. If specified only the inactive tenants will be displayed",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "hidden": {
+          "alias": "H",
+          "api_param_name": "hidden",
+          "help": "A flag. If specified the hidden regions will be displayed",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud. \nAllowed values: [AWS, AZURE, ENTERPRISE, GOOGLE, HARDWARE, NUTANIX, OPEN_STACK, VSPHERE, HYPERV, VMWARE, WORKSPACE]",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "ENTERPRISE",
+              "GOOGLE",
+              "HARDWARE",
+              "NUTANIX",
+              "OPEN_STACK",
+              "VSPHERE",
+              "HYPERV",
+              "VMWARE",
+              "WORKSPACE"
+            ]
+          },
+          "case": "upper"
+        },
+        "tenant": {
+          "alias": "tn",
+          "api_param_name": "tenantNames",
+          "help": "A list of tenants. Pass several values in the following format: value1,value2,value3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        },
+        "all": {
+          "alias": "A",
+          "api_param_name": "all",
+          "help": "A flag. If specified active and inactive tenants including hidden regions will be displayed",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "nullable": true,
+        "custom_full_view": true,
+        "response_table_headers": [
+          "tenantName",
+          "region",
+          "parentTenant",
+          "hidden",
+          "activationDate",
+          "tenantManagerContacts",
+          "deactivationDate"
+        ],
+        "headers_customization": {
+          "hidden": {
+            "header_display_name": "Read Only"
+          }
+        }
+      }
+    },
+    "describe-regions": {
+      "api_action": "DESCRIBE_REGIONS",
+      "alias": "dr",
+      "help": "Describes the regions available for a tenant in the specified cloud",
+      "help_file": true,
+      "groups": [
+        "describe-entities",
+        "cli-run-instances-help",
+        "email-instance_run_report-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "inactive": {
+          "alias": "N",
+          "api_param_name": "inactive",
+          "help": "A flag. If specified, the inactive regions are shown",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "include-hidden": {
+          "alias": "H",
+          "api_param_name": "includeHidden",
+          "help": "A flag. If specified, the hidden regions are shown",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "cloud": {
+          "alias": "c",
+          "api_param_name": "cloud",
+          "help": "The cloud. \nAllowed values: [AWS, AZURE, ENTERPRISE, GOOGLE, HARDWARE, NUTANIX, OPEN_STACK, VSPHERE]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "AWS",
+              "AZURE",
+              "ENTERPRISE",
+              "GOOGLE",
+              "HARDWARE",
+              "NUTANIX",
+              "OPEN_STACK",
+              "VSPHERE"
+            ]
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "nullable": true,
+        "response_table_headers": [
+          "region",
+          "nativeName",
+          "active"
+        ]
+      }
+    },
+    "describe-shapes": {
+      "api_action": "LIST_REGION_SHAPES",
+      "alias": "dsh",
+      "integration_response": true,
+      "help": "Describes the shapes available for your tenant",
+      "help_file": true,
+      "groups": [
+        "describe-entities",
+        "cli-run-instances-help",
+        "cli-describe-storages-help",
+        "email-instance_run_report-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "name",
+          "shape",
+          "cpuCount",
+          "memoryGb",
+          "storageGb"
+        ]
+      }
+    },
+    "add-schedule-instances": {
+      "api_action": "SCHEDULE_ADD_INSTANCES",
+      "alias": "addschin",
+      "help": "Adds an existing schedule to one or several  instances",
+      "help_file": true,
+      "integration_response": true,
+      "groups": [
+        "schedule-management",
+        "email-instance_low_utilization_report-group",
+        "email-optimization_report_attachment-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "name": {
+          "alias": "n",
+          "api_param_name": "scheduleName",
+          "help": "The name of the schedule",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceIds",
+          "help": "The IDs of the instances. \nTo set the schedule for several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": true,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "Instance",
+          "Status",
+          "Reason"
+        ],
+        "headers_customization": {
+          "Instance": {
+            "header_display_name": "Instance(s)"
+          }
+        }
+      }
+    },
+    "delete-schedule-instances": {
+      "api_action": "SCHEDULE_REMOVE_INSTANCES",
+      "alias": "delschin",
+      "help": "Deletes a schedule from one or several  instances",
+      "help_file": true,
+      "integration_response": true,
+      "groups": [
+        "schedule-management",
+        "email-on_schedule_delete_warning-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "name": {
+          "alias": "n",
+          "api_param_name": "scheduleName",
+          "help": "The name of the schedule",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceIds",
+          "help": "The IDs of the instances. \nTo delete the schedule from several instances, specify the IDs one by one, separated by a comma without space (e.g., vmo00000001,vmo00000002)",
+          "required": true,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "Instance",
+          "Status",
+          "Reason"
+        ],
+        "headers_customization": {
+          "Instance": {
+            "header_display_name": "Instance(s)"
+          }
+        }
+      }
+    },
+    "delete-tags": {
+      "api_action": "DELETE_TAGS",
+      "alias": "deltag",
+      "help": "Deletes tags. Applicable both for public and private clouds",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "public-tag-management",
+        "private-tag-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "availability-zone": {
+          "alias": "az",
+          "api_param_name": "availabilityZone",
+          "help": "The availability zone name (for Google)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "resource-group": {
+          "alias": "rgname",
+          "api_param_name": "resourceGroup",
+          "help": "The resource group name (for Azure)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "tag-key": {
+          "alias": "key",
+          "api_param_name": "tags",
+          "help": "Tag-keys. Pass several keys of tags in the following format: key1,key2,key3",
+          "required": true,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "instanceId",
+          "key",
+          "value",
+          "errorMessage",
+          "Message"
+        ],
+        "headers_customization": {
+          "key": {
+            "disable_numparse": true
+          },
+          "value": {
+            "disable_numparse": true
+          }
+        }
+      }
+    },
+    "describe-tags": {
+      "api_action": "DESCRIBE_TAGS",
+      "alias": "dtag",
+      "help": "Describes instance tags. Applicable both for public and private clouds",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "public-tag-management",
+        "private-tag-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance",
+          "required": true,
+          "validation": {
+            "type": "list"
+          },
+          "batch_param": true
+        },
+        "availability-zone": {
+          "alias": "az",
+          "api_param_name": "availabilityZone",
+          "help": "The availability zone name (for Google)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "resource-group": {
+          "alias": "rgname",
+          "api_param_name": "resourceGroup",
+          "help": "The resource group name (for Azure)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "instanceId",
+          "key",
+          "value",
+          "errorMessage"
+        ],
+        "headers_customization": {
+          "key": {
+            "disable_numparse": true
+          },
+          "value": {
+            "disable_numparse": true
+          }
+        }
+      }
+    },
+    "set-tags": {
+      "api_action": "UPDATE_TAGS",
+      "help": "Sets tag for the instance. Applicable both for public and private clouds",
+      "integration_request": true,
+      "integration_response": true,
+      "help_file": true,
+      "alias": "stag",
+      "groups": [
+        "public-tag-management",
+        "private-tag-management"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "availability-zone": {
+          "alias": "az",
+          "api_param_name": "availabilityZone",
+          "help": "The availability zone name (for Google)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "resource-group": {
+          "alias": "rgname",
+          "api_param_name": "resourceGroup",
+          "help": "The resource group name (for Azure)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "overwrite": {
+          "alias": "O",
+          "api_param_name": "overwrite",
+          "help": "Flag. If specified, the existing tags will be replaced with the passed",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance",
+          "required": true,
+          "validation": {
+            "type": "list"
+          },
+          "batch_param": true
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tags",
+          "help": "Tags. Pass several values in the following format: key1:val1,key2:val2,key3:val3",
+          "required": true,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "storage-id": {
+          "alias": "storid",
+          "api_param_name": "volumeIds",
+          "help": "Storage IDs. Pass several values in the following format: storage1,storage2,storage3",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "instanceId",
+          "key",
+          "value",
+          "errorMessage"
+        ],
+        "headers_customization": {
+          "key": {
+            "disable_numparse": true
+          }
+        }
+      }
+    },
+    "upload-terraform-template": {
+      "api_action": "SETUP_TERRAFORM_TEMPLATE_WITH_S3",
+      "alias": "upltpl",
+      "help": "Uploads a Terraform template",
+      "help_file": true,
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "terraform-management",
+        "email-template_upload_notification-group",
+        "email-template_published_notification-group",
+        "email-template_diagnostics_notification-group",
+        "email-template_applied_notification-group",
+        "email-template_planned_notification-group",
+        "email-on_failed_template_action_notification-group",
+        "email-on_approved_run_template_report-group",
+        "email-on_rejected_run_template_report-group",
+        "email-on_platform_service_deleted_notification-group"
+      ],
+      "parameters": {
+        "file-path": {
+          "alias": "fpath",
+          "api_param_name": "filepath",
+          "help": "Path to the file that will be used as a source of the template",
+          "required": true,
+          "validation": {
+            "type": "file",
+            "file_extensions": [
+              ".tf",
+              ".json"
+            ]
+          }
+        },
+        "terraform-version": {
+          "alias": "terv",
+          "api_param_name": "terraformVersion",
+          "help": "The version of Terraform to use. The version of template should be indicated with the letter 'v'. For example v0.14.9",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "regex": "^v{1}([\\d]{1,4}[.]?){1,4}$",
+            "regex_error": "The length of the Terraform template version should be between 2 and 17 symbols and consist of no more than 4 groups separated by (.) The following characters are required in the template version name: v, ., 0-9. Example: v0.14.9"
+          }
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the template that will be uploaded",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "regex": "^[\\w+!\\-_.*'()]{2,128}$",
+            "regex_error": "The length of template name should be between 2 and 128 symbols. The following characters are allowed in template names: 0-9, a-z, A-Z, !, -, _, ., *, ', (, )"
+          }
+        },
+        "description": {
+          "alias": "d",
+          "api_param_name": "description",
+          "help": "The description for the Terraform template. Describe the purpose of your template or provide other relevant information",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "multistack": {
+          "alias": "M",
+          "api_param_name": "multistack",
+          "help": "A flag. If specified the template can be used to create multiple stacks",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "approver": {
+          "alias": "apr",
+          "api_param_name": "reviewers",
+          "help": "Template Approvers. For several template approvers, please specify each approver's email individually, separated by a comma without a space. For example: email1,email2",
+          "required": false,
+          "validation": {
+            "type": "list"
+          }
+        },
+        "approval-policy": {
+          "alias": "aprpolicy",
+          "api_param_name": "approvalRule",
+          "help": "The approval rule. Allowed values: [ALL, ONE]. If specified, template will be send to request the technical approval of your Terraform template from other persons  \nALL: All approvals required \nONE: At least one approval required",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          "case": "upper"
+        },
+        "variables-file": {
+          "alias": "vfile",
+          "help": "Specify the path to the JSON file that contains the variables. Supported types: STRING, MAP, LIST, BOOL, NUMBER",
+          "no_api": true,
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "variables": {
+          "alias": "var",
+          "api_param_name": "variables",
+          "help": "Provide the variables along with their values. The format should be:\n\"key1:value1\" for strings, \"key2:\\\"value2_1,value2_2\\\"\" for lists and \"key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\" for objects.\nSimultaneous use is possible: \"key1:value1,key2:\\\"value2_1,value2_2\\\",key3:\\\"key3_1=value3_1,key3_2=value3_2\\\"\"\nNote: the example uses cmd syntax. If you use bash or powershell, update the parameter value specification accordingly",
+          "required": false,
+          "multiple_values": true,
+          "validation": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+        ]
+      }
+    },
+    "export-terraform-template": {
+      "api_action": "EXPORT_TERRAFORM_TEMPLATE",
+      "alias": "exptpl",
+      "help": "Exports a Terraform template as a signed URL",
+      "help_file": true,
+      "groups": [
+        "terraform-management",
+        "email-template_upload_notification-group",
+        "email-template_remove_notification-group",
+        "email-template_published_notification-group",
+        "email-template_diagnostics_notification-group",
+        "email-on_success_template_validation_notification-group",
+        "email-template_applied_notification-group",
+        "email-template_planned_notification-group",
+        "email-on_failed_template_action_notification-group",
+        "email-on_approved_run_template_report-group",
+        "email-on_rejected_run_template_report-group",
+        "email-on_platform_service_deleted_notification-group"
+      ],
+      "parameters": {
+        "cloud": {
+          "parent": "cloud"
+        },
+        "tenant": {
+          "parent": "tenant"
+        },
+        "template": {
+          "alias": "tpl",
+          "api_param_name": "templateName",
+          "help": "The name of the template to be exported",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+        ]
+      }
+    },
+    "multitenant-report": {
+      "api_action": "GET_MULTIPROJECT_BILLING_REPORT",
+      "help": "Gets multitenant billing report",
+      "help_file": true,
+      "alias": "mreport",
+      "integration_request": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "from": {
+          "alias": "from",
+          "api_param_name": "from",
+          "help": "The start range date. Format \"dd.mm.yyyy\"",
+          "required": true,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "to": {
+          "alias": "to",
+          "api_param_name": "to",
+          "help": "The end range date. Format \"dd.mm.yyyy\"",
+          "required": true,
+          "validation": {
+            "type": "date"
+          }
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tag",
+          "help": "Collect only records with specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "account-id": {
+          "alias": "accid",
+          "api_param_name": "eoAccount",
+          "help": "The account-id parameter may be specified only in case ACCOUNT report-type is set. account-id is not applicable with other values of report-type",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "report-type": {
+          "alias": "rtype",
+          "api_param_name": "reportProjectType",
+          "help": "The type of the report. Allowed values: [ACCOUNT, ACTIVE, ADJUSTMENT, ALL_PERSONAL, ANNUAL, CUSTOMERS, INACTIVE, NOT_PMC, UNITS, UPSA_INACTIVE, NATIVE]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "ACCOUNT",
+              "ACTIVE",
+              "ADJUSTMENT",
+              "ALL_PERSONAL",
+              "ANNUAL",
+              "CUSTOMERS",
+              "INACTIVE",
+              "NOT_PMC",
+              "UNITS",
+              "UPSA_INACTIVE",
+              "NATIVE"
+            ]
+          },
+          "case": "upper"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "reportZoneType",
+          "help": "The cloud providers or the region or the report family. Allowed values: [HARDWARE, AWS, AWS_UNREACHABLE, AZURE, AZURE_NATIVE, GOOGLE, MOBILE, ENTERPRISE, SWIFT_STACK, REPORT_PORTAL, WORKSPACES, AWS_WORKSPACES, AZURE_WORKSPACES, AWS_PAAS, AWS_ATLAS, AZURE_PAAS, GOOGLE_PAAS, PRIVATE_PAAS, PRIVATE]",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "include-billing-source": {
+          "alias": "ibs",
+          "api_param_name": "includeBillingSource",
+          "help": "A flag. Include billing source for public cloud providers",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "tenant-group": {
+          "alias": "tg",
+          "api_param_name": "tenantGroups",
+          "help": "The tenant group",
+          "required": false,
+          "validation": {
+            "type": "list"
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "billing-region-types": {
+      "api_action": "GET_BILLING_REGION_TYPES",
+      "help": "Gets billing region types",
+      "help_file": true,
+      "alias": "brtypes",
+      "integration_request": false,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "parameters": {
+        "all": {
+          "alias": "A",
+          "api_param_name": "all",
+          "help": "A flag. Includes inactive regions",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "regionType",
+          "regions"
+        ],
+        "nullable": true
+      }
+    },
+    "describe-user-permissions": {
+      "api_action": "GET_USER_PERMISSIONS",
+      "alias": "duserperm",
+      "help": "Describes the permission groups assigned to you in the specified tenant",
+      "help_file": true,
+      "integration_response": true,
+      "groups": [
+        "access-permission"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "cloud": {
+          "parent": "cloud"
+        },
+        "environment": {
+          "alias": "env",
+          "api_param_name": "env",
+          "help": "The Maestro environment or the third-party application for which to describe your permissions.\nAllowed values: [M3_UI, M3_SDK, AWS_CONSOLE, GOOGLE_CONSOLE, AZURE_CONSOLE]",
+          "required": true,
+          "validation": {
+            "type": "string",
+            "allowed_values": [
+              "M3_UI",
+              "M3_SDK",
+              "AWS_CONSOLE",
+              "GOOGLE_CONSOLE",
+              "AZURE_CONSOLE"
+            ]
+          },
+          "case": "upper"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "permissionGroup",
+          "name",
+          "description",
+          "role",
+          "policy"
+        ]
+      }
+    },
+    "allocate-ip": {
+      "api_action": "ALLOCATE_IP",
+      "alias": "alip",
+      "help_file": true,
+      "help": "Allocate static IP on specified region in tenant",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "network": {
+          "alias": "net",
+          "api_param_name": "network",
+          "help": "The id of the target network",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "tenantName",
+          "regionName",
+          "ipAddress"
+        ]
+      }
+    },
+    "release-ip": {
+      "api_action": "RELEASE_IP",
+      "alias": "rip",
+      "help_file": true,
+      "integration_response": true,
+      "help": "Release static IP on specified region in tenant",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "ip": {
+          "alias": "ip",
+          "api_param_name": "ip",
+          "help": "The target static ip",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "describe-ip": {
+      "api_action": "DESCRIBE_IPS",
+      "alias": "dip",
+      "help_file": true,
+      "help": "Describe static IPs on specified region in tenant",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "ipAddress",
+          "tenantName",
+          "regionName",
+          "instanceId"
+        ]
+      }
+    },
+    "describe-vlans": {
+      "api_action": "DESCRIBE_VLAN",
+      "alias": "dvlans",
+      "help_file": true,
+      "help": "Describe available VLANs on specified region in tenant",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "name",
+          "networkId",
+          "type",
+          "existsOnCloud"
+        ]
+      }
+    },
+    "deactivate-vlan": {
+      "api_action": "DEACTIVATE_VLAN",
+      "alias": "dvlan",
+      "help_file": true,
+      "integration_response": true,
+      "help": "Deactivate specified VLAN on specified region in tenant",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "vlan-name": {
+          "alias": "vlan",
+          "api_param_name": "vlanName",
+          "help": "The target VLAN name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+        ]
+      }
+    },
+    "activate-vlan": {
+      "api_action": "ACTIVATE_VLAN",
+      "alias": "avlan",
+      "help_file": true,
+      "integration_response": true,
+      "integration_request": true,
+      "help": "Activate specified VLAN on specified region in tenant",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "vlan-name": {
+          "alias": "vlan",
+          "api_param_name": "vlanName",
+          "help": "The target VLAN name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "alias": "d",
+          "api_param_name": "description",
+          "help": "The VLAN description",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "move-to-vlan": {
+      "api_action": "MOVE_VM_TO_VLAN",
+      "alias": "mvlan",
+      "help_file": true,
+      "integration_response": true,
+      "help": "Move instance To another vlan",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "vlan-name": {
+          "alias": "vlan",
+          "api_param_name": "vlanName",
+          "help": "The target VLAN name",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "instance-id": {
+          "alias": "i",
+          "api_param_name": "instanceId",
+          "help": "Target instance id",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": []
+      }
+    },
+    "associate-ip": {
+      "api_action": "ASSOCIATE_IP",
+      "alias": "asip",
+      "help_file": true,
+      "help": "Associate static IP with instance",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "static-ip": {
+          "alias": "ip",
+          "api_param_name": "ip",
+          "help": "The target static IP",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "instance-id": {
+          "alias": "i",
+          "api_param_name": "instanceId",
+          "help": "Target instance ID",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "ipAddress",
+          "tenantName",
+          "regionName",
+          "instanceId"
+        ]
+      }
+    },
+    "disassociate-ip": {
+      "api_action": "DISASSOCIATE_IP",
+      "alias": "dsip",
+      "help_file": true,
+      "help": "Disassociate static IP from the instance",
+      "groups": [
+        "instance-management",
+        "email-on_run_instance-group"
+      ],
+      "parameters": {
+        "tenant": {
+          "parent": "tenant"
+        },
+        "region": {
+          "parent": "region"
+        },
+        "static-ip": {
+          "alias": "ip",
+          "api_param_name": "ip",
+          "help": "The target static IP",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        }
+      },
+      "output_configuration": {
+        "response_table_headers": [
+          "ipAddress",
+          "tenantName",
+          "regionName",
+          "instanceId"
+        ]
+      }
+    },
+    "report": {
+      "api_action": "GET_TOTAL_BILLING_REPORT",
+      "help": "This command is a single point of entry for report-related commands: 'total-report', 'subtotal-report', 'resource-report', 'budgets-report' and 'hourly-report'",
+      "help_file": true,
+      "alias": "report",
+      "integration_request": true,
+      "integration_response": true,
+      "groups": [
+        "billing-reports",
+        "cli-price-help"
+      ],
+      "keep-params-order": true,
+      "parameters": {
+        "tenant-group": {
+          "alias": "tg",
+          "api_param_name": "tenantGroup",
+          "help": "The tenant group",
+          "required": true,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "year": {
+          "alias": "y",
+          "api_param_name": "year",
+          "help": "Year. Format (yyyy). Use with 'month' for a 1-month range, or with 'month' and 'day' for a 1-day range",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "month": {
+          "alias": "m",
+          "api_param_name": "month",
+          "help": "Month. Format (mm). Use with 'year' for a 1-month range, or with 'day' for a 1-day range",
+          "required": true,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "day": {
+          "alias": "d",
+          "api_param_name": "day",
+          "help": "Day. Format (dd). Use with 'year' and 'month' for a 1-day range",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "alias": "t",
+          "api_param_name": "types",
+          "help": "Report type. Possible parameter values: [total, subtotal, resource, hourly, budgets]. Default: total ('total-report' command)",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "lower"
+        },
+        "region": {
+          "alias": "r",
+          "api_param_name": "region",
+          "help": "The region name. Specify this parameter to filter report records by region",
+          "required": false,
+          "validation": {
+            "type": "string"
+          },
+          "case": "upper"
+        },
+        "tag": {
+          "alias": "tag",
+          "api_param_name": "tag",
+          "help": "Collects only records with a specified tag. Use the following format: tag=value",
+          "required": false,
+          "validation": {
+            "type": "string",
+            "regex": "^[A-Za-z0-9_.:/+-@.]+=[A-Za-z0-90-9_.:/+-@.]*$"
+          }
+        },
+        "report": {
+          "alias": "R",
+          "api_param_name": "reportFormat",
+          "help": "A flag. If specified the report will be sent by email",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "url": {
+          "alias": "U",
+          "api_param_name": "URL",
+          "help": "A flag. If specified, the presigned URL will be generated (used for the type: 'total', 'subtotal', 'resource' and 'hourly')",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        },
+        "instance-id": {
+          "alias": "iid",
+          "api_param_name": "instanceId",
+          "help": "The ID of the instance (used for the type: 'resource', 'hourly')",
+          "required": false,
+          "validation": {
+            "type": "string"
+          }
+        },
+        "adjustment": {
+          "alias": "A",
+          "api_param_name": "onlyAdjustments",
+          "help": "A flag. If specified, only adjustments will be shown (used for the type: 'total', 'subtotal')",
+          "required": false,
+          "validation": {
+            "type": "bool"
+          }
+        }
+      },
+      "output_configuration": {
+        "mutated_yaml": true,
+        "response_table_headers": [
+          "type",
+          "tenant",
+          "monthlyBudget",
+          "currentMonthlyChargeback",
+          "monthlyUtilization %",
+          "dailyBudget",
+          "currentDailyChargeback",
+          "dailyUtilization %",
+          "actionPlan",
+          "status",
+          "tag",
+          "affectedRegions",
+          "recordType",
+          "projectCode",
+          "region",
+          "productName",
+          "usageType",
+          "quantity",
+          "currencyCode",
+          "tenantName",
+          "billingPeriodStartDate",
+          "billingPeriodEndDate",
+          "tenantDisplayName",
+          "regionName",
+          "owner",
+          "totalPrice",
+          "total"
+        ],
+        "nullable": true
+      }
+    }
+  },
+  "version": "5.1"
+}
