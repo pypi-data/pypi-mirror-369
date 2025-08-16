@@ -1,0 +1,115 @@
+# ==========================
+# Main project configuration 
+# ==========================
+
+[project]
+name = "univalidator"
+version = "0.2.0"
+description = "A lightweight, type-safe email validator with support of multiple validator."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+authors = [
+    { name = "shaileshpandit141", email = "shaileshpandit141@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Utilities",
+    "Topic :: Internet :: Name Service (DNS)",
+]
+keywords = [
+    "validator",
+    "validation",
+    "email",
+    "regex",
+    "dns",
+    "mx-record",
+    "data-validation",
+    "composite-validator",
+    "typed-validator",
+    "python-validator",
+    "email-validator",
+    "type-safe-validation",
+]
+requires-python = ">=3.13"
+dependencies = ["dnspython>=2.7.0"]
+
+# CLI scripts entry point configuration
+# -------------------------------------
+[project.scripts]
+univalidator = "univalidator:entry_point"
+
+# ==========================
+# Build system configuration
+# ==========================
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# =================
+# Dependency groups
+# =================
+[dependency-groups]
+dev = ["univalidator", "pytest>=8.4.1"]
+
+# =====================
+# Optional dependencies
+# =====================
+[project.optional-dependencies]
+dev = ["pytest", "mypy", "ruff"]
+
+# ===============
+# UV tool sources
+# ===============
+[tool.uv.sources]
+univalidator = { workspace = true }
+
+# ============
+# Package data
+# ============
+[tool.setuptools.package-data]
+"univalidator" = ["py.typed"]
+
+# ============
+# Project URLs
+# ============
+[project.urls]
+Homepage = "https://github.com/shaileshpandit141/univalidator"
+Repository = "https://github.com/shaileshpandit141/univalidator"
+Issues = "https://github.com/shaileshpandit141/univalidator/issues"
+
+# ===================
+# Tool Configurations
+# ===================
+
+# Disable ruff S101 rule for test casecases
+# -----------------------------------------
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101"]
+
+# ====================
+# Pytest configuration
+# ====================
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# ==========================
+# Autofmt tool configuration
+# ==========================
+[tool.autofmt]
+watch_path = "."
+formatters = ["black", "ruff"]
+cooldown_seconds = 1.0
