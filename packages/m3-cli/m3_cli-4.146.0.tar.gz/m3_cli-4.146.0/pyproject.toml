@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.2.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "m3-cli"
+version = "4.146.0"
+authors = [
+    {name = "maestrocloudcontrol", email = "support@maestrocontrol.cloud"}
+]
+description = "The Maestro3 Command Line Interface (CLI) is a unified tool to manage your Maestro services and resources"
+readme = {file = "README.md", content-type = "text/markdown"}
+keywords = ["Maestro3", "Command Line Interface", "CLI", "CLOUD"]
+urls = {Homepage = "https://github.com/Maestro-Cloud-Control/m3-cli"}
+
+dependencies = [
+    "setuptools==68.2.1",
+    "click==7.1.2",
+    "requests==2.31.0",
+    "tabulate==0.9.0",
+    "pika==1.0.0b1",
+    "cryptography==41.0.3",
+    "jsonschema==3.2.0",
+    "pyyaml==6.0.1",
+    "Pillow==10.0.0",
+    "packaging==25.0",
+    "beautifulsoup4==4.10.0",
+]
+
+[project.entry-points.console_scripts]
+m3 = "m3cli.m3:m3"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.data-files]
+"m3cli" = [
+    "m3cli/commands_def.json",
+    "m3cli/m3cli_complete/bash_m3cli_complete.sh",
+    "m3cli/m3cli_complete/zsh_m3cli_complete.sh",
+    "m3cli/m3cli_complete/m3cli_complete.py",
+    "m3cli/m3cli_complete/access_meta.json",
+]
+
+[tool.setuptools.packages.find]
+exclude = ["tests*"]
