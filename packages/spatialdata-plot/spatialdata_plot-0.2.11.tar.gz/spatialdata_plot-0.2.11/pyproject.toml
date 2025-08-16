@@ -1,0 +1,172 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-vcs"]
+
+[project]
+name = "spatialdata-plot"
+description = "Static plotting for spatial data."
+authors = [
+    {name = "scverse"},
+]
+maintainers = [
+    {name = "scverse", email = "tim.treis@helmholtz-munich.de"},
+]
+urls.Documentation = "https://spatialdata.scverse.org/projects/plot/en/latest/index.html"
+urls.Source = "https://github.com/scverse/spatialdata-plot.git"
+urls.Home-page = "https://github.com/scverse/spatialdata-plot.git"
+requires-python = ">=3.10"
+dynamic= [
+  "version" # allow version to be set by git tags
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+dependencies = [
+    "spatialdata>=0.3.0",
+    "matplotlib",
+    "scikit-learn",
+    "scanpy",
+    "matplotlib_scalebar",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bump2version",
+]
+docs = [
+    "sphinx>=4.5",
+    "sphinx-book-theme>=1.0.0",
+    "sphinx_rtd_theme",
+    "myst-nb",
+    "sphinxcontrib-bibtex>=1.0.0",
+    "sphinx-autodoc-typehints",
+    "sphinx-design",
+    # For notebooks
+    "ipython>=8.6.0",
+    "sphinx-copybutton",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pooch", # for scipy.datasets module
+]
+# this will be used by readthedocs and will make pip also look for pre-releases, generally installing the latest available version
+pre = [
+    "spatialdata>=0.1.0-pre0"
+]
+
+[tool.coverage.run]
+source = ["spatialdata_plot"]
+omit = [
+    "**/test_*.py",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+xfail_strict = true
+addopts = [
+#    "-Werror",  # if 3rd party libs raise DeprecationWarnings, just use filterwarnings below
+    "--import-mode=importlib",  # allow using test files with same name
+    "-s"  # print output from tests
+]
+# info on how to use this https://stackoverflow.com/questions/57925071/how-do-i-avoid-getting-deprecationwarning-from-inside-dependencies-with-pytest
+filterwarnings = [
+    #     "ignore:.*U.*mode is deprecated:DeprecationWarning",
+]
+
+[tool.jupytext]
+formats = "ipynb,md"
+
+[tool.hatch.build.targets.wheel]
+packages = ['src/spatialdata_plot']
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "_version.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".git",
+    ".tox",
+    "__pycache__",
+    "build",
+    "docs/_build",
+    "dist",
+    "setup.py",
+]
+[tool.ruff.lint]
+ignore = [
+    # Do not assign a lambda expression, use a def -> lambda expression assignments are convenient
+    "E731",
+    # allow I, O, l as variable names -> I is the identity matrix, i, j, k, l is reasonable indexing notation
+    "E741",
+    # Missing docstring in public package
+    "D104",
+    # Missing docstring in public module
+    "D100",
+    # Missing docstring in __init__
+    "D107",
+    # Missing docstring in magic method
+    "D105",
+    # Do not perform function calls in argument defaults.
+    "B008",
+    # Missing docstring in magic method
+    "D105",
+]
+select = [
+    "D", # flake8-docstrings
+    "I", # isort
+    "E", # pycodestyle
+    "F", # pyflakes
+    "W", # pycodestyle
+    "Q", # flake8-quotes
+    "SIM", # flake8-simplify
+    "TID",  # flake-8-tidy-imports
+    "NPY",  # NumPy-specific rules
+    "PT",  # flake8-pytest-style
+    "B", # flake8-bugbear
+    "UP", # pyupgrade
+    "C4", # flake8-comprehensions
+    "BLE", # flake8-blind-except
+    "T20",  # flake8-print
+    "RET", # flake8-raise
+    "PGH", # pygrep-hooks
+]
+unfixable = ["B", "UP", "C4", "BLE", "T20", "RET"]
+
+[tool.ruff.lint.per-file-ignores]
+    "tests/*" = ["D", "PT", "B024"]
+    "*/__init__.py" = ["F401", "D104", "D107", "E402"]
+    "docs/*" = ["D","B","E","A"]
+    # "src/spatialdata/transformations/transformations.py" = ["D101","D102", "D106", "B024", "T201", "RET504"]
+    "tests/conftest.py"= ["E402", "RET504"]
+    "src/spatialdata_plot/pl/utils.py"= ["PGH003"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.bumpver]
+current_version = "0.0.2"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+pre_commit_hook = ""
+post_commit_hook = ""
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
+"README.md" = [
+    "{version}",
+    "{pep440_version}",
+]
