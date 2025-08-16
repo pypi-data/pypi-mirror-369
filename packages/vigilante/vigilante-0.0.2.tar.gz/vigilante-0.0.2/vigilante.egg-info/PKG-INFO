@@ -1,0 +1,142 @@
+Metadata-Version: 2.4
+Name: vigilante
+Version: 0.0.2
+Summary: Desktop-based, modular, and extensible multi-toolkit powered by PyQt5, designed for diverse tasks and future expandability.
+Author: Mr.Sxturn
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
+
+# Vigilante
+
+[![PyPI Version](https://img.shields.io/pypi/v/vigilante.svg)](https://pypi.org/project/vigilante) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
+
+**Vigilante** is a desktop based, multi functional toolkit powered by **PyQt5**. It is designed to be modular, extensible, and highly flexible, serving as a central hub for tools ranging from network utilities to media processing and data analysis.
+
+> This project is actively under development and APIs may change between early releases and planned stable versions. Use pre-release versions only for evaluation and testing.
+
+Core user experience is desktop first, but planned variations include CLI and web based interfaces so Vigilante can also fit terminal and cloud workflows. Read this README before integrating components into other systems.
+
+---
+
+## Quick links
+Installation example: `pip install vigilante`  
+Run the desktop application: `vigilante`  
+Import in code example: `from vigilante import Command`
+
+---
+
+## Highlights
+Vigilante aims to be a focused operations kit for power users who want composable building blocks rather than a bloated toolbox. Plugins keep features small and focused so you can mix and match functionality.
+
+If you prefer a lightweight setup, enable only the plugins you need to reduce memory use and keep the UI uncluttered.
+
+> Plugins from third party authors can execute code inside your environment. Only install plugins from sources you trust or audit plugin code before enabling.
+
+---
+
+## What to expect
+Vigilante provides a lightweight core that manages plugin loading, configuration, theming, and command routing. Plugins implement a small interface so they remain composable and reusable. Future releases will expose the same command logic across GUI, CLI, and web so workflows can be scripted or run headless.
+
+> Mixing plugin versions built against different core versions can cause runtime errors. When upgrading the core, verify plugin compatibility and test in a safe environment.
+
+---
+
+## Planned Variations and Integration
+Future releases will include a stable CLI layer and an initial web based frontend. These are intended as first-class interfaces that share the same command primitives as the desktop app, enabling automation, remote dashboards, and hybrid workflows.
+
+You will be able to embed Vigilante components in automation pipelines and other projects by importing Command objects and calling tool logic from scripts or server processes.
+
+Example usage in a Python script:
+
+```python
+from vigilante import Command
+
+cmd = Command("example")
+print(cmd.run())
+```
+
+---
+
+## Architecture overview
+Core application: The core is a lightweight PyQt5 application responsible for plugin discovery, lifecycle management, configuration storage, theming, and routing commands and events between UI, CLI, and background workers.
+
+Plugin system: Plugins are separate Python modules or packages that implement a small, documented interface. On startup the core scans the plugin directory, loads compatible plugins, and exposes their UI panels and commands.
+
+Data and storage: Configuration is stored in a platform-appropriate local directory. Plugins may use JSON, SQLite, or other storage; the core provides helper utilities to minimize duplication and avoid leaking sensitive data.
+
+<details>
+<summary><strong>Example plugin responsibilities</strong> (click to expand)</summary>
+
+Plugins should:
+- expose settings schema and default values  
+- provide one or more UI panels for the main window  
+- expose one or more `Command` objects usable by the core and CLI  
+- register background tasks or event listeners if needed
+
+</details>
+
+---
+
+## Example Command class
+Minimal example to demonstrate importable, scriptable behavior:
+
+```python
+class Command:
+    def __init__(self, name):
+        self.name = name
+
+    def run(self, *args, **kwargs):
+        return f"Command {self.name} executed"
+```
+
+Use this pattern for building tools that work inside the GUI, from the CLI, and when imported into other Python code.
+
+---
+
+## Installation
+Install from PyPI (when available):
+
+```bash
+pip install vigilante
+```
+
+Run the desktop app:
+
+```bash
+vigilante
+```
+
+Use in Python code:
+
+```python
+from vigilante import Command
+```
+
+---
+
+## Quickstart
+1. Install the package.  
+2. Launch the app and explore built-in modules.  
+3. Write a script that imports and runs a `Command` as in the example.
+
+---
+
+## Roadmap & Contribution
+Short term: provide a plugin template, stabilize CLI behavior, ship an initial web prototype, and document the plugin API.  
+Long term: curated plugin registry, optional cloud sync. Contributions are welcome; official plugins will pass a quality gate to keep the ecosystem reliable.
+
+---
+
+## Support & License
+For issues and feature requests open an issue in the repository or contact the maintainers via the project email on the package page. This project uses a permissive open source license; see the LICENSE file in the repository for details.
+
+---
+
+**Vigilante is your personal operations kit.**
