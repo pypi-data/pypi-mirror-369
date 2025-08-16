@@ -1,0 +1,149 @@
+[project]
+name = "tortoise-database-url"
+description = "Make it easy to generate database url."
+authors = [
+    { name = "Waket Zheng", email = "waketzheng@gmail.com" },
+]
+readme = "README.md"
+dynamic = []
+keywords = [
+    "database_url",
+    "tortoise-orm",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "asynctor>=0.8.7",
+]
+version = "0.5.0"
+
+[project.urls]
+homepage = "https://github.com/waketzheng/database-url"
+repository = "https://github.com/waketzheng/database-url.git"
+
+[dependency-groups]
+dev = [
+    "fast-dev-cli>=0.17.0",
+    "bandit>=1.8.6",
+    "twine>=6.1.0",
+    "asynctor>=0.8.7",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "C4",
+    "UP",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = [
+    "E501",
+]
+"scripts/*.py" = [
+    "UP009",
+    "UP032",
+]
+
+[tool.bandit]
+exclude_dirs = [
+    "tests",
+    "scripts",
+    ".venv",
+]
+
+[tool.coverage.run]
+omit = [
+    "*/.cache/*",
+    "/usr/*",
+]
+
+[tool.coverage.report]
+omit = [
+    "*/tests/*",
+    "test_*",
+]
+exclude_lines = [
+    "pragma: no cover",
+    "@overload",
+    "if __name__ == \"__main__\":",
+    "if TYPE_CHECKING:",
+]
+
+[tool.pdm.version]
+source = "file"
+path = "src/tortoise_database_url/__init__.py"
+
+[tool.pdm.scripts]
+pypi = "pdm run python scripts/uv_pypi.py {args}"
+tree = "pdm list --tree {args}"
+deps = "pdm run python scripts/deps.py --uv {args}"
+prod = "uv sync --no-dev {args}"
+test = "pdm run fast test {args}"
+check = "pdm run fast check {args}"
+lint = "pdm run fast lint {args}"
+
+[tool.pdm.scripts.start]
+composite = [
+    "pre-commit install",
+    "deps",
+]
+
+[tool.pdm.scripts.up]
+composite = [
+    "uv lock --upgrade",
+    "uv sync --frozen --inexact --all-extras",
+    "pypi",
+]
+
+[tool.pdm.scripts.fresh]
+composite = [
+    "up",
+    "deps --uv",
+    "pypi",
+]
+
+[tool.pdm.scripts.style]
+composite = [
+    "ruff format",
+    "ruff check --fix {args}",
+]
+
+[tool.pdm.scripts.tag]
+composite = [
+    "deps",
+    "pypi --quiet",
+    "pdm run fast tag {args}",
+]
+
+[tool.pdm.scripts.bump]
+composite = [
+    "deps",
+    "pypi --quiet",
+    "pdm run fast bump patch --commit {args}",
+]
+
+[tool.pdm.scripts.ci]
+composite = [
+    "deps",
+    "check",
+    "test",
+]
+
+[tool.pdm.scripts.release]
+composite = [
+    "bump",
+    "tag",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
