@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glean-mcp"
+version = "3.3.0"  # Keep in sync with glean_mcp.__init__.__version__ (test_support + script deprecation)
+description = "Python client + MCP server adapter for Glean (search, chat, read documents). Provides a reusable HTTP client plus simple sync helper functions."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  {name = "Alan Shum"}
+]
+requires-python = ">=3.9"
+keywords = ["glean", "mcp", "model-context-protocol", "search"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+]
+dependencies = [
+  "httpx>=0.25.0,<0.28.0",
+  "pydantic>=2.0.0,<3",
+  "python-dotenv>=1.0.0,<2",
+  # Security: bump mcp to >=1.10.0 to remediate vulnerabilities in <1.9.4 and stream handling issues; allow any 1.x
+  "mcp>=1.10.0,<2.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0,<9",
+  "pytest-asyncio>=0.23,<0.24",
+  "ruff>=0.5.0,<0.6.0",
+  "build>=1.2.0,<2",
+]
+perf = [
+  "uvloop>=0.19.0; platform_system == 'Linux' or platform_system == 'Darwin'",
+]
+
+[project.scripts]
+glean-mcp = "glean_mcp._cli:main"
+
+[project.urls]
+Homepage = "https://github.com/alankyshum/glean-mcp-server"
+Repository = "https://github.com/alankyshum/glean-mcp-server"
+Issues = "https://github.com/alankyshum/glean-mcp-server/issues"
+Changelog = "https://github.com/alankyshum/glean-mcp-server/releases"
+Documentation = "https://github.com/alankyshum/glean-mcp-server#readme"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+"glean_mcp" = ["py.typed"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
