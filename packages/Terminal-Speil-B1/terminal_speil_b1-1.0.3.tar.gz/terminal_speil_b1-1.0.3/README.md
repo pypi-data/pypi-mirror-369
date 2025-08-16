@@ -1,0 +1,1 @@
+This is my game that I submitted for Terminal-craft. Its a simple python game about a guy trying to save his European village from a German tribe. The idea was inspired by 'project' that i did a few months back while learning python from scrimba. It kind of 'connects' to Germans so i put the name terminal spiel, ' spiel' means game in German
