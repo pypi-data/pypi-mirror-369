@@ -1,0 +1,87 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = [
+  "hatchling",
+]
+
+[project]
+name = "py-frontmatter"
+description = "Manipulate YAML front matter."
+readme = "README.md"
+keywords = [
+]
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "YEUNG King On", email = "koyeung@gmail.com" },
+]
+requires-python = ">=3.12"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "jsonpath-ng>=1.5.3",
+  "ruamel-yaml>=0.17.21",
+]
+
+urls.Documentation = "https://github.com/koyeung/py-frontmatter#readme"
+urls.Issues = "https://github.com/koyeung/py-frontmatter/issues"
+urls.Source = "https://github.com/koyeung/py-frontmatter"
+scripts.frontmatter = "py_frontmatter.console.application:main"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.13",
+  "pytest>=8.3.3",
+  "pytest-cov>=5",
+  "pytest-xdist>=3.6.1",
+]
+
+[tool.hatch.version]
+path = "src/py_frontmatter/__about__.py"
+
+[tool.ruff]
+# whenever hatch is upgraded,
+# pls run: hatch fmt --check --sync
+extend = "ruff_defaults.toml"
+
+lint.flake8-tidy-imports.ban-relative-imports = "parents"
+
+lint.preview = false
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.coverage.paths]
+py_frontmatter = [
+  "src/py_frontmatter",
+  "*/py-frontmatter/src/py_frontmatter",
+]
+tests = [
+  "tests",
+  "*/py-frontmatter/tests",
+]
+
+[tool.coverage.run]
+source_pkgs = [
+  "py_frontmatter",
+  "tests",
+]
+branch = true
+parallel = true
+omit = [
+  "src/py_frontmatter/__about__.py",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
