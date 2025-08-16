@@ -1,0 +1,29 @@
+[build-system]
+requires = [
+    "setuptools >= 30.3.0",
+    "wheel",
+    "setuptools_scm[toml] >= 3.4"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/pidcalib2/version.py"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "-ra",
+    "-q",
+    "--cov=src/pidcalib2"
+]
+testpaths = [
+    "src/pidcalib2/tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:uproot"
+]
+markers = [
+    "xrootd: tests requiring xrootd EOS auth (deselect with '-m \"not xrootd\"')",
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "pyroot: tests requiring PyROOT (deselect with '-m \"not pyroot\"')"
+]
