@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TorrentBD API - Unofficial API for TorrentBD</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3498db',
+                        secondary: '#2c3e50',
+                        accent: '#e74c3c',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <header class="flex justify-between items-center py-6 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-database text-primary text-3xl"></i>
+                <h1 class="text-2xl font-bold">TorrentBD API</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="bg-secondary text-white px-3 py-1 rounded-full text-sm font-medium">
+                    v<span id="api-version">1.0.0</span>
+                </div>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="py-10">
+            <section class="hero text-center py-16 animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold text-secondary dark:text-primary mb-6">Unofficial API for TorrentBD</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">RESTful API for accessing TorrentBD data and services.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                    <a href="/docs" class="btn-primary">
+                        <i class="fas fa-book"></i> API Documentation
+                    </a>
+                    <a href="https://github.com/TanmoyTheBoT/torrentbd-api" class="btn-secondary" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </div>
+            </section>
+
+            <section class="animate-on-scroll py-10">
+                <h3 class="text-2xl font-bold text-secondary dark:text-primary mb-8 relative pb-3 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-1 after:w-12 after:bg-primary">Available Endpoints</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="endpoint-card bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all p-6">
+                        <div class="text-primary text-2xl mb-4"><i class="fas fa-search"></i></div>
+                        <h4 class="text-xl font-semibold text-secondary dark:text-white mb-2">/search</h4>
+                        <div class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded mb-3 inline-block">GET</div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">Search for torrents on TorrentBD</p>
+                        <div class="try-button">
+                            <a href="/docs#/default/search_search_get" class="px-4 py-2 bg-primary text-white rounded text-sm hover:bg-blue-600 transition-colors">Try It</a>
+                        </div>
+                    </div>
+                    <div class="endpoint-card bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all p-6">
+                        <div class="text-primary text-2xl mb-4"><i class="fas fa-user"></i></div>
+                        <h4 class="text-xl font-semibold text-secondary dark:text-white mb-2">/profile</h4>
+                        <div class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded mb-3 inline-block">GET</div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">Get user profile information</p>
+                        <div class="try-button">
+                            <a href="/docs#/default/profile_profile_get" class="px-4 py-2 bg-primary text-white rounded text-sm hover:bg-blue-600 transition-colors">Try It</a>
+                        </div>
+                    </div>
+                    <div class="endpoint-card bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all p-6">
+                        <div class="text-primary text-2xl mb-4"><i class="fas fa-user"></i></div>
+                        <h4 class="text-xl font-semibold text-secondary dark:text-white mb-2">/online</h4>
+                        <div class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded mb-3 inline-block">GET</div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">Get list of online users.</p>
+                        <div class="try-button">
+                            <a href="/docs#/default/list_online_users_online_get" class="px-4 py-2 bg-primary text-white rounded text-sm hover:bg-blue-600 transition-colors">Try It</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="animate-on-scroll py-10">
+                <h3 class="text-2xl font-bold text-secondary dark:text-primary mb-8 relative pb-3 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-1 after:w-12 after:bg-primary">Quick Example</h3>
+
+                <!-- Custom Query Input Field -->
+                <div class="mb-6">
+                    <div class="flex flex-col sm:flex-row gap-3 mb-3">
+                        <div class="flex-grow">
+                            <label for="custom-query" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Try with your own query:</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="custom-query" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter search query (e.g., ubuntu, movies, music)" value="ubuntu">
+                            </div>
+                        </div>
+                        <div class="flex items-end">
+                            <button id="run-query" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2">
+                                <i class="fas fa-play"></i> Run Query
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Results will be displayed in the response preview below</p>
+                </div>
+
+                <div class="bg-secondary dark:bg-gray-800 rounded-lg p-5 relative mb-6">
+                    <pre class="text-white overflow-x-auto font-mono"><code id="example-code">curl -X GET "https://tbd-api.tanmoy.xyz/search?query=ubuntu" -H "accept: application/json"</code></pre>
+                    <button class="copy-btn absolute top-3 right-3 bg-white/20 hover:bg-white/30 text-white p-2 rounded transition-all">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div class="response-preview overflow-hidden rounded-lg shadow-md">
+                    <div class="bg-primary dark:bg-blue-700 text-white p-3 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span>Response</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-green-200">
+                                <span class="relative flex h-2 w-2 mr-1">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                Live Data
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="refresh-data" class="text-white p-1 rounded-full hover:bg-white/20 transition-colors">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">200 OK</span>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div id="response-loading" class="absolute inset-0 bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-primary">
+                            <i class="fas fa-spinner fa-spin text-2xl"></i>
+                        </div>
+                        <pre id="example-response" class="bg-gray-50 dark:bg-gray-900 p-5 m-0 overflow-x-auto font-mono text-gray-800 dark:text-gray-200">{
+  "result": [
+    {
+      "title": "Ubuntu 22.04 LTS",
+      "size": "3.8 GB",
+      "category": "Operating System",
+      "uploader": "admin",
+      "download_link": "https://torrentbd.com/torrent/12345"
+    },
+    // Loading real data...
+  ]
+}</pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="border-t border-gray-200 dark:border-gray-700 py-10 mt-10">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-5">
+                <p class="text-gray-600 dark:text-gray-400">© 2025 TorrentBD API. This is an unofficial API and not affiliated with TorrentBD.</p>
+                <div class="flex gap-6">
+                    <a href="/docs" class="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"><i class="fas fa-book"></i> Swagger UI</a>
+                    <a href="/redoc" class="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"><i class="fas fa-file-alt"></i> ReDoc</a>
+                    <a href="https://github.com/TanmoyTheBoT/torrentbd-api" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
