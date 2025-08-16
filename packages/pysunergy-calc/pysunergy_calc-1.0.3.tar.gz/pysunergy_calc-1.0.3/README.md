@@ -1,0 +1,127 @@
+# pysunerg-calc
+
+Geometry-based solar potential, irradiance, and solar PV energy calculations in Python—**just math, physics, and data classes; no external APIs needed**.
+
+[![PyPI version](https://img.shields.io/pypi/v/pysunergy-calc)](https://pypi.org/project/pysunergy-calc/)
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python Package Tests](https://github.com/abdullahwaqar/pysunergy_calc/actions/workflows/test.yml/badge.svg)](https://github.com/abdullahwaqar/pysunergy_calc/actions/workflows/test.yml)
+
+- **Accurate solar geometry:** Compute sun position (declination, hour angle, altitude, azimuth, zenith) for any latitude, longitude, and datetime.
+- **Instantaneous PV power calculation:** Use panel specs and solar irradiance to compute real-time output.
+- **Energy output estimation:** Predict daily, yearly, or custom-period PV system yield.
+
+---
+
+## Formulas
+
+| Step        | Equation                                            |
+| ----------- | --------------------------------------------------- |
+| Declination | δ = 23.45 × sin[(360/365) × (n − 81)]               |
+| Hour angle  | H = 15 × (solar-time-hours − 12)                    |
+| Altitude    | sin(α) = sin(δ) sin(φ) + cos(δ) cos(φ) cos(H)       |
+| Azimuth     | sin(Az) = cos(δ) sin(H) / cos(α)                    |
+| Irradiance  | I = I₀ × sin(α) (for horizontal surface, clear sky) |
+
+References:
+
+- [PV Education: Solar Insolation](https://www.pveducation.org/pvcdrom/properties-of-sunlight/calculation-of-solar-insolation)
+- [Panel Output Formula](https://www.sunbasedata.com/blog/how-to-calculate-solar-panel-output)
+- [Solar Output Guide](https://palmetto.com/solar/how-much-energy-does-a-solar-panel-produce)
+- [EcoFlow Output Math](https://www.ecoflow.com/us/blog/how-to-calculate-solar-panel-output)
+
+---
+
+## Installation
+
+```bash
+pip install pysunergy-calc
+```
+
+---
+
+## Usage
+
+```python
+from pysunergy_calc import (
+    compute_solar_potential,
+    compute_panel_power,
+    estimate_energy_produced,
+)
+
+# Example 1: Sun position and irradiance in New York on August 15, 2025, at 16:00 UTC
+from datetime import datetime, timezone
+sun = compute_solar_potential(
+    40.7128,          # latitude
+    -74.0060,         # longitude
+    datetime(2025, 8, 15, 16, 0, 0, tzinfo=timezone.utc) # UTC date/time
+)
+print(sun)
+# SolarPosition(
+#     declination=..., hour_angle=..., altitude=..., azimuth=..., zenith=..., irradiance=...
+# )
+
+# Example 2: Compute panel output at that instant
+area = 1.6      # m² (panel area)
+efficiency = 0.20  # 20% PV efficiency
+power_W = compute_panel_power(area, efficiency, sun.irradiance)
+print(power_W)
+
+# Example 3: Estimate daily energy (kWh) for your panel
+average_irradiance = 5 * 1000 / 24  # e.g., 5kWh/m²/day avg ≈ 208 W/m² avg
+daily_kWh = estimate_energy_produced(
+    area,
+    efficiency,
+    average_irradiance,
+    24,      # hours in a day
+    0.75     # typical performance ratio (losses)
+)
+print(daily_kWh)
+```
+
+---
+
+## API Reference
+
+### `compute_solar_potential(lat: float, lon: float, date: datetime) -> SolarPosition`
+
+- All angles are in degrees.
+- `irradiance` is in W/m² (horizontal surface).
+- Calculates solar declination, hour angle, altitude, azimuth, zenith, and irradiance for a specified location/time.
+
+### `compute_panel_power(area: float, efficiency: float, irradiance: float) -> float`
+
+- `area`: Panel area (m²)
+- `efficiency`: Panel efficiency (0...1)
+- `irradiance`: Solar irradiance (W/m²)
+- Returns instantaneous PV output power (W).
+
+### `estimate_energy_produced(area: float, efficiency: float, average_irradiance: float, period_hours: float, performance_ratio: float=0.75) -> float`
+
+- Estimates total energy output for your system and conditions, in **kWh** over the specified period.
+- Typical `performance_ratio` is 0.75–0.85 (accounts for temperature, dust, inverter).
+- Average irradiance is entered in W/m².
+
+---
+
+## Development & Testing
+
+- 100% Python, type-annotated and PEP 621 compliant.
+- Full Pytest test suite included.
+- To develop and run tests:
+
+```bash
+uv pip install --group dev
+pytest
+```
+
+- Code is linted/formatted automatically with [ruff](https://github.com/astral-sh/ruff).
+
+---
+
+## License
+
+[MIT](LICENSE) © Abdullah Waqar
+
+---
+
+_`pysunergy-calc` is not affiliated with nor endorsed by pveducation.org, palmetto.com, Sunbase, or EcoFlow. Reference links are for scientific documentation and transparency only._
