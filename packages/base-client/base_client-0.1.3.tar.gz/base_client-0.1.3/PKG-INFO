@@ -1,0 +1,50 @@
+Metadata-Version: 2.3
+Name: base-client
+Version: 0.1.3
+Summary: Implementation of base client
+Keywords: python
+Author: community-of-python
+Classifier: Typing :: Typed
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: httpx
+Requires-Dist: pydantic
+Requires-Dist: multidict
+Requires-Dist: circuit-breaker-box
+Requires-Dist: redis ; extra == 'redis'
+Requires-Python: >=3.10, <4
+Project-URL: Changelogs, https://github.com/community-of-python/base-client/releases
+Project-URL: Issues, https://github.com/community-of-python/base-client/issues
+Project-URL: Repository, https://github.com/community-of-python/base-client
+Provides-Extra: redis
+Description-Content-Type: text/markdown
+
+# HTTP Client with Circuit Breaker Integration
+
+Asynchronous HTTP client with Circuit Breaker integration for failure handling and retries.
+
+## Features
+
+- 🚀 **Asynchronous client** based on `httpx.AsyncClient`
+- ⚡ **Circuit Breaker integration** [circuit-breaker-box](https://github.com/community-of-python/circuit-breaker-box)
+- 🔄 **Automatic retries** [tenacity](https://tenacity.readthedocs.io/en/latest/)
+- 📝 **Detailed logging**
+- 🛡️ **Flexible response validation**
+- 🔧 **Flexible request preparation** supporting all `httpx` parameters
+- 🧩 **Customizable response handlers** via inheritance
+
+## Installation
+
+```bash
+pip install base-client
+```
+
+## Usage
+See -> [Examples](examples/)
+
+## Development
+### Commands
+Use -> [Justfile](Justfile)
+
