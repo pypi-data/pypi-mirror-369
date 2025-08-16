@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hlsf_module"
+version = "0.1.3"
+description = "High-Level Space Field toolkit"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{name = "HLSF Developers"}]
+license = "MIT"
+license-files = ["LICENSE", "LICEN[CS]E*"]
+keywords = ["audio", "fft", "visualization"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "numpy>=1.22",
+    "matplotlib>=3.5",
+]
+
+[project.optional-dependencies]
+audio = ["sounddevice"]
+fft = ["numpy", "scipy"]
+gpu = ["cupy"]
+visualization = ["matplotlib"]
+test = ["pytest", "pre-commit"]
+web = ["fastapi", "uvicorn", "httpx"]
+docs = ["sphinx", "sphinx-autodoc-typehints"]
+[tool.setuptools.packages.find]
+include = ["hlsf_module*", "src"]
+exclude = ["hlsf_module.data"]
+
+[tool.setuptools.package-data]
+hlsf_module = ["data/*.json"]
+
+[tool.setuptools.exclude-package-data]
+hlsf_module = ["data/__init__.py"]
