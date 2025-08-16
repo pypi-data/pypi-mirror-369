@@ -1,0 +1,29 @@
+
+{% extends 'common.html' %}
+
+{% block container_body %}
+
+  {% block articles %}
+  <div class="articles">
+    {% for article in articles %}
+      {{ article_metadata(article) }}
+      <h2 class="article-title"><a href="{{page.path_to(article)}}">{{ article.title }}</a></h2>
+      <div class="article-body">{{ article.abstract}}</div>
+    {% endfor %}
+  </div>
+  {% endblock articles %}
+
+
+
+  {% block pagination %}
+
+  {% import "blog_macros.html" as blog_macros %}
+
+  {{ blog_macros.index_pagination(page, group_value, num_pages, cur_page, is_last) }}
+
+
+  {% endblock pagination %}
+
+
+
+{% endblock container_body %}

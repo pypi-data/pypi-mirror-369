@@ -1,0 +1,62 @@
+{% macro image(src, alt=None, _class=None, style=None, width=None, height=None, link=None, link_class=None) -%}
+
+  {% if link %}
+    <a href='{{link}}'
+      {% if link_class %} class='{{ link_class }}' {% endif %}
+    >
+  {% endif %}
+
+  <img src='{{ src.path() }}'
+     {% if alt %} alt='{{ alt }}' {% endif %}
+     {% if _class %} class='{{ _class }}' {% endif %}
+     {% if style %} style='{{ style }}' {% endif %}
+     {% if width %} width='{{ width }}' {% endif %}
+     {% if height %} height='{{ height }}' {% endif %}
+   >
+
+  {% if link %}
+    </a>
+  {% endif %}
+{%- endmacro %}
+
+
+{% macro google_analytics(page=None) -%}
+
+  {% if page %}
+    {% set code=page.ga_tracking_id %}
+  {% else %}
+    {% set code=site.config.get('/', 'ga_tracking_id') %}
+  {% endif %}
+
+  {% if code %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ code }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', '{{ code }}');
+  </script>
+  {% endif %}
+
+{%- endmacro %}
+
+
+{% macro opengraph(page, abstract_length=None) -%}
+<meta property="og:url" content="{{ page.url }}" />
+<meta property="og:locale" content="{{ page.lang }}" />
+<meta property="og:type" content="{{ page.og_type }}" />
+{% set title = (page.og_title or page.title) | striptags %}
+<meta property="og:title" content="{{ title }} - {{ page.site_title | striptags }}" />
+{% set descr = (page.og_description or page.get_abstract(abstract_length)) %}
+{% if descr -%}
+<meta name="description" content="{{ descr | striptags }}"/>
+<meta property="og:description" content="{{ descr | striptags }}" />
+{%- endif %}
+{% if page.og_image -%}
+<meta property="og:image" content="{{ page.load(page.og_image).url }}" />
+{%- endif %}
+{% if page.date -%}
+<meta property="article:published_time" content="{{ page.date.isoformat() }}" />
+{%- endif %}
+{%- endmacro %}
