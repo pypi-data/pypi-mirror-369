@@ -1,0 +1,81 @@
+[project]
+name = "slideagent"
+version = "1.0.3"
+description = "MCP server for AI-powered presentation generation - create slides, charts, and PDFs with Claude Desktop"
+readme = "README_PYPI.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Frank Long", email = "slideagent.mcp@gmail.com" }
+]
+keywords = ["mcp", "claude", "presentations", "slides", "charts", "pdf", "ai", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "Topic :: Office/Business :: Office Suites",
+    "Topic :: Multimedia :: Graphics :: Presentation",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "matplotlib>=3.7.0",
+    "pandas>=2.0.0",
+    "pyyaml>=6.0",
+    "jinja2>=3.1.0",
+    "mcp>=0.1.0",
+    "fastmcp>=2.11.3",
+    "beautifulsoup4>=4.13.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
+]
+
+[project.scripts]
+slideagent = "slideagent.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/flong28/slideagent"
+Repository = "https://github.com/flong28/slideagent"
+Issues = "https://github.com/flong28/slideagent/issues"
+Documentation = "https://github.com/flong28/slideagent#readme"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+    "slideagent/**/*.py",
+    "slideagent/resources/**/*",
+    "slideagent/utils/**/*",
+]
+exclude = [
+    "**/__pycache__",
+    "**/*.pyc",
+    "**/node_modules",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["slideagent"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+
+[tool.black]
+line-length = 120
+target-version = ['py38']

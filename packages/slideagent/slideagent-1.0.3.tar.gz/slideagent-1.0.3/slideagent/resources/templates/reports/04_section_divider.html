@@ -1,0 +1,105 @@
+<!-- TEMPLATE_META
+name: 04_section_divider
+title: Section Divider
+description: Visual separator between major sections with section title
+use_cases: ["Chapter breaks", "Section transitions", "Part dividers", "Visual separators"]
+features: ["Large section number", "Section title", "Clean design", "Visual impact"]
+best_for: Separating major sections in long reports
+placeholders: ["SECTION_NUMBER", "SECTION_TITLE"]
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section Divider</title>
+    <link rel="stylesheet" href="../theme/report_base.css">
+    <link rel="stylesheet" href="../theme/acme_corp_theme.css">
+    <style>
+        .divider-page {
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .divider-background {
+            position: absolute;
+            top: -5%;
+            left: -5%;
+            right: -5%;
+            bottom: -5%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+        
+        .divider-content {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+        
+        .section-box {
+            background: var(--accent-color);
+            width: 5.5in;
+            height: 5.5in;
+            padding: 0.5in;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+        }
+        
+        .section-content {
+            text-align: left;
+        }
+        
+        .section-label {
+            font-size: 11pt;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5pt;
+            margin-bottom: 0.08in;
+            color: var(--text-primary);
+        }
+        
+        .section-title {
+            font-size: 32pt;
+            font-weight: 300;
+            line-height: 1.1;
+            padding-bottom: 0.1in;
+            border-bottom: 2px solid var(--text-primary);
+            margin-bottom: 0.15in;
+            color: var(--text-primary);
+        }
+        
+        .section-subtitle {
+            font-size: 13pt;
+            font-weight: 300;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="report-page">
+        <div class="divider-page">
+            <div class="divider-background" style="background-image: url('../input/dark_background_example.png');"></div>
+            
+            <div class="divider-content">
+                <div class="section-box">
+                    <div class="section-content">
+                        <div class="section-label">Section 01</div>
+                        <h1 class="section-title">Financial Performance</h1>
+                        <p class="section-subtitle">Breaking records with sustainable growth strategies across all business segments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+Metadata-Version: 2.4
+Name: slideagent
+Version: 1.0.3
+Summary: MCP server for AI-powered presentation generation - create slides, charts, and PDFs with Claude Desktop
+Project-URL: Homepage, https://github.com/flong28/slideagent
+Project-URL: Repository, https://github.com/flong28/slideagent
+Project-URL: Issues, https://github.com/flong28/slideagent/issues
+Project-URL: Documentation, https://github.com/flong28/slideagent#readme
+Author-email: Frank Long <slideagent.mcp@gmail.com>
+License: MIT
+License-File: LICENSE
+Keywords: ai,automation,charts,claude,mcp,pdf,presentations,slides
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Multimedia :: Graphics :: Presentation
+Classifier: Topic :: Office/Business :: Office Suites
+Requires-Python: >=3.8
+Requires-Dist: beautifulsoup4>=4.13.4
+Requires-Dist: fastmcp>=2.11.3
+Requires-Dist: jinja2>=3.1.0
+Requires-Dist: matplotlib>=3.7.0
+Requires-Dist: mcp>=0.1.0
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: build>=0.10.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Requires-Dist: twine>=4.0.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# SlideAgent
+
+MCP server for AI-powered presentation generation. Create professional slides, charts, and PDFs with Claude Desktop and other AI assistants.
+
+## Features
+
+- 🎨 **Professional Themes** - Multiple built-in themes (acme_corp, barney, pokemon)
+- 📊 **Integrated Charts** - Create charts with matplotlib, auto-styled to match themes
+- 📄 **PDF Export** - Generate PDFs in slide (16:9) or report (8.5x11) format
+- 🤖 **AI Integration** - Works with Claude Desktop via MCP (Model Context Protocol)
+- 🔄 **Auto-workspace** - Automatically manages projects in current directory
+
+## Quick Start
+
+### 1. Install
+
+```bash
+pip install slideagent
+```
+
+### 2. Configure Claude Desktop
+
+Get the configuration:
+```bash
+python -m slideagent config
+```
+
+Add to Claude Desktop settings (Developer → Edit Config):
+```json
+{
+  "mcpServers": {
+    "slideagent": {
+      "command": "python",
+      "args": ["-m", "slideagent"],
+      "env": {}
+    }
+  }
+}
+```
+
+### 3. Use in Claude
+
+```
+Create a presentation called "Q4-results" with:
+- Title slide "Q4 Financial Results"
+- Bullet points with key metrics
+- A revenue chart
+- Conclusion slide
+```
+
+## How It Works
+
+SlideAgent is an MCP server that:
+1. Runs in the background when Claude Desktop connects
+2. Creates a `slideagent_workspace/` in your current directory
+3. Manages projects with self-contained themes and assets
+4. Generates HTML slides that can be exported to PDF
+
+## MCP Tools Available
+
+- `create_project(name, theme)` - Create new presentation
+- `get_templates(type)` - List templates (slides/reports/charts/outlines)
+- `init_from_template(...)` - Create content from templates
+- `generate_pdf(project)` - Export to PDF
+- `start_live_viewer(project)` - Preview slides in browser
+
+## Requirements
+
+- Python 3.8+
+- Node.js (for PDF generation)
+- Claude Desktop or other MCP-compatible AI assistant
+
+## Project Structure
+
+```
+your_folder/
+└── slideagent_workspace/      # Auto-created
+    ├── CLAUDE.md              # AI context files
+    ├── project_name/          # Your presentations
+    │   ├── slides/           # HTML slides
+    │   ├── theme/            # CSS and assets
+    │   ├── plots/            # Charts
+    │   └── project.pdf       # Generated PDF
+```
+
+## Documentation
+
+For detailed documentation, examples, and troubleshooting, visit:
+[https://github.com/flong28/slideagent](https://github.com/flong28/slideagent)
+
+## License
+
+MIT License - See LICENSE file for details.
