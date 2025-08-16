@@ -1,0 +1,269 @@
+Metadata-Version: 2.4
+Name: robka
+Version: 1.0.1
+Summary: کتابخانه مدرن و بهینه‌شده پایتون برای API روبیکا - Modern, optimized Python library for Rubika API
+Home-page: https://github.com/httex/robka
+Author: htteX
+Author-email: httex@example.com
+Project-URL: Bug Reports, https://github.com/httex/robka/issues
+Project-URL: Source, https://github.com/httex/robka
+Project-URL: Documentation, https://robka.readthedocs.io/
+Keywords: rubika,api,bot,messenger,chat,robka,htteX
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Communications :: Chat
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Requires-Dist: pycryptodome>=3.15.0
+Requires-Dist: websocket-client>=1.0.0
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: tqdm>=4.60.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.18.0; extra == "dev"
+Requires-Dist: black>=21.0.0; extra == "dev"
+Requires-Dist: flake8>=3.9.0; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Provides-Extra: media
+Requires-Dist: tinytag>=1.8.0; extra == "media"
+Requires-Dist: Pillow>=8.0.0; extra == "media"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Robka 🚀
+
+**کتابخانه مدرن و بهینه‌شده پایتون برای API روبیکا**
+
+[![PyPI version](https://badge.fury.io/py/robka.svg)](https://badge.fury.io/py/robka)
+[![Python versions](https://img.shields.io/pypi/pyversions/robka.svg)](https://pypi.org/project/robka/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Robka یک کتابخانه پایتون مدرن، سریع و کاربرپسند برای تعامل با API روبیکا است. این کتابخانه با تمرکز بر سادگی، کارایی و خوانایی کد طراحی شده است.
+
+## ✨ ویژگی‌ها
+
+- 🚀 **سرعت بالا**: بهینه‌سازی شده برای عملکرد بهتر
+- 🎯 **سادگی**: API ساده و قابل فهم
+- 🌐 **پشتیبانی کامل**: تمام قابلیت‌های روبیکا و روبینو
+- 📱 **سازگاری**: پشتیبانی از تمام دستگاه‌ها
+- 🔒 **امنیت**: رمزنگاری پیشرفته
+- 📚 **مستندات جامع**: راهنمای کامل و مثال‌های کاربردی
+- 🔄 **به‌روزرسانی مداوم**: پشتیبانی از آخرین ویژگی‌های روبیکا
+
+## 📦 نصب
+
+```bash
+pip install robka
+```
+
+برای نصب با قابلیت‌های اضافی:
+
+```bash
+# برای کار با فایل‌های مدیا
+pip install robka[media]
+
+# برای توسعه‌دهندگان
+pip install robka[dev]
+```
+
+## 🚀 شروع سریع
+
+### ربات ساده
+
+```python
+from robka import Client
+
+# ایجاد کلاینت
+bot = Client("YOUR_AUTH_TOKEN")
+
+@bot.on_message()
+def handle_message(message):
+    if message.text == "/start":
+        bot.send_message(
+            message.chat_id,
+            "سلام! من یک ربات ساخته شده با Robka هستم! 🤖"
+        )
+    else:
+        # اکو کردن پیام
+        bot.send_message(
+            message.chat_id,
+            f"شما گفتید: {message.text}"
+        )
+
+# اجرای ربات
+bot.run()
+```
+
+### ارسال انواع مختلف پیام
+
+```python
+from robka import Client, InlineKeyboard, ReplyKeyboard
+
+bot = Client("YOUR_AUTH_TOKEN")
+
+# ارسال پیام متنی
+bot.send_message("CHAT_ID", "سلام دنیا!")
+
+# ارسال عکس
+bot.send_photo("CHAT_ID", "path/to/photo.jpg", caption="این یک عکس است")
+
+# ارسال ویدئو
+bot.send_video("CHAT_ID", "path/to/video.mp4", caption="این یک ویدئو است")
+
+# ارسال فایل
+bot.send_document("CHAT_ID", "path/to/file.pdf", caption="این یک فایل است")
+
+# ارسال موقعیت مکانی
+bot.send_location("CHAT_ID", latitude=35.6892, longitude=51.3890)
+```
+
+### کیبوردها
+
+```python
+# کیبورد درون‌خطی
+inline_kb = InlineKeyboard()
+inline_kb.add_button("دکمه 1", callback_data="btn1")
+inline_kb.add_button("دکمه 2", callback_data="btn2")
+inline_kb.row()
+inline_kb.add_button("لینک", url="https://example.com")
+
+bot.send_message("CHAT_ID", "انتخاب کنید:", reply_markup=inline_kb)
+
+# کیبورد پاسخ
+reply_kb = ReplyKeyboard(one_time_keyboard=True)
+reply_kb.add_button("گزینه 1")
+reply_kb.add_button("گزینه 2")
+reply_kb.row()
+reply_kb.add_contact_button("ارسال شماره تماس")
+
+bot.send_message("CHAT_ID", "از کیبورد استفاده کنید:", reply_markup=reply_kb)
+```
+
+### فیلترها
+
+```python
+from robka import filters
+
+@bot.on_message(filters.text & filters.private)
+def handle_private_text(message):
+    bot.send_message(message.chat_id, "پیام خصوصی متنی دریافت شد!")
+
+@bot.on_message(filters.photo)
+def handle_photo(message):
+    bot.send_message(message.chat_id, "عکس دریافت شد!")
+
+@bot.on_message(filters.group & filters.admin)
+def handle_admin_in_group(message):
+    bot.send_message(message.chat_id, "پیام از ادمین گروه!")
+```
+
+## 🔧 ویژگی‌های پیشرفته
+
+### مدیریت گروه‌ها و کانال‌ها
+
+```python
+# ایجاد گروه
+group_info = bot.create_group("نام گروه", ["user_id_1", "user_id_2"])
+
+# ایجاد کانال
+channel_info = bot.create_channel("نام کانال", channel_type="Public")
+
+# مدیریت اعضا
+bot.add_members("GROUP_ID", ["user_id_1", "user_id_2"])
+bot.ban_member("GROUP_ID", "user_id")
+bot.unban_member("GROUP_ID", "user_id")
+
+# تنظیم ادمین
+bot.set_admin("GROUP_ID", "user_id", permissions=["pin_messages", "delete_messages"])
+```
+
+### کار با روبینو
+
+```python
+from robka import Rubino
+
+rubino = Rubino("YOUR_AUTH_TOKEN")
+
+# ارسال پست
+post = rubino.add_post("path/to/image.jpg", caption="پست جدید من!")
+
+# ارسال استوری
+story = rubino.add_story("path/to/image.jpg", duration=10)
+
+# فالو کردن
+rubino.follow("profile_id")
+
+# لایک کردن پست
+rubino.like_post("post_id", "profile_id")
+```
+
+### مدیریت فایل‌ها
+
+```python
+# آپلود فایل
+file_info = bot.upload_file("path/to/file.jpg")
+
+# دانلود فایل
+bot.download_file("CHAT_ID", "MESSAGE_ID", save_path="downloads/")
+
+# دانلود با نوار پیشرفت
+bot.download_file("CHAT_ID", "MESSAGE_ID", show_progress=True)
+```
+
+## 📚 مستندات
+
+برای مستندات کامل و مثال‌های بیشتر، به [مستندات رسمی](https://robka.readthedocs.io/) مراجعه کنید.
+
+## 🤝 مشارکت
+
+ما از مشارکت شما استقبال می‌کنیم! لطفاً:
+
+1. پروژه را Fork کنید
+2. یک branch جدید ایجاد کنید (`git checkout -b feature/amazing-feature`)
+3. تغییرات خود را commit کنید (`git commit -m 'Add some amazing feature'`)
+4. به branch خود push کنید (`git push origin feature/amazing-feature`)
+5. یک Pull Request ایجاد کنید
+
+## 📄 مجوز
+
+این پروژه تحت مجوز MIT منتشر شده است. برای جزئیات بیشتر فایل [LICENSE](LICENSE) را مطالعه کنید.
+
+## 🙏 تشکر
+
+- از تیم روبیکا برای ارائه API عالی
+- از جامعه توسعه‌دهندگان پایتون برای ابزارهای فوق‌العاده
+
+## 📞 پشتیبانی
+
+- 🐛 [گزارش باگ](https://github.com/httex/robka/issues)
+- 💡 [درخواست ویژگی](https://github.com/httex/robka/issues)
+- 📧 ایمیل: httex@example.com
+
+---
+
+**ساخته شده با ❤️ توسط htteX**
+
