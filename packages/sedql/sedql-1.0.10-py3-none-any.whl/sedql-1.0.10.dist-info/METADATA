@@ -1,0 +1,444 @@
+Metadata-Version: 2.4
+Name: sedql
+Version: 1.0.10
+Summary: Python SDK for SED (Semantic Entities Designs) - Full TypeScript CLI Integration
+Home-page: https://github.com/holy182/sed-cli
+Author: SED Team
+Maintainer: SED Team
+License-Expression: AGPL-3.0
+Project-URL: Homepage, https://github.com/holy182/sed-cli
+Project-URL: Documentation, https://github.com/holy182/sed-cli#readme
+Project-URL: Repository, https://github.com/holy182/sed-cli
+Project-URL: Bug Tracker, https://github.com/holy182/sed-cli/issues
+Keywords: semantic,database,ai,dsl,data-modeling,automation,sed,cli
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Database
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.8; extra == "dev"
+Dynamic: home-page
+Dynamic: requires-python
+
+# SEDQL Python SDK
+
+**Python SDK for SED (Semantic Entities Designs) - Full TypeScript CLI Integration**
+
+[![PyPI version](https://badge.fury.io/py/sedql.svg)](https://badge.fury.io/py/sedql)
+[![Python versions](https://img.shields.io/pypi/pyversions/sedql.svg)](https://pypi.org/project/sedql/)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-green.svg)](https://opensource.org/licenses/AGPL-3.0)
+
+**SED automatically converts your raw database into an AI-ready semantic layer with intelligent business rules.**
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Install the Python package
+pip install sedql
+
+# Install the SED CLI (required)
+npm install -g sed-cli
+```
+
+### Basic Usage
+
+```python
+from sedql import SEDClient
+
+# Initialize enhanced client (no database URL needed)
+sed = SEDClient()
+
+# Initialize SED with database connection
+sed.init()
+
+# Build semantic layer
+sed.build()
+
+# Query with natural language
+result = sed.query("Show me customers with high revenue")
+print(result)
+
+# Query with AI integration using environment variables (RECOMMENDED)
+# Set your API keys in environment variables:
+# export OPENAI_API_KEY="your-openai-api-key"
+# export ANTHROPIC_API_KEY="your-anthropic-api-key"
+
+# Simple OpenAI query (automatically uses OPENAI_API_KEY)
+ai_result = sed.query_with_openai("Forecast revenue for Q3 2024")
+
+# Simple Anthropic query (automatically uses ANTHROPIC_API_KEY)
+claude_result = sed.query_with_anthropic("Identify customer retention opportunities")
+
+# Access rich response with all features
+print(f"Data: {ai_result['query_result']}")
+print(f"AI Analysis: {ai_result['ai_enhancement']['ai_response']}")
+print(f"Risk Level: {ai_result['risk_assessment']['risk_level']}")
+print(f"Business Context: {ai_result['business_context']}")
+
+# Advanced: Use your own AI client
+import openai
+openai_client = openai.OpenAI(api_key="your-key")  # Only if you prefer this approach
+
+custom_ai_result = sed.query_with_ai({
+    "natural_language": "Analyze sales patterns",
+    "ai_client": openai_client,
+    "ai_service": "custom",
+    "ai_model": "gpt-4"
+})
+```
+
+## ✨ What You Get
+
+### **Full TypeScript CLI Integration**
+- ✅ **Business Rules Engine** - Query validation & governance
+- ✅ **Schema Change Detection** - Automatic change monitoring
+- ✅ **Security Validation** - Business rule enforcement
+- ✅ **Audit Trail** - Rule evaluation tracking
+- ✅ **Performance Optimization** - Query analysis
+- ✅ **Business Context** - Semantic layer with domain knowledge
+- ✅ **AI Integration Framework** - Works with YOUR AI providers
+
+### **AI Integration Philosophy**
+**SED provides the security, governance, and business context. You provide the AI.**
+
+- 🔒 **SED handles**: Data security, business rules, query validation, schema management
+- 🤖 **You handle**: AI service selection, API keys, model choice, AI processing
+- 🔗 **Together**: Secure, governed AI-powered data analysis
+
+### **Rich Response Structure**
+```python
+response = {
+    'query_result': {...},      # Query execution results
+    'ai_enhancement': {...},    # AI processing results from YOUR service
+    'business_context': {...},  # Business domain knowledge from SED
+    'insights': {...},          # Data insights and analysis
+    'risk_assessment': {...},   # Security risk analysis from SED
+    'metadata': {...}           # Query metadata
+}
+```
+
+## 🔗 AI Integration Examples
+
+### **Environment Variables (RECOMMENDED)**
+```python
+from sedql import SEDClient
+
+# Set environment variables first:
+# export OPENAI_API_KEY="your-key"
+# export ANTHROPIC_API_KEY="your-key"
+
+# Initialize SED
+sed = SEDClient()
+sed.init()
+sed.build()
+
+# Simple queries using environment variables
+openai_result = sed.query_with_openai("Analyze customer retention patterns")
+claude_result = sed.query_with_anthropic("Identify revenue optimization opportunities")
+
+print(f"OpenAI Analysis: {openai_result['ai_enhancement']['ai_response']}")
+print(f"Claude Analysis: {claude_result['ai_enhancement']['ai_response']}")
+```
+
+### **OpenAI Integration (Manual)**
+```python
+import openai
+from sedql import SEDClient
+
+# Initialize SED
+sed = SEDClient()
+sed.init()
+sed.build()
+
+# Set up OpenAI client
+openai_client = openai.OpenAI(api_key="your-openai-api-key")
+
+# Query with AI enhancement
+result = sed.query_with_ai({
+    "natural_language": "Analyze customer retention patterns",
+    "ai_client": openai_client,
+    "ai_service": "custom",
+    "ai_model": "gpt-4"
+})
+
+print(f"AI Analysis: {result['ai_enhancement']['ai_response']}")
+```
+
+### **Anthropic Integration (Manual)**
+```python
+import anthropic
+from sedql import SEDClient
+
+# Initialize SED
+sed = SEDClient()
+sed.init()
+sed.build()
+
+# Set up Anthropic client
+anthropic_client = anthropic.Anthropic(api_key="your-anthropic-api-key")
+
+# Query with AI enhancement
+result = sed.query_with_ai({
+    "natural_language": "Identify revenue optimization opportunities",
+    "ai_client": anthropic_client,
+    "ai_service": "custom",
+    "ai_model": "claude-3-sonnet-20240229"
+})
+
+print(f"AI Analysis: {result['ai_enhancement']['ai_response']}")
+```
+
+### **Custom AI Service Integration**
+```python
+from sedql import SEDClient
+
+# Your custom AI service
+class CustomAIService:
+    def generate(self, prompt, max_tokens=1000):
+        # Your AI logic here
+        return f"AI analysis: {prompt[:50]}..."
+
+# Initialize SED
+sed = SEDClient()
+sed.init()
+sed.build()
+
+# Use your custom AI service
+custom_ai = CustomAIService()
+
+result = sed.query_with_ai({
+    "natural_language": "Forecast sales for next quarter",
+    "ai_client": custom_ai,
+    "ai_model": "custom-model"
+})
+
+print(f"Custom AI Analysis: {result['ai_enhancement']['ai_response']}")
+```
+
+## 📋 Requirements
+
+- **Python**: 3.8+
+- **SED CLI**: `npm install -g sed-cli` (provides all the advanced features)
+- **Database**: PostgreSQL, MySQL, SQLite (handled by CLI config)
+- **AI Services**: Install your preferred AI provider packages as needed
+
+## 🔧 Installation
+
+### 1. Install SED CLI (Required)
+```bash
+npm install -g sed-cli
+```
+
+### 2. Install Python Package
+```bash
+pip install sedql
+```
+
+### 3. Set Up AI API Keys (Optional but Recommended)
+```bash
+# For OpenAI
+export OPENAI_API_KEY="your-openai-api-key-here"
+
+# For Anthropic
+export ANTHROPIC_API_KEY="your-anthropic-api-key-here"
+
+# Add to your shell profile (~/.bashrc, ~/.zshrc, etc.) to make permanent
+echo 'export OPENAI_API_KEY="your-key"' >> ~/.bashrc
+echo 'export ANTHROPIC_API_KEY="your-key"' >> ~/.bashrc
+```
+
+### 4. Verify Setup
+```python
+from sedql import SEDClient
+
+# Check what AI services are available
+sed = SEDClient()
+status = sed.get_ai_environment_status()
+print(f"Available AI services: {status['available_services']}")
+```
+
+## 🎯 API Reference
+
+### SEDClient
+
+Main client class that provides full access to SED CLI capabilities.
+
+#### Core Methods
+- `init(force=False)` - Initialize SED with database connection
+- `build(output_file=None)` - Build or rebuild semantic layer
+- `query(natural_language_query, verbose=False)` - Query database using natural language
+- `query_with_ai(query_params)` - Query with AI integration and full SED features
+
+#### Advanced Features
+- `detect_changes(format="json")` - Detect schema changes with analysis
+- `get_status()` - Get current SED status with business rules
+- `export_config(format="json", output_file=None)` - Export configuration
+- `validate()` - Validate semantic layer and business rules
+- `get_semantic_mapping()` - Get business entities and relationships
+
+## 🎯 Use Cases
+
+- **Data Engineering**: Programmatically build semantic layers
+- **Data Science**: Query databases using natural language with AI
+- **Application Integration**: Embed SED functionality in Python apps
+- **Automation**: Script database discovery and mapping
+- **AI Development**: Provide semantic context to LLMs
+- **Data Governance**: Automatic PII protection and compliance
+
+## 🔍 Examples
+
+### Enhanced Query with AI
+```python
+from sedql import SEDClient
+
+# Create enhanced client
+sed = SEDClient()
+
+# Execute AI-enhanced query with full SED features
+response = sed.query_with_ai({
+    "natural_language": "Show me customer retention trends",
+    "ai_model": "gpt-4",
+    "business_context": "Customer analytics and retention analysis"
+})
+
+# Access all the rich features
+print("🎯 Query Results:")
+print(f"   Data: {response['query_result']}")
+
+print("🔒 Security & Compliance:")
+print(f"   Risk Level: {response['risk_assessment']['risk_level']}")
+print(f"   Validation: {response['validation']}")
+
+print("💼 Business Intelligence:")
+print(f"   Context: {response['business_context']}")
+print(f"   Insights: {response['insights']}")
+```
+
+### Business Rules and Validation
+```python
+# Get current status with business rules
+status = sed.get_status()
+print(f"Business Rules: {status.get('rules', {})}")
+
+# Validate semantic layer
+validation = sed.validate()
+print(f"Validation Status: {validation.get('summary', {}).get('status')}")
+
+# Detect schema changes
+changes = sed.detect_changes(format="json")
+print(f"Total Changes: {changes.get('analysis', {}).get('total_changes', 0)}")
+```
+
+## 🌟 Why SEDQL Python SDK?
+
+### **Full CLI Power in Python**
+- Access to all `sed-cli` features from Python
+- Business rules engine and validation
+- Schema change detection and analysis
+- Rich response processing and insights
+
+### **Enterprise Ready**
+- Local-first architecture (no data leaves your machine)
+- Automatic PII protection and compliance
+- Business rule generation and enforcement
+- Professional-grade security and audit trails
+
+### **AI Integration Ready**
+- Semantic layer for LLM context
+- Business terminology mapping
+- Risk assessment and validation
+- Custom AI client integration
+
+## 🎯 How AI Integration Works
+
+### **SED's Role (What We Provide)**
+- 🔒 **Security & Governance**: Business rules, PII protection, access control
+- 🏗️ **Business Context**: Semantic layer, entity relationships, business logic
+- ✅ **Query Validation**: Ensures AI requests are safe and compliant
+- 📊 **Data Access**: Secure database queries with business rule enforcement
+- 🚫 **Risk Assessment**: Evaluates query safety before execution
+
+### **Your Role (What You Provide)**
+- 🤖 **AI Service**: OpenAI, Anthropic, or your custom AI service
+- 🔑 **API Keys**: Your credentials for the AI service
+- 🎛️ **Model Selection**: Which AI model to use (GPT-4, Claude, etc.)
+- 💰 **Cost Management**: You control your AI service usage and costs
+
+### **The Integration Flow**
+1. **You ask a question** → "Analyze customer retention patterns"
+2. **SED provides context** → Business entities, relationships, security rules
+3. **SED validates the request** → Checks business rules and security policies
+4. **SED executes the query** → Gets data safely from your database
+5. **Your AI service analyzes** → Processes the data and provides insights
+6. **SED returns everything** → Query results + AI analysis + security context
+
+### **Why This Approach?**
+- ✅ **No vendor lock-in**: Use any AI service you prefer
+- ✅ **Cost control**: You manage your AI service costs
+- ✅ **Security**: SED handles data governance, AI handles analysis
+- ✅ **Flexibility**: Switch between AI providers as needed
+- ✅ **Compliance**: Business rules are enforced regardless of AI service
+
+## 🔗 Related Projects
+
+- **[sed-cli](https://www.npmjs.com/package/sed-cli)** - Core TypeScript CLI (npm package)
+- **[GitHub Repository](https://github.com/holy182/sed-cli)** - Source code and documentation
+
+## 📄 License
+
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](https://github.com/holy182/sed-cli/blob/main/LICENSE) file for details.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](https://github.com/holy182/sed-cli/blob/main/CONTRIBUTING.md) for details.
+
+---
+
+**Built with ❤️ by the SED Team**
+
+## 🔒 Security & API Key Management
+
+### **Best Practices for API Keys**
+- ✅ **Use environment variables** - Never hardcode API keys in your code
+- ✅ **Use .env files** - For local development (add .env to .gitignore)
+- ✅ **Use secret management** - For production deployments
+- ✅ **Rotate keys regularly** - Keep your API keys secure
+
+### **Environment Variable Setup**
+```bash
+# Local development (.env file)
+echo "OPENAI_API_KEY=your-key-here" > .env
+echo "ANTHROPIC_API_KEY=your-key-here" >> .env
+
+# Production (set in your deployment environment)
+export OPENAI_API_KEY="your-production-key"
+export ANTHROPIC_API_KEY="your-production-key"
+```
+
+### **What SED Does NOT Do**
+- ❌ **Store API keys** - We never see or store your credentials
+- ❌ **Make external calls** - All AI calls go through your environment
+- ❌ **Track usage** - We don't monitor your AI service usage
+- ❌ **Share data** - Your data stays local, AI calls go to your provider
+
+### **What SED DOES Do**
+- ✅ **Provide security** - Business rules, PII protection, access control
+- ✅ **Validate queries** - Ensure AI requests are safe and compliant
+- ✅ **Manage context** - Provide business intelligence and semantic mapping
+- ✅ **Enforce governance** - Apply your company's data policies
