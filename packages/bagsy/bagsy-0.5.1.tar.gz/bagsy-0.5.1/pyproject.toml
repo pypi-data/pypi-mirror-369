@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bagsy"
+version = "0.5.1"
+requires-python = ">=3.10"
+readme = "README.md"
+description = "A cli tool to help in the creation, conversion and sharing of rosbags"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dependencies = [
+    "rosbags",
+    "numpy",
+    "opencv-contrib-python"
+]
+authors = [
+    { name = "Seb-sti1", email = "sebastien.kerbourch@ensta.fr" },
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Operating System :: Unix",
+]
+
+[project.urls]
+Homepage = "https://gitlab.ensta.fr/ssh/bagsy"
+Documentation = "https://gitlab.ensta.fr/ssh/bagsy/-/blob/main/README.md"
+Repository = "https://gitlab.ensta.fr/ssh/bagsy.git"
+Issues = "https://gitlab.ensta.fr/ssh/bagsy/-/issues"
+
+[project.scripts]
+bagsy = "bagsy.__main__:main"
+bag-info = "bagsy.info.__main__:main"
+bag-convert = "bagsy.convert.__main__:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
