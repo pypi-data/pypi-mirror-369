@@ -1,0 +1,99 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ai-subtitle-translator"
+dynamic = ["version"]
+description = "Advanced subtitle translator with LLM support for converting SRT to bilingual ASS files using OpenAI, Gemini, or DeepSeek APIs"
+authors = [
+    {name = "yanp", email = "yanp@users.noreply.github.com"},
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Text Processing :: Linguistic",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+]
+keywords = ["subtitle", "translation", "llm", "ai", "bazarr", "srt", "ass", "openai", "gemini", "deepseek"]
+dependencies = [
+    "pysubs2>=1.8.0",
+    "openai>=1.95.0",
+    "google-genai>=1.25.0",
+    "fastapi[standard]>=0.116.0",
+    "python-multipart>=0.0.20",
+    "pydantic>=2.11.0",
+    "rich>=14.0.0",
+    "json-repair>=0.49.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
+    "httpx>=0.28.0",
+    "black>=25.1.0",
+    "ruff>=0.12.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yanp/ai-subtitle-translator"
+Repository = "https://github.com/yanp/ai-subtitle-translator"
+Issues = "https://github.com/yanp/ai-subtitle-translator/issues"
+
+[project.scripts]
+ai-subtitle-translator = "ai_subtitle_translator.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ai_subtitle_translator"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''

@@ -1,0 +1,25 @@
+services:
+  subtitle-translator:
+    build: .
+    ports:
+      - "8000:8080"
+    environment:
+      # Set your API keys here or use .env file
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      # Optional: Set default provider
+      - DEFAULT_PROVIDER=${DEFAULT_PROVIDER:-deepseek}
+      # Runtime user/group IDs for file permissions
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    volumes:
+      # Mount test directory for subtitle processing
+      - ./subtitle-test:/media/subtitles
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
