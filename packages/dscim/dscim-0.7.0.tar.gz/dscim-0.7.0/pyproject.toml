@@ -1,0 +1,84 @@
+[project]
+name = "dscim"
+description = "Data-Driven Spatial Climate Impact Model core component code"
+readme = "README.md"
+dynamic = ["version"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "dask[array, distributed]",
+    "impactlab-tools",
+    "matplotlib",
+    "netcdf4",
+    "h5netcdf",
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "pyyaml",
+    "p_tqdm",
+    "requests",
+    "statsmodels",
+    "xarray",
+    "zarr",
+]
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs",
+    "mkdocstrings[python]",
+    "mkdocs-material",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/ClimateImpactLab/dscim"
+Documentation = "https://ClimateImpactLab.github.io/dscim"
+Source = "https://github.com/ClimateImpactLab/dscim"
+"Bug Tracker" = "https://github.com/ClimateImpactLab/dscim/issues"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+# Exclude /tests: included test data too large to ship to PyPI.
+exclude = [
+    "/.github",
+    "/tests",
+]
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "999"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/dscim/_version.py"
+
+[tool.ruff]
+exclude = [
+    ".eggs",
+    "docs",
+]
+
+[tool.ruff.lint]
+# E402: module level import not at top of file
+# E501: line too long
+ignore = [
+    "E402",
+    "E501",
+]
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # Pyupgrade
+    "UP",
+]
