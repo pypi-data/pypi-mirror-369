@@ -1,0 +1,145 @@
+Metadata-Version: 2.1
+Name: atmos-bud
+Version: 0.1.5
+Summary: Program for analyzing the heat, vorticity and humidity budgets of limited regions on the atmosphere.
+Home-page: https://github.com/daniloceano/ATMOS-BUD
+Author: Danilo Couto de Souza
+Author-email: danilo.oceano@gmail.com
+License: GPL-3.0
+Project-URL: Documentation, https://github.com/daniloceano/ATMOS-BUD/docs
+Project-URL: Source, https://github.com/daniloceano/ATMOS-BUD
+Project-URL: Tracker, https://github.com/daniloceano/ATMOS-BUD/issues
+Keywords: atmospheric science,meteorology,budget analysis,ERA5
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Atmospheric Science
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Cartopy==0.22.0
+Requires-Dist: cdsapi==0.7.6
+Requires-Dist: certifi==2024.2.2
+Requires-Dist: cftime==1.6.3
+Requires-Dist: charset-normalizer==3.3.2
+Requires-Dist: click==8.1.7
+Requires-Dist: cloudpickle==3.0.0
+Requires-Dist: cmocean==3.1.3
+Requires-Dist: contourpy==1.2.0
+Requires-Dist: cycler==0.12.1
+Requires-Dist: dask==2024.2.0
+Requires-Dist: exceptiongroup==1.3.0
+Requires-Dist: fonttools==4.49.0
+Requires-Dist: fsspec==2024.2.0
+Requires-Dist: idna==3.6
+Requires-Dist: importlib-metadata==7.0.1
+Requires-Dist: iniconfig==2.1.0
+Requires-Dist: joblib==1.3.2
+Requires-Dist: kiwisolver==1.4.5
+Requires-Dist: locket==1.0.0
+Requires-Dist: lorenz-phase-space==1.2.1
+Requires-Dist: matplotlib==3.8.3
+Requires-Dist: MetPy==1.6.1
+Requires-Dist: netCDF4==1.6.5
+Requires-Dist: numpy==1.26.4
+Requires-Dist: packaging==23.2
+Requires-Dist: pandas==2.2.3
+Requires-Dist: partd==1.4.1
+Requires-Dist: pillow==10.2.0
+Requires-Dist: Pint==0.23
+Requires-Dist: platformdirs==4.2.0
+Requires-Dist: pluggy==1.6.0
+Requires-Dist: pooch==1.8.0
+Requires-Dist: pyarrow==15.0.0
+Requires-Dist: pyparsing==3.1.1
+Requires-Dist: pyproj==3.6.1
+Requires-Dist: pyshp==2.3.1
+Requires-Dist: pytest==8.3.5
+Requires-Dist: python-dateutil==2.9.0.post0
+Requires-Dist: pytz==2024.1
+Requires-Dist: PyYAML==6.0.1
+Requires-Dist: requests==2.31.0
+Requires-Dist: roman-numerals-py==3.1.0
+Requires-Dist: scikit-learn==1.4.1.post1
+Requires-Dist: scipy==1.12.0
+Requires-Dist: shapely==2.0.3
+Requires-Dist: six==1.16.0
+Requires-Dist: snowballstemmer==3.0.1
+Requires-Dist: threadpoolctl==3.3.0
+Requires-Dist: tomli==2.2.1
+Requires-Dist: toolz==0.12.1
+Requires-Dist: tqdm==4.66.2
+Requires-Dist: traitlets==5.14.1
+Requires-Dist: typing-extensions==4.9.0
+Requires-Dist: tzdata==2024.1
+Requires-Dist: urllib3==2.2.0
+Requires-Dist: xarray==2025.4.0
+Requires-Dist: zipp==3.17.0
+Requires-Dist: alabaster==0.7.16
+Requires-Dist: babel==2.17.0
+Requires-Dist: black==23.12.1
+Requires-Dist: docutils<0.19,>=0.14
+Requires-Dist: flake8==6.0.0
+Requires-Dist: imagesize==1.4.1
+Requires-Dist: Jinja2==3.1.6
+Requires-Dist: MarkupSafe==3.0.2
+Requires-Dist: Pygments==2.19.1
+Requires-Dist: Sphinx==5.0.0
+Requires-Dist: sphinx-rtd-theme==1.3.0
+Requires-Dist: sphinxcontrib-applehelp==2.0.0
+Requires-Dist: sphinxcontrib-devhelp==2.0.0
+Requires-Dist: sphinxcontrib-htmlhelp==2.1.0
+Requires-Dist: sphinxcontrib-jsmath==1.0.1
+Requires-Dist: sphinxcontrib-qthelp==2.0.0
+Requires-Dist: sphinxcontrib-serializinghtml==2.0.0
+Requires-Dist: twine==4.0.2
+
+
+
+# ATMOS-BUD Overview
+
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Version 0.1.1](https://img.shields.io/badge/version-0.1.1-green.svg)](https://github.com/daniloceano/ATMOS-BUD/releases)
+[![Test Coverage 62%](https://img.shields.io/badge/coverage-62%25-brightgreen.svg)](https://github.com/daniloceano/ATMOS-BUD)
+[![Tests 114+](https://img.shields.io/badge/tests-114+-success.svg)](https://github.com/daniloceano/ATMOS-BUD)
+![Documentation Status](https://readthedocs.org/projects/atmos-bud//badge/?version=latest)
+![License](https://img.shields.io/github/license/daniloceano/ATMOS-BUD)
+
+ATMOS-BUD is a comprehensive software suite designed for calculating heat, vorticity, and moisture balances within limited areas of the atmosphere. Developed at the Institute of Astronomy, Geophysics, and Atmospheric Sciences of the University of São Paulo, it's a key tool for students and researchers in atmospheric sciences.
+
+### Key Features
+
+- Processes atmospheric model and reanalysis data in NetCDF format.
+- Outputs CSV files for spatial averages and a comprehensive NetCDF file for spatial results.
+- Supports Fixed Domain, Semi-Lagrangian Domain, and Interactive Domain operational frameworks.
+
+### Quasi-Geostrophic Thermodynamic Equation
+
+```plaintext
+∂T/∂t = -Vh · ∇hT - Σω + Q
+```
+*Where T is temperature, Vh is the horizontal wind vector, Σ is the static stability parameter, ω is the vertical velocity, and Q represents diabatic heating.*
+
+### Quasi-Geostrophic Vorticity Budget Equation
+
+```plaintext
+∂ζ/∂t = -Vh · ∇hζ - (ζω/Δp) - βv - ζ∇ · Vh - f∇ · Vh + Tilting Term
+```
+*Where ζ is vorticity, β is the change in Coriolis parameter with latitude, and f is the Coriolis parameter.*
+
+### Water Budget Equation
+
+```plaintext
+∫∂q/∂t dp = -∫Vh · ∇q dp + ∫S dp
+```
+*Where q is specific humidity, Vh is the horizontal wind vector, and S represents net sources/sinks.*
+
+ATMOS-BUD combines academic rigor with practical application, making it a gateway to understanding atmospheric dynamics for both educational exploration and advanced research.
+
+### Full Documentation
+
+The full documentation for ATMOS-BUD can be found on [Read the Docs](https://atmos-bud.readthedocs.io).
