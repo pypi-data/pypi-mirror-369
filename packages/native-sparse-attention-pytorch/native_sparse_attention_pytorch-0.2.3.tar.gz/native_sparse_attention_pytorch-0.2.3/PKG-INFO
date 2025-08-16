@@ -1,0 +1,138 @@
+Metadata-Version: 2.4
+Name: native-sparse-attention-pytorch
+Version: 0.2.3
+Summary: Native Sparse Attention
+Project-URL: Homepage, https://pypi.org/project/native-sparse-attention-pytorch/
+Project-URL: Repository, https://github.com/lucidrains/native-sparse-attention-pytorch
+Author-email: Phil Wang <lucidrains@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Phil Wang
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: artificial intelligence,deep learning,efficient attention
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9
+Requires-Dist: einops>=0.8.1
+Requires-Dist: einx>=0.3.0
+Requires-Dist: jaxtyping
+Requires-Dist: local-attention>=1.11.1
+Requires-Dist: rotary-embedding-torch
+Requires-Dist: torch>=2.5
+Provides-Extra: examples
+Requires-Dist: tqdm; extra == 'examples'
+Requires-Dist: wandb; extra == 'examples'
+Provides-Extra: test
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: tqdm; extra == 'test'
+Description-Content-Type: text/markdown
+
+<img src="./fig2.png" width="450px"></img>
+
+## Native Sparse Attention
+
+Implementation of the sparse attention pattern proposed by the Deepseek team in their [Native Sparse Attention](https://arxiv.org/abs/2502.11089) paper
+
+This will be my last open sourced project under Meta
+
+## Appreciation
+
+- Phil Tillet for democratizing CUDA kernel hacking with <a href="https://triton-lang.org/main/index.html">Triton</a>
+
+- [Flex Attention](https://pytorch.org/blog/flexattention/) for allowing for rapid prototyping
+
+- <a href="https://github.com/Mr-Grin">@Mr-Grin</a> for the code review and pointing out an inaccuracy with the implementation
+
+- <a href="https://github.com/Pasewark">Eric Pasewark</a> for submitting a simple transformer based compression network
+
+- <a href="https://github.com/Mr-Grin">@Mr-Grin</a> for a pull request that fixes compression block hyperparameters
+
+- <a href="https://github.com/StrongSpoon">@StrongSpoon</a> for a memory access guard
+
+## Install
+
+```bash
+$ pip install native-sparse-attention-pytorch
+```
+
+## Usage
+
+```python
+import torch
+from native_sparse_attention_pytorch import SparseAttention
+
+attn = SparseAttention(
+    dim = 512,
+    dim_head = 64,
+    heads = 8,
+    sliding_window_size = 2,
+    compress_block_size = 4,
+    compress_block_sliding_stride = 2,
+    selection_block_size = 4,
+    num_selected_blocks = 2
+)
+
+tokens = torch.randn(2, 31, 512)
+
+attended = attn(tokens)
+
+assert tokens.shape == attended.shape
+```
+
+## Example
+
+Enwik8 language modeling
+
+```bash
+$ pip install .[examples]
+```
+
+Then
+
+```bash
+$ python train.py
+```
+
+To record some of your experiments, just invoke `wandb login` first before modifying the training script
+
+## Citations
+
+```bibtex
+@inproceedings{Yuan2025NativeSA,
+    title   = {Native Sparse Attention: Hardware-Aligned and Natively Trainable Sparse Attention},
+    author  = {Jingyang Yuan and Huazuo Gao and Damai Dai and Junyu Luo and Liang Zhao and Zhengyan Zhang and Zhenda Xie and Y. X. Wei and Lean Wang and Zhiping Xiao and Yuqing Wang and Chong Ruan and Ming Zhang and Wenfeng Liang and Wangding Zeng},
+    year    = {2025},
+    url     = {https://api.semanticscholar.org/CorpusID:276408911}
+}
+```
+
+```bibtex
+@inproceedings{Keles2022OnTC,
+    title   = {On The Computational Complexity of Self-Attention},
+    author  = {Feyza Duman Keles and Pruthuvi Maheshakya Wijewardena and Chinmay Hegde},
+    booktitle = {International Conference on Algorithmic Learning Theory},
+    year    = {2022},
+    url     = {https://api.semanticscholar.org/CorpusID:252198880}
+}
+```
