@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "abnormal-hieratic-indexer"
+description = "Index annotations from the Abnormal Hieratic Global Portal in Elasticsearch"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "GPL-3.0-or-later"
+keywords = []
+authors = [
+  { name = "Ben Companjen", email = "ben@companjen.name" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "beautifulsoup4~=4.12.3",
+  "requests~=2.32.3",
+]
+
+version = "1.1.1"
+
+[project.urls]
+Documentation = "https://github.com/LeidenUniversityLibrary/abnormal-hieratic-indexer#readme"
+Issues = "https://github.com/LeidenUniversityLibrary/abnormal-hieratic-indexer/issues"
+Source = "https://github.com/LeidenUniversityLibrary/abnormal-hieratic-indexer"
+
+[project.scripts]
+abhier-indexer = "abnormal_hieratic_indexer.index_annotations:main"
+
+[tool.hatch.envs.test]
+dependencies = [
+  "pytest",
+  "pytest-cov",
+]
+[tool.hatch.envs.test.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=abnormal_hieratic_indexer --cov=tests"
+no-cov = "cov --no-cov"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["39", "310", "311", "312", "313"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
