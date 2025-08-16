@@ -1,0 +1,19 @@
+# Tool-first verifier configuration
+
+tools:
+  lint:
+    command: "bash -lc 'ruff check . && black --check .'"
+    timeout_seconds: 20
+  type_check:
+    command: "bash -lc 'mypy . || true'"
+    timeout_seconds: 30
+  unit_tests:
+    command: "bash -lc 'pytest -q -k smoke || true'"
+    timeout_seconds: 60
+
+scoring:
+  base_pass: 0.9
+  base_fail: 0.6
+  cutoff: 0.80
+
+

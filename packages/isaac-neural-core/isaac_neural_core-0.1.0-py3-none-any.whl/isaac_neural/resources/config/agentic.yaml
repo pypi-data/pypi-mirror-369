@@ -1,0 +1,51 @@
+# ISAAC Neural – Agentic controller configuration
+# Objectives: default open models, deepen on hard tasks, premium only on failure
+
+cutoff: 0.80
+max_steps: 6
+enable_reflexion: true
+
+# High-risk classes trigger escalation consideration even when scores are near cutoff
+high_risk_classes:
+  - auth
+  - migration
+  - schema
+
+lanes:
+  quick:
+    max_tokens: 512
+    timeout_seconds: 8
+    n_best: 1
+    model: oss_fast
+  std:
+    max_tokens: 1536
+    timeout_seconds: 20
+    n_best: 1
+    model: oss_fast
+  deep:
+    max_tokens: 4096
+    timeout_seconds: 60
+    n_best: 3
+    model: llama_strong
+
+routing:
+  defaults:
+    lane: std
+    model: llama_strong
+  by_class:
+    doc: { lane: quick, model: oss_fast }
+    test: { lane: std, model: oss_fast }
+    small_fix: { lane: std, model: oss_fast }
+    refactor: { lane: deep, model: llama_strong }
+    plan: { lane: deep, model: llama_strong }
+    migrate: { lane: deep, model: llama_strong }
+
+escalation:
+  enabled: false  # disable premium escalation for local dev/mock
+  premium_provider: ${PREMIUM_PROVIDER}
+  premium_model: ${PREMIUM_MODEL}
+  conditions:
+    below_cutoff: true
+    high_risk_class: true
+
+

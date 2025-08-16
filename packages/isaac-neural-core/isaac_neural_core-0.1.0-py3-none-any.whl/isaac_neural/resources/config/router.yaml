@@ -1,0 +1,30 @@
+# Two open models + premium fallback
+
+models:
+  oss_fast:
+    base_url: ${OSS_BASE_URL}
+    model_id: ${OSS_MODEL_ID}
+  llama_strong:
+    base_url: ${LLAMA_BASE_URL}
+    model_id: ${LLAMA_MODEL_ID}
+  premium:
+    base_url: ${PREMIUM_BASE_URL}
+    provider: ${PREMIUM_PROVIDER}
+    model_id: ${PREMIUM_MODEL}
+
+lanes:
+  quick:
+    model: oss_fast
+    n_best: 1
+  std:
+    model: oss_fast
+    n_best: 1
+  deep:
+    model: llama_strong
+    n_best: 3
+
+fallback:
+  enabled: true
+  to: premium
+
+
