@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: xmlist
+Version: 1.1b13
+Summary: Generates XML, represented as lists and tuples
+Author-email: Joost Molenaar <jjm@j0057.nl>
+License: MIT
+Project-URL: repository, https://gitlab.com/j0057-git/python/xmlist
+Project-URL: issues, https://gitlab.com/j0057-git/python/xmlist/-/issues
+Keywords: xml,html
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: build; extra == "dev"
+Requires-Dist: setuptools; extra == "dev"
+Requires-Dist: setuptools-scm; extra == "dev"
+Requires-Dist: tox; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: pytest-flakes; extra == "test"
+Dynamic: license-file
+
+# xmlist
+
+`xmlist` is a module for generating XML, which it represents by lists and
+tuples.
+
+## using xmlist
+
+    doc = ['html',
+        ('xmlns', 'http://www.w3.org/1999/xhtml'),
+        ['head', ['title', 'Hello, world!']],
+        ['body',
+            ['h1', 'Hello, world!'],
+            ['p', 'xmlist is a module for generating XML']]]
+    xml = xmlist.serialize(doc)
+
+## hacking on xmlist
+
+Create a venv and install the package with the `-e`/`--editable` flag. The
+`dev` extra  pulls in requirements for  setuptools and tox; and the `test`
+extra for various pytest packages.
+
+    python -m venv env
+    env/bin/python -m pip install -e .[dev,test]
+
+## testing xmlist
+
+Running the tests for your current Python:
+
+    env/bin/python -m pytest -v
+
+Running the tests in other Pythons:
+
+    env/bin/python -m tox

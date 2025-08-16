@@ -1,0 +1,132 @@
+image: alpine:3.20
+
+variables:
+  PIP_CACHE_DIR: $CI_PROJECT_DIR/.cache/pip
+  PIP_PROGRESS_BAR: 'off'
+  PIP_DISABLE_PIP_VERSION_CHECK: 'yes'
+
+cache:
+  paths:
+    - .cache/pip
+
+stages:
+  - prepare
+  - test
+  - build
+  - release
+
+before_script:
+  - >-
+    env | sort
+  - apk add python3 git curl jq
+  - pwd
+  - ls -al
+  # git -C .. clone --no-checkout $CI_REPOSITORY_URL
+  # git checkout $GIT_COMMIT_SHA
+  - git show-ref
+  - python -m venv env
+  - . env/bin/activate
+
+# [prepare] generate version number
+generate-version:
+  stage: prepare
+  script:
+    - python -m pip install -e .[dev]
+    - echo XMLIST_VERSION=$(python -m setuptools_scm) >> version.env
+  artifacts:
+    reports:
+      dotenv: version.env
+
+# [test] run tests
+run-tests:
+  stage: test
+  script:
+    - python -m pip install -e .[test]
+    - python -m pytest -v
+
+# TODO: rune flake8
+
+# [build] build sdist and wheel
+build-package:
+  stage: build
+  script:
+    - python -m pip install -e .[dev]
+    - python -m build
+  artifacts:
+    paths:
+      - dist/
+
+# [release] release to Gitlab PyPI index
+release-gitlab-pypi:
+  stage: release
+  variables:
+    TWINE_USERNAME: gitlab-ci-token
+    TWINE_PASSWORD: $CI_JOB_TOKEN
+    TWINE_REPOSITORY_URL: $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/pypi
+  script:
+    - python -m pip install -e .[dev]
+    - python -m twine upload --verbose --disable-progress-bar dist/*
+
+# [release] release to test.pypi.org and pypi.org
+.release-base:
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: $PYPI_OIDC_AUD
+  variables:
+    TWINE_USERNAME: __token__
+    TWINE_REPOSITORY_URL: $PYPI_REPO_URL
+  script:
+    - python -m pip install -e .[dev]
+    - >-
+      export TWINE_PASSWORD=$(curl -sv --json "{\"token\": \"${PYPI_ID_TOKEN}\"}" $PYPI_OIDC_URL | jq -r .token)
+    - python -m twine upload --verbose --disable-progress-bar dist/*
+
+release-testpypi:
+  stage: release
+  environment:
+    name: release-test
+  variables:
+    PYPI_OIDC_AUD: testpypi
+    PYPI_OIDC_URL: https://test.pypi.org/_/oidc/mint-token
+    PYPI_REPO_URL: https://test.pypi.org/legacy/
+  extends: .release-base
+
+release-pypi:
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
+  environment:
+    name: release
+  variables:
+    PYPI_OIDC_AUD: pypi
+    PYPI_OIDC_URL: https://pypi.org/_/oidc/mint-token
+    PYPI_REPO_URL: https://upload.pypi.org/legacy/
+  extends: .release-base
+
+# [release] release to generic package registry and link from gitlab release
+release-assets:
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    PY_SDIST: xmlist-$XMLIST_VERSION.tar.gz
+    PY_WHEEL: xmlist-$XMLIST_VERSION-py3-none-any.whl
+    PKG_URL: $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/xmlist/$XMLIST_VERSION
+  script:
+    - curl -sv --fail-with-body --oauth2-bearer "$GITLAB_API_PAT" --upload-file dist/$PY_SDIST $PKG_URL/$PY_SDIST
+    - curl -sv --fail-with-body --oauth2-bearer "$GITLAB_API_PAT" --upload-file dist/$PY_WHEEL $PKG_URL/$PY_WHEEL
+
+link-assets:
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    PY_SDIST: xmlist-$XMLIST_VERSION.tar.gz
+    PY_WHEEL: xmlist-$XMLIST_VERSION-py3-none-any.whl
+    PKG_URL: $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/xmlist/$XMLIST_VERSION
+    REL_URL: $CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$XMLIST_VERSION/assets/links
+  script:
+    - >-
+      curl -sv --fail-with-body --oauth2-bearer "$GITLAB_API_PAT" -d name=$PY_SDIST -d type=package -d url=$PKG_URL/$PY_SDIST -d direct_asset_path=/$PY_SDIST $REL_URL
+    - >-
+      curl -sv --fail-with-body --oauth2-bearer "$GITLAB_API_PAT" -d name=$PY_WHEEL -d type=package -d url=$PKG_URL/$PY_WHEEL -d direct_asset_path=/$PY_WHEEL $REL_URL
