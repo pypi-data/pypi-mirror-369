@@ -1,0 +1,125 @@
+Metadata-Version: 2.4
+Name: atomict
+Version: 1.2.16
+Summary: The client application for the https://atomictessellator.com/
+Author-email: Steven Anderson <steven@atomictessellator.com>, Alain Richardt <alain@atomictessellator.com>
+License: MIT
+Project-URL: Homepage, https://github.com/AtomicTessellator/atomic_cli
+Keywords: atomic,tessellator,cli,client,fhi-aims,kpoint,sqs,adsorbate
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: tenacity~=9.0
+Requires-Dist: httpx
+Requires-Dist: click~=8.0
+Requires-Dist: rich~=13.0
+Requires-Dist: deepdiff
+Provides-Extra: utils
+Requires-Dist: ase>=3.23.0; extra == "utils"
+Requires-Dist: spglib==2.5.0; extra == "utils"
+Requires-Dist: pymatgen==2025.3.10; extra == "utils"
+Requires-Dist: msgpack==1.1.0; extra == "utils"
+Requires-Dist: msgpack_numpy==0.4.8; extra == "utils"
+Provides-Extra: dev
+Requires-Dist: pytest~=8.0; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Dynamic: license-file
+
+# Atomic Tessellator - CLI package
+
+## Installation
+```
+pip install atomict
+
+# install utils package with scientific extensions (ase, spglib) 
+pip install atomict[utils]
+
+# ", with a git url
+pip install git+https://github.com/AtomicTessellator/atomic_cli#egg=atomict[utils]
+
+# Troubleshooting
+If pip install is not working, try:
+pip install --upgrade setuptools pip wheel
+```
+
+## Installation for devs
+```
+pip install -e ".[dev]"
+```
+
+Enable verbose logging for debugging:
+
+```
+export AT_DEBUG=enabled
+```
+
+# CLI Usage
+
+## Get a list of available commands
+
+```$ tess```
+
+![Alt text](img/tess.png?raw=true "tess")
+
+You can get help for each command with `tess <command> --help`. This will print the command-specific help and options.
+## Log in and store authentication token
+
+```$ tess login```
+
+This will prompt you for your username and password.
+
+```$ tess token```
+
+This command prints out your current token.
+
+
+## Get a list of available projects
+
+```$ tess project get```
+
+![Alt text](img/at_project_get.png?raw=true "tess project get")
+
+
+## Get a list of adsorbates
+
+```$ tess adsorbate get```
+
+![Alt text](img/at_adsorbate_get.png?raw=true "tess adsorbate get")
+
+## Search objects for substrings
+
+```$ tess adsorbate get --search NH3```
+
+![Alt text](img/at_adsorbate_get_search.png?raw=true "tess adsorbate get --search")
+
+## Get a list of tasks
+
+```$ tess task get```
+
+![Alt text](img/at_task_get.png?raw=true "tess task get")
+
+## Get tasks with a specific status
+
+```$ tess task get --status completed```
+
+![Alt text](img/at_task_get_completed.png?raw=true "tess task get --status completed")
+
+## Configuration
+
+Tab completion is available. Run the hidden command:
+
+```tess completion```
+
+This will print out the instructions for enabling tab completion for your shell.
