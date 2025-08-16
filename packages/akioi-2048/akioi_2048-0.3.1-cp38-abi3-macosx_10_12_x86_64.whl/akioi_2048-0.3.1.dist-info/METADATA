@@ -1,0 +1,73 @@
+Metadata-Version: 2.4
+Name: akioi-2048
+Version: 0.3.1
+License-File: LICENSE
+Summary: akioi backend
+Author: jasonxue
+Requires-Python: >=3.8, <3.14
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+
+# akioi-2048
+
+Python implementation of a customizable 2048 engine with multiplier tiles and
+score tracking. Requires Python 3.8 or later.
+
+## Features
+
+- Classic 2048 mechanics
+- Special multiplier tiles: -1 (×1), -2 (×2), -4 (×4)
+- Supports programmatic interaction for AI training
+- Detects victory (65536 tile) and game over states
+
+## Python Public Functions
+
+### `step(board, direction)`
+
+Apply one move. If the board changes, a new tile is spawned in a random empty
+cell.
+
+#### Parameters
+
+- **`board: list[list[int]]`** – 4×4 board matrix.
+    - Positive integers are normal tiles (2, 4, 8, …)
+    - Negative integers are multiplier tiles
+      (`-1` = ×1, `-2` = ×2, `-4` = ×4). The absolute value is the multiplier.
+
+- **`direction: int`** – Movement direction
+    - `0` → **Down** ↓
+    - `1` → **Right** →
+    - `2` → **Up** ↑
+    - `3` → **Left** ←
+
+#### Returns
+
+Tuple **`(new_board, delta_score, state)`**:
+
+- **`new_board: list[list[int]]`** – Board after the move
+- **`delta_score: int`** – Score gained or lost from merges
+- **`state: int`** – Game state indicator
+    - `1` → Created a 65536 tile → **Victory**
+    - `-1` → No legal moves left → **Game Over**
+    - `0` → Game continues
+
+#### Notes
+
+If the board stays the same, no tile is spawned, `delta_score = 0`, and
+`state = 0`.
+
+### `init()`
+
+Create a new board with two starting tiles.
+
+#### Returns
+
+- **`new_board: list[list[int]]`** – Fresh board ready for play
+
+## Installation
+
+Install via `pip`:
+
+```bash
+pip3 install akioi-2048
+```
+
