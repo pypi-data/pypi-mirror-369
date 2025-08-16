@@ -1,0 +1,107 @@
+/* Sphinx Filter Tabs -- Static Stylesheet */
+/* This file provides the structural and base theme styles for the component. */
+
+/* Main container for the tab component */
+.sft-container {
+    border: 1px solid #e0e0e0;
+    /* THEME: The border-radius is controlled by a CSS variable from conf.py. */
+    border-radius: var(--sft-border-radius, 8px);
+    overflow: hidden;
+    margin: 1.5em 0;
+}
+
+/* The <fieldset> provides semantic grouping for accessibility. */
+.sft-fieldset { border: none; padding: 0; margin: 0; }
+
+/* The <legend> is visually hidden but essential for screen reader users. */
+.sft-legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* The <input type="radio"> buttons are the functional core.
+   They are hidden accessibly, not with display:none, so they remain
+   focusable for keyboard users. */
+.sft-tab-bar > input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* The tab bar containing the clickable labels. */
+.sft-tab-bar { 
+    display: flex; 
+    flex-wrap: wrap; 
+    /* THEME: The background color is controlled by a CSS variable. */
+    background-color: var(--sft-tab-background, #f0f0f0); 
+    border-bottom: 1px solid #e0e0e0; 
+    padding: 0 10px; 
+}
+.sft-tab-bar > label { 
+    padding: 12px 18px; 
+    cursor: pointer; 
+    transition: border-color 0.2s ease-in-out, color 0.2s ease-in-out; 
+    border-bottom: 3px solid transparent; 
+    color: #555; 
+    font-weight: 500; 
+    /* THEME: The font size is controlled by a CSS variable. */
+    font-size: var(--sft-font-size, 1em); 
+    line-height: 1.5; 
+}
+
+/* THEME: The active tab label is highlighted using a CSS variable for the color. */
+.sft-tab-bar > input[type="radio"]:checked + label {
+    border-bottom-color: var(--sft-tab-highlight-color, #007bff);
+    color: #000;
+}
+
+/* Add a clear, visible focus ring for keyboard navigation. */
+.sft-tab-bar > input[type="radio"]:focus + label {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+    border-radius: 5px;
+    outline: none;
+}
+
+/* The container for all content panels. */
+.sft-content { padding: 20px; }
+
+/* By default, hide all tab-specific panels. The dynamic CSS will show the active one. */
+.sft-content > .sft-panel {
+    display: none;
+}
+
+/* Always show the "General" panel, as it has no radio button to control it. */
+.sft-content > .sft-panel[data-filter="General"] {
+    display: block;
+}
+
+
+/* Styles for collapsible sections */
+.collapsible-section {
+    border: 1px solid #e0e0e0;
+    /* THEME: The accent color is controlled by a CSS variable. */
+    border-left: 4px solid var(--sft-collapsible-accent-color, #17a2b8);
+    border-radius: 4px;
+    margin-top: 1em;
+}
+.collapsible-section summary {
+    display: block;
+    cursor: pointer;
+    padding: 12px;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    outline: none;
+}
+.collapsible-section summary::-webkit-details-marker {
+    display: none;
+}
+.collapsible-section summary {
+    list-style: none;
+}
+.collapsible-section[open] > summary { border-bottom: 1px solid #e0e0e0; }
+.custom-arrow { display: inline-block; width: 1em; margin-right: 8px; transition: transform 0.2s; }
+.collapsible-section[open] > summary .custom-arrow { transform: rotate(90deg); }
+.collapsible-content { padding: 15px; }
