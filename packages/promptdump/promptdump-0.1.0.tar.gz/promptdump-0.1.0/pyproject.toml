@@ -1,0 +1,26 @@
+[project]
+name = "promptdump"
+version = "0.1.0"
+description = "A command-line tool to quickly gather and format code for AI prompts"
+authors = [    {name = "Sander Land"} ]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pyperclip>=1.8.2",
+]
+
+[project.scripts]
+promptdump = "promptdump:main"
+
+[tool.ruff]
+line-length = 120
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.12.9",
+]
