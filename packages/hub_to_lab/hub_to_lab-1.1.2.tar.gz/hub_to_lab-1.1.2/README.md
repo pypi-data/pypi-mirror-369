@@ -1,0 +1,87 @@
+# GitHub to GitLab
+
+A simple command-line tool to copy a public GitHub repository to a GitLab project.
+
+## Description
+
+GitHub to GitLab is a utility that allows you to easily migrate repositories from GitHub to GitLab. It automates the process of:
+
+1. Cloning a GitHub repository
+2. Creating a new project on GitLab (or using an existing one)
+3. Pushing all branches and tags to the GitLab project
+
+This tool is particularly useful for:
+- Migrating projects from GitHub to self-hosted GitLab instances
+- Creating backups of GitHub repositories on GitLab
+- Setting up mirrors of public GitHub repositories
+
+## Installation
+
+### Prerequisites
+
+- Python 3.6 or higher
+- Git installed and configured on your system
+
+### Install from PyPI
+
+```bash
+pipx install hub_to_lab
+```
+
+### Install from source
+
+```bash
+git clone https://github.com/RobinWoods/hub_to_lab.git
+cd hub_to_lab
+pip install -e .
+```
+
+## Usage
+
+Run the tool from the command line:
+
+```bash
+hub_to_lab
+```
+
+The tool will prompt you for:
+1. The GitHub repository to clone (in the format `username/repository`)
+2. The name for the new GitLab project
+
+### Environment Variables
+
+The tool uses the following environment variables:
+
+- `GITLAB_URL`: The URL of your GitLab instance
+- `GITLAB_TOKEN`: Your GitLab personal access token
+- `GITLAB_USERNAME`: Your GitLab username
+- `GITLAB_GROUP`: The GitLab group where the project should be created
+
+You can set these variables in a `.env` file in the current directory, or the tool will prompt you for them if they're missing.
+
+Example `.env` file:
+```
+GITLAB_URL=https://gitlab.example.com
+GITLAB_TOKEN=your_personal_access_token
+GITLAB_USERNAME=your_username
+GITLAB_GROUP=your_group
+```
+
+## Features
+
+- Automatically creates a new GitLab project if it doesn't exist
+- Preserves all branches and tags from the GitHub repository
+- Shows progress with a nice progress bar
+- Stores configuration in a `.env` file for future use
+- Works with self-hosted GitLab instances
+
+## Dependencies
+
+- GitPython: For Git operations
+- rich: For progress bars and terminal output
+- python-dotenv: For environment variable management
+- requests: For GitLab API communication
+
+## License
+
+This project is licensed under the MIT License.
