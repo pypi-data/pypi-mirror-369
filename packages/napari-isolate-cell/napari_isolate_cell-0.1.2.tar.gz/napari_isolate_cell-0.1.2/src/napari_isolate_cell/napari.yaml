@@ -1,0 +1,24 @@
+name: napari-isolate-cell
+display_name: Isolate Cell from Segmentation
+schema_version: "0.2.0"
+# use 'hidden' to remove plugin from napari hub search results
+visibility: public
+# see https://napari.org/stable/plugins/technical_references/manifest.html#fields for valid categories
+categories: ["Segmentation", "Annotation", "Visualization"]
+
+contributions:
+  commands:
+    - id: napari-isolate-cell.isolate_widget
+      python_name: napari_isolate_cell._widget:make_isolate_widget
+      title: Isolate Cell Arbor
+    # Command for the reader function
+    - id: napari-isolate-cell.read_tiff 
+      python_name: napari_isolate_cell.io:napari_get_reader
+      title: TIFF with Scale Detection (Isolate Cell)
+  widgets:
+    - command: napari-isolate-cell.isolate_widget
+      display_name: "Isolate Cell Arbor"
+  readers:
+    - command: napari-isolate-cell.read_tiff # Use the ID defined in commands
+      filename_patterns: ["*.tif", "*.tiff", "*.TIF", "*.TIFF"]
+      accepts_directories: false
