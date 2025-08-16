@@ -1,0 +1,246 @@
+Metadata-Version: 2.4
+Name: mist_stitching
+Version: 1.0.0
+Summary: MIST: Microscopy Image Stitching Tool
+Project-URL: Homepage, https://github.com/usnistgov/MIST
+Author-email: Michael Majurski <michael.majurski@nist.gov>
+License-File: LICENSE
+Requires-Python: >=3.10
+Requires-Dist: numpy>=2.3.2
+Requires-Dist: pandas>=2.3.1
+Requires-Dist: scikit-image>=0.25.2
+Description-Content-Type: text/markdown
+
+# MIST - Microscopy Image Stitching Tool
+
+[![PyPI version](https://badge.fury.io/py/mist.svg)](https://badge.fury.io/py/mist)
+[![License](https://img.shields.io/badge/License-Public%20Domain-blue.svg)](https://github.com/usnistgov/MIST/blob/master/LICENSE.txt)
+
+**MIST** (Microscopy Image Stitching Tool) is a high-performance Python library for stitching 2D microscopy image datasets. Developed at the National Institute of Standards and Technology, MIST provides accurate and scalable image stitching with stage modeling and error minimization.
+
+[Java Source Code](https://github.com/USNISTGOV/MIST/tree/master)
+
+[MATLAB Source Code](https://github.com/USNISTGOV/MIST/tree/mist-matlab)
+
+## Quick Navigation
+
+#### - [About MIST](https://isg.nist.gov/deepzoomweb/resources/csmet/pages/image_stitching/image_stitching.html)
+#### - [Wiki](https://github.com/USNISTGOV/MIST/wiki)
+#### - [Java Installation Guide](https://github.com/USNISTGOV/MIST/wiki/Install-Guide)
+#### - [User Guide](https://github.com/USNISTGOV/MIST/wiki/User-Guide)
+#### - [Frequently Asked Questions](https://github.com/USNISTGOV/MIST/wiki/FAQ)
+#### - [Technical Documentation](https://github.com/USNISTGOV/MIST/wiki/assets/mist-algorithm-documentation.pdf)
+
+## Features
+
+- **High-Performance Stitching**: Optimized algorithms for large-scale microscopy image datasets
+- **Flexible Grid Support**: Handles both sequential and row/column-based tile numbering patterns
+- **Stage Modeling**: Incorporates stage repeatability and overlap constraints for improved accuracy
+- **Translation Refinement**: Advanced correlation-based translation refinement with multiple optimization methods
+- **Memory Efficient**: Configurable memory caching for optimal performance on different hardware
+- **Comprehensive Output**: Generates translation files, statistics, and optionally assembled stitched images
+- **Time-Series Support**: Built-in support for time-series data as sequences of independent datasets
+
+## Installation
+
+### From PyPI (Recommended)
+
+```bash
+pip install mist-stitching
+```
+
+### From Source
+
+```bash
+git clone https://github.com/usnistgov/MIST.git
+cd MIST
+git checkout python
+uv venv --python=3.12
+source .venv/bin/activate
+uv pip install numpy pandas scikit-image
+```
+
+or 
+
+```bash
+git clone https://github.com/usnistgov/MIST.git
+cd MIST
+git checkout python
+pip install -e .
+```
+
+## Applicable Domain
+
+MIST is designed to stitch 2D image datasets. It does not address volumetric or 3D stitching which requires a system to identify and correlate features across a third dimension (e.g., Z-axis). The tool has a facility for handling time-series data as a sequence of independent datasets.
+
+
+## Sample Data Sets
+
+We have two datasets: a 5x5 grid of image tiles and a 10x10 one.  The two datasets were acquired with 10% overlap between consecutive tiles and in two imaging modalities: phase contrast and Cy5 (a Fluorescent imaging modality with minimal background noise).  An example of each image is shown in Figure 1 below.  Grid tiling starts in the upper left corner and proceeds one row at a time from left to right; rows are ordered from top to bottom.  File names follow the pattern, `basename_r{rrr}_c{ccc}.tif`, where `r{rrr}` is the row number and `c{ccc}` the column number.  For example: `img_Cy5_r003_c004.tif` is the image acquired using Cy5 and located on row 3, column 4 on the 5x5 grid.
+
+These datasets can be downloaded from the following links:
+
+#### 5x5 Image Tile Dataset
+
+[Cy5_ImageTiles.zip ~ 32 MB](../../wiki/testdata/Small_Fluorescent_Test_Dataset.zip)
+
+[Example Results: Cy5_ImageTiles.zip ~ 5 KB](../../wiki/testdata/Small_Fluorescent_Test_Dataset_Example_Results.zip)
+
+[Phase_Image_Tiles.zip ~ 49 MB](../../wiki/testdata/Small_Phase_Test_Dataset.zip)
+
+[Example Results: Phase_Image_Tiles.zip ~ 5 KB](../../wiki/testdata/Small_Phase_Test_Dataset_Example_Results.zip)
+
+#### 10x10 Image Tile Dataset
+
+[Cy5_ImageTiles.zip ~ 119 MB](https://isg.nist.gov/BII_2015/Stitching/Cy5_Image_Tiles.zip)
+
+[Phase_Image_Tiles.zip ~ 195 MB](https://isg.nist.gov/BII_2015/Stitching/Phase_Image_Tiles.zip)
+
+This dataset is hosted at and used for the [2015 BioImage Informatics Conference: Image Stitching Challenge](https://isg.nist.gov/BII_2015/webPages/pages/stitching/Stitching.html).
+
+![Cy5 and Phase images](../../wiki/images/Cy5Phase.png)
+
+Figure 1: Example Phase Contrast and Cy5 stitched images with auto adjusted contrast for visualization purposes.
+
+
+## Quick Start
+
+```bash
+wget https://github.com/usnistgov/MIST/wiki/testdata/Small_Phase_Test_Dataset.zip
+unzip Small_Phase_Test_Dataset.zip
+
+python src/mist_stitching/main.py \
+    --image-dirpath ./Small_Phase_Test_Dataset/image-tiles \
+    --output-dirpath ./Small_Phase_Test_Dataset/output \
+    --grid-width 5 \
+    --grid-height 5 \
+    --filename-pattern "img_r{rrr}_c{ccc}.tif" \
+    --filename-pattern-type ROWCOL \
+    --grid-origin UL \
+    --numbering-pattern HORIZONTALCOMBING \
+    --save-image
+```
+
+### Basic Usage
+
+```python
+from mist import mist
+import argparse
+
+# Create arguments namespace
+args = argparse.Namespace(
+    image_dirpath='/path/to/images',
+    output_dirpath='/path/to/output',
+    grid_width=5,
+    grid_height=5,
+    filename_pattern='img_{:03d}.tif',
+    filename_pattern_type='SEQUENTIAL',
+    grid_origin='UL',
+    numbering_pattern='HORIZONTALCOMBING',
+    save_image=True
+)
+
+# Run MIST stitching
+mist(args)
+```
+
+### Command Line Usage
+
+```bash
+python main.py \
+    --image-dirpath /path/to/images \
+    --output-dirpath /path/to/output \
+    --grid-width 5 \
+    --grid-height 5 \
+    --filename-pattern "img_{:03d}.tif" \
+    --filename-pattern-type SEQUENTIAL \
+    --grid-origin UL \
+    --numbering-pattern HORIZONTALCOMBING \
+    --save-image
+```
+
+## Supported File Naming Patterns
+
+### Sequential Numbering
+- **Pattern**: `img_{:03d}.tif` (e.g., `img_000.tif`, `img_001.tif`, ...)
+- **Type**: `SEQUENTIAL`
+- **Use Case**: Simple sequential tile numbering
+
+### Row/Column Numbering
+- **Pattern**: `img_r{rrr}_c{ccc}.tif` (e.g., `img_r003_c004.tif`)
+- **Type**: `ROWCOL`
+- **Use Case**: Grid-based tile organization
+
+## Grid Organization Options
+
+### Grid Origins
+- `UL`: Upper Left
+- `UR`: Upper Right  
+- `LL`: Lower Left
+- `LR`: Lower Right
+
+### Numbering Patterns
+- `HORIZONTALCOMBING`: Left to right, top to bottom
+- `VERTICALCOMBING`: Top to bottom, left to right
+- `HORIZONTALCONTINUOUS`: Continuous horizontal numbering
+- `VERTICALCONTINUOUS`: Continuous vertical numbering
+
+## Advanced Configuration
+
+### Stage Model Parameters
+```bash
+--stage-repeatability 0.5        # Stage repeatability in pixels
+--horizontal-overlap 0.1         # Expected horizontal overlap (0.0-1.0)
+--vertical-overlap 0.1           # Expected vertical overlap (0.0-1.0)
+--overlap-uncertainty 3.0        # Overlap uncertainty in pixels
+--valid-correlation-threshold 0.5 # Minimum NCC value for valid translation
+```
+
+### Translation Refinement
+```bash
+--translation-refinement-method SINGLEHILLCLIMB  # SINGLEHILLCLIMB or MULTIPOINTHILLCLIMB
+--num-hill-climbs 16                            # Number of hill climbing iterations
+--num-fft-peaks 2                               # Number of FFT peaks to consider
+```
+
+### Performance Options
+```bash
+--disable-mem-cache             # Disable memory caching for low-memory systems
+--time-slice 0                  # Time slice for time-series data
+```
+
+## Output Files
+
+MIST generates several output files in the specified output directory:
+
+- **`{prefix}relative-positions-no-optimization-{time}.txt`**: Initial pairwise translations
+- **`{prefix}statistics-{time}.txt`**: Stage model statistics and analysis
+- **`{prefix}relative-positions-{time}.txt`**: Refined pairwise translations
+- **`{prefix}global-positions-{time}.txt`**: Final global positions for all tiles
+- **`{prefix}stitched-{time}.tif`**: Assembled stitched image (if `--save-image` is used)
+- **`{prefix}log.txt`**: Detailed processing log
+
+
+
+## License
+
+NIST-developed software is provided by NIST as a public service. You may use, copy and distribute copies of the software in any medium, provided that you keep intact this entire notice. You may improve, modify and create derivative works of the software or any portion of the software, and you may copy and distribute such modifications or works. Modified works should carry a notice stating that you changed the software and should note the date and nature of any such change. Please explicitly acknowledge the National Institute of Standards and Technology as the source of the software.
+
+NIST-developed software is expressly provided "AS IS." NIST MAKES NO WARRANTY OF ANY KIND, EXPRESS, IMPLIED, IN FACT OR ARISING BY OPERATION OF LAW, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT AND DATA ACCURACY. NIST NEITHER REPRESENTS NOR WARRANTS THAT THE OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR-FREE, OR THAT ANY DEFECTS WILL BE CORRECTED. NIST DOES NOT WARRANT OR MAKE ANY REPRESENTATIONS REGARDING THE USE OF THE SOFTWARE OR THE RESULTS THEREOF, INCLUDING BUT NOT LIMITED TO THE CORRECTNESS, ACCURACY, RELIABILITY, OR USEFULNESS OF THE SOFTWARE.
+
+You are solely responsible for determining the appropriateness of using and distributing the software and you assume all risks associated with its use, including but not limited to the risks and costs of program errors, compliance with applicable laws, damage to or loss of data, programs or equipment, and the unavailability or interruption of operation. This software is not intended to be used in any situation where a failure could cause risk of injury or damage to property. The software developed by NIST employees is not subject to copyright protection within the United States.
+
+## Support
+
+For questions, issues, or support:
+- Open an issue on GitHub
+- Check the [original MIST documentation](https://github.com/usnistgov/MIST/wiki)
+- Contact the development team at NIST
+
+
+## How to cite our work
+If you are using MIST in your research, please use the following references to cite us.
+
+T. Blattner et. al., "A Hybrid CPU-GPU System for Stitching of Large Scale Optical Microscopy Images", 2014 International Conference on Parallel Processing, 2014 [download pdf](https://isg.nist.gov/deepzoomweb/resources/csmet/pages/image_stitching/downloads/Blattner%20et%20al.%20-%20A%20Hybrid%20CPU-GPU%20System%20for%20Stitching%20of%20Large%20Scale%20Optical%20Microscopy%20Images.pdf), [view article](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6957209&tag=1)
+
+J. Chalfoun, et al. "MIST: Accurate and Scalable Microscopy Image Stitching Tool with Stage Modeling and Error Minimization". Scientific Reports. 2017;7:4988. doi:10.1038/s41598-017-04567-y [download pdf](https://isg.nist.gov/deepzoomweb/resources/csmet/pages/image_stitching/downloads/41598_2017_Article_4567.pdf), [view article](https://www.nature.com/articles/s41598-017-04567-y)
