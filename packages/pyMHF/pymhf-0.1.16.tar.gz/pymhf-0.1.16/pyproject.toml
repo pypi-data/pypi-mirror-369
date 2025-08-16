@@ -1,0 +1,93 @@
+[project]
+name = "pyMHF"
+description = "python Modding and Hooking Framework"
+readme = "README.md"
+requires-python = ">=3.9, <4"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["hooking", "games", "hacking", "modding"]
+authors = [
+  {name = "monkeyman192"}
+]
+maintainers = [
+  {name = "monkeyman192"}
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Win32 (MS Windows)",
+  "Operating System :: Microsoft",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = [
+  "cyminhook>=0.1.4",
+  "psutil~=5.9.5",
+  "pymem[speed]~=1.14.0",
+  "keyboard",
+  "pywin32",
+  "questionary",
+  "pywinctl",
+  "packaging",
+  "tomlkit",
+  "pefile",
+  "iced_x86",
+  "typing_extensions",
+  "pyrun-injected==0.2.0"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+gui = [
+  "dearpygui",
+]
+
+[dependency-groups]
+dev = [
+  "pytest",
+  "pytest-benchmark",
+  "ruff",
+  "setuptools_scm",
+  "twine",
+  "sphinx",
+  "esbonio",  # Used to provide a local rst server for hot-reloading docs with sphinx
+  "pydata-sphinx-theme",
+]
+
+[tool.uv]
+python-preference = "only-system"
+
+[tool.setuptools.package-dir]
+pymhf = "pymhf"
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+preview = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.extend-per-file-ignores]
+"cpptypes.py" = ["E501"]
+
+[project.urls]
+homepage = "https://github.com/monkeyman192/pyMHF"
+repository = "https://github.com/monkeyman192/pyMHF.git"
+changelog = "https://monkeyman192.github.io/pyMHF/docs/change_log.html"
+documentation = "https://monkeyman192.github.io/pyMHF/index.html"
+
+[project.scripts]
+pymhf = "pymhf:run"
+
+[build-system]
+requires = ["setuptools>=64", "wheel", "setuptools-scm>=8", "setuptools_scm_git_semver"]
+build-backend = "setuptools.build_meta"
