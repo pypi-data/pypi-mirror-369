@@ -1,0 +1,47 @@
+using FluentValidation;
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
+namespace Application.Extensions
+{
+    /// <summary>
+    /// Dependency injection extensions for Application layer
+    /// </summary>
+    public static class ServiceCollectionExtensions
+    {
+        /// <summary>
+        /// Add Application layer services to the dependency injection container
+        /// </summary>
+        /// <param name="services">The service collection</param>
+        /// <returns>The service collection for chaining</returns>
+        public static IServiceCollection AddApplication(this IServiceCollection services)
+        {
+            // Register all application services by group
+{% for group, tables in Groups.items() %}
+            // {{ group }} group services
+{% for table in tables -%}
+{% set ns = "." + group if group != "General" else "" -%}
+            services.AddScoped<Application.Interfaces{{ ns }}.I{{ table.TableNamePascal }}Service, 
+                              Application.Services{{ ns }}.{{ table.TableNamePascal }}Service>();
+{% endfor %}
+{% endfor %}
+
+            // Register FluentValidation validators
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+            // Register AutoMapper manually to avoid ambiguous extension methods
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddMaps(Assembly.GetExecutingAssembly());
+            });
+            services.AddSingleton(sp => mapperConfiguration.CreateMapper());
+
+            // Add other application services here
+            // services.AddScoped<IEmailService, EmailService>();
+            // services.AddScoped<INotificationService, NotificationService>();
+
+            return services;
+        }
+    }
+}

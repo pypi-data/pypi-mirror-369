@@ -1,0 +1,56 @@
+using Application.DTOs{{ GroupNamespace }}.{{ TableNamePascal }};
+using Core.Entities{{ GroupNamespace }};
+using Core.Common;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+// AutoMapper is used in the implementation; interface doesn't require it directly
+
+namespace Application.Interfaces{{ GroupNamespace }}
+{
+    /// <summary>
+    /// Service interface for {{ TableNamePascal }} operations
+    /// </summary>
+    public interface I{{ TableNamePascal }}Service
+    {
+        /// <summary>
+        /// Get {{ TableNamePascal }} by ID
+        /// </summary>
+        Task<Result<{{ TableNamePascal }}>> GetByIdAsync({{ PrimaryKey.CSharpType }} id);
+        
+        /// <summary>
+        /// Get all {{ TableNamePascal }} entities
+        /// </summary>
+        Task<Result<IEnumerable<{{ TableNamePascal }}>>> GetAllAsync();
+        
+        /// <summary>
+        /// Get paginated {{ TableNamePascal }} entities with filtering and sorting
+        /// </summary>
+        Task<Result<(IEnumerable<{{ TableNamePascal }}> Items, int TotalCount)>> GetPagedAsync(
+            int pageNumber, 
+            int pageSize, 
+            string? searchTerm = null,
+            string? sortBy = null,
+            bool sortDescending = false,
+            Dictionary<string, object>? filters = null);
+        
+        /// <summary>
+        /// Create a new {{ TableNamePascal }}
+        /// </summary>
+        Task<Result<{{ TableNamePascal }}>> CreateAsync(Create{{ TableNamePascal }}Dto dto);
+        
+        /// <summary>
+        /// Update an existing {{ TableNamePascal }}
+        /// </summary>
+        Task<Result> UpdateAsync({{ PrimaryKey.CSharpType }} id, Update{{ TableNamePascal }}Dto dto);
+        
+        /// <summary>
+        /// Delete a {{ TableNamePascal }} by ID
+        /// </summary>
+        Task<Result> DeleteAsync({{ PrimaryKey.CSharpType }} id);
+        
+        /// <summary>
+        /// Check if {{ TableNamePascal }} exists
+        /// </summary>
+        Task<Result<bool>> ExistsAsync({{ PrimaryKey.CSharpType }} id);
+    }
+}
