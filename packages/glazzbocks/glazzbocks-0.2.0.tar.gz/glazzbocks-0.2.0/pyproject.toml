@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glazzbocks"
+version = "0.2.0"
+description = "Glassbox ML with EDA, diagnostics, and AI-powered reporting"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Joshua Thompson" }]
+license = { text = "MIT" }
+
+dependencies = [
+  "pandas>=1.4",
+  "numpy>=1.22",
+  "scikit-learn>=1.1",
+  "matplotlib>=3.6",
+  "seaborn>=0.12",
+  "statsmodels>=0.13",
+  "jinja2>=3.1",
+  "xhtml2pdf>=0.2.13",
+  "joblib>=1.2",
+  "typer>=0.9",
+  "openai>=1.30.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/JayMTea/glazzbocks"
+Repository = "https://github.com/JayMTea/glazzbocks"
+Issues = "https://github.com/JayMTea/glazzbocks/issues"
+
+# ONE scripts table only
+[project.scripts]
+glazzbocks = "glazzbocks_cli.main:app"
+glazzbocks-ai = "glazzbocks_ai.cli:main"
+
+# ONE optional-dependencies table that contains all extras
+[project.optional-dependencies]
+explain = [
+  "shap>=0.41",
+  "umap-learn>=0.5.4",
+]
+azureml = [
+  "azure-ai-ml>=1.14.0",
+  "azure-identity>=1.16.0",
+]
+dev = [
+  "pytest>=7.0",
+  "black>=24.0",
+  "ruff>=0.4.0",
+  "build>=1.2.1",
+  "twine>=5.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = [
+  "glazzbocks",
+  "glazzbocks.*",      # <-- ensures glazzbocks.integrations.* is packaged
+  "glazzbocks_ai",
+  "glazzbocks_ai.*",
+  "glazzbocks_cli",
+  "glazzbocks_cli.*",
+]
+
+[tool.setuptools]
+include-package-data = true

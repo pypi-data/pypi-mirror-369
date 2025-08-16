@@ -1,0 +1,130 @@
+Metadata-Version: 2.4
+Name: glazzbocks
+Version: 0.2.0
+Summary: Glassbox ML with EDA, diagnostics, and AI-powered reporting
+Home-page: https://github.com/JayMTea/glazzbocks
+Author: Joshua Thompson
+Author-email: jthompson@glazzbocks.com
+License: MIT
+Project-URL: Homepage, https://github.com/JayMTea/glazzbocks
+Project-URL: Repository, https://github.com/JayMTea/glazzbocks
+Project-URL: Issues, https://github.com/JayMTea/glazzbocks/issues
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=1.4
+Requires-Dist: numpy>=1.22
+Requires-Dist: scikit-learn>=1.1
+Requires-Dist: matplotlib>=3.6
+Requires-Dist: seaborn>=0.12
+Requires-Dist: statsmodels>=0.13
+Requires-Dist: jinja2>=3.1
+Requires-Dist: xhtml2pdf>=0.2.13
+Requires-Dist: joblib>=1.2
+Requires-Dist: typer>=0.9
+Requires-Dist: openai>=1.30.0
+Provides-Extra: explain
+Requires-Dist: shap>=0.41; extra == "explain"
+Requires-Dist: umap-learn>=0.5.4; extra == "explain"
+Provides-Extra: azureml
+Requires-Dist: azure-ai-ml>=1.14.0; extra == "azureml"
+Requires-Dist: azure-identity>=1.16.0; extra == "azureml"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: black>=24.0; extra == "dev"
+Requires-Dist: ruff>=0.4.0; extra == "dev"
+Requires-Dist: build>=1.2.1; extra == "dev"
+Requires-Dist: twine>=5.0.0; extra == "dev"
+
+# Glazzbocks
+
+_A transparent, interpretable machine learning framework._
+
+**Glazzbocks** (pronounced "glass box") provides a modular and auditable pipeline for building, diagnosing, and interpreting machine learning models. Designed with interpretability and traceability at its core, Glazzbocks enables practitioners to go beyond accuracy and deliver insights that are explainable, defensible, and production-ready.
+
+---
+
+## Why Glass Box ML?
+
+Modern machine learning offers unprecedented predictive power, but too often at the cost of transparency. In high-stakes or regulatory environments, this trade-off is unacceptable.
+
+**Glazzbocks** is built on the principle that powerful models should also be interpretable. Every component—from preprocessing to diagnostics and interpretation—is designed to remain visible, explainable, and auditable.
+
+This framework promotes **transparent, modular ML development** where every decision and output can be inspected, traced, and justified.
+
+---
+
+## Key Advantages of Glazzbocks
+
+- **Full Interpretability**: Native support for feature importances, coefficients, SHAP values, PDPs, and permutation importances
+- **Auditable Pipelines**: Clear step-by-step ML workflows using modular, scikit-learn-compatible structures
+- **Diagnostic Depth**: Includes error distributions, lift charts, cumulative gain, VIF analysis, skewness, normality tests, and more
+- **Human-Centric Development**: Designed for data scientists, analysts, and auditors who need to understand and explain model behavior—not just optimize accuracy
+
+---
+
+## Components
+
+### `ML_pipeline.py`
+
+> End-to-end automation for classification and regression tasks.
+
+
+- Handles preprocessing of numerical and categorical features, with optional manual feature transformations
+- Supports any scikit-learn-compatible model
+- Allows user-defined transformation strategies for specific features (e.g., log, sqrt, yeo-johnson)
+- Includes train/test split and pipeline building
+- Performs cross-validation with detailed fold-wise metrics
+- Includes optional VIF analysis during cross-validation (linear models only)
+- Stores ROC, precision-recall, and threshold analysis (for classifiers)
+- Summarizes cross-validated performance across models
+
+### `diagnostics.py`
+
+> Automated visual diagnostics after training.
+
+- Classification: ROC, Confusion Matrix, F1 vs Threshold, Lift Chart, Gain Chart
+- Regression: Predicted vs Actual, Residual Plot, Error Distribution, Q-Q Plot
+- Auto-detects task type and generates all relevant visuals
+
+### `modelinterpreter.py`
+
+> Model interpretation & explainability utilities.
+
+- Tree-based models: Feature importances
+- Linear models: Coefficients (with plot support)
+- SHAP summary plots (with pipeline support)
+- Partial Dependence Plots (PDP)
+- Permutation Importance
+
+### `data_explorer.py`
+
+> Exploratory Data Analysis (EDA) for modeling decisions.
+
+- Auto-detects task type (regression/classification)
+- Displays shape, dtypes, missing values (via `missingno` matrix)
+- Visualizes target distribution and correlation heatmaps
+- Supports PDF report generation with visuals and curated tables
+- VIF for multicollinearity detection
+- Skewness and normality testing
+- Entropy calculation (for classification)
+- Automatically extracts datetime features (year, month, day, weekday)
+- Includes curated numeric and categorical summaries
+
+---
+
+## Example Usage
+
+```python
+from glazzbocks.ML_pipeline import MLPipeline
+from glazzbocks.diagnostics import ModelDiagnostics
+from glazzbocks.modelinterpreter import ModelInterpreter
+from glazzbocks.data_explorer import DataExplorer
+```
+
+## Notes
+
+- All components are sklearn-compatible and integrate seamlessly.
+- Visualizations are built using `matplotlib`, `seaborn`, `missingno`, or `shap`.
+- Pipelines auto-handle transformed features for compatibility with SHAP/PDP.
+- Designed to work in Jupyter Notebooks or production scripts.
+
