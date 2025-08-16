@@ -1,0 +1,109 @@
+name: Publish Python Package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
+jobs:
+  build_sdist:
+    name: Build SDist
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Build SDist
+      run: pipx run build --sdist
+
+    - name: Check metadata
+      run: pipx run twine check dist/*
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: cibw-sdist
+        path: dist/*.tar.gz
+
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }} with Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux builds (supports cross-compilation via QEMU)
+          - os: ubuntu-latest
+            python-version: "3.13"
+            cibw_archs: "x86_64 aarch64 i686"
+          
+          # Windows builds (separate runners needed for different archs)
+          - os: windows-latest
+            python-version: "3.13"
+            cibw_archs: "AMD64 x86 ARM64"
+          
+          # macOS Intel
+          - os: macos-13  # Intel runner
+            python-version: "3.13"
+            cibw_archs: "x86_64"
+          
+          # macOS Apple Silicon
+          - os: macos-latest  # ARM64 runner
+            python-version: "3.13"
+            cibw_archs: "arm64"
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+  
+    - name: Set up QEMU for cross-architecture builds
+      if: matrix.os == 'ubuntu-latest'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: all
+
+    - name: CI Build Wheels
+      uses: pypa/cibuildwheel@v2.17
+      env:
+        CIBW_ARCHS: ${{ matrix.cibw_archs }}
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: cibw-wheels-${{ matrix.os }}-${{ matrix.cibw_archs }}-py${{ matrix.python-version }}
+        path: wheelhouse/*.whl
+
+  upload_all:
+    name: Upload release
+    needs: [build_wheels, build_sdist]
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/musica
+    permissions:
+      id-token: write
+
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: cibw-*
+        path: dist
+        merge-multiple: true
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1

@@ -1,0 +1,29 @@
+FROM fedora:latest
+
+ARG MUSICA_GIT_TAG=main
+ARG BUILD_TYPE=Release
+
+RUN dnf -y update \
+    && dnf -y install \
+        cmake \
+        gcc-c++ \
+        gcc-fortran \
+        gdb \
+        git \
+        lapack-devel \
+        make \
+        netcdf-fortran-devel \
+        pip \
+        python \
+        python-devel \
+        valgrind \
+    && dnf clean all
+
+# Copy the musica code
+COPY . musica
+
+ENV CXX=g++
+ENV CC=gcc
+ENV FC=gfortran
+
+RUN cd musica && pip install .[test]

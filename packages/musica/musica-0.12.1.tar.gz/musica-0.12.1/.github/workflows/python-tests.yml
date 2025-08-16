@@ -1,0 +1,48 @@
+name: Python tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest, macos-13, ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        # python versions: https://devguide.python.org/versions/
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Install dependencies
+      if: matrix.platform == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libnetcdf-dev netcdf-bin libnetcdff-dev liblapack-dev
+    
+    - name: Install dependencies
+      if: matrix.platform == 'macos-13'
+      run: |
+        brew install netcdf netcdf-fortran lapack
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Add requirements
+      run: python -m pip install --upgrade wheel setuptools
+
+    - name: Build and install
+      run: pip install --verbose .[test]
+
+    - name: Test
+      run: pytest -s
