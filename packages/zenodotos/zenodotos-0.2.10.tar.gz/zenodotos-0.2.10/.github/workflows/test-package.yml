@@ -1,0 +1,132 @@
+name: Test Package Installation
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: 'Package name to test'
+        required: true
+        default: 'zenodotos'
+        type: string
+      version:
+        description: 'Version to test (leave empty to use latest GitHub release)'
+        required: false
+        type: string
+      target_index:
+        description: 'Target index to test'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - testpypi
+          - pypi
+          - both
+      wait_time:
+        description: 'Wait time for index propagation (seconds)'
+        required: false
+        default: '300'
+        type: string
+
+
+env:
+  PYTHON_VERSION: '3.11'
+
+permissions:
+  contents: read
+
+jobs:
+  test-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: latest
+
+      - name: Get latest release version
+        if: ${{ inputs.version == '' }}
+        run: |
+          echo "🔍 Fetching latest GitHub release version..."
+          LATEST_VERSION=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
+            jq -r '.tag_name // empty')
+
+          if [ -z "$LATEST_VERSION" ]; then
+            echo "❌ Error: No releases found or could not fetch latest release"
+            exit 1
+          fi
+
+          # Remove 'v' prefix if present
+          VERSION=${LATEST_VERSION#v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "✅ Latest release version: $VERSION (from tag: $LATEST_VERSION)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set version from input
+        if: ${{ inputs.version != '' }}
+        run: |
+          echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          echo "✅ Using specified version: ${{ inputs.version }}"
+
+      - name: Display test configuration
+        run: |
+          echo "🧪 Package Installation Test Configuration"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📦 Package: ${{ inputs.package_name }}"
+          echo "🏷️  Version: $VERSION"
+          echo "🎯 Target Index: ${{ inputs.target_index }}"
+          echo "⏱️  Wait Time: ${{ inputs.wait_time }} seconds"
+          echo ""
+
+      - name: Test TestPyPI installation
+        if: ${{ inputs.target_index == 'testpypi' || inputs.target_index == 'both' }}
+        run: |
+          echo "🧪 Testing TestPyPI installation..."
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          # Check package availability first
+          echo "🔍 Checking TestPyPI availability for ${{ inputs.package_name }}==$VERSION..."
+          ./scripts/check-package-availability.sh --testpypi --wait --timeout ${{ inputs.wait_time }} ${{ inputs.package_name }} $VERSION
+
+          # Test installation
+          ./scripts/test-package-install.sh --testpypi --clean ${{ inputs.package_name }} $VERSION
+
+      - name: Test PyPI installation
+        if: ${{ inputs.target_index == 'pypi' || inputs.target_index == 'both' }}
+        run: |
+          echo "🚀 Testing PyPI installation..."
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          # Check package availability first
+          echo "🔍 Checking PyPI availability for ${{ inputs.package_name }}==$VERSION..."
+          ./scripts/check-package-availability.sh --pypi --wait --timeout ${{ inputs.wait_time }} ${{ inputs.package_name }} $VERSION
+
+          # Test installation
+          ./scripts/test-package-install.sh --pypi --clean ${{ inputs.package_name }} $VERSION
+
+      - name: Test summary
+        run: |
+          echo ""
+          echo "🎉 Package Installation Test Summary"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📦 Package: ${{ inputs.package_name }}"
+          echo "🏷️  Version: $VERSION"
+          echo "🎯 Target Index: ${{ inputs.target_index }}"
+          echo "✅ All tests completed successfully!"
+          echo ""
+          echo "💡 Next Steps:"
+          if [ "${{ inputs.target_index }}" = "testpypi" ] || [ "${{ inputs.target_index }}" = "both" ]; then
+            echo "  • TestPyPI: https://test.pypi.org/project/${{ inputs.package_name }}/"
+          fi
+          if [ "${{ inputs.target_index }}" = "pypi" ] || [ "${{ inputs.target_index }}" = "both" ]; then
+            echo "  • PyPI: https://pypi.org/project/${{ inputs.package_name }}/"
+          fi
