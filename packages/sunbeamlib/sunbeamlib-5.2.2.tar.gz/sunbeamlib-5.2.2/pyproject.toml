@@ -1,0 +1,77 @@
+[project]
+name = "sunbeamlib"
+dynamic = ["version"]
+description = "A snakemake utility for metagenomic sequencing analysis"
+readme = "README.md"
+requires-python = ">=3.11"
+
+authors = [
+  {name = "Erik Clarke"},
+  {name = "Charlie Bushman"},
+  {name = "Chunyu Zhao"},
+  {name = "Jesse Connell"},
+  {name = "Louis Taylor"},
+  {name = "Kyle Bittinger"},
+]
+maintainers = [
+  {name = "Charlie Bushman", email = "ctbushman@gmail.com"}
+]
+
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+]
+
+dependencies = [
+  "snakemake==9.9.0",
+  "more-itertools==10.7.0",
+  "pyyaml==6.0.2",
+  "pandas==2.3.1",
+]
+[project.optional-dependencies]
+dev = [
+  "black==24.10.0",
+  "snakefmt==0.11.0",
+  "pytest==8.4.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/sunbeam-labs/sunbeam"
+"Bug Reports" = "https://github.com/sunbeam-labs/sunbeam/issues"
+"Docs" = "https://sunbeam.readthedocs.io/en/stable/"
+"Source" = "https://github.com/sunbeam-labs/sunbeam"
+
+[project.scripts]
+sunbeam = "sunbeam.scripts.sunbeam:main"
+
+[tool.setuptools.package-dir]
+sunbeam = "sunbeam"
+
+[tool.setuptools.package-data]
+"sunbeam" = [
+  "configs/*.yml",
+  "configs/*.yaml",
+  "extensions/.gitkeep",
+  "workflow/Snakefile",
+  "workflow/rules/*.smk",
+  "workflow/scripts/*.py",
+  "workflow/envs/*.yml",
+  "workflow/envs/*.Dockerfile",
+]
+
+[tool.versioneer]
+VCS = "git"
+versionfile_source = "sunbeam/_version.py"
+style = "pep440"
+versionfile_build = "sunbeam/_version.py"
+tag_prefix = "v"
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel", "versioneer[toml]"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "sunbeam.__version__"}
