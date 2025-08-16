@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tiny_agent_os"
+version = "0.73.1"
+description = "A streamlined framework for building powerful LLM-powered agents that actually work"
+readme = "README.md"
+authors = [{name = "alchemiststudios.ai"}]
+license = {text = "Business Source License 1.1"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+keywords = ["ai", "agent", "llm", "openai", "gpt", "react"]
+dependencies = [
+    "openai>=1.0",
+]
+
+[project.urls]
+Homepage = "https://tinyagent.xyz"
+Repository = "https://github.com/alchemiststudiosDOTai/tinyAgent"
+Issues = "https://github.com/alchemiststudiosDOTai/tinyAgent/issues"
+
+[tool.setuptools]
+packages = ["tinyagent"]
+
+[tool.ruff]
+# Set the maximum line length to 100
+line-length = 100
+
+# Assume Python 3.10
+target-version = "py310"
+
+# Exclude directories
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+# Enable pycodestyle (E), pyflakes (F), and isort (I) rules
+select = ["E", "F", "I"]
+
+# Ignore specific rules
+ignore = [
+    "E501",  # Line too long (handled by formatter)
+]
+
+[tool.ruff.lint.isort]
+# Use a single line for imports
+force-single-line = false
+# Combine imports from the same module
+combine-as-imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
