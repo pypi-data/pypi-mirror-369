@@ -1,0 +1,269 @@
+Metadata-Version: 2.4
+Name: sparkle2d
+Version: 0.5.0
+Summary: Lua script destekli 2D oyun motoru (Python + pyglet + lupa)
+Author: Baba
+License: MIT
+Project-URL: Homepage, https://github.com/kullanici/sparkle2d
+Project-URL: Repository, https://github.com/kullanici/sparkle2d
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyglet>=2.0
+Requires-Dist: pillow>=10.0
+Requires-Dist: lupa>=2.0
+Requires-Dist: pymunk>=6.6
+Requires-Dist: pytmx>=3.33
+Requires-Dist: watchdog>=4.0.0
+Requires-Dist: numpy>=1.26
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Dynamic: license-file
+
+# Sparkle2D
+
+Lua script destekli 2D oyun motoru (Python + pyglet + lupa)
+
+## Özellikler
+
+- 🎮 **2D Oyun Motoru**: pyglet tabanlı modern render sistemi
+- 🐺 **Lua Scripting**: lupa ile Python-Lua köprüsü
+- 🔄 **Hot Reload**: Geliştirme sırasında anında kod yenileme
+- 🎯 **Fizik Sistemi**: pymunk tabanlı 2D fizik motoru
+- 🗺️ **Tilemap Desteği**: TMX dosya formatı desteği
+- 🎨 **Animasyon Sistemi**: JSON atlas tabanlı sprite animasyonları
+- 🎵 **Ses Sistemi**: SFX ve müzik desteği
+- 🎭 **Tween Engine**: Easing fonksiyonları ile animasyon
+- 🎪 **Particle System**: Parçacık efektleri
+- 🎛️ **UI Sistemi**: Buton, label, panel bileşenleri
+- 🎬 **Scene Management**: Sahne yönetimi (push/pop/replace)
+
+## Kurulum
+
+```bash
+pip install sparkle2d
+```
+
+## Hızlı Başlangıç
+
+```python
+from sparkle2d.app import App
+from sparkle2d.scene import Scene
+
+class GameScene(Scene):
+    def __init__(self):
+        super().__init__()
+        # Lua script yükle
+        self.script = self.app.scripting.load_script("scripts/game.lua")
+        
+    def update(self, dt):
+        super().update(dt)
+        # Lua update çağır
+        self.script.update(dt)
+
+if __name__ == "__main__":
+    app = App(title="Sparkle2D Demo", width=800, height=600)
+    app.push_scene(GameScene())
+    app.run()
+```
+
+## Lua API
+
+### Entity Yönetimi
+```lua
+-- Sprite oluştur
+local player = spawn_sprite("assets/player.png", 100, 100)
+set_anim(player, "idle")
+set_z(player, 1)
+tag(player, "player")
+
+-- Entity sil
+destroy(player)
+```
+
+### Kamera Kontrolü
+```lua
+-- Entity'yi takip et
+camera_follow(player, 0.1)
+
+-- Zoom ayarla
+camera_set_zoom(2.0)
+
+-- Koordinat dönüşümleri
+local sx, sy = world_to_screen(wx, wy)
+local wx, wy = screen_to_world(sx, sy)
+```
+
+### Input Sistemi
+```lua
+-- Tuş bağla
+bind("move_left", "A,LEFT")
+bind("move_right", "D,RIGHT")
+bind("jump", "SPACE")
+
+-- Input kontrolü
+if action_down("move_left") then
+    -- Sola hareket
+end
+
+if action_pressed("jump") then
+    -- Zıplama
+end
+```
+
+### Fizik Sistemi
+```lua
+-- Fizik body oluştur
+local body = physics_body(player, {
+    type = "dynamic",
+    gravity_scale = 1.0,
+    fixed_rotation = true
+})
+
+-- Hız ayarla
+physics_set_velocity(body, 100, 0)
+
+-- Kuvvet uygula
+apply_force(body, 0, -500)
+apply_impulse(body, 0, 200)
+
+-- Çarpışma callback
+on_begin_contact("player", "enemy", function()
+    print("Player enemy ile çarpıştı!")
+end)
+```
+
+### Tilemap
+```lua
+-- Harita yükle
+load_map("assets/maps/level1.tmx")
+
+-- Harita sınırlarını kamera sınırlarına set et
+world_bounds_from_map()
+```
+
+### Particle System
+```lua
+-- Emitter oluştur
+local emitter = spawn_emitter({
+    rate = 10,
+    life = 2.0,
+    speed = 50,
+    gravity = {0, -100},
+    color = {255, 255, 255, 255}
+})
+
+-- Pozisyon ayarla
+emitter_set_position(emitter, 100, 100)
+```
+
+### Tween Animasyonları
+```lua
+-- Entity animasyonu
+tween(player, {x = 200, y = 300, rot = 180}, 2.0, "quadOut")
+
+-- Alpha animasyonu
+tween(player, {alpha = 0.5}, 1.0, "cubicIn")
+```
+
+### UI Sistemi
+```lua
+-- Buton oluştur
+local button = ui_button({
+    text = "Başla",
+    x = 100, y = 100,
+    w = 200, h = 50,
+    on_click = function()
+        print("Butona tıklandı!")
+    end
+})
+
+-- Label oluştur
+label({text = "Skor: 100", x = 10, y = 10})
+
+-- Panel oluştur
+panel({x = 0, y = 0, w = 300, h = 200})
+```
+
+### Event Sistemi
+```lua
+-- Event dinle
+on("player_death", function(data)
+    print("Oyuncu öldü! Skor:", data.score)
+end)
+
+-- Event gönder
+emit("level_complete", {level = 1, time = 120})
+```
+
+### Ses Sistemi
+```lua
+-- SFX çal
+sfx("jump.wav")
+
+-- Müzik çal
+music_play("bgm.ogg", {loop = true, volume = 0.6})
+```
+
+### Kaydetme Sistemi
+```lua
+-- Oyun kaydet
+save_game("slot1")
+
+-- Oyun yükle
+load_game("slot1")
+```
+
+### Hot Reload
+```lua
+-- Script izlemeyi aç/kapat
+watch_scripts(true)
+```
+
+## Örnekler
+
+### Platformer Oyunu
+```bash
+cd examples/platformer
+python main.py
+```
+
+### Top-Down Demo
+```bash
+cd examples/topdown
+python demo.py
+```
+
+## Geliştirme
+
+### Test Çalıştırma
+```bash
+pytest
+```
+
+### Paket Oluşturma
+```bash
+python -m build
+```
+
+### Yerel Kurulum
+```bash
+pip install dist/*.whl
+```
+
+## Yayınlama
+
+```bash
+# Tag oluştur
+git tag v0.5.0
+git push origin v0.5.0
+
+# PyPI'ya yükle (CI otomatik yapacak)
+twine upload dist/*
+```
+
+## Lisans
+
+MIT License - detaylar için [LICENSE](LICENSE) dosyasına bakın.

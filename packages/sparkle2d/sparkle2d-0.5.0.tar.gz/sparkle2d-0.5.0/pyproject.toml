@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparkle2d"
+version = "0.5.0"
+description = "Lua script destekli 2D oyun motoru (Python + pyglet + lupa)"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Baba"}
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pyglet>=2.0",
+    "pillow>=10.0", 
+    "lupa>=2.0",
+    "pymunk>=6.6",
+    "pytmx>=3.33",
+    "watchdog>=4.0.0",
+    "numpy>=1.26"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "twine",
+    "build"
+]
+
+[project.urls]
+Homepage = "https://github.com/kullanici/sparkle2d"
+Repository = "https://github.com/kullanici/sparkle2d"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sparkle2d*"]
+
+[tool.setuptools.package-data]
+sparkle2d = ["assets/**/*"]
