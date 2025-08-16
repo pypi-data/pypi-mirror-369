@@ -1,0 +1,197 @@
+using Application.Interfaces{{ GroupNamespace }};
+using Application.DTOs{{ GroupNamespace }}.{{ TableNamePascal }};
+using Application.Validators{{ GroupNamespace }}.{{ TableNamePascal }};
+using Core.Entities{{ GroupNamespace }};
+using Core.Interfaces{{ GroupNamespace }};
+using Core.Common;
+using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Application.Services{{ GroupNamespace }}
+{
+    /// <summary>
+    /// Service implementation for {{ TableNamePascal }} operations
+    /// </summary>
+    public class {{ TableNamePascal }}Service : I{{ TableNamePascal }}Service
+    {
+        private readonly I{{ TableNamePascal }}Repository _repository;
+        private readonly IMapper _mapper;
+
+        public {{ TableNamePascal }}Service(I{{ TableNamePascal }}Repository repository, IMapper mapper)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+
+        /// <inheritdoc />
+        public async Task<Result<{{ TableNamePascal }}>> GetByIdAsync({{ PrimaryKey.CSharpType }} id)
+        {
+            if (id == default({{ PrimaryKey.CSharpType }}))
+                return Error.Validation("ID cannot be default value");
+
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+                return Error.NotFound($"{{ TableNamePascal }} with ID {id} not found");
+
+            return Result<{{ TableNamePascal }}>.Success(entity);
+        }
+
+        /// <inheritdoc />
+        public async Task<Result<IEnumerable<{{ TableNamePascal }}>>> GetAllAsync()
+        {
+            try
+            {
+                var entities = await _repository.GetAllAsync();
+                return Result<IEnumerable<{{ TableNamePascal }}>>.Success(entities);
+            }
+            catch (Exception ex)
+            {
+                return Error.Internal($"Failed to retrieve {{ TableNamePascal }} entities: {ex.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<Result<(IEnumerable<{{ TableNamePascal }}> Items, int TotalCount)>> GetPagedAsync(
+            int pageNumber, 
+            int pageSize, 
+            string? searchTerm = null,
+            string? sortBy = null,
+            bool sortDescending = false,
+            Dictionary<string, object>? filters = null)
+        {
+            if (pageNumber < 1)
+                return Error.Validation("Page number must be greater than 0");
+            
+            if (pageSize < 1 || pageSize > 100)
+                return Error.Validation("Page size must be between 1 and 100");
+
+            try
+            {
+                var result = await _repository.GetPagedAsync(
+                    pageNumber, 
+                    pageSize, 
+                    searchTerm, 
+                    sortBy, 
+                    sortDescending, 
+                    filters);
+                    
+                return Result<(IEnumerable<{{ TableNamePascal }}> Items, int TotalCount)>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                return Error.Internal($"Failed to retrieve paginated {{ TableNamePascal }} entities: {ex.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<Result<{{ TableNamePascal }}>> CreateAsync(Create{{ TableNamePascal }}Dto dto)
+        {
+            if (dto == null)
+                return Error.Validation("DTO cannot be null");
+
+            // Validate DTO
+            var validator = new Create{{ TableNamePascal }}DtoValidator();
+            var validationResult = validator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return Error.Validation(errors);
+            }
+
+            // Map DTO to entity
+            var entity = _mapper.Map<{{ TableNamePascal }}>(dto);
+
+            try
+            {
+                var createdEntity = await _repository.AddAsync(entity);
+                return Result<{{ TableNamePascal }}>.Success(createdEntity);
+            }
+            catch (Exception ex)
+            {
+                return Error.Internal($"Failed to create {{ TableNamePascal }}: {ex.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<Result> UpdateAsync({{ PrimaryKey.CSharpType }} id, Update{{ TableNamePascal }}Dto dto)
+        {
+            if (dto == null)
+                return Error.Validation("DTO cannot be null");
+
+            if (id == default({{ PrimaryKey.CSharpType }}))
+                return Error.Validation("ID cannot be default value");
+
+            // Validate DTO
+            var validator = new Update{{ TableNamePascal }}DtoValidator();
+            var validationResult = validator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return Error.Validation(errors);
+            }
+
+            // Check if entity exists
+            var existingEntity = await _repository.GetByIdAsync(id);
+            if (existingEntity == null)
+                return Error.NotFound($"{{ TableNamePascal }} with ID {id} not found");
+
+            // Map DTO to existing entity
+            _mapper.Map(dto, existingEntity);
+
+            try
+            {
+                await _repository.UpdateAsync(existingEntity);
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Error.Internal($"Failed to update {{ TableNamePascal }}: {ex.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<Result> DeleteAsync({{ PrimaryKey.CSharpType }} id)
+        {
+            if (id == default({{ PrimaryKey.CSharpType }}))
+                return Error.Validation("ID cannot be default value");
+
+            var existsResult = await ExistsAsync(id);
+            if (existsResult.IsFailure)
+                return existsResult.Error!;
+
+            if (!existsResult.Value)
+                return Error.NotFound($"{{ TableNamePascal }} with ID {id} not found");
+
+            try
+            {
+                await _repository.DeleteAsync(id);
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Error.Internal($"Failed to delete {{ TableNamePascal }}: {ex.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<Result<bool>> ExistsAsync({{ PrimaryKey.CSharpType }} id)
+        {
+            if (id == default({{ PrimaryKey.CSharpType }}))
+                return Result<bool>.Success(false);
+
+            try
+            {
+                var entity = await _repository.GetByIdAsync(id);
+                return Result<bool>.Success(entity != null);
+            }
+            catch (Exception ex)
+            {
+                return Error.Internal($"Failed to check if {{ TableNamePascal }} exists: {ex.Message}");
+            }
+        }
+
+    }
+}
