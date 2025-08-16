@@ -1,0 +1,43 @@
+[project]
+name = "pyrun_injected"
+description = "python injector and script runner"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  {name = "monkeyman192"}
+]
+maintainers = [
+  {name = "monkeyman192"}
+]
+dependencies = [
+  "pymem"
+]
+version = "0.2.0"
+
+[dependency-groups]
+dev = [
+  "pytest",
+  "ruff",
+  "twine"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+ext-modules = [
+  {name = "pyrun_injected.dll", sources = ["pyrun_injected/pyrun_injected.c"], export-symbols = ["run_file", "run_string", "run_data"]}
+]
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+preview = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
