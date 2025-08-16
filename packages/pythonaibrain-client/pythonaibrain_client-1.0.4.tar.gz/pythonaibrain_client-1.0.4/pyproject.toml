@@ -1,0 +1,26 @@
+[project]
+name = "pythonaibrain-client"
+version = "1.0.4"
+description = "TIGER AI secure encrypted socket client powered by pythonaibrain"
+authors = [
+    { name = "Divyanshu Sinha", email = "divyanshu.sinha136@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "rich",
+    "prompt-toolkit"
+]
+
+[tool.setuptools.package-data]
+"pyaibrain.client" = [".env"]
+"pyaibrain.server" = [".env"]
+
+[project.scripts]
+client-server = "pyaibrain.client.__init__:main"
+pyaibrain-server = "pyaibrain.server.__init__:main"
+
+[tool.setuptools]
+packages = ["pyaibrain", "pyaibrain.client", "pyaibrain.server"]
