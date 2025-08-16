@@ -1,0 +1,141 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+authors = [{email = "t.s.binns@outlook.com", name = "Thomas S. Binns"}]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+]
+dependencies = [
+  "joblib>=1.0.0",
+  "matplotlib>=3.5.0",
+  "mne>=1.7",
+  "numba>=0.55.0",
+  "numpy>=1.21.2",
+  "scikit-learn>=1.0",
+  "scipy>=1.7.1",
+]
+description = "A Python signal processing package for computing spectral-domain and time-domain interactions using the bispectrum."
+name = "pybispectra"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "1.2.2"
+
+[project.optional-dependencies]
+dev = ["pybispectra[doc]", "pybispectra[lint]", "pybispectra[test]"]
+doc = [
+  "ipykernel",
+  "ipython",
+  "ipywidgets",
+  "notebook",
+  "numpydoc",
+  "pooch>=1.3.0",
+  "pydata-sphinx-theme",
+  "sphinx",
+  "sphinx-copybutton",
+  "sphinx-gallery>=0.18",
+  "sphinxcontrib-bibtex",
+]
+lint = [
+  "codespell",
+  "isort",
+  "pre-commit",
+  "pydocstyle",
+  "pydocstyle[toml]",
+  "rstcheck",
+  "ruff",
+  "toml-sort",
+  "yamllint",
+]
+test = ["coverage", "pooch>=1.3.0", "pytest"]
+
+[project.urls]
+"Bug Tracker" = "https://github.com/braindatalab/PyBispectra/issues"
+"Homepage" = "https://github.com/braindatalab/PyBispectra"
+
+[tool.codespell]
+ignore-words-list = "trough"
+skip = "./docs/build,./docs/source/auto_examples,./docs/source/refs.bib"
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.coverage.run]
+command_line = "-m pytest -v tests"
+omit = ["__init__.py", "src/pybispectra/utils/_docs.py", "tests/*"]
+source = ["pybispectra"]
+
+[tool.isort]
+profile = "black"
+
+[tool.pydocstyle]
+match-dir = "^(?!(examples|docs|tests)).*"
+
+[tool.pytest.ini_options]
+# use '', not "" for escaping characters in regex
+filterwarnings = [
+  "ignore:The seed and target for at least one connection is the same channel:UserWarning",
+  'ignore:At least one value in \`f1s\` is \>\= a value in \`f2s\`:UserWarning',
+  'ignore:At least one value of \`f2s\` \+ \`f1s\` is not present in the frequencies:UserWarning',
+]
+
+[tool.rstcheck]
+ignore_directives = [
+  "autoclass",
+  "autofunction",
+  "automodule",
+  "autosummary",
+  "bibliography",
+  "cssclass",
+  "currentmodule",
+  "dropdown",
+  "footbibliography",
+  "glossary",
+  "graphviz",
+  "grid",
+  "highlight",
+  "minigallery",
+  "rst-class",
+  "tab-set",
+  "tabularcolumns",
+  "toctree",
+]
+ignore_messages = "^.*(Unknown target name|Undefined substitution referenced)[^`]*$"
+ignore_roles = [
+  "attr",
+  "class",
+  "doc",
+  "eq",
+  "exc",
+  "file",
+  "footcite",
+  "footcite:t",
+  "func",
+  "gh",
+  "kbd",
+  "meth",
+  "mod",
+  "newcontrib",
+  "pr",
+  "py:mod",
+  "ref",
+  "samp",
+  "term",
+]
+report_level = "WARNING"
+
+[tool.ruff]
+extend-exclude = ["docs", "examples/compute_*.py"]
+line-length = 88
+
+[tool.ruff.lint.per-file-ignores]
+"*.py" = ["E203", "E741"]
+"__init__.py" = ["F401"]
+
+[tool.tomlsort]
+all = true
+ignore_case = true
+trailing_comma_inline_array = true
