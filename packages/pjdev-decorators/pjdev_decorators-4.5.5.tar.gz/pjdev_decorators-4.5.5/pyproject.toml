@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pjdev-decorators"
+dynamic = ["version"]
+description = 'common decorators'
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Purple Jay LLC", email = "apps+keystone-python-221-issue-@purplejay.io" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "loguru"
+]
+
+[project.urls]
+Documentation = "https://gitlab.purplejay.net/keystone/python"
+Issues = "https://gitlab.purplejay.net/keystone/python/issues"
+Source = "https://gitlab.purplejay.net/keystone/python"
+
+[tool.hatch.version]
+path = "src/pjdev_decorators/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.types]
+dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/pjdev_decorators tests}"
+
+[tool.coverage.run]
+source_pkgs = ["pjdev_decorators", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/pjdev_decorators/__about__.py",
+]
+
+[tool.coverage.paths]
+pjdev_decorators = ["src/pjdev_decorators", "*/pjdev-decorators/src/pjdev_decorators"]
+tests = ["tests", "*/pjdev-decorators/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
