@@ -1,0 +1,62 @@
+[project]
+name = "lgopy"
+version = "1.5.8"
+description = "LgoPy is an open-source library for building and createing multimodal data science pipelines."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "scikit-learn>=1.5.1",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.8.2",
+    "rich>=13.8.0",
+    "matplotlib>=3.9.2",
+    "multimethod>=1.12",
+    "docker>=7.1.0",
+    "black>=24.8.0",
+    "pylint>=3.2.7",
+    "bandit>=1.7.9",
+    "ray[data,default,serve,train,tune]>=2.37.0",
+    "pandas>=2.2.3",
+    "requests>=2.32.3",
+    "xarray>=2024.10.0",
+    "autoflake>=2.3.1",
+    "isort>=6.0.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+exclude = [
+    "tests/",
+    "docs/",
+    "examples/",
+    "assets/",
+    "keys/",
+    ".git/",
+    ".github/",
+    "scripts/",
+    "configs/",
+    "README.md",
+    ".env",
+    "config.json",
+    "*/**/.sh",
+    "Makefile",
+    "cloudbuild.yaml",
+    "*/**/Dockerfile",
+    "Dockerfile",
+    "requirements.txt",
+    "*.sh",
+    "*.yml",
+]
+
+
+[tool.uv]
+dev-dependencies = [
+    "modihub",
+    "transformers>=4.45.2",
+]
+
+[tool.uv.sources]
+modihub = { path = "../../../../open-source/modihub", editable = true }

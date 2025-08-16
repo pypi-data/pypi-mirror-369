@@ -1,0 +1,63 @@
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.4.4
+    hooks:
+      # Compile requirements
+      - id: pip-compile
+        args: [ requirements.in, -o, requirements.txt ]
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply
+      - id: check-useless-excludes
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=2000"]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: mixed-line-ending
+      - id: detect-private-key
+      - id: check-toml
+      - id: check-yaml
+        args: ['--unsafe']
+      - id: no-commit-to-branch
+        args: [ --branch, develop ]
+        exclude: demos/
+
+  # reorder Python imports
+  - repo: https://github.com/asottile/reorder-python-imports
+    rev: v3.12.0
+    hooks:
+      - id: reorder-python-imports
+        exclude: demos/
+
+  # check static type for Python
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        exclude: demos/
+
+  # Python linter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.2
+    hooks:
+      - id: ruff
+        args: [ '--ignore=E501',
+                '--per-file-ignores=__init__.py:F401',
+                '--fix'
+        ]
+        exclude: demos/
+
+      - id: ruff-format
+        exclude: demos/
+ci:
+  skip: [ unit-tests-poetry, integration-tests ]
