@@ -1,0 +1,93 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pjdev-postgres"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Purple Jay LLC", email = "developers@purplejay.io" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "pydantic-settings>=2.8.1",
+  "sqlmodel>=0.0.24",
+  "psycopg[binary,pool]>=3.2.6",
+  "loguru"
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+]
+
+test = [
+    "pytest",
+    "coverage",
+    "pytz"
+]
+
+[project.urls]
+Documentation = "https://gitlab.purplejay.net/keystone/python/-/tree/main/keystone-postgres/README.md"
+Issues = "https://gitlab.purplejay.net/keystone/python/-/issues"
+Source = "https://gitlab.purplejay.net/keystone/python"
+
+[tool.hatch.version]
+path = "src/pjdev_postgres/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.13"]
+
+[tool.hatch.envs.types]
+dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/pjdev_postgres tests}"
+
+[tool.coverage.run]
+source_pkgs = ["pjdev_postgres", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/pjdev_postgres/__about__.py",
+]
+
+[tool.coverage.paths]
+pjdev_postgres = ["src/pjdev_postgres", "*/pjdev-postgres/src/pjdev_postgres"]
+tests = ["tests", "*/pjdev-postgres/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
