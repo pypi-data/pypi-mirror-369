@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "doppler-secrets"
+description = "Dead simple Doppler client"
+documentation = "https://github.com/fedecalendino/doppler-secrets/blob/main/README.md"
+homepage = "https://github.com/fedecalendino/doppler-secrets"
+license = "MIT"
+readme = "README.md"
+version = "0.4.2"
+
+authors = [
+  "Fede Calendino <fede@calendino.com>",
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+keywords = [
+    "doppler",
+    "secrets",
+]
+packages = [
+  { include = "doppler" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.32.4"
+cachetools = "^6.1.0"
+pyjson5 = "^1.6.9"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[tool.poetry.group.test.dependencies]
+ddt = "^1.7.2"
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
