@@ -1,0 +1,3 @@
+import"./NZTpNUN0.js";import{f as i,t as o,b as n,d as s,r as c,e as d}from"./UrJQk2wB.js";import{S as r}from"./BPuXUJEF.js";const f=(a,t)=>[{action:()=>a.playNow(t),icon:"play_arrow",label:"Play"},{action:()=>a.playNext(t),icon:"resume",label:"Play Next"},{action:()=>a.addToQueue(t),icon:"add",label:"Add to Queue"},"divider",{actions:[...a.playlists.map(e=>({action:()=>a.addToPlaylist(e,t),icon:"queue_music",label:e.name})),{action:()=>{},icon:"add",label:"New playlist"}],icon:"playlist_add",label:"Add to playlist"}];var p=i("<title> </title>");function _(a,t){var e=p(),l=s(e);c(e),o(()=>d(l,`${t.text??""}
+    ${r}
+    Mopidy Marceline`)),n(a,e)}export{_ as T,f as t};

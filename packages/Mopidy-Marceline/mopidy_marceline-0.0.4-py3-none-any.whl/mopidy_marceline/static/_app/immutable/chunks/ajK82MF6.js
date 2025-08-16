@@ -1,0 +1,1 @@
+import"./NZTpNUN0.js";import{n as e}from"./UrJQk2wB.js";import{T as a}from"./EBMUtFFV.js";import{V as m}from"./CHRLkBqO.js";function f(r,i){m(r,{get data(){return i.tracks},getKey:t=>t.uri,item:(t,o=e)=>{a(t,{get track(){return o()}})},$$slots:{item:!0}})}export{f as T};
