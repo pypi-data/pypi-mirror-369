@@ -1,0 +1,23 @@
+ARG VARIANT="3.11"
+
+FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+WORKDIR /workspaces
+
+# Install Python dependencies from requirements
+RUN pip3 install --upgrade pip \
+    && pip3 install uv \
+    && pip3 install pdbpp \
+    && pip3 install pre-commit \
+    && pip3 install time-machine \
+    && pip3 install pytest-cov \
+    && pip3 install anyio
+
+# Remove any old pytest versions that might conflict
+RUN python3 -m pip install --upgrade --force-reinstall pytest \
+    && rm -rf /usr/local/py-utils/venvs/pytest/bin/pytest
+
+# Set the default shell to bash instead of sh
+ENV SHELL="/bin/bash"
