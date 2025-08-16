@@ -1,0 +1,44 @@
+# DarkWebSearch
+
+a library (DarkWebSearch) foe search fast for darkweb(onions) links
+
+
+## PyPI
+
+You can install the package from PyPI:
+
+[DarkWebSearch on PyPI](https://pypi.org/project/DarkWebSearch)
+
+---
+
+## Installation
+
+```bash
+pip install DarkWebSearch
+````
+
+---
+
+### Use
+```
+from DarkWebSearch import DarkWebSearch
+
+
+result = DarkWebSearch(query='hacking')
+
+print(result)
+
+```
+
+---
+
+### output example
+
+```
+[{'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}, {'url': 'http://g7ejphhubv5idbbu3hb3wawrs5adw7tkx7yjabnf65xtzztgg4hcsqqd.onion/', 'title': 'The largest hacking and security conference with presentations, workshops, contests, villages and the premier Capture The Flag Contest.'}]
+```
+
+
+
+### coded By Mr. Taha Gorji
+Github: https://github.com/mr-r0ot
