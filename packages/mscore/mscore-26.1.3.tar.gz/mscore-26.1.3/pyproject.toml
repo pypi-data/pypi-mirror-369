@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mscore"
+version = "26.1.3"
+dependencies = [
+  "pandas",
+  "pyarrow",
+  "numpy",
+  "requests",
+  "getmac",
+  "cython",
+  "pydantic",
+  "cryptography",
+  "sourcedefender",
+]
+authors = [
+  { name="RAM Development Team", email="dev@riskadjustmentmodel.com" },
+]
+description = "MScore: Risk Scores Made Easy"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://riskadjustmentmodel.com/mscore-product"
+"Bug Tracker" = "https://github.com/elevendatacorp/mscore/issues"
+
+[project.scripts]
+mscore = "mscore.__main__:activate"
+#
+#[tool.setuptools]
+##packages = ["mscore", "mscore.data_variables", "mscore.reference_data", "mscore.utilities"]
+#include-package-data = true
+#
+#[tool.setuptools.packages.find]
+#where = ["mscore"]
+#include = [
+#  "mscore",
+#  "mscore.reference_data", 
+#  "*.pye"
+#]
+#exclude = ["tests*"]
+#namespaces = false
+#
+#[tool.setuptools.package-dir]
+#
+#
+#[tool.setuptools.package-data]
+#"mscore.reference_data.application_table" = ["*.parquet"]
+#
