@@ -1,0 +1,223 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "wheel",
+    "Cython>=0.29.0",
+    "numpy>=1.21.0",
+    "pysam>=0.23.2",
+    "pyBigWig>=0.3.18",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyMaSC"
+dynamic = ["version"]
+description = "Python implementation to calc mappability-sensitive cross-correlation for fragment length estimation and quality control for ChIP-Seq."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "Hayato Anzawa", email = "anzawa@tohoku.ac.jp"},
+]
+keywords = ["NGS", "ChIP-Seq", "bioinformatics", "cross-correlation", "mappability"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Cython",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy>=1.21.0",
+    "pysam>=0.23.2",
+    "pyBigWig>=0.3.18",
+    "scipy>=1.7.0",
+    "matplotlib>=3.5.0",
+    "typing_extensions",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "pytest-xdist",
+    "psutil>=5.8.0",
+]
+dev = [
+    "PyMaSC[test]",
+    "Cython>=0.29.0",
+    "build",
+    "twine",
+    "mypy>=1.0.0",
+    "flake8",
+    "autopep8",
+]
+
+# Minimal toolchain for packaging/release (use with Python 3.11+)
+release = [
+    "cibuildwheel>=2.17.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ronin-gw/PyMaSC"
+Repository = "https://github.com/ronin-gw/PyMaSC"
+Documentation = "https://github.com/ronin-gw/PyMaSC"
+"Bug Tracker" = "https://github.com/ronin-gw/PyMaSC/issues"
+
+[project.scripts]
+pymasc = "PyMaSC.pymasc:main"
+pymasc-precalc = "PyMaSC.calcmappablelen:main"
+pymasc-plot = "PyMaSC.plot:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "PyMaSC.VERSION"}
+
+[tool.setuptools.packages.find]
+include = ["PyMaSC*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.ps"]
+
+[tool.cibuildwheel]
+# Build CPython 3.8–3.13 wheels
+build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+# Note: Windows builds temporarily excluded - use WSL2, Docker, or VM for Windows users
+skip = "*-win32 *-manylinux_i686 *-win_amd64 pp*"
+
+[tool.cibuildwheel.linux]
+before-build = [
+    "yum install -y gcc-c++ make bzip2-devel xz-devel zlib-devel curl-devel openssl-devel",
+    "pip install numpy cython",
+    "pip install 'pysam>=0.23.2' 'pyBigWig>=0.3.18'",
+    "cd external/BitArray && make clean && make CC='gcc -fPIC' libbitarr.a && cd ../..",
+]
+
+[tool.cibuildwheel.macos]
+# Build universal2 wheels on macOS (x86_64 + arm64)
+archs = ["universal2"]
+before-build = [
+    "pip install numpy cython",
+    "pip install 'pysam>=0.23.2' 'pyBigWig>=0.3.18'",
+    "cd external/BitArray && make clean && make CC='gcc -arch x86_64 -arch arm64' libbitarr.a && cd ../..",
+]
+
+[tool.cibuildwheel.windows]
+before-build = [
+    "pip install numpy cython",
+    "pip install 'pysam>=0.23.2' 'pyBigWig>=0.3.18'",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--verbose --tb=short --strict-markers --disable-warnings -ra"
+# For parallel execution, use:
+# addopts = "--verbose --tb=short --strict-markers --disable-warnings -ra -n auto"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "bitarray: marks tests that require BitArray functionality",
+    "plot: marks tests that require matplotlib/plotting functionality",
+    "golden_test: marks tests that validate against golden reference data",
+    "pyBigWig: marks tests that specifically test pyBigWig functionality",
+    "baseline_testing: marks tests that generate baseline data for comparison",
+    "numerical_validation: marks tests that perform detailed numerical validation",
+    "parallel: marks tests that validate parallel processing functionality",
+    "critical: marks tests that prevent critical bugs from regressing",
+    "successive: marks tests that validate successive algorithm functionality",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+    "ignore::FutureWarning",
+]
+
+[tool.coverage.run]
+source = ["PyMaSC"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]
+
+[tool.mypy]
+python_version = "3.8"
+plugins = ["numpy.typing.mypy_plugin"]
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+extra_checks = true
+no_implicit_reexport = true
+ignore_missing_imports = true
+allow_untyped_defs = false
+check_untyped_defs = true
+follow_imports = "normal"
+mypy_path = "."
+namespace_packages = true
+explicit_package_bases = true
+exclude = [
+    "setup.py",
+    "build/",
+    "external/",
+    "tests/",
+    "htmlcov/",
+    "^.*\\.c$",
+    "^.*\\.so$",
+]
+
+# Per-module options for gradual typing
+[[tool.mypy.overrides]]
+module = [
+    "PyMaSC.pymasc",
+    "PyMaSC.plot",
+    "PyMaSC.calcmappablelen",
+    "PyMaSC.core.ccresult",
+    "PyMaSC.handler.mappability",
+    "PyMaSC.output.*",
+    "PyMaSC.utils.*"
+]
+allow_untyped_defs = true
+check_untyped_defs = false
+
+# Strict typing for already typed modules
+[[tool.mypy.overrides]]
+module = [
+    "PyMaSC.core.*",
+    "PyMaSC.services.*",
+    "PyMaSC.handler.base",
+    "PyMaSC.handler.calc",
+    "PyMaSC.handler.simplified",
+    "PyMaSC.handler.service_adapter"
+]
+disallow_untyped_defs = true
+check_untyped_defs = true
