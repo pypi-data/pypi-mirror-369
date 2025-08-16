@@ -1,0 +1,72 @@
+Metadata-Version: 2.1
+Name: fathom_global_client_sdk
+Author: Fathom
+Home-page: https://fathom.global
+Description-Content-Type: text/markdown
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Requires-Dist: googleapis-common-protos>=1.63.0,<2
+Requires-Dist: grpcio>=1.62.1,<2
+Requires-Dist: grpcio-status>=1.62.1,<2
+Requires-Dist: protobuf>=5,<6
+Requires-Dist: requests>=2,<3
+Requires-Dist: fastkml==1.0a11
+Requires-Dist: lxml
+Requires-Dist: fiona
+Requires-Dist: protovalidate
+Version: 1.1.0
+
+# Fathom Python SDK client
+
+The Python SDK client for communicating with the Fathom API. See [the SDK documentation](https://api-docs.fathom.global/sdk/python.html) for more information.
+
+Example usage:
+
+[//]: # "Example is expanded below"
+```python
+"""An example usage of the Fathom API client."""
+
+import os
+
+from fathom.sdk.v2 import Client, point, polygon, write_tiffs
+
+if __name__ == "__main__":
+    client = Client(
+        os.getenv("FATHOM_CLIENT_ID"),
+        os.getenv("FATHOM_CLIENT_SECRET"),
+        os.getenv("FATHOM_API_ADDR"),
+    )
+
+    layer_ids = [
+        "GLOBAL-1ARCSEC-00_OFFSET-1in10-PLUVIAL-DEFENDED-DEPTH-2020-PERCENTILE50-v0.0.0_test",
+        "GLOBAL-1ARCSEC-00_OFFSET-1in100-PLUVIAL-DEFENDED-DEPTH-2020-PERCENTILE50-v0.0.0_test",
+    ]
+
+    # Get from points
+    pt = point(lat=51.996147, lng=-2.159495)
+    points_response = client.geo.get_points(([pt]), layer_ids)
+
+    # Or using a polygon
+    poly = polygon(
+        [
+            point(51.45, 0),
+            point(51.55, 0),
+            point(51.55, -0.1),
+            point(51.45, -0.1),
+            point(51.45, 0),
+        ]
+    )
+    polygon_response = client.geo.get_polygon(poly, layer_ids)
+    write_tiffs(
+        polygon_response,
+        output_dir,
+    )
+```
+
