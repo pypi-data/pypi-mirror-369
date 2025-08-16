@@ -1,0 +1,176 @@
+# Streamlit Voice Pipeline
+
+A Streamlit-ready voice pipeline for real-time conversation with OpenAI's GPT-4o Realtime API. Build voice-enabled Streamlit applications with minimal setup!
+
+## Features
+
+- 🎤 **Real-time voice conversation** with OpenAI's GPT-4o
+- 🔄 **Automatic reconnection** on connection drops
+- 📱 **Streamlit-optimized** with session state integration
+- 🎨 **Customizable voices** and speech parameters
+- 📝 **Conversation transcripts** and history
+- ⚡ **Thread-safe** and production-ready
+- 🛠️ **Easy callbacks** for transcripts, errors, and status changes
+
+## Installation
+
+```bash
+pip install streamlit-voice-pipeline
+```
+
+## Quick Start
+
+```python
+import streamlit as st
+from streamlit_voice_pipeline import get_or_create_pipeline
+
+st.title("🎤 Voice Chat with AI")
+
+# Initialize pipeline
+pipeline = get_or_create_pipeline(
+    api_key="your-openai-api-key",
+    voice="alloy"  # Options: alloy, echo, fable, onyx, nova, shimmer, verse
+)
+
+# Control buttons
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("🎤 Start Voice Chat"):
+        pipeline.start()
+        st.success("Started!")
+
+with col2:
+    if st.button("⏹️ Stop"):
+        pipeline.stop()
+        st.info("Stopped")
+
+# Show status
+st.write(f"**Status:** {pipeline.get_status()}")
+
+# Display conversation
+transcripts = pipeline.get_transcripts()
+for transcript in transcripts:
+    st.write(f"**{transcript['role'].title()}:** {transcript['content']}")
+```
+
+## Advanced Usage
+
+### With Callbacks
+
+```python
+def on_transcript(text):
+    st.session_state.messages.append(text)
+    
+def on_error(error):
+    st.error(f"Error: {error}")
+    
+def on_status_change(status):
+    st.session_state.status = status
+
+pipeline = get_or_create_pipeline(
+    api_key="your-key",
+    voice="echo",
+    temperature=0.8,
+    max_tokens=800,
+    on_transcript=on_transcript,
+    on_error=on_error,
+    on_status_change=on_status_change
+)
+```
+
+### Configuration Options
+
+```python
+pipeline = StreamlitVoicePipeline(
+    api_key="your-openai-api-key",
+    model="gpt-4o-realtime-preview-2025-06-03",
+    voice="alloy",                    # Voice selection
+    temperature=0.8,                  # Response creativity (0.0-1.0)
+    max_tokens=800,                   # Maximum response length
+    sample_rate=24000,                # Audio quality (16000/24000/48000)
+    vad_threshold=0.7,                # Voice detection sensitivity
+    silence_duration=1200,            # Silence before stopping (ms)
+)
+```
+
+## Available Voices
+
+- **alloy** - Neutral, balanced
+- **echo** - Expressive, dynamic  
+- **fable** - Warm, storytelling
+- **onyx** - Deep, authoritative
+- **nova** - Youthful, energetic
+- **shimmer** - Gentle, soft
+- **verse** - Conversational, friendly
+
+## Status Values
+
+- `stopped` - Pipeline not running
+- `connecting` - Establishing connection
+- `connected` - Connected to API  
+- `ready` - Ready for conversation
+- `listening` - Waiting for user speech
+- `user_speaking` - User is talking
+- `processing` - Processing user input
+- `ai_speaking` - AI is responding
+- `error` - Error occurred
+
+## Requirements
+
+- Python 3.8+
+- OpenAI API key with Realtime API access
+- Microphone and speakers/headphones
+- Internet connection
+
+## Example Applications
+
+Check out the `/examples` directory for:
+- Basic voice chat app
+- Advanced configuration demo  
+- Integration with other Streamlit components
+
+## Troubleshooting
+
+### Common Issues
+
+**"No microphone detected"**
+```bash
+# Linux
+sudo apt-get install portaudio19-dev python3-pyaudio
+
+# macOS  
+brew install portaudio
+pip install pyaudio
+
+# Windows
+pip install pipwin
+pipwin install pyaudio
+```
+
+**"WebSocket connection failed"**
+- Check your OpenAI API key
+- Ensure you have Realtime API access
+- Verify internet connection
+
+**"Audio feedback/echo"**
+- Use headphones instead of speakers
+- Adjust `vad_threshold` parameter
+- Check microphone sensitivity
+
+## Contributing
+
+Contributions welcome! Please read our contributing guidelines and submit PRs.
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Support
+
+- 📖 [Documentation](https://github.com/yourusername/streamlit-voice-pipeline)
+- 🐛 [Bug Reports](https://github.com/yourusername/streamlit-voice-pipeline/issues)  
+- 💬 [Discussions](https://github.com/yourusername/streamlit-voice-pipeline/discussions)
+
+---
+
+Built with ❤️ for the Streamlit community

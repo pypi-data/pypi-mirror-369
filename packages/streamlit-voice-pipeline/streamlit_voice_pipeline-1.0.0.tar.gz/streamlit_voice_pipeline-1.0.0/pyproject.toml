@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streamlit-voice-pipeline"
+version = "1.0.0"
+description = "A Streamlit-ready voice pipeline for real-time conversation with OpenAI's GPT-4o Realtime API"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+maintainers = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["streamlit", "voice", "openai", "realtime", "audio", "speech", "gpt-4o", "conversation", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: User Interfaces",
+]
+dependencies = [
+    "streamlit>=1.25.0",
+    "websockets>=11.0",
+    "numpy>=1.21.0",
+    "asyncio-mqtt>=0.11.0",
+    "pyaudio>=0.2.11",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-asyncio>=0.18.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.950",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/streamlit-voice-pipeline"
+Documentation = "https://github.com/yourusername/streamlit-voice-pipeline/blob/main/README.md"
+Repository = "https://github.com/yourusername/streamlit-voice-pipeline.git"
+"Bug Tracker" = "https://github.com/yourusername/streamlit-voice-pipeline/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["streamlit_voice_pipeline*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
