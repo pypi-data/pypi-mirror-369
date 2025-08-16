@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pjdev-op"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Purple Jay LLC", email = "developers@purplejay.io" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "onepassword-sdk==0.3.1",
+  "loguru",
+  "nest-asyncio",
+  "pydantic-settings",
+  "pydantic"
+]
+
+[project.urls]
+Documentation = "https://gitlab.purplejay.net/keystone/python/-/tree/main/pjdev-op/README.md"
+Issues = "https://gitlab.purplejay.net/keystone/python/-/issues"
+Source = "https://gitlab.purplejay.net/keystone/python"
+
+[tool.hatch.version]
+path = "src/pjdev_op/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/pjdev_op tests}"
+
+[tool.coverage.run]
+source_pkgs = ["pjdev_op", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/pjdev_op/__about__.py",
+]
+
+[tool.coverage.paths]
+pjdev_op = ["src/pjdev_op", "*/pjdev-op/src/pjdev_op"]
+tests = ["tests", "*/pjdev-op/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
