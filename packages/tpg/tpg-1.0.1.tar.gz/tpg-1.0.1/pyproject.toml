@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tpg"
+authors = [{ name = "fieryhenry" }]
+description = "tpg"
+license = { text = "GPL-3.0-or-later License" }
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Topic :: Games/Entertainment",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Operating System :: OS Independent",
+]
+dependencies = ["PySide6"]
+dynamic = ["version"]
+keywords = ["game", "topdown", "grid", "2d", "python"]
+
+[project.urls]
+Homepage = "https://codeberg.org/fieryhenry/tpg"
+Repository = "https://codeberg.org/fieryhenry/tpg"
+Issues = "https://codeberg.org/fieryhenry/tpg/issues"
+Changelog = "https://codeberg.org/fieryhenry/tpg/raw/branch/main/CHANGELOG.md"
+
+
+[tool.setuptools.dynamic]
+version = { attr = "tpg.__version__" }
+
+[tool.setuptools]
+package-dir = { "" = "src" }
