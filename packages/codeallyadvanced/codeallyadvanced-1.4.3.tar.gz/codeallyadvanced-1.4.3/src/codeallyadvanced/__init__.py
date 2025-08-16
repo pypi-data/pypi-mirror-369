@@ -1,0 +1,1 @@
+from codeallyadvanced._version import __version__

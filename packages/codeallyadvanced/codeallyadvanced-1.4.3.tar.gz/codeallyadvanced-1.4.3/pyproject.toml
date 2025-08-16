@@ -1,0 +1,53 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = "setuptools.build_meta"
+
+[project]
+name        = 'codeallyadvanced'
+dynamic     = ["version"]
+description = 'Humberto`s Common wxPython UI Stuff'
+readme      = "README.md"
+authors     = [{name = 'Humberto A. Sanchez II', email = 'Humberto.A.Sanchez.II@gmail.com'}]
+maintainers = [{name = 'Humberto A. Sanchez II', email = 'Humberto.A.Sanchez.II@gmail.com'}]
+keywords    = ['pyut', 'python', 'wxPython', 'UI', 'umldiagrammer']
+license     = 'AGPL-1.0-or-later'
+
+classifiers = [
+  "Programming Language :: Python",
+  "Intended Audience :: Developers",
+  "Operating System :: MacOS :: MacOS X",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+  'buildlackey>=1.8.1',
+  'wxPython>=4.2.2'
+]
+
+[project.optional-dependencies]
+test = [
+    'mypy==1.17.1',
+    'codeallybasic==1.15.0',
+    'mypy-extensions==1.1.0',
+    'types-Deprecated==1.2.15.20250304',
+    'html-testRunner~=1.2.1',
+]
+
+deploy = [
+    "wheel==0.45.1",
+    "setuptools==80.9.0",
+    "twine==6.1.0",
+    "build==1.3.0",
+]
+
+[project.urls]
+Repository = 'https://github.com/hasii2011/code-ally-advanced'
+
+[tool.setuptools.packages.find]
+where = ['src']
+
+[tool.setuptools.package-data]
+codeallybasic = ['py.typed']
+
+[tool.setuptools.dynamic]
+version = {attr = 'codeallyadvanced.__version__'}
