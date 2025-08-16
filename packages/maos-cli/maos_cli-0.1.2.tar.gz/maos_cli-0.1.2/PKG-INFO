@@ -1,0 +1,470 @@
+Metadata-Version: 2.4
+Name: maos-cli
+Version: 0.1.2
+Summary: Orchestrate swarms of Claude subagents with natural language
+Project-URL: Homepage, https://github.com/vincentsider/maos-cli
+Project-URL: Documentation, https://github.com/vincentsider/maos-cli#readme
+Project-URL: Repository, https://github.com/vincentsider/maos-cli
+Project-URL: Issues, https://github.com/vincentsider/maos-cli/issues
+Project-URL: Source Code, https://github.com/vincentsider/maos-cli
+Author-email: Vincent Sider <vincent@maos.dev>
+Maintainer-email: Vincent Sider <vincent@maos.dev>
+License: MIT
+License-File: LICENSE
+Keywords: agents,ai,automation,claude,llm,orchestration,sdk,swarm
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Distributed Computing
+Requires-Python: >=3.11
+Requires-Dist: aiofiles>=23.2.1
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: rich>=13.7.0
+Requires-Dist: typer>=0.9.0
+Provides-Extra: api
+Requires-Dist: fastapi>=0.104.1; extra == 'api'
+Requires-Dist: httpx>=0.25.2; extra == 'api'
+Requires-Dist: pydantic>=2.5.0; extra == 'api'
+Requires-Dist: uvicorn[standard]>=0.24.0; extra == 'api'
+Provides-Extra: dev
+Requires-Dist: black>=23.11.0; extra == 'dev'
+Requires-Dist: mypy>=1.7.1; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.1; extra == 'dev'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest>=7.4.3; extra == 'dev'
+Requires-Dist: ruff>=0.1.6; extra == 'dev'
+Provides-Extra: full
+Requires-Dist: aioredis>=2.0.1; extra == 'full'
+Requires-Dist: cryptography>=41.0.7; extra == 'full'
+Requires-Dist: fastapi>=0.104.1; extra == 'full'
+Requires-Dist: httpx>=0.25.2; extra == 'full'
+Requires-Dist: prometheus-client>=0.19.0; extra == 'full'
+Requires-Dist: pydantic>=2.5.0; extra == 'full'
+Requires-Dist: pyjwt>=2.8.0; extra == 'full'
+Requires-Dist: redis>=5.0.1; extra == 'full'
+Requires-Dist: sqlalchemy[asyncio]>=2.0.23; extra == 'full'
+Requires-Dist: uvicorn[standard]>=0.24.0; extra == 'full'
+Provides-Extra: redis
+Requires-Dist: aioredis>=2.0.1; extra == 'redis'
+Requires-Dist: redis>=5.0.1; extra == 'redis'
+Description-Content-Type: text/markdown
+
+# MAOS - Multi-Agent Orchestration System
+## Orchestrate Claude Code Subagent Swarms with Natural Language 🤖
+
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Claude Code SDK](https://img.shields.io/badge/Claude%20Code%20SDK-Integrated-purple.svg)](https://www.npmjs.com/package/@anthropic-ai/claude-code)
+[![PyPI](https://img.shields.io/badge/PyPI-maos--cli-blue.svg)](https://pypi.org/project/maos-cli/)
+
+MAOS orchestrates multiple Claude Code instances using the official SDK, creating and managing subagent swarms through natural language commands.
+
+## 🚀 Quick Start (2 minutes)
+
+### Prerequisites
+- **Claude Code CLI** installed and authenticated:
+  ```bash
+  npm install -g @anthropic-ai/claude-code
+  export ANTHROPIC_API_KEY="your-api-key"  # or use 'claude login'
+  ```
+
+### Install with pipx (Recommended)
+
+```bash
+# Install pipx if you don't have it
+python3 -m pip install --user pipx
+pipx ensurepath
+
+# Install MAOS
+pipx install maos-cli
+
+# Start using in any project
+cd ~/your-project
+maos
+```
+
+### Alternative: Install from Source
+
+```bash
+# Clone and install
+git clone https://github.com/yourusername/maos.git
+cd maos
+pipx install -e .
+
+# Or use pip in a virtual environment
+python -m venv venv
+source venv/bin/activate
+pip install -e .
+```
+
+That's it! Now just type naturally:
+
+```
+MAOS> spawn 3 agents to review my code for security issues
+✓ Creating Claude subagents: security-auditor, reviewer, tester
+✓ Launching 3 Claude SDK sessions in parallel
+✓ Subagents created in .claude/agents/
+
+MAOS> implement the requirements in prd.md
+✓ Analyzing PRD file...
+✓ Created specialized subagents for each requirement
+✓ Executing with --max-turns 10 per session
+
+MAOS> show status
+📊 Active Sessions: 3
+💰 Total Cost: $0.0234
+⏱️ Runtime: 45 seconds
+```
+
+## 💬 Natural Language Examples
+
+No Python code needed! Just type what you want:
+
+- **"spawn a swarm of agents to deliver the requirements in prd.md"**
+- **"create 5 parallel agents to analyze different modules"**
+- **"review my codebase for security vulnerabilities"**
+- **"run comprehensive tests across all services"**
+- **"show me the status of all running agents"**
+- **"save a checkpoint before the big refactor"**
+- **"restore from yesterday's checkpoint"**
+
+## 🎯 What MAOS Actually Does
+
+MAOS orchestrates multiple Claude Code SDK sessions using proper subagents:
+
+- **📝 Creates Claude Subagents**: Generates `.claude/agents/*.md` files with specialized prompts
+- **🚀 SDK Mode Execution**: Uses `claude -p` with `--output-format json` for reliable automation
+- **🔄 Session Management**: Leverages `--resume` and `--continue` for multi-turn conversations
+- **⚡ Parallel Processing**: Runs multiple SDK sessions concurrently with different subagents
+- **💰 Cost Tracking**: Monitors API usage and costs per session
+- **🗣️ Natural Language**: No Python code needed - just chat
+
+## 📚 Usage Examples
+
+### Example 1: Implement a PRD
+
+```
+$ python maos.py
+
+MAOS> spawn a swarm to implement the requirements in prd.md
+
+🚀 Creating agent swarm...
+✓ Spawned 3 agents: architect, developer, tester
+✓ Analyzing prd.md...
+✓ Distributed 12 tasks across agents
+
+⚡ Agents working in parallel:
+  • architect: Designing system architecture...
+  • developer: Implementing core features...
+  • tester: Writing test specifications...
+
+MAOS> show progress
+
+📊 Swarm Progress:
+  • architect: 75% complete (3/4 tasks)
+  • developer: 50% complete (4/8 tasks)  
+  • tester: 100% complete (2/2 tasks)
+  
+MAOS> checkpoint before deployment
+
+✓ Checkpoint saved: pre-deployment-2024-01-15
+```
+
+### Example 2: Code Review
+
+```
+MAOS> review my codebase for security issues and performance
+
+🔍 Spawning specialized review agents...
+✓ Created security-auditor agent
+✓ Created performance-analyzer agent
+✓ Starting parallel review...
+
+📋 Review Complete:
+  • Security: Found 3 medium-priority issues
+  • Performance: Identified 5 optimization opportunities
+  
+MAOS> show me the security issues
+
+🔐 Security Issues Found:
+  1. SQL injection risk in user_controller.py:45
+  2. Hardcoded API key in config.py:12  
+  3. Missing CSRF protection in forms.py:78
+```
+
+### Example 3: Restore and Continue
+
+```
+MAOS> list my checkpoints
+
+📁 Available Checkpoints:
+  • pre-deployment-2024-01-15 (2 hours ago)
+  • feature-complete-2024-01-14 (yesterday)
+  • initial-setup-2024-01-13 (2 days ago)
+
+MAOS> restore from pre-deployment-2024-01-15
+
+✓ Restored checkpoint successfully
+✓ 3 agents resumed with full context
+
+MAOS> continue the deployment preparation
+
+⚡ Agents resuming work...
+```
+
+## 🏗️ How It Actually Works
+
+### Architecture
+
+```
+Your Project Directory
+├── .claude/agents/          # Claude subagents created by MAOS
+│   ├── developer.md        # Subagent with development expertise
+│   ├── tester.md          # Subagent with testing expertise
+│   └── reviewer.md        # Subagent with review expertise
+│
+├── MAOS Orchestrator
+│   ├── ClaudeSubagentManager    # Creates .claude/agents/*.md files
+│   ├── ClaudeSDKManager         # Manages SDK sessions
+│   └── NaturalLanguageProcessor # Interprets your commands
+│
+└── Claude SDK Sessions (via 'claude -p')
+    ├── Session 1: "claude -p 'task' --output-format json --resume abc123"
+    ├── Session 2: "claude -p 'task' --output-format json --resume def456"
+    └── Session 3: "claude -p 'task' --output-format json --resume ghi789"
+```
+
+### What Really Happens
+
+1. **Subagent Creation**: MAOS creates specialized subagents in `.claude/agents/` with YAML frontmatter
+2. **SDK Execution**: Uses `claude -p` (non-interactive mode) with JSON output
+3. **Session Management**: Each task gets a session ID for continuation with `--resume`
+4. **Parallel Execution**: Multiple SDK calls run concurrently via asyncio
+5. **Natural Delegation**: Claude automatically picks appropriate subagents based on task
+6. **Cost Tracking**: JSON responses include `total_cost_usd` for monitoring
+
+## ❓ FAQ
+
+### How is this different from just using Claude Code?
+
+MAOS creates and manages **multiple Claude subagents** that work in parallel. Each subagent has specialized expertise (developer, tester, reviewer, etc.) and runs in its own SDK session. You coordinate them all through natural language.
+
+### What are Claude subagents?
+
+Subagents are Markdown files in `.claude/agents/` with YAML frontmatter defining their expertise. Claude automatically delegates tasks to appropriate subagents. MAOS creates and manages these for you.
+
+### Does this use the official Claude SDK?
+
+Yes! MAOS uses the official `@anthropic-ai/claude-code` package in SDK mode (`claude -p`) with proper flags like `--output-format json`, `--resume`, and `--max-turns`.
+
+### Do I need Redis or Docker?
+
+**No!** Redis and Docker are optional for advanced features. Basic functionality works with just Claude Code CLI and Python.
+
+### How does session management work?
+
+Each Claude SDK call returns a `session_id`. MAOS tracks these and can continue conversations using `--resume <session_id>` or `--continue` for the most recent.
+
+### What about costs?
+
+MAOS tracks costs via the JSON responses (`total_cost_usd`). Start with 2-3 parallel sessions and scale up. Each session respects `--max-turns` to control usage.
+
+### Can I customize the subagents?
+
+Yes! MAOS creates standard subagents, but you can edit `.claude/agents/*.md` files or create your own. They're just Markdown with YAML frontmatter.
+
+## 🛠️ Configuration
+
+### Subagent Templates
+
+MAOS includes pre-configured subagent templates:
+- `architect` - System design and architecture
+- `developer` - Implementation and coding
+- `tester` - Test creation and validation
+- `reviewer` - Code review and quality
+- `security-auditor` - Security analysis
+- `performance-optimizer` - Performance tuning
+- `documentation-writer` - Documentation creation
+
+### SDK Configuration
+
+```python
+# Default SDK settings used by MAOS
+sdk_config = {
+    "output_format": "json",        # Structured responses
+    "max_turns": 10,                # Per session limit
+    "verbose": True,                # Detailed logging
+    "permission_mode": "default",   # Can be "plan" for read-only
+    "allowed_tools": ["Read", "Write", "Edit", "Bash", "Grep"]
+}
+```
+
+### Environment Variables (`.env`)
+
+```bash
+# Optional Redis URL (overrides config)
+REDIS_URL=redis://localhost:6379
+
+# Logging
+LOG_LEVEL=INFO
+
+# Monitoring
+ENABLE_METRICS=true
+```
+
+## 🧪 Testing & Development
+
+```bash
+# Test Claude SDK integration
+claude -p "test" --output-format json  # Should return JSON
+
+# Test MAOS installation
+maos --version
+
+# Run in development mode
+python maos.py  # From source directory
+
+# Check created subagents
+ls -la .claude/agents/
+
+# Monitor costs
+grep "total_cost_usd" ~/.maos/sessions.log
+```
+
+## 📦 Installation Options
+
+### Option 1: PyPI with pipx (Recommended)
+```bash
+pipx install maos-cli
+maos  # Use in any directory
+```
+
+### Option 2: From Source
+```bash
+git clone https://github.com/yourusername/maos.git
+cd maos
+pipx install -e .  # Or: pip install -e .
+```
+
+### Option 3: Docker (Optional, for Redis)
+```bash
+# Only if you want Redis for distributed features
+docker run -d -p 6379:6379 redis:alpine
+```
+
+## 🔧 Troubleshooting
+
+### Claude Code not found
+```bash
+# Verify installation
+which claude
+claude --version
+
+# If not installed:
+npm install -g @anthropic-ai/claude-code
+```
+
+### Redis connection failed
+```bash
+# Check Redis is running
+redis-cli ping
+
+# Start Redis
+docker run -d -p 6379:6379 redis:7.2-alpine
+```
+
+### Agent spawn failures
+```bash
+# Check Claude authentication
+claude status
+
+# Re-authenticate if needed
+claude login
+```
+
+### Context restoration issues
+```bash
+# Check checkpoint directory
+ls -la ./maos_checkpoints/
+
+# Verify Redis has data
+redis-cli keys "maos:*"
+```
+
+## 📊 Performance Characteristics
+
+| Metric | Typical Value | Notes |
+|--------|--------------|--------|
+| SDK Session Start | 1-2 seconds | Using `claude -p` |
+| Subagent Creation | <100ms | Per `.md` file |
+| Parallel Sessions | 2-10+ | Limited by API rate |
+| JSON Parse Time | <10ms | Structured responses |
+| Cost per Session | $0.01-0.10 | With --max-turns 10 |
+| Session Resume | <1 second | Using --resume flag |
+
+## 🚀 Advanced Usage
+
+### Creating Custom Subagents
+
+```markdown
+# .claude/agents/database-expert.md
+---
+name: database-expert
+description: Database optimization and query specialist
+tools: Read, Bash, Grep
+---
+
+You are a database expert specializing in SQL optimization,
+schema design, and query performance tuning.
+```
+
+### Direct SDK Usage
+
+```python
+from maos.core.claude_sdk_manager import ClaudeSDKManager
+
+# Use MAOS programmatically
+manager = ClaudeSDKManager()
+result = await manager.create_session(
+    prompt="Review this code",
+    max_turns=5,
+    subagents=["reviewer", "security-auditor"]
+)
+```
+
+### Production Deployment
+
+See [docs/deployment-guide.md](docs/deployment-guide.md) for:
+- Kubernetes deployment
+- Multi-region setup
+- High availability configuration
+- Security hardening
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file.
+
+## 🙏 Acknowledgments
+
+- Built with [Claude Code](https://claude.ai) CLI
+- Redis for distributed coordination
+- The Python async community
+
+---
+
+**⭐ Star this repo if you find MAOS useful!**
+
+**💬 Questions?** Open an [issue](https://github.com/yourusername/maos/issues) or start a [discussion](https://github.com/yourusername/maos/discussions).
