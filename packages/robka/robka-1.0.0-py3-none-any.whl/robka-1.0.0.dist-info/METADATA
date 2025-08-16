@@ -1,0 +1,143 @@
+Metadata-Version: 2.4
+Name: robka
+Version: 1.0.0
+Summary: کتابخانه‌ای بهینه و ساده برای ایجاد ربات‌های روبیکا - Optimized and simple library for creating Rubika bots
+Home-page: https://github.com/htteX/robka
+Download-URL: https://github.com/htteX/robka/releases/latest
+Author: htteX
+Author-email: httex.dev@gmail.com
+License: MIT
+Project-URL: Bug Reports, https://github.com/htteX/robka/issues
+Project-URL: Source, https://github.com/htteX/robka
+Project-URL: Documentation, https://github.com/htteX/robka/wiki
+Keywords: rubika bot api library python robka روبیکا ربات
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: Persian
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet
+Classifier: Topic :: Communications
+Classifier: Topic :: Communications :: Chat
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: pycryptodome
+Requires-Dist: urllib3
+Requires-Dist: tqdm
+Requires-Dist: aiohttp
+Requires-Dist: rich
+Requires-Dist: websocket-client
+Requires-Dist: schedule
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Robka - کتابخانه ربات‌سازی روبیکا
+
+[![PyPI version](https://badge.fury.io/py/robka.svg)](https://badge.fury.io/py/robka)
+[![Python](https://img.shields.io/pypi/pyversions/robka.svg)](https://pypi.org/project/robka/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+کتابخانه‌ای بهینه، ساده و سریع برای ایجاد ربات‌های روبیکا با پشتیبانی کامل از زبان فارسی.
+
+## ویژگی‌های کلیدی
+
+- 🚀 **سرعت بالا**: بهینه‌سازی شده برای عملکرد بهتر
+- 🎯 **سادگی**: API ساده و قابل فهم
+- 🇮🇷 **پشتیبانی فارسی**: کاملاً فارسی‌سازی شده
+- 📦 **سبک**: وابستگی‌های کمتر و حجم کوچک‌تر
+- 🔧 **قابل تنظیم**: امکانات پیشرفته برای توسعه‌دهندگان
+
+## نصب
+
+```bash
+pip install robka
+```
+
+## استفاده سریع
+
+```python
+from robka import Client
+
+# ایجاد کلاینت
+bot = Client("AUTH_TOKEN")
+
+# ارسال پیام
+bot.send_message("CHAT_ID", "سلام! این اولین پیام من است 👋")
+
+# دریافت پیام‌ها
+@bot.on_message()
+def handle_message(message):
+    if message.text == "/start":
+        bot.send_message(message.chat_id, "خوش آمدید! 🎉")
+
+# اجرای ربات
+bot.run()
+```
+
+## مثال‌های بیشتر
+
+### ارسال فایل
+
+```python
+# ارسال تصویر
+bot.send_photo("CHAT_ID", "path/to/image.jpg", caption="تصویر زیبا 📸")
+
+# ارسال فایل
+bot.send_document("CHAT_ID", "path/to/file.pdf")
+```
+
+### کار با کیبورد
+
+```python
+from robka import InlineKeyboard
+
+keyboard = InlineKeyboard()
+keyboard.add_button("دکمه ۱", "callback_1")
+keyboard.add_button("دکمه ۲", "callback_2")
+
+bot.send_message("CHAT_ID", "لطفاً یکی را انتخاب کنید:", reply_markup=keyboard)
+```
+
+## مستندات
+
+برای مستندات کامل و مثال‌های بیشتر، به [ویکی پروژه](https://github.com/htteX/robka/wiki) مراجعه کنید.
+
+## مجوز
+
+این پروژه تحت مجوز MIT منتشر شده است. برای جزئیات بیشتر فایل [LICENSE](LICENSE) را مطالعه کنید.
+
+## حمایت
+
+اگر از این پروژه استفاده می‌کنید و مفید بوده، لطفاً با دادن ⭐ از آن حمایت کنید!
+
+---
+
+**توسعه‌دهنده**: htteX  
+**نسخه**: 1.0.0
+
