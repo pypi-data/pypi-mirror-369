@@ -1,0 +1,45 @@
+services:
+
+  slim:
+    image: &slimage kubed/krm-py:latest
+    container_name: krm-py-slim
+    build:
+      target: slim
+      args:
+        PY_VERSION: ${PY_VERSION}
+      tags:
+      - *slimage
+      - kubed/krm-py:slim
+      - kubed/krm-py:${GIT_SHA:-latest}
+      - kubed/krm-py:${GIT_REF:-latest}
+      - kubed/krm-py:py${PY_VERSION}
+      - kubed/krm-py:${GIT_REF:-latest}-py${PY_VERSION}
+      x-bake:
+        platforms:
+        - linux/amd64
+        - linux/arm64
+        cache-to: type=gha,mode=max,scope=krm-slim
+        cache-from: type=gha,scope=krm-slim
+
+  suite:
+    image: &image kubed/krm-py:suite
+    container_name: krm-py-suite
+    build:
+      target: suite
+      tags:
+      - *image
+      x-bake:
+        platforms:
+        - linux/amd64
+        - linux/arm64
+        cache-to: type=gha,mode=max,scope=krm-suite
+        cache-from: type=gha,scope=krm-suite
+    stdin_open: true
+    tty: true
+    volumes:
+    - ./examples:/examples
+    entrypoint:
+    - tail
+    command: 
+    - -f
+    - /dev/null
