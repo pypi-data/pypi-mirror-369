@@ -1,0 +1,110 @@
+//Author Yechen Qiao
+def workspace
+def now
+def newVersion
+pipeline {
+    agent any
+
+    parameters {
+        string description: 'Specify the version number. If blank, the version will become "YYYY.MM.dd.jenkinsBuildNumber".', name: 'VERSION_NUMBER', trim: true
+        booleanParam defaultValue: false, description: '''Whether to create git tag on build success.''', name: 'IS_CREATING_TAG'
+        booleanParam defaultValue: false, description: '''Whether to publish to pypi on success.''', name: 'IS_PUBLISHING'
+        choice choices: ['Alpha', 'Beta', 'Release Candidate', 'Final Release'], name: 'PyPI_Release_Status'
+    }
+
+    environment {
+        PYTHON_LIB_FILE_NAME = "sapio-selenium-lib.zip"
+    }
+
+    tools {
+        git 'Default'
+    }
+
+    options {
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(daysToKeepStr: '720', artifactDaysToKeepStr: '720'))
+    }
+
+    stages {
+        stage("Init Version Number") {
+            steps {
+                script {
+                    workspace = pwd()
+                    sh "echo Current Working Directory is ${workspace}"
+
+                    if (params.VERSION_NUMBER != null && !params.VERSION_NUMBER.isEmpty()) {
+                        newVersion = params.VERSION_NUMBER
+                    } else {
+                        now = new Date()
+                        status_prefix = "."
+                        if ('Alpha' == params.PyPI_Release_Status){
+                            status_prefix = "a"
+                        } else if ('Beta' == params.PyPI_Release_Status){
+                            status_prefix = "b"
+                        } else if ('Release Candidate' == params.PyPI_Release_Status){
+                            status_prefix = "rc"
+                        } else if ('Final Release' != params.PyPI_Release_Status){
+                            error("Unexpected release status: " + params.PyPI_Release_Status)
+                        }
+                        newVersion = now.format("yyyy.MM.dd") + status_prefix + "${env.BUILD_NUMBER}"
+                    }
+
+                    sh "echo Building Version Number is ${newVersion}"
+                    currentBuild.displayName = newVersion
+
+                    sh """
+sed -i "s/version='.*'/version='${newVersion}'/" ${workspace}/pyproject.toml
+sed -i "s|'PyPI_Release_Status'|'${params.PyPI_Release_Status}'|" ${workspace}/pyproject.toml
+cat ${workspace}/pyproject.toml
+                    """
+                }
+            }
+        }
+
+        stage("Create Git Tag"){
+            when{
+                expression{params.IS_CREATING_TAG}
+            }
+            steps{
+                withCredentials([gitUsernamePassword(credentialsId: 'git-jenkins-sapio',
+                        gitToolName: 'Default')]) {
+                    sh """
+                            git config user.name 'jenkins-sapio'
+                            git config user.email 'jenkins-sapio@sapiosciences.com'
+                        """
+                    sh "git commit -am \"Releasing ${newVersion}\""
+                    sh "git tag ${newVersion}"
+                    sh "git push origin --tags"
+                }
+            }
+        }
+
+        stage("Archive Script Libraries") {
+            steps {
+                zip zipFile: "${PYTHON_LIB_FILE_NAME}", dir:"${workspace}", overwrite:true
+            }
+        }
+
+        stage("Store Artifacts"){
+            steps{
+                archiveArtifacts artifacts: "${PYTHON_LIB_FILE_NAME}", fingerprint: true
+            }
+        }
+
+        stage("Publish to Py Server"){
+            when{
+                expression{params.IS_PUBLISHING}
+            }
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'sapio-pypi-selenium', usernameVariable: 'PyPiUser', passwordVariable: 'PyPiPassword')]) {
+                    sh script: """
+                        #!/bin/bash
+                        cd ${workspace}
+                        python3 -m build
+                        twine upload -r pypi -u ${PyPiUser} -p ${PyPiPassword} dist/*
+                    """
+                }
+            }
+        }
+    }
+}
