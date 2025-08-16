@@ -1,0 +1,50 @@
+// #############################################################################
+// COMMON
+@use "sass:map";
+
+.icon {
+    display: inline-block;
+    vertical-align: top;
+    width: 1em;
+    height: 1em;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.icon-info {
+    width: 0.9em;
+    font-size: 110% !important;
+}
+
+$svg-colors: (
+    "white": white,
+    "black": black,
+    "primary": #0bf,
+);
+
+@each $key in map.keys($svg-colors) {
+    .icon-#{$key} {
+        color: map.get($svg-colors, $key);
+
+        svg {
+            fill: map.get($svg-colors, $key);
+        }
+    }
+}
+
+// admin
+.djangocms-icon .icon > input {
+    float: left;
+    position: relative;
+    top: 12px;
+}
+
+.djangocms-icon .caret {
+    margin-inline-start: 8px;
+}

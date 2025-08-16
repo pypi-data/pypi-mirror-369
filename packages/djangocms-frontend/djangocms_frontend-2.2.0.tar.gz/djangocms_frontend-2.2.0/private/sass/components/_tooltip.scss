@@ -1,0 +1,25 @@
+a[data-pk] {
+    position: relative;
+
+    &:after {
+        content: attr(data-pk);
+        visibility: hidden;
+        width: auto;
+        font-weight: normal;
+        font-size: 80%;
+        background-color: var(--dca-white, $body-fg);
+        color: var(--dca-gray, $body-fg);
+        border: solid 1px var(--dca-gray, $body-fg);
+        text-align: center;
+        padding: 5px 10px;
+        position: absolute;
+        z-index: 1;
+        top: 110%;
+        inset-inline-start: 50%;
+        margin-inline-start: -50%;
+    }
+
+    &:hover:after {
+        visibility: visible;
+    }
+}

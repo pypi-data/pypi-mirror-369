@@ -1,0 +1,104 @@
+@import "./button";
+
+.colM ul:not(.object-tools).nav {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+form ul.djangocms-frontend.nav.nav-pills {
+    margin: 0  !important;
+    padding: 0;
+    display: flex;
+    &:not(:has(> li:nth-child(2))) {
+        // Hide single tab
+        display: none;
+    }
+    .nav-item {
+        display: inline-block;
+        margin-inline-start: 0;
+        margin-inline-end: $nav-pills-margin;
+        margin-block-end: 14px;
+        a.nav-link {
+            padding: $nav-pills-padding;
+            height: $nav-pills-height;
+            line-height: $nav-pills-height;
+            display: inline-block;
+            @include button-variant($body-fg, $body-bg, $color-gray, $btn-border-radius-base);
+            &.active {
+                @include button-variant($nav-pills-color, $nav-pills-background, $color-gray, $btn-border-radius-base);
+            }
+        }
+    }
+    .nav-link {
+        position: relative;
+        text-decoration: none;
+        color: $body-fg;
+
+        span.indicator {
+            display: none;
+            border-radius: 50%;
+
+            &.error {
+                background-color: var(--delete-button-bg);
+            }
+
+            &.attributes {
+                background-color: color-mix(in srgb, $color-secondary 50%, var(--body-fg));
+                display: block;
+            }
+
+            padding: 0.5rem;
+            border: 1px solid var(--dca-white, var(--body-bg, $body-bg));
+            transform: translate(-50%, -50%);
+            inset-block-start: 0;
+            inset-inline-start: 100%;
+            position: absolute;
+        }
+
+        &.error > span.indicator {
+            display: block;
+        }
+    }
+}
+
+.djangocms-frontend.tab-content {
+    .tab-pane {
+        display: none;
+        &.active {
+            display: block;
+        }
+        & > fieldset > h2 {
+            display: none;
+        }
+    }
+}
+
+body:not(.djangocms-admin-style) ul.djangocms-frontend.nav-tabs + div.tab-content .tab-pane {
+    border-left-style: solid;
+    border-bottom-style: solid;
+    border-right-style: solid;
+    border-left-color: var(--hairline-color);
+    border-bottom-color: var(--hairline-color);
+    border-right-color: var(--hairline-color);
+    border-width: 1px;
+
+    fieldset:last-child {
+        margin-bottom: 0;
+    }
+}
+
+div.tab-pk {
+    align-self: center;
+    color: var(--dca-gray-darker, $body-fg);
+    font-size: 80%;
+    margin-inline-start: auto;
+    margin-bottom: 14px;
+    display: inline-block;
+}
+
+.djangocms-admin-style .colM ul.nav:not(.object-tools):not(.messagelist) {
+    margin-top: 0;
+    li.nav-item {
+        border-top: none;
+    }
+}

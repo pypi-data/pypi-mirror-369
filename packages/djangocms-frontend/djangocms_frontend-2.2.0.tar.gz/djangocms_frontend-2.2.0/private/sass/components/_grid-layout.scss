@@ -1,0 +1,179 @@
+// #############################################################################
+// GRID
+.module {
+    margin: 0 0 20px;
+}
+
+.djangocms-frontend-row {
+    .form-row.field-create .icon {
+        position: absolute;
+        font-size: 30px;
+        margin-block-start: 28px;
+        margin-inline-start: 4px;
+    }
+
+    .form-row.field-create input[name="create"] {
+        width: 130px !important;
+        padding-inline-end: 5px !important;
+        text-align: start;
+    }
+}
+
+
+.djangocms-frontend-row .form-row.field-row_cols_xs,
+.djangocms-frontend-column .form-row.field-xs_col,
+.djangocms-frontend-column .form-row.field-xs_order,
+.djangocms-frontend-column .form-row.field-xs_offset {
+    label {
+        color: var(--border-color) !important;
+    }
+}
+
+.djangocms-frontend-row .form-row.field-row_cols_xs,
+.djangocms-frontend-column .form-row.field-xs_col,
+.djangocms-frontend-column .form-row.field-xs_order,
+.djangocms-frontend-column .form-row.field-xs_offset,
+.djangocms-frontend-column .form-row.field-xs_ms,
+.djangocms-frontend-column .form-row.field-xs_me {
+    position: relative;
+    display: flex;
+    padding: 0;
+    min-width: 800px;
+
+    > div > div:not([class]) {  // fix a quirk of djangocms-admin-style
+        width: unset  !important;
+        max-width: unset  !important;
+    }
+    .field-box:first-child {
+        width: 115px !important;
+    }
+    .form-multiline {
+        display: block;
+        white-space: nowrap;
+        margin-bottom: -3px;
+        & > div {
+            display: inline-block;
+            padding: 0;
+        }
+    }
+    .field-box,
+    .fieldBox {
+        position: relative;
+        box-sizing: content-box;
+        width: 86px !important;
+        flex: none;
+        display: block;
+        padding: 15px 10px;
+        margin: 0 !important;
+        border-bottom: 1px solid var(--border-color);
+        float: left !important;
+
+        input:not([type="checkbox"]) {
+            text-align: end;
+            padding-inline-end: 5px !important;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        label {
+            font-size: 12px !important;
+            font-weight: normal !important;
+            position: absolute;
+            inset-inline-start: 15px;
+            inset-block-end: 17px;
+            text-transform: lowercase;
+        }
+
+        .disabled {
+            color: var(--border-color);
+            background: var(--border-color);
+        }
+
+        &:last-child {
+            border-inline-end: none;
+        }
+    }
+
+    .errors {
+        margin-bottom: 0;
+    }
+
+    .errorlist {
+        // @include visually-hidden;
+    }
+
+    &.field-xs_me .field-box {
+        border-bottom: none;
+    }
+
+    .field-box-label {
+        display: flex;
+        margin-top: auto;
+        color: #999;
+
+        a {
+            width: 100%;
+            margin-top: auto;
+            color: #999;
+
+            a {
+                width: 100%;
+                margin-top: auto;
+            }
+        }
+    }
+
+    //&.field-xs_col .field-box-label a,
+    //&.field-xs_offset .field-box-label a,
+    //&.field-xs_order .field-box-label a {
+    //    position: relative;
+    //    top: 8px;
+    //}
+
+    // ms/me checkbox
+    .field-xs_ms,
+    .field-sm_ms,
+    .field-md_ms,
+    .field-lg_ms,
+    .field-xl_ms,
+    .field-xxl_ms,
+    .field-xs_me,
+    .field-sm_me,
+    .field-md_me,
+    .field-lg_me,
+    .field-xl_me,
+    .field-xxl_me {
+        text-align: start;
+
+        label {
+            inset-inline-start: 30px;
+            inset-block-start: 14px;
+        }
+    }
+}
+
+.grid-reset {
+    position: absolute;
+    inset-inline-end: 5px;
+    inset-block-start: 0;
+}
+
+.icon-thead {
+    text-align: center;
+    margin-bottom: 15px;
+
+    .icon {
+        font-size: 30px;
+    }
+
+    .icon-size-sm {
+        transform: rotate(90deg);
+    }
+}
+
+.icon-title {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    padding: 5px 0 0;
+}

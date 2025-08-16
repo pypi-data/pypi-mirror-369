@@ -1,0 +1,18 @@
+{% extends "admin/cms/page/plugin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'djangocms_frontend/css/base.css' %}"/>
+    {% with get_plugin_language=request.GET.plugin_language %}
+      <meta name="plugin_language" data-plugin-language="{{ plugin.language|default:get_plugin_language }}">
+    {% endwith %}
+    {{ block.super }}
+{% endblock %}
+
+{% block field_sets %}
+    <div class="djangocms-frontend
+        {% block custom_class %}{% endblock %}" data-static="{% get_static_prefix %}">
+        {% block custom_message %}{% endblock %}
+        {{ block.super }}
+    </div>
+{% endblock %}
