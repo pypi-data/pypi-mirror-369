@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "markdown-html-pdf"
+version = "0.5.0"
+description = "A powerful Python package to convert Markdown files to PDF with syntax highlighting and emoji support"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Gustavo Casadei Bellanda", email = "bellanda.dev@outlook.com" },
+]
+keywords = ["markdown", "pdf", "converter", "playwright", "syntax-highlighting"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Documentation",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "markdown-it-py>=3.0.0",
+    "playwright>=1.53.0",
+    "linkify-it-py>=2.0.3",
+    "pygments>=2.18.0",
+    "html2docx>=1.6.0",
+    "click>=8.0.0",
+    "flask>=3.1.1",
+    "pymupdf>=1.26.1",
+    "groq>=0.29.0",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.4",
+    "fireworks-ai>=0.17.16",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0", "pytest-asyncio>=0.21.0", "ruff>=0.1.0"]
+
+[project.urls]
+Homepage = "https://github.com/bellanda/markdown-html-pdf"
+Repository = "https://github.com/bellanda/markdown-html-pdf"
+Issues = "https://github.com/bellanda/markdown-html-pdf/issues"
+
+[project.scripts]
+markdown-html-pdf = "markdown_html_pdf.cli:main"
+md2pdf = "markdown_html_pdf.cli:main"
+install-emoji-fonts = "markdown_html_pdf.cli:install_fonts"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/markdown_html_pdf"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/markdown_html_pdf" = "markdown_html_pdf"
