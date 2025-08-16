@@ -1,0 +1,36 @@
+extend-include = ["*.ipynb"]
+line-length = 120
+
+exclude = [
+  ".git",
+  ".venv",
+  "__pycache__",
+  "build",
+  "dist",
+]
+
+[lint]
+# Add the `line-too-long` rule to the enforced rule set. By default, Ruff omits rules that
+# overlap with the use of a formatter, like Black, but we can override this behavior by
+# explicitly adding the rule.
+# - E501: line too long
+# - I: organize imports (https://github.com/astral-sh/ruff/issues/8926#issuecomment-1834048218)
+extend-select = ["E501", "I"]
+
+# ignore = ["F841"] # F841: unused variable
+# unfixable = ["F401"]
+
+[format]
+# Enable reformatting of code snippets in docstrings.
+docstring-code-format = true
+docstring-code-line-length = 120
+
+indent-style = "space" # default
+line-ending = "lf" 
+quote-style = "double" # default
+
+# short lines should be left separate
+skip-magic-trailing-comma = true
+
+[lint.per-file-ignores]
+"*/_test/*" = ["S101"] # Allow assert in tests
