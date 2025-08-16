@@ -1,0 +1,128 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "nio-bot"
+description = "Making matrix bots simple"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9,<3.14"
+license = { text = "GNU LGPLv3" }
+authors = [
+    {name = "Nexus", email = "pip@nexy7574.co.uk"}
+]
+dynamic = ["version", "dependencies"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Communications",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Utilities"
+]
+
+[project.urls]
+Source = "https://github.com/nexy7574/nio-bot"
+Tracker = "https://github.com/nexy7574/nio-bot/issues"
+Documentation = "https://docs.nio-bot.dev/stable"
+"Matrix Room" = "https://nio-bot.dev/support"
+Funding = "https://ko-fi.com/nexy7574"
+Homepage = "https://nio-bot.dev"
+Changelog = "https://docs.nio-bot.dev/stable/changelog"
+
+
+[project.optional-dependencies]
+e2ee = ["python-olm", "peewee", "cachetools", "atomicwrites"]
+# Alias e2e
+e2e = ["python-olm", "peewee", "cachetools", "atomicwrites"]
+cli = ['httpx>=0.25', 'click>=8.1.7', 'psutil>=5.9.6', "packaging>=23.1"]
+dev = [
+    'mkdocs',
+    'mkdocs-material',
+    'black',
+    'mkdocs-autorefs',
+    'mkdocs-glightbox',
+    'mkdocstrings[python]',
+    'mkdocs-git-revision-date-localized-plugin',
+    'isort',
+    'build',
+    'pep440',
+    'pycodestyle',
+    'pytest',
+    'pytest-asyncio',
+    'pytest-benchmark',
+    'pytest-cov',
+    'pytest-dependency',
+    'ruff~=0.9',
+    'mike',
+    'pre-commit'
+]
+
+[project.scripts]
+niocli = "niobot.__main__:cli_root [cli]"
+
+[tool.setuptools_scm]
+write_to = "src/niobot/__version__.py"
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
+
+[tool.black]
+line-length = 120
+target-versions = ["py39", "py310", "py311", "py312"]
+include = 'src/niobot(/utils)?/.+\.py'
+
+[tool.isort]
+profile = "black"
+src_paths = ["src/niobot"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "src",
+]
+filterwarnings = [
+    'ignore::DeprecationWarning:nio.*',
+    'ignore::DeprecationWarning:future.*',
+    # These warnings seem to be raised from matrix-nio, which we can't really fix via this project.
+]
+
+[tool.ruff]
+exclude = [".git", "examples"]
+target-version = "py39"
+line-length = 120
+indent-width = 4
+respect-gitignore = true
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+ignore =   ["F403", "F405"]
+select = ["E", "F"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+combine-as-imports = true
+detect-same-package = true
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 120
+max-line-length = 120
+
+[tool.ruff.lint.pyflakes]
+allowed-unused-imports = []

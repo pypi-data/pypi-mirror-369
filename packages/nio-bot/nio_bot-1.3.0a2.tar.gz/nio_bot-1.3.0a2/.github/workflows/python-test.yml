@@ -1,0 +1,33 @@
+name: Lint and Test
+
+on: ["pull_request", "push"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg imagemagick
+          python -m pip install --upgrade pip wheel setuptools
+          pip install --upgrade .[e2ee,dev,cli]
+      - name: Check formatting with Ruff
+        run: |
+          ruff format --diff
+      - name: Check linting with Ruff
+        run: |
+          ruff check --show-fixes
+      - name: Run tests
+        run: |
+          NIOBOT_DEPRECATION_ERROR=1 pytest --cov=src/niobot src/tests/
