@@ -1,0 +1,69 @@
+Metadata-Version: 2.4
+Name: fedi-cleaner
+Version: 0.1.0
+Summary: A tool to help you clean your Fediverse account's following/followers/lists/blocks/mutes/...
+Author-email: poesty <poesty7450@gmail.com>
+License-Expression: WTFPL
+Project-URL: Homepage, https://codeberg.org/poesty/Fedi-Cleaner
+Project-URL: Source, https://codeberg.org/poesty/Fedi-Cleaner
+Keywords: mastodon,fediverse,cleaner,followers,automation
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Communications
+Classifier: Intended Audience :: End Users/Desktop
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx[http2]>=0.28.1
+Requires-Dist: mastodon-py>=2.0.1
+Requires-Dist: tqdm>=4.67.1
+Dynamic: license-file
+
+# Fedi Cleaner
+
+A tool to help you clean your Fediverse account's following/followers/lists/blocks/mutes/...
+
+## Prerequisites
+
+* Your Fediverse instance supports Mastodon API
+* You have a good internet connection (for validating accounts)
+* You know how to setup Python environment (uv for example)
+
+## Usage
+
+### 1. Create Configuration
+
+Create a configuration file by running:
+```bash
+uvx fedi-cleaner --init-config
+```
+
+Then edit the generated `config.json` file to set your:
+- `access_token`: Your Mastodon access token
+- `api_base_url`: Your Mastodon instance URL (e.g., https://mastodon.social)
+- Other settings as needed
+
+Alternatively, you can set environment variables prefixed with `FEDI_CLEANER_` (for example `FEDI_CLEANER_ACCESS_TOKEN`).
+
+### 2. Run the Tool
+
+```bash
+uvx fedi-cleaner
+```
+
+## Development
+
+For development and contributing:
+
+```bash
+# Clone the repository
+git clone https://codeberg.org/poesty/Fedi-Cleaner
+cd Fedi-Cleaner
+
+# Set up development environment
+uv venv
+uv sync
+
+# Run the tool
+uv run fedi-cleaner
+```
