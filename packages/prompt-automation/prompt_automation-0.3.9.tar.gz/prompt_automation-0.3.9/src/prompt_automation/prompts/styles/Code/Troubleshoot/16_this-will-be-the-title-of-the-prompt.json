@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "id": 16,
+  "title": "This will be the title of the prompt",
+  "style": "Code",
+  "role": "{{role}}",
+  "template": [
+    "Is this in the final window or the beginning window?",
+    "{{objective}}",
+    "",
+    "## Context",
+    "{{context}}",
+    "",
+    "## Instructions",
+    "{{instructions}}",
+    ""
+  ],
+  "placeholders": [
+    {
+      "name": "reference_file",
+      "label": "Select a Reference File",
+      "type": "file",
+      "required": false,
+      "default": "",
+      "description": "Select once; path stored per template. Will re-prompt if missing."
+    },
+    {
+      "name": "role",
+      "label": "Role",
+      "multiline": false,
+      "required": false,
+      "default": "assistant"
+    },
+    {
+      "name": "objective",
+      "label": "Objective",
+      "multiline": false,
+      "required": false,
+      "default": "Objective - test to see if it automatically fills in if I just 'enter'"
+    },
+    {
+      "name": "context",
+      "label": "Context",
+      "multiline": true,
+      "required": false,
+      "default": ""
+    }
+  ],
+  "global_placeholders": {
+    "importance": "normal",
+    "think_deeply": "no",
+    "two_parter": "no",
+    "reference_file_default": ""
+  },
+  "metadata": {
+    "path": "Code/Troubleshoot/troubleshoot-reminders.json",
+    "tags": [],
+    "version": 2,
+    "render": "text",
+    "share_this_file_openly": true
+  }
+}
