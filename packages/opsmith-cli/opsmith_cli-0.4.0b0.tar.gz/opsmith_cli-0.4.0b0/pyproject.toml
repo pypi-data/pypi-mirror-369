@@ -1,0 +1,65 @@
+[project]
+name = "opsmith-cli"
+version = "0.4.0b"
+description = "Opsmith is an AI devops engineer in your terminal"
+readme = {file = "README.md", content-type = "text/markdown"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+]
+license = "GPL-3.0-only"
+requires-python = ">=3.10"
+dependencies = [
+    "ansible>=10.7.0",
+    "black>=25.1.0",
+    "boto3-stubs==1.38.36",
+    "gitpython>=3.1.44",
+    "google-api-python-client>=2.175.0",
+    "google-cloud-compute>=1.31.0",
+    "google-cloud-resource-manager>=1.14.2",
+    "google-cloud-storage>=3.2.0",
+    "grep-ast>=0.9.0",
+    "inquirer>=3.4.0",
+    "jinja2>=3.1.6",
+    "networkx>=3.4.2",
+    "pick>=2.4.0",
+    "pydantic>=2.11.5",
+    "pydantic-ai[logfire]==0.4.2",
+    "python-dotenv>=1.1.0",
+    "pyyaml>=6.0.2",
+    "tqdm>=4.67.1",
+    "tree-sitter-language-pack>=0.7.3",
+    "typer>=0.16.0",
+]
+
+[project.scripts]
+opsmith = "opsmith.main:app"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["opsmith"]
+
+[tool.codespell]
+skip = '*.svg'
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+]
+
+[tool.black]
+line-length = 100
