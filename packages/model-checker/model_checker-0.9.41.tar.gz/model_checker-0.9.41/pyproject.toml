@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "model-checker"
+version = "0.9.41"
+description = "A hyperintensional theorem prover for developing and and exploring programmatic semantic theories."
+authors = [
+    { name = "Benjamin Brast-McKie", email = "benbrastmckie@gmail.com" },
+]
+license = { text = "GPL-3.0-or-later" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
+keywords = ["semantics", "Z3", "logic", "counterfactuals", "modality", "model checker", "theorem prover", "hyperintensionality"]
+dependencies = [
+    "z3-solver>=4.8.0",  # Core dependency for constraint solving
+    "networkx>=2.0",     # For graph representation of models
+]
+requires-python = ">=3.8"
+
+# Optional dependencies
+[project.optional-dependencies]
+jupyter = [
+    "ipywidgets>=7.0.0",  # For interactive notebook components
+    "matplotlib>=3.0.0",  # For visualization of models
+    "networkx>=2.0",      # For graph representation of models
+    "jupyter",            # For notebook environment
+    "ipython",            # For interactive features
+]
+all = [
+    "ipywidgets>=7.0.0",
+    "matplotlib>=3.0.0",
+    "networkx>=2.0",
+    "jupyter",
+    "ipython",
+]
+
+[project.urls]
+Homepage = "https://github.com/benbrastmckie/ModelChecker"
+Issues = "https://github.com/benbrastmckie/ModelChecker/issues"
+
+[project.scripts]
+model-checker = "model_checker.__main__:run"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["README.md", "*.md", "*.ipynb"]
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+testpaths = ["src/model_checker/theory_lib"]
+python_files = "test_*.py"
+python_classes = "Test*"
+addopts = "--durations=0 -v --import-mode=importlib"
+markers = [
+    "countermodel: Tests that verify a countermodel exists",
+    "theorem: Tests that verify a formula is a theorem",
+    "performance: Tests that verify performance characteristics",
+]
