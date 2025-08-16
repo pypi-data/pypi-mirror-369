@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DiffCraft"
+version = "2.1.5"
+authors = [
+
+  { name="Saurabh Baral (bvrvl)", email="saurabh@bvrvl.com" },
+]
+description = "CLI co-pilot for Git and repository management."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "google-genai",
+    "python-dotenv",
+    "requests",
+]
+
+[project.scripts]
+craft = "diffcraft.cli:main"
+gencraft = "diffcraft.gencraft_cli:main"
