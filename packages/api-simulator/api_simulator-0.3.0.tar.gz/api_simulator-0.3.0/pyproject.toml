@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "api-simulator"
+version = "0.3.0"
+description = "Multi-protocol API mocking made simple - REST, GraphQL, WebSocket, UDP from a single JSON config"
+readme = "README.md"
+authors = [{ name = "API Simulator Team", email = "support@example.com" }]
+license = { text = "MIT" }
+requires-python = ">=3.9"
+keywords = ["api", "mock", "simulator", "rest", "graphql", "websocket", "udp", "testing", "development"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Testing :: Mocking",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.24",
+  "websockets>=12.0",
+  "msgpack>=1.0",
+  "pydantic>=2.6",
+  "starlette>=0.37",
+  "jsonschema>=4.22",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/api-simulator"
+Documentation = "https://github.com/yourusername/api-simulator#documentation"
+Repository = "https://github.com/yourusername/api-simulator.git"
+Issues = "https://github.com/yourusername/api-simulator/issues"
+
+[project.scripts]
+apisim = "api_simulator.cli:main"
+
+[project.optional-dependencies]
+test = [
+  "pytest>=7.0",
+  "pytest-asyncio>=0.21",
+  "httpx>=0.24",
+]

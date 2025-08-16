@@ -1,0 +1,206 @@
+{
+  "rest": {
+    "port": 3000,
+    "path": "/api/v1",
+    "apis": [
+      {
+        "method": "GET",
+        "path": "/status",
+        "status_code": 200,
+        "response": {
+          "system": "nominal",
+          "service": "api-simulator",
+          "timestamp": "{{ timestamp() }}"
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/stream/orders",
+        "stream": {
+          "interval": 2,
+          "template": {
+            "orderId": "{{ order_id() }}",
+            "product": "{{ product_name() }}",
+            "price": "{{ price() }}",
+            "ts": "{{ unix_timestamp() }}"
+          },
+          "content_type": "application/x-ndjson"
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/prices/sse",
+        "sse": {
+          "interval": 1,
+          "event": "price",
+          "template": {"symbol":"AAPL","price":"{{ random_float(100,200,2) }}"},
+          "count": null
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/products/{product_id}",
+        "response": {
+          "id": "{{ path('product_id') }}",
+          "search": "{{ query('q') }}",
+          "session": "{{ header('X-Session-Id') }}",
+          "name": "Premium Widget",
+          "price": "{{ random_float(29.99, 199.99, 2) }}",
+          "inStock": true
+        },
+        "rules": {
+          "query.mode == 'chaos'": {
+            "delay": "0.5s",
+            "response": {"status": "degraded", "ts": "{{ timestamp() }}"}
+          },
+          "0.02": {"ignore": true}
+        }
+      }
+    ]
+  },
+  "websocket": {
+    "port": 9080,
+    "path": "/realtime",
+    "apis": [
+      {
+        "path": "/events",
+        "response": {
+          "status": "acknowledged",
+          "message": "Connected to order events stream"
+        },
+        "broadcast": {
+          "interval": 5,
+          "response": {
+            "type": "order_update",
+            "orderId": "{{ counter('order', start=1000, step=1) }}",
+            "status": "{{ choice(['pending','processing','shipped','delivered']) }}",
+            "total": "{{ random_price(50.0, 500.0) }}"
+          },
+          "rules": {
+            "0.1": {"ignore": true}
+          }
+        },
+        "rules": {
+          "message.action == 'subscribe'": {
+            "response": {
+              "status": "subscribed",
+              "channel": "{{ choice(['orders','inventory','customers']) }}",
+              "subscription_id": "{{ uuid4() }}"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "udp": {
+    "host": "127.0.0.1",
+    "port": 5001,
+    "apis": [
+      {
+        "name": "inventory-feed",
+        "broadcast": {
+          "interval": 3,
+          "response": {
+            "type": "INVENTORY",
+            "warehouse_id": "WH-{{ random_int(1, 5) }}",
+            "product_sku": "{{ sku() }}",
+            "quantity": "{{ random_int(0, 1000) }}",
+            "last_updated": "{{ unix_timestamp() }}"
+          }
+        }
+      },
+      {
+        "name": "metrics-stream",
+        "broadcast": {
+          "interval": 10,
+          "response": {
+            "type": "METRICS",
+            "orders_per_minute": "{{ random_int(10, 100) }}",
+            "avg_cart_value": "{{ random_float(75.0, 250.0, 2) }}",
+            "active_sessions": "{{ random_int(100, 5000) }}"
+          }
+        }
+      }
+    ]
+  },
+  "graphql": {
+    "path": "/graphql",
+    "subscriptions": [
+      {
+        "operationName": "PriceUpdates",
+        "interval": 2.0,
+        "response": {
+          "productId": "PROD-{{ random_int(100, 999) }}",
+          "price": "{{ random_float(10.0, 500.0, 2) }}",
+          "currency": "USD",
+          "timestamp": "{{ unix_timestamp() }}"
+        },
+        "rules": {
+          "0.05": {"ignore": true}
+        }
+      }
+    ],
+    "queries": [
+      {
+        "operationName": "GetCustomer",
+        "response": {
+          "customer": {
+            "id": "cust-{{ random_int(1000, 9999) }}",
+            "name": "{{ choice(['Alice Johnson', 'Bob Smith', 'Carol White', 'David Brown']) }}",
+            "tier": "{{ choice(['bronze', 'silver', 'gold', 'platinum']) }}",
+            "lastPurchase": "{{ timestamp() }}"
+          }
+        }
+      },
+      {
+        "operationName": "ListProducts",
+        "response": {
+          "products": [
+            { 
+              "id": "prod-001", 
+              "name": "Wireless Headphones",
+              "price": 89.99,
+              "category": "Electronics"
+            },
+            { 
+              "id": "prod-002", 
+              "name": "Smart Watch",
+              "price": 299.99,
+              "category": "Electronics"
+            },
+            {
+              "id": "prod-003",
+              "name": "Coffee Maker",
+              "price": 79.99,
+              "category": "Appliances"
+            }
+          ],
+          "totalCount": 3
+        }
+      }
+    ],
+    "mutations": [
+      {
+        "operationName": "CreateOrder",
+        "response": {
+          "order": {
+            "success": true,
+            "orderId": "ORD-{{ counter('graphql_order', start=5000, step=1) }}",
+            "estimatedDelivery": "{{ timestamp() }}",
+            "status": "confirmed"
+          }
+        },
+        "rules": {
+          "0.1": {
+            "response": {
+              "order": {
+                "success": false,
+                "error": "Insufficient inventory"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
