@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: pyg-timeseries
+Version: 0.0.42
+Summary: Utilities for fast timeseries analysis
+Home-page: https://github.com/gityoav/pyg-timeseries
+Author: Yoav Git
+Author-email: yoav.git@gmail.com
+Project-URL: Bug Tracker, https://github.com/gityoav/pyg-timeseries/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: pyg-base
+Requires-Dist: numba
+Requires-Dist: bottleneck
+Dynamic: license-file
+
+# pyg-timeseries
+pandas is great but pyg-timeseries introduces a few improvements. 
+
+* pyg is designed so that for dataframes/series without nans, it matches pandas exactly 
+* consistent treatments of nan's: unlike pandas, pyg ignores nans everywhere in its calculations.
+* np.ndarray and pandas dataframes are treated the same and pyg operates on np.arrays seemlessly
+* state-management: pyg introduces a framework for returning not just the timeseries, but also the state of the calculation. This can be fed into the next calculation batch, allowing us not to have to 're-run' everything from the distant past.
+* performance-wise, pyg is implemented via numba with performance times comparable to pandas
+
+pip install from https://pypi.org/project/pyg-timeseries/
