@@ -1,0 +1,74 @@
+Metadata-Version: 2.4
+Name: mdsa-tools
+Version: 0.1.0
+Summary: The Weir Labs H-bond Systems Analyses modules!
+Author-email: Luis Perez <lperez@wesleyan.edu>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: seaborn
+Requires-Dist: scikit-learn
+Requires-Dist: mdtraj==1.10.3
+Requires-Dist: umap-learn
+Requires-Dist: python-circos
+
+# mdsa-tools: A set of tools for performing systems analyses of Molecular Dynamics (MD) simulations.
+
+![CI](https://img.shields.io/badge/CI-passing-brightgreen)
+[![PyPI version](https://img.shields.io/badge/PyPI--version-inactive.svg)]()
+[![Anaconda version](https://img.shields.io/badge/Anaconda--version-inactive.svg)]()
+![Downloads](https://img.shields.io/badge/downloads-blank-lightgrey)
+[![DOI](https://img.shields.io/badge/DOI--blue)]()
+
+## A pipeline for performing systems analyses:
+![Alt text](/resources/Pipelineflic.png)
+
+ Pictured is a directed graph describing the pipeline for our MD trajectory analysis. From left to right, we begin with a trajectory file, and convert it into a set of networks (one for each trajectory frame), which that can be represented as either graphs or adjacency matrices. Each frame adjacency is flattened into a vector by concatenating the matrix’s rows (vector reduction). The frame vectors are vertically concatenated to create a feature matrix that can be used as input to either K-means clustering or PCA, whose results can then be visualized using graphs, scatter plots, MDCcircos plots, (of residue H-bonding), or MD replicate maps of frame measurements of interest.
+
+
+ We also provide an additional module for taking theese various results and using clustering results as input substates for markov state model analyses.
+
+## Use pip install to get started.
+
+```bash
+
+##################
+#PyPi coming soon#
+##################
+
+#At the moment you can pip install directly from our repo
+pip install git+https://github.com/zeper-eng/workspace.git
+
+###############
+#Alternatively#
+###############
+
+# First fork the repository over 
+git clone https://github.com/zeper-eng/workspace.git
+cd workspace
+
+#Now from inside of the workspace folder simply pip install!
+
+pip install .
+
+#Regardless of the python environment you should be good to go
+pip show workspace
+
+```
+
+## Systems Problem Area:
+
+![Alt text](resources/PanelA_summerposter.png)
+
+At the Weir Lab at Wesleyan University, we perform molecular dynamics (MD) simulations of a ribosomal subsystem to study tuning of protein translation by the CAR interaction surface- a ribosomal interface identified by the lab that interacts with the +1 codon (poised to enter the ribosome A site). Our "computational genetics" research focuses on modifying adjacent codon identities at the A-site and the +1 positions to model how changes at these sites influence the behavior of the CAR surface and corellate with translation rate variations.
+
+
+
+
+
+
