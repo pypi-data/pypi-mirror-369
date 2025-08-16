@@ -1,0 +1,1 @@
+- ALWAYS run Python things with `uv`
