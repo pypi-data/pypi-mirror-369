@@ -1,0 +1,65 @@
+[project]
+name = "django-hstore-field"
+version = "0.0.3"
+description = "An easy to use postgres hstore field that is based on django-hstore-widget"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "baseplate-admin", email = "61817579+baseplate-admin@users.noreply.github.com" },
+]
+maintainers = [
+    { name = "baseplate-admin", email = "61817579+baseplate-admin@users.noreply.github.com" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 2.2",
+    "Framework :: Django :: 3.1",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["django-hstore-widget>=0.0.23"]
+
+
+[dependency-groups]
+build = ["hatch>=1.14.1"]
+test = [
+    "pytest>=8.0.1",
+    "pytest-django>=4.8.0",
+    "psycopg[binary]>=3",
+    "selenium>=4.26.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/baseplate-admin/django-hstore-field"
+Repository = "https://github.com/baseplate-admin/django-hstore-field"
+"Bug Tracker" = "https://github.com/baseplate-admin/django-hstore-field/issues"
+
+
+[tool.hatch.build]
+packages = ["src/django_hstore_field"]
+directory = 'py-dist'
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
