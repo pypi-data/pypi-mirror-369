@@ -1,0 +1,47 @@
+repos:
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+    - id: check-added-large-files
+    - id: check-ast
+    - id: check-case-conflict
+    - id: check-yaml
+      args: ["--unsafe"]
+    - id: check-toml
+    - id: check-json
+    - id: check-merge-conflict
+    - id: check-symlinks
+    - id: debug-statements
+    - id: detect-private-key
+    - id: end-of-file-fixer
+      exclude: ".*.asdf"
+    - id: trailing-whitespace
+      exclude: ".*.asdf"
+
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: v1.10.0
+  hooks:
+    - id: rst-directive-colons
+    - id: rst-inline-touching-normal
+    - id: text-unicode-replacement-char
+
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.4.1
+  hooks:
+    - id: codespell
+      args: ["--write-changes"]
+      additional_dependencies:
+        - tomli
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: 'v0.12.4'
+  hooks:
+    - id: ruff
+      args: ["--fix", "--show-fixes"]
+    - id: ruff-format
+
+- repo: https://github.com/twisted/towncrier
+  rev: 24.8.0  # run 'pre-commit autoupdate' to update
+  hooks:
+    - id: towncrier-check
