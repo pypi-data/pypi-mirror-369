@@ -1,0 +1,313 @@
+name: Build and Publish
+
+on:
+    push:
+        tags: ["v*"]
+
+permissions:
+    contents: read
+
+# Build wheels for Linux, macOS, and Windows across Python versions 3.8–3.13.
+jobs:
+    # Build wheels for Linux x86_64
+    build-linux-x86_64:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.cargo/registry
+                      ~/.cargo/git
+                  key: linux-x86-cargo-${{ hashFiles('Cargo.lock') }}
+
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.cache/pip
+                  key: linux-x86-pip-${{ hashFiles('pyproject.toml') }}
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+                  profile: minimal
+                  override: true
+
+            - name: Install build tools
+              run: |
+                  python -m pip install -U pip
+                  pip install cibuildwheel maturin
+
+            - name: Build Linux x86_64 wheels
+              run: python -m cibuildwheel --output-dir dist
+              env:
+                  CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+                  CIBW_ARCHS_LINUX: "x86_64"
+                  CIBW_BEFORE_ALL_LINUX: |
+                      curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+                  CIBW_ENVIRONMENT_LINUX: "PATH=$HOME/.cargo/bin:$PATH"
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: wheels-linux-x86_64
+                  path: dist/*.whl
+
+    # Build wheels for Linux aarch64
+    build-linux-aarch64:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.cargo/registry
+                      ~/.cargo/git
+                  key: linux-arm-cargo-${{ hashFiles('Cargo.lock') }}
+
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.cache/pip
+                  key: linux-arm-pip-${{ hashFiles('pyproject.toml') }}
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+                  profile: minimal
+                  override: true
+
+            - name: Install build tools
+              run: |
+                  python -m pip install -U pip
+                  pip install cibuildwheel maturin
+
+            - uses: docker/setup-qemu-action@v3
+              with:
+                  platforms: all
+
+            - name: Build Linux aarch64 wheels
+              run: python -m cibuildwheel --output-dir dist
+              env:
+                  CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+                  CIBW_ARCHS_LINUX: "aarch64"
+                  CIBW_BEFORE_ALL_LINUX: |
+                      curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+                  CIBW_ENVIRONMENT_LINUX: "PATH=$HOME/.cargo/bin:$PATH"
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: wheels-linux-aarch64
+                  path: dist/*.whl
+
+    # Build wheels for macOS arm64
+    build-macos-arm64:
+        runs-on: macos-latest
+        env:
+            CIBW_ARCHS_MACOS: "arm64"
+            CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.cache/pip
+                  key: mac-arm-pip-${{ hashFiles('pyproject.toml') }}
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Install build tools
+              run: |
+                  python -m pip install -U pip
+                  pip install cibuildwheel maturin
+
+            - name: Build macOS arm64 wheels
+              run: python -m cibuildwheel --output-dir dist
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: wheels-mac-arm64
+                  path: dist/*.whl
+
+    # Build wheels for macOS x86_64
+    build-macos-x86_64:
+        runs-on: macos-latest
+        env:
+            CIBW_ARCHS_MACOS: "x86_64"
+            CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+            CIBW_BEFORE_ALL_MACOS: |
+                rustup target add x86_64-apple-darwin
+            CIBW_ENVIRONMENT_MACOS: "PATH=$HOME/.cargo/bin:$PATH"
+            MACOSX_DEPLOYMENT_TARGET: "10.12"
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.cache/pip
+                  key: mac-x86-pip-${{ hashFiles('pyproject.toml') }}
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Install build tools
+              run: |
+                  python -m pip install -U pip
+                  pip install cibuildwheel maturin
+
+            - name: Build macOS x86_64 wheels
+              run: python -m cibuildwheel --output-dir dist
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: wheels-mac-x86_64
+                  path: dist/*.whl
+
+    # Build wheels for Windows x64
+    build-windows-amd64:
+        runs-on: windows-latest
+        env:
+            CIBW_ARCHS_WINDOWS: "AMD64"
+            CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/cache@v4
+              with:
+                  path: ~\AppData\Local\pip\Cache
+                  key: win64-pip-${{ hashFiles('pyproject.toml') }}
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Install build tools
+              run: |
+                  python -m pip install -U pip
+                  pip install cibuildwheel maturin
+
+            - name: Build Windows x64 wheels
+              run: python -m cibuildwheel --output-dir dist
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: wheels-win-amd64
+                  path: dist\*.whl
+
+    # Build wheels for Windows x86
+    build-windows-x86:
+        runs-on: windows-latest
+        env:
+            CIBW_ARCHS_WINDOWS: "x86"
+            CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/cache@v4
+              with:
+                  path: ~\AppData\Local\pip\Cache
+                  key: win32-pip-${{ hashFiles('pyproject.toml') }}
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Install build tools
+              run: |
+                  python -m pip install -U pip
+                  pip install cibuildwheel maturin
+
+            - name: Build Windows x86 wheels
+              run: python -m cibuildwheel --output-dir dist
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: wheels-win-x86
+                  path: dist\*.whl
+
+    # Build wheels for Windows arm64
+    build-windows-arm64:
+        runs-on: windows-11-arm
+        env:
+            CIBW_ARCHS_WINDOWS: "ARM64"
+            CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/cache@v4
+              with:
+                  path: ~\\AppData\\Local\\pip\\Cache
+                  key: win-arm64-pip-${{ hashFiles('pyproject.toml') }}
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Install build tools
+              run: |
+                  python -m pip install -U pip
+                  pip install cibuildwheel maturin
+
+            - name: Build Windows arm64 wheels
+              run: python -m cibuildwheel --output-dir dist
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: wheels-win-arm64
+                  path: dist\\*.whl
+
+    # Build source distribution
+    build-sdist:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Build sdist
+              run: |
+                  python -m pip install -U build
+                  python -m build --sdist --outdir dist
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: sdist
+                  path: dist/*.tar.gz
+
+    # Publish to PyPI after all builds complete
+    publish:
+        needs:
+            - build-linux-x86_64
+            - build-linux-aarch64
+            - build-macos-arm64
+            - build-macos-x86_64
+            - build-windows-amd64
+            - build-windows-x86
+            - build-windows-arm64
+            - build-sdist
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  pattern: "*"
+                  merge-multiple: true
+
+            - name: Upload to PyPI
+              uses: pypa/gh-action-pypi-publish@release/v1
+              with:
+                  user: __token__
+                  password: ${{ secrets.PYPI_API_TOKEN }}
+                  packages-dir: .
+                  skip-existing: true

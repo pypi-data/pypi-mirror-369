@@ -1,0 +1,68 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    ruff:
+        name: Ruff (Python Lint)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Ruff check
+              uses: astral-sh/ruff-action@v3
+
+    mado:
+        name: Mado (Docs/MD Check)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Mado check
+              uses: akiomik/mado@v0.3.0
+
+    taplo:
+        name: Taplo (Toml Check)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install taplo
+              run: npm install -g @taplo/cli
+            - name: Taplo check
+              run: |
+                  taplo fmt --check
+                  taplo lint --default-schema-catalogs
+                  taplo check --default-schema-catalogs
+
+    test:
+        name: Pytest (uv)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+            - name: Install uv
+              uses: astral-sh/setup-uv@v6
+            - name: Sync deps
+              run: uv sync --all-extras --dev
+            - name: Run tests
+              run: uv run pytest
+
+    clippy:
+        name: Cargo clippy (Rust Lint)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@stable
+              with:
+                  components: clippy
+            - name: Run clippy
+              run: |
+                  cargo check
+                  cargo clippy

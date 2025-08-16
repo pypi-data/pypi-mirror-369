@@ -1,0 +1,51 @@
+[package]
+name = "akioi-2048"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT"
+readme = "README.md"
+
+
+[lib]
+crate-type = ["cdylib", "rlib"] # 生成 Python 扩展
+
+
+[features]
+default = []
+python-bindings = [
+  "pyo3/extension-module", # 产出可导入的 .so/.pyd
+  "pyo3/abi3-py38",        # 与 ≥3.8 的解释器 ABI 兼容
+]
+
+
+[dependencies]
+rand = "0.9.2"
+pyo3 = { version = "0.25.1", default-features = false, features = ["macros"] }
+
+
+[profile.dev]
+incremental = true # 提升二次编译速度
+
+
+[workspace.lints.rust]
+# rustc 自带
+warnings = "deny"         # 所有警告当错误
+rust-2021-idioms = "deny" # 严格习惯用法检查（按项目 edition 调整）
+missing_docs = "deny"     # 公共 API 必须写文档
+unused_must_use = "deny"  # 必须处理 #[must_use] 返回值
+unreachable_pub = "deny"  # 避免暴露内部符号
+
+[lints.clippy]
+# 所有主要组
+all = "deny"           # Clippy 基础合集
+cargo = "deny"         # Cargo.toml 相关
+pedantic = "deny"      # 吹毛求疵模式
+nursery = "deny"       # 实验性规则
+unwrap_used = "deny"
+expect_used = "deny"
+dbg_macro = "deny"
+todo = "deny"
+unimplemented = "deny"
+panic = "deny"
+print_stdout = "deny"
+print_stderr = "deny"

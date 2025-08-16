@@ -1,0 +1,40 @@
+
+target-version = "py313"
+fix = true
+unsafe-fixes = true
+
+[per-file-ignores]
+"tests/**" = ["S101", "PLR2004"]
+"*.pyi" = ["PYI021"]
+
+
+[lint]
+
+select = ["ALL"]
+
+extend-select = ["ALL"]
+preview = true
+ignore = ["CPY001"]
+
+
+[lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+force-single-line = true
+force-sort-within-sections = true
+from-first = true
+lines-after-imports = 1
+lines-between-types = 1
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+known-first-party = ["src"]
+
+[lint.pydocstyle]
+convention = "google"

@@ -1,0 +1,21 @@
+[project]
+name = "akioi-2048"
+version = "0.3.1"
+description = "akioi backend"
+authors = [{ name = "jasonxue" }]
+requires-python = ">=3.8,<3.14"
+readme = "README.md"
+license = { file = "LICENSE" }
+
+[build-system]
+requires = ["maturin>=1.9.3"]
+build-backend = "maturin"
+
+[tool.maturin]
+bindings = "pyo3"
+module-name = "akioi_2048"
+features = ["python-bindings"]
+include = ["akioi_2048/__init__.py", "akioi_2048/__init__.pyi"]
+
+[dependency-groups]
+dev = ["pytest>=7.4.4,<8", "ruff>=0.12.9", "maturin>=1.9.3"]
