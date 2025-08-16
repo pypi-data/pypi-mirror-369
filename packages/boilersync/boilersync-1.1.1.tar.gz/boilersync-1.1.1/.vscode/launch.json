@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Pytest",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests",
+                "-q",
+                "--tb=native",
+                "-s",
+                "-x"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTEST_ADDOPTS": "--no-cov"
+            }
+        },
+        {
+            "name": "Boilersync (zebra-crossing)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "boilersync",
+            "args": [
+                "push"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}/playground/zebra-crossing"
+        }
+    ]
+}
