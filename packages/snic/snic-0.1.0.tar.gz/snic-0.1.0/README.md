@@ -1,0 +1,113 @@
+# SNIC: Sparse Network of Idempotent Comparisons
+
+A high-performance Python library for efficient ranking of large datasets using sparse comparison networks.
+
+## What is SNIC?
+
+SNIC is a novel ranking algorithm that dramatically reduces the number of comparisons needed to rank large sets of elements. Instead of requiring O(n²) pairwise comparisons like traditional methods, SNIC achieves O(n log n) efficiency through:
+
+- **Sparse Networks**: Structured comparison networks that capture ranking information with minimal comparisons
+- **Base-sized Matchups**: Fixed-size groups that maximize information extraction per comparison
+- **GBER Foundation**: Mathematical framework using Generalized Base Exponential Representation for optimal network structure
+
+## Key Benefits
+
+- **Scalable**: Efficiently handles datasets from hundreds to millions of elements
+- **Sparse**: Requires far fewer comparisons than traditional ranking methods
+- **Structured**: Deterministic, mathematically-grounded approach to comparison generation
+- **Fast**: High-performance Rust implementation with Python bindings
+
+## Quick Start
+
+```bash
+pip install snic
+```
+
+```python
+import snic
+
+# Generate matchups for ranking 100 elements with base-3 comparisons
+matchups = snic.stream_matches_from(100, 3)
+
+# Each matchup contains 3 elements to be ranked
+print(f"Generated {len(matchups)} matchups")
+print(f"First matchup: {matchups[0]}")  # e.g., [0, 33, 67]
+
+# After ranking each matchup externally (by human judgment, ML model, etc.)
+# Convert ranked matchups back to final ranking
+ranked_matchups = [
+    [1, 0, 2],  # Example: element 1 ranked first, 0 second, 2 third
+    [4, 3, 5],  # Continue for all matchups...
+    # ... 
+]
+
+final_ranking = snic.stream_rankings_from(ranked_matchups)
+print(f"Final ranking: {final_ranking}")
+```
+
+## How It Works
+
+1. **Decomposition**: SNIC uses GBER to break down your dataset size into optimal subnetworks
+2. **Matchup Generation**: Creates structured groups of elements for comparison
+3. **Sparse Comparisons**: Each element participates in logarithmically few comparisons
+4. **Ranking Synthesis**: Combines local rankings into a global result
+
+## Use Cases
+
+- **Large-scale surveys**: Rank thousands of items with minimal human effort
+- **Content recommendation**: Efficiently determine user preferences
+- **Tournament systems**: Fair bracket generation for competitions
+- **Data analysis**: Rank features, samples, or model outputs at scale
+
+## Development
+
+### Local Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/ryzhakar/snic-rs
+cd snic-rs
+
+# Install development dependencies
+pip install maturin
+
+# Build and install in development mode
+maturin develop
+
+# Run tests
+python -m pytest
+```
+
+### Building
+
+```bash
+# Build wheel
+maturin build --release
+
+# Build and publish to PyPI
+maturin publish
+```
+
+## Algorithm Details
+
+SNIC is based on rigorous mathematical foundations:
+
+- **GBER (Generalized Base Exponential Representation)**: Decomposes dataset sizes into optimal subnetwork structures
+- **Stride-based Matchup Generation**: Ensures comprehensive coverage with minimal redundancy  
+- **Hub-and-Spoke Connectivity**: Connects subnetworks for global ranking consistency
+
+For detailed algorithm documentation, see the [wiki](wiki/).
+
+## Performance
+
+SNIC's efficiency scales logarithmically:
+
+| Dataset Size | Traditional Comparisons | SNIC Comparisons | Reduction |
+|-------------|------------------------|------------------|-----------|
+| 1,000       | 499,500               | ~3,000           | 99.4%     |
+| 10,000      | 49,995,000            | ~40,000          | 99.9%     |
+| 100,000     | 4,999,950,000         | ~500,000         | 99.99%    |
+
+## License
+
+AGPLv3 License - see [LICENSE](LICENSE) for details.
