@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/napari_spatialdata/_version.py"
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+
+)
+'''
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".tox",
+    "__pycache__",
+    "build",
+    "docs/_build",
+    "docs/notebooks",
+    "dist",
+    "setup.py",
+]
+line-length = 120
+target-version = "py310"
+[tool.ruff.lint]
+ignore = [
+    # Do not assign a lambda expression, use a def -> lambda expression assignments are convenient
+    "E731",
+    # allow I, O, l as variable names -> I is the identity matrix, i, j, k, l is reasonable indexing notation
+    "E741",
+    # Missing docstring in public package
+    "D104",
+
+    # Missing docstring in public module
+    "D100",
+    # Missing docstring in __init__
+    "D107",
+    # Missing docstring in magic method
+    "D105",
+    # Do not perform function calls in argument defaults.
+    "B008",
+    # Missing docstring in magic method
+    "D105",
+]
+select = [
+    "D", # flake8-docstrings
+    "I", # isort
+    "E", # pycodestyle
+    "F", # pyflakes
+    "W", # pycodestyle
+    "Q", # flake8-quotes
+    "SIM", # flake8-simplify
+    "TID",  # flake-8-tidy-imports
+    "NPY",  # NumPy-specific rules
+    "PT",  # flake8-pytest-style
+    "B", # flake8-bugbear
+    "UP", # pyupgrade
+    "C4", # flake8-comprehensions
+    "BLE", # flake8-blind-except
+    "T20",  # flake8-print
+    "RET", # flake8-raise
+]
+unfixable = ["B", "UP", "C4", "BLE", "T20", "RET"]
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+[tool.ruff.lint.per-file-ignores]
+    "tests/*" = ["D", "PT", "B024"]
+    "*/__init__.py" = ["F401", "D104", "D107"]
+    "docs/*" = ["D","B","E","A"]
+    "src/napari_spatialdata/_constants/_pkg_constants.py" = ["D101","D102", "D106", "B024"]
+    "src/napari_spatialdata/_constants/_constants.py" = ["D101","D102", "B024"]
+    "src/napari_spatialdata/_constants/_utils.py" = ["D101","D102", "B024"]
+    "src/napari_spatialdata/_widgets.py" = ["D"]
+    "src/napari_spatialdata/_scatterwidgets.py" = ["D"]
+    "benchmarks/*" = ["D"]

@@ -1,0 +1,147 @@
+# This workflows will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+name: tests
+
+on:
+  push:
+    branches:
+      - main
+      - npe2
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+  pull_request:
+    branches:
+      - main
+      - npe2
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: ${{ matrix.platform }} py${{ matrix.python-version }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest] # [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # these libraries enable testing on Qt on linux
+      - uses: tlambert03/setup-qt-libs@v1
+
+      # strategy borrowed from vispy for installing opengl libs on windows
+      - name: Install Windows OpenGL
+        if: runner.os == 'Windows'
+        run: |
+          git clone --depth 1 https://github.com/pyvista/gl-ci-helpers.git
+          powershell gl-ci-helpers/appveyor/install_opengl.ps1
+
+      # note: if you need dependencies from conda, considering using
+      # setup-miniconda: https://github.com/conda-incubator/setup-miniconda
+      # and
+      # tox-conda: https://github.com/tox-dev/tox-conda
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install setuptools tox tox-gh-actions
+
+      # this runs the platform-specific tests declared in tox.ini
+      - name: Test with tox
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: python -m tox
+        env:
+          PLATFORM: ${{ matrix.platform }}
+
+      - name: Coverage
+        uses: codecov/codecov-action@v5
+
+      - name: Archive figures generated during testing
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plotting-results-${{ matrix.python-version }}-${{ matrix.platform }}
+          path: /Users/runner/work/napari-spatialdata/napari-spatialdata/tests/plots/generated/*
+
+  test_benchmarks:
+    name: test benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GIT_LFS_SKIP_SMUDGE: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies with 'pre' extras (since the above doesn't check pre-releases)
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[pre]
+
+      - uses: tlambert03/setup-qt-libs@v1
+
+      - uses: octokit/request-action@v2.x
+        # here we get hash of the latest release commit to compare with PR
+        id: latest_release
+        with:
+          route: GET /repos/{owner}/{repo}/releases/latest
+          owner: scverse
+          repo: napari-spatialdata
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install "asv[virtualenv]"
+        env:
+          PIP_CONSTRAINT: benchmarks/benchmark.txt
+
+      - name: asv machine
+        run: asv machine --yes
+
+      - name: Run benchmarks PR
+        uses: aganders3/headless-gui@v2
+        with:
+          run: |
+            asv run --show-stderr --quick  --attribute timeout=300 HEAD^!
+        env:
+          PR: 1 # prevents asv from running very compute-intensive benchmarks
+          PIP_CONSTRAINT: ${{ github.workspace }}/benchmarks/benchmark.txt
+
+      - name: Fetch latest main
+        run: git fetch origin main
+
+      - name: Fetch latest release commit
+        run: git fetch origin ${{ fromJSON(steps.latest_release.outputs.data).target_commitish }}
+
+      - name: Ensure local main exists
+        run: |
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          if [ "$CURRENT_BRANCH" != "main" ]; then
+            git branch main origin/main
+          fi
+
+      - name: Run benchmarks latest release
+        uses: aganders3/headless-gui@v2
+        with:
+          run: |
+            asv run --show-stderr --quick --attribute timeout=300 ${{ fromJSON(steps.latest_release.outputs.data).target_commitish }}^!
+        env:
+          PR: 1 # prevents asv from running very compute-intensive benchmarks
+          PIP_CONSTRAINT: ${{ github.workspace }}/benchmarks/benchmark.txt
