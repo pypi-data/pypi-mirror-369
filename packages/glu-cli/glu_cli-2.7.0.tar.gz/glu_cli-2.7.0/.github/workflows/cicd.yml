@@ -1,0 +1,84 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - '**'
+
+env:
+  PYTHON_VERSION: '3.13'
+
+concurrency:
+  group: ${{ github.event.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.10', '3.11', '3.12', '3.13' ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install UV
+        uses: astral-sh/setup-uv@v6
+      - name: Install packages
+        run: uv sync
+      - name: Lint, format check and test
+        run: |
+          source .venv/bin/activate
+          ruff check
+          mypy glu --ignore-missing-imports
+          pytest
+
+  releases:
+    name: Release all Github packages
+    if: github.event.ref == 'refs/heads/main'
+    needs: [tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history so semantic-release can resolve commits
+          token: ${{ secrets.CICD_RELEASE_GITHUB_TOKEN }}
+      - uses: 1password/load-secrets-action/configure@v2
+        with:
+          service-account-token: ${{ secrets.SW_ADMIN_1PASSWORD_SERVICE_ACCOUNT_TOKEN }}
+      - name: Load secrets from 1password
+        id: load-secrets
+        uses: 1password/load-secrets-action@v2
+        env:
+          UV_PUBLISH_TOKEN: op://SW Engineering Admin/Pypi token/credential
+      - uses: ./.github/actions/cached-venv
+      - name: Create github release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v10.0.2
+        with:
+          changelog: true
+          commit: true
+          push: true
+          tag: true
+          vcs_release: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build package
+        run: |
+          source .venv/bin/activate
+          python -m build
+      - name: Publish | Upload to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v10.0.2
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}
+      - name: Build and publish
+        if: steps.release.outputs.released == 'true'
+        run: |
+          git pull
+          git reset --hard HEAD
+          uv build
+          uv publish
