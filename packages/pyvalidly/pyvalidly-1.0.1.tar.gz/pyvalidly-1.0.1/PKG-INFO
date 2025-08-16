@@ -1,0 +1,230 @@
+Metadata-Version: 2.4
+Name: pyvalidly
+Version: 1.0.1
+Summary: Lightweight, zero-dependency Python library for validating dictionaries with optional coercion and custom rules
+Author-email: Deepak singh <deepaksingh20899@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Dark00infinity
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Repository, https://github.com/dark00infinity/pyvalidly
+Keywords: validation,schema,dict,type-checking,pydantic-alternative
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# Pyvalidly
+
+**Pyvalidly** is a lightweight, zero-dependency Python library for validating dictionaries with simple rules, custom functions, and optional coercion.
+
+Inspired by Pydantic's power but built for simplicity, speed, and flexibility — especially useful when you want to avoid creating full-blown classes.
+
+---
+
+## Features
+
+- Simple schema-based dictionary validation  
+- Type validation – int, str, float, list, dict, custom classes.
+- Coercion – Automatically convert types when possible.
+- Default values – Fill missing fields with defaults.
+- Conditional validation – Skip validation based on another field.
+- Custom validation functions – Pass any callable returning True/False.
+- Helper functions – is_email, is_url, min_value, max_value, min_length, max_length.
+- Custom error messages – Per-field validation errors.
+- Old-style and new-style schemas – Flexible for migration.
+
+---
+
+## Installation
+
+```
+pip install pyvalidly
+```
+
+
+## Basic Usage
+### Old-style Schema
+```
+from pyvalidly import validate, is_email
+
+schema = {
+    "name": str, #(str,),
+    "age": (int, lambda x: x > 18),
+    "email": (str, is_email)
+}
+
+data = {
+    "name": "John",
+    "age": 25,
+    "email": "john@example.com"
+}
+
+validated = validate(data, schema)
+print(validated)
+# {'name': 'John', 'age': 25, 'email': 'john@example.com'}
+
+
+```
+
+### New-style Schema
+
+```
+from pyvalidly import validate, is_email, min_value
+
+schema = {
+    "name": {"type": str, "required": True},
+    "age": {"type": int, "coerce": True, "rules": [min_value(18)]},
+    "email": {"type": str, "rules": [is_email]}
+}
+
+data = {
+    "name": "John",
+    "age": "42",
+    "email": "john@example.com"
+}
+
+validated = validate(data,schema)
+print(validated)
+# {'name': 'John', 'age': 42, 'email': 'john@example.com'}
+
+```
+
+## Advanced Features
+### 1. Type Coercion
+```
+from pyvalidly import validate, is_email, min_value
+
+schema = {
+    "age": {"type": int, "coerce": True}
+}
+data = {"age": "30"}
+
+print(validate(data,schema))
+# {'age': 30}
+
+```
+
+### 2. Default Values
+
+```
+from pyvalidly import validate, is_email, min_value
+
+schema = {
+    "name": {"type": str, "default": "Anonymous"}
+}
+data = {}
+
+print(validate(data,schema))
+# {'name': 'Anonymous'}
+
+```
+
+### 3. Conditional Validation
+
+```
+from pyvalidly import validate, is_email, min_value
+
+schema = {
+    "is_member": {"type": bool, "required": True},
+    "membership_id": {
+        "type": str,
+        "required": True,
+        "condition": lambda data: data.get("is_member") is True
+    }
+}
+
+data = {"is_member": False}
+print(validate(data, schema))
+# {'is_member': False}
+
+```
+
+### 4. Custom Error Messages
+
+```
+from pyvalidly import validate, is_email, min_value
+schema = {
+    "age": {
+        "type": int,
+        "rules": [lambda x: x >= 18],
+        "error": "Must be at least 18 years old"
+    }
+}
+data = {"age": 10}
+
+from pyvalidly.exceptions import ValidationError
+try:
+    print(validate(data, schema))
+except ValidationError as e:
+    print(e)
+# Must be at least 18 years old
+
+```
+
+### 5. Built-in Helpers
+
+```
+from pyvalidly import is_email, is_url, min_value, max_value, min_length, max_length
+
+print(is_email("test@example.com")) # True
+print(is_url("http://example.com")) # True
+print(min_value(10)(15)) # True
+print(max_length(5)("hello")) # True
+
+```
+
+## Schema Styles
+
+- Old-style tuple rules : 
+Each field maps to a tuple of rules: (type, func, func, ...)
+
+- New-style dict rules :
+{ "type": str, "required": True, "default": "X", "rules": [func], "coerce": True, "condition": func }
+
+## Project Structure
+```
+pyvalidly/
+├── core.py
+├── exceptions.py
+├── validators.py
+├── __init__.py
+└── tests/
+    └── test_core.py
+```
+
+## License
+
+MIT License
+
+## Contribute
+
+Pull requests, suggestions, and stars are welcome!
+If this helped you, consider supporting the project.
+
+## Contact
+
+Made with love by Deepak singh — https://github.com/dark00infinity
