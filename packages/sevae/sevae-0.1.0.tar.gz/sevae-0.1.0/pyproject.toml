@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sevae"
+version = "0.1.0"
+description = "Structural Equation–VAE (SE-VAE) for interpretable disentangled latents on tabular data (PyTorch)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Apache-2.0" }
+authors = [{name = "Ruiyu Zhang", email = "ruiyuzh@connect.hku.hk"}]
+keywords = ["vae", "disentanglement", "representation-learning", "pytorch", "tabular-data", "sem"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = [
+  "numpy>=1.22",
+  "scikit-learn>=1.1",
+  "tqdm>=4.65",
+  "typing-extensions>=4.5"
+]
+
+[project.optional-dependencies]
+dev = ["ruff", "black", "pytest", "pytest-cov", "pre-commit"]
+docs = ["mkdocs-material", "mkdocstrings[python]"]
+torch = ["torch>=2.2"]  # optional extra
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sevae"]

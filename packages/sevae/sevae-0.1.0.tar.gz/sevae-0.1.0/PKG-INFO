@@ -1,0 +1,72 @@
+Metadata-Version: 2.4
+Name: sevae
+Version: 0.1.0
+Summary: Structural Equation–VAE (SE-VAE) for interpretable disentangled latents on tabular data (PyTorch)
+Author-email: Ruiyu Zhang <ruiyuzh@connect.hku.hk>
+License: Apache-2.0
+Keywords: disentanglement,pytorch,representation-learning,sem,tabular-data,vae
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Requires-Dist: numpy>=1.22
+Requires-Dist: scikit-learn>=1.1
+Requires-Dist: tqdm>=4.65
+Requires-Dist: typing-extensions>=4.5
+Provides-Extra: dev
+Requires-Dist: black; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: ruff; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: mkdocs-material; extra == 'docs'
+Requires-Dist: mkdocstrings[python]; extra == 'docs'
+Provides-Extra: torch
+Requires-Dist: torch>=2.2; extra == 'torch'
+Description-Content-Type: text/markdown
+
+# SEVAE: Structural Equation–VAE
+
+Interpretable, disentangled latents for tabular data via theory-driven architecture.
+
+## Install
+
+```bash
+# install your preferred Torch first (CPU or CUDA)
+pip install torch --index-url https://download.pytorch.org/whl/cu121   # or plain pip for CPU
+pip install sevae
+```
+
+## Quickstart
+
+```bash
+import torch
+from sevae import SEVAE, SEVAEConfig
+
+cfg = SEVAEConfig(
+  n_constructs=6, items_per_construct=8,
+  d_per_construct=1, d_nuisance=2, n_nuisance_blocks=2,
+  context_dim=16, hidden=128, leakage_weight=0.5, tc_weight=6.4, ortho_weight=1.0
+)
+model = SEVAE(cfg)
+
+x = torch.randn(64, 6*8)
+out = model(x)
+losses = model.loss(x, out)
+losses["loss_total"].backward()
+```
+
+## Citation
+
+Zhang, R., Zhao, C., Zhao, X., Nie, L., & Lam, W. F. (2025). Structural Equation-VAE: Disentangled Latent Representations for Tabular Data. arXiv preprint arXiv:2508.06347.
+```bash
+@article{zhang2025structural,
+  title={Structural Equation-VAE: Disentangled Latent Representations for Tabular Data},
+  author={Zhang, Ruiyu and Zhao, Ce and Zhao, Xin and Nie, Lin and Lam, Wai-Fung},
+  journal={arXiv preprint arXiv:2508.06347},
+  year={2025}
+}
+```
