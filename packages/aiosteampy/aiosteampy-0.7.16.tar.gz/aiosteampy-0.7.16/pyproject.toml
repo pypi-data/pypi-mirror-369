@@ -1,0 +1,72 @@
+[project]
+name = "aiosteampy"
+version = "0.7.16"
+description = "Trade and interact with steam market, webapi, guard"
+license = "MIT"
+authors = [{ name = "Dmytro Tkachenko", email = "itsme@somespecial.one" }]
+readme = "README.md"
+keywords = ["steam", "trade", "steamguard", "asyncio", "steam-market"]
+classifiers = [
+    "Framework :: AsyncIO",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "aiohttp (>=3.8,<4.0)",
+    "rsa (>=4.8,<5.0) ; python_version >= '3.10' and python_version < '4'",
+    "aenum (>=3.1.2,<4.0.0)",
+]
+
+[project.optional-dependencies]
+converter = ["croniter>=2.0,<4.0"]
+socks = ["aiohttp-socks>=0.8.4,<1.0.0"]
+all = ["croniter>=2.0,<4.0", "aiohttp-socks>=0.8.4,<1.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/somespecialone/aiosteampy"
+Repository = "https://github.com/somespecialone/aiosteampy"
+Documentation = "https://aiosteampy.somespecial.one"
+"Bug Tracker" = "https://github.com/somespecialone/aiosteampy/issues"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [{ include = "aiosteampy" }]
+include = [{ path = "LICENSE", format = "sdist" }]
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+
+[tool.poetry.group.docs]
+optional = true
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.5.3"
+mkdocs-material = "^9.4.7"
+mkdocs-git-revision-date-localized-plugin = "^1.2.1"
+mkdocs-include-markdown-plugin = "^6.0.3"
+mkdocs-open-in-new-tab = "^1.0.8"
+
+#[tool.poetry.group.test]
+#optional = true
+#[tool.poetry.group.test.dependencies]
+# deps for testing
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
