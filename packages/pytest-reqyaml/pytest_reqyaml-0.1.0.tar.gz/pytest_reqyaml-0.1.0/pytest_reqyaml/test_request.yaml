@@ -1,0 +1,25 @@
+test_name: Tests for reqyaml
+#description: These testcases test GET and POST methods in reqyaml
+cases:
+  #case 1
+  - request:
+      method: GET #this is case-insensitive
+      url: http://postman-echo.com/get
+      params:
+        foo1: bar1
+        foo2: bar2
+      assert: # conditions under same assert must pass or this test will fail
+        statu_code: 200
+        json: $.args.foo1 == bar1 and $.args.foo2 == bar2
+
+  # case 2
+  - request:
+      method: POST #this is case-insensitive
+      url: http://postman-echo.com/post
+      params:
+        foo1: bar1
+      json:
+        foo2: bar2
+      assert:
+        statu_code: 200
+        json: "$.json.foo2 == bar2 and $.args.foo1 == bar1"
