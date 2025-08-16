@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tbd-api"
+dynamic = ["version"]
+description = "Unofficial API for TorrentBD"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "TanmoyTheBoT", email = "tanmoysarkershuvo@gmail.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "python-dotenv>=0.9.9",
+    "fastapi>=0.115.12",
+    "pyotp>=2.9.0",
+    "requests>=2.32.3",
+    "uvicorn>=0.34.2",
+    "v3cap>=0.0.2",
+    "beautifulsoup4>=4.13.4",
+    "brotli>=1.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bandit>=1.8.3",
+    "black>=25.1.0",
+    "build>=1.2.2.post1",
+    "flake8>=7.2.0",
+    "isort>=6.0.1",
+    "mypy>=1.15.0",
+    "ruff>=0.11.8",
+    "twine>=6.1.0",
+    "types-beautifulsoup4>=4.12.0.20250204",
+    "types-requests>=2.32.0.20250328",
+    "pre-commit>=4.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/TanmoyTheBoT/torrentbd-api"
+
+[project.scripts]
+tbd-api = "torrentbd_api.main:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["torrentbd_api"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+torrentbd_api = ["static/**/*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "torrentbd_api.version.__version__" }
+
+[tool.ruff]
+# Global configuration for Ruff
+fix = true  # Automatically fix issues where possible
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C"]  # Linting options
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+files = "src"
+
+[tool.bandit]
+targets = ["src"]
