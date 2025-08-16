@@ -1,0 +1,31 @@
+[project]
+name = 'whl-com'
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+  { name = "Pride Leong", email = "lykling.lyk@gmail.com" }
+]
+description = "config tool for serial devices"
+requires-python = ">3.8"
+dynamic = ["dependencies", "version"]
+
+[project.scripts]
+whl-com = "whl_com:main"
+
+[project.urls]
+"Homepage" = "https://github.com/wheelos-tools/whl-com/tree/main"
+"Bug Tracker" = "https://github.com/wheelos-tools/whl-com/issues"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+py-modules = ["whl_com"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+version = {attr = "whl_com.VERSION"}
+
+[tool.setuptools.packages]
+find = {}
