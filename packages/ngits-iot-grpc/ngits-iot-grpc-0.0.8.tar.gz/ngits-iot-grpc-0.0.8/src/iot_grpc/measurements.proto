@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package measurement;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+message MeasurementsRequest {
+    google.protobuf.StringValue tenant = 1;
+    repeated string meters = 2;
+    string order_by = 3;
+    google.protobuf.Timestamp measured_day = 4;
+    int32 skip = 5;
+    int32 limit = 6;
+}
+
+message Measurement {
+    string tenant = 1;
+    string meter_id = 2;
+    google.protobuf.Timestamp created_ts = 3;
+    google.protobuf.Timestamp updated_ts = 4;
+    google.protobuf.Timestamp measured_ts = 5;
+    double value = 6;
+    string media = 7;
+}
+
+message MeasurementsResponse {
+    repeated Measurement measurements = 1;
+    int32 count = 2;
+    int32 total_count = 3;
+}
+
+service MeasurementService {
+    rpc GetMeasurements(MeasurementsRequest) returns (MeasurementsResponse) {}
+}

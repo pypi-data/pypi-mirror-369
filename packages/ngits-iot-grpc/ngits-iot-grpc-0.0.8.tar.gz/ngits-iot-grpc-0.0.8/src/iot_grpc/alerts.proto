@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package alert;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+message AlertsRequest {
+    google.protobuf.StringValue tenant = 1;
+    repeated int32 ids = 2;
+    repeated string meters = 3;
+    int32 skip = 4;
+    int32 limit = 5;
+}
+
+message Alert {
+    int32 id = 1;
+    string tenant = 2;
+    string meter_id = 3;
+    google.protobuf.Timestamp created_ts = 4;
+    google.protobuf.Timestamp updated_ts = 5;
+    google.protobuf.Timestamp detected_ts = 6;
+    google.protobuf.Timestamp resolved_ts = 7;
+    int32 type = 8;
+    int32 level = 9;
+    bool is_active = 10;
+    string details = 11;
+}
+
+message AlertsResponse {
+    repeated Alert alerts = 1;
+    int32 count = 2;
+    int32 total_count = 3;
+}
+
+service AlertService {
+    rpc GetAlerts(AlertsRequest) returns (AlertsResponse) {}
+}
