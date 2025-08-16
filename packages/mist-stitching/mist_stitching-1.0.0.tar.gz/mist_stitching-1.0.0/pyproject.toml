@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mist_stitching"
+dynamic = ["version"]
+authors = [
+  { name="Michael Majurski", email="michael.majurski@nist.gov" },
+]
+description = "MIST: Microscopy Image Stitching Tool"
+readme = "README.md"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.3.2",
+    "scikit-image>=0.25.2",
+    "pandas>=2.3.1",
+]
+
+[tool.hatch.version]
+path = "src/mist_stitching/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mist_stitching"]
+
+[tool.pytest.ini_options]
+addopts = ["-s"]
+
+[project.urls]
+Homepage = "https://github.com/usnistgov/MIST"
