@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.2", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "github_index"
+authors = [
+    { name = "H.IAAC", email = "hiaac@unicamp.br" },
+    { name = "Elton Cardoso do Nascimento", email = "e233840@dac.unicamp.br" },
+]
+description = "Creates a index with repositories from Github."
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+]
+requires-python = ">= 3.10"
+dynamic = ["version"]
+dependencies = ["pandas", "requests", "tqdm", "marko", "cffconvert"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://hiaac.unicamp.br"
+
+[project.optional-dependencies]
+
+
+[tool.setuptools]
+include-package-data = true
+package-dir = { "" = "src" }
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[tool.setuptools_scm]
