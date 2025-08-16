@@ -1,0 +1,25 @@
+# Include important files in source distribution
+include README.md
+include LICENSE
+include CHANGELOG.md
+include requirements.txt
+include pyproject.toml
+
+# Include package data
+include audiopod/py.typed
+
+# Include examples and tests
+recursive-include examples *.py *.md
+recursive-include tests *.py
+
+# Exclude development and build artifacts
+exclude BUILD_AND_PUBLISH.md
+exclude INSTALLATION.md
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.so
+recursive-exclude * .DS_Store
+prune dev-tools
+prune dist
+prune build
+prune *.egg-info
