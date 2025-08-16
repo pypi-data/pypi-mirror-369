@@ -1,0 +1,517 @@
+Metadata-Version: 2.4
+Name: robin-logistics-env
+Version: 2.5.2
+Summary: Professional multi-depot vehicle routing environment for hackathons and competitions with interactive dashboard and headless execution
+Author-email: Robin <mario.salama@beltoneholding.com>
+License: MIT
+Project-URL: Homepage, https://github.com/RobinDataScience/Logistics-Env
+Project-URL: Repository, https://github.com/RobinDataScience/Logistics-Env.git
+Project-URL: Bug Tracker, https://github.com/RobinDataScience/Logistics-Env/issues
+Keywords: logistics,optimization,vehicle-routing,hackathon,competition,simulation
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Education
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: streamlit>=1.28.0
+Requires-Dist: pandas>=1.5.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: networkx>=2.8.0
+Requires-Dist: folium>=0.14.0
+Requires-Dist: streamlit-folium>=0.13.0
+Requires-Dist: plotly>=5.0.0
+Requires-Dist: scipy>=1.9.0
+Dynamic: license-file
+
+# 🚛 Robin Logistics Environment
+
+A professional multi-depot vehicle routing environment for hackathons and competitions. Build, test, and optimize logistics algorithms with real-world constraints.
+
+[![Version](https://img.shields.io/badge/version-2.5.1-blue.svg)](https://pypi.org/project/robin-logistics-env/)
+[![Python](https://img.shields.io/badge/python-3.8+-green.svg)](https://python.org)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+
+## 🎯 **Quick Start**
+
+### **Installation**
+```bash
+pip install robin-logistics-env
+```
+
+### **Create Your Solver**
+```python
+# my_solver.py
+from robin_logistics import LogisticsEnvironment
+
+def my_solver(env: LogisticsEnvironment):
+    """Your routing algorithm implementation."""
+    solution = {
+        "routes": [
+            {
+                "vehicle_id": "LightVan_WH-1_1",
+                "route": [12345, 67890, 12345],  # node IDs
+                "pickup_operations": [
+                    {"warehouse_id": "WH-1", "sku_id": "Light_Item", "quantity": 5}
+                ],
+                "delivery_operations": [
+                    {"order_id": "ORD-1", "sku_id": "Light_Item", "quantity": 3}
+                ]
+            }
+        ]
+    }
+    return solution
+```
+
+### **Run Interactively (Dashboard)**
+```bash
+# With your solver
+python -m robin_logistics.cli --dashboard --solver my_solver.py
+
+# Just explore the environment
+python -m robin_logistics.cli
+```
+
+### **Run Automated (Headless)**
+```bash
+# Basic run
+python -m robin_logistics.cli --headless --solver my_solver.py
+
+# With custom configuration
+python -m robin_logistics.cli --headless \
+    --solver my_solver.py \
+    --config config.json \
+    --output my_results
+```
+
+## 🏗️ **Complete Workflow**
+
+### **1. Development & Testing**
+```python
+# test_my_solver.py
+from robin_logistics import LogisticsEnvironment
+from my_solver import my_solver
+
+# Create environment
+env = LogisticsEnvironment()
+
+# Test your solver
+solution = my_solver(env)
+
+# Validate solution
+is_valid, message = env.validate_solution_complete(solution)
+print(f"Solution valid: {is_valid}")
+
+# Get metrics
+stats = env.get_solution_statistics(solution)
+print(f"Cost: ${stats['total_cost']:.2f}")
+print(f"Distance: {stats['total_distance']:.1f} km")
+print(f"Fulfillment: {stats['average_fulfillment_rate']:.1f}%")
+```
+
+### **2. Interactive Dashboard**
+Perfect for development and visualization:
+
+- **🎛️ Configuration**: Customize warehouses, orders, vehicles
+- **🗺️ Route Visualization**: Interactive maps with your routes
+- **📊 Real-time Metrics**: Cost, distance, fulfillment analysis
+- **✅ Live Validation**: Instant feedback on constraint violations
+
+```bash
+python -m robin_logistics.cli --dashboard --solver my_solver.py
+```
+
+### **3. Automated Execution**
+For testing and competition submission:
+
+```bash
+# Run with custom scenario
+python -m robin_logistics.cli --headless \
+    --solver my_solver.py \
+    --config scenarios/large_scenario.json \
+    --output results/final_submission \
+    --run-id competition_v2
+```
+
+**Generated Results:**
+```
+results/final_submission_competition_v2_20241220_143022/
+├── solution.json          # Your solution
+├── validation_report.txt  # Validation details  
+├── metrics_summary.txt    # Performance metrics
+├── fulfillment_report.txt # Order fulfillment analysis
+└── environment_config.json # Scenario used
+```
+
+### **4. Custom Configuration**
+```json
+// config.json
+{
+    "num_warehouses": 3,
+    "num_orders": 25,
+    "num_vehicles_per_warehouse": 4,
+    "distance_control": {
+        "radius_km": 20,
+        "density_strategy": "clustered"
+    },
+    "random_seed": 42
+}
+```
+
+## 🎮 **Problem Description**
+
+### **Multi-Depot Vehicle Routing Problem (MDVRP)**
+
+**Your Mission**: Design algorithms to efficiently deliver items from multiple warehouses to customer orders using a vehicle fleet.
+
+### **Key Components**
+
+#### **🏢 Warehouses**
+- **Multiple locations** with different inventory levels
+- **Vehicle fleets** assigned to each warehouse
+- **Home base requirement** - vehicles start/end here
+
+#### **📦 Orders** 
+- **Item requirements** - specific SKUs and quantities
+- **Geographic distribution** - realistic placement patterns
+- **Partial fulfillment** - orders can be split across vehicles
+
+#### **🚛 Vehicles**
+- **Capacity constraints** - weight and volume limits
+- **Distance limits** - maximum travel distance
+- **Fleet diversity** - Light Vans, Medium Trucks, Heavy Trucks
+
+#### **🛣️ Road Network**
+- **Real connectivity** - actual road network structure
+- **Distance calculations** - accurate travel distances
+- **Route validation** - must follow connected roads
+
+### **What Makes This Challenging**
+- **Multi-depot complexity** - coordinate multiple warehouses
+- **Inventory management** - items spread across locations  
+- **Capacity optimization** - pack vehicles efficiently
+- **Route planning** - find shortest valid paths
+- **Partial fulfillment** - strategic order splitting
+
+## 📚 **Environment API**
+
+### **Core Data Access**
+```python
+env = LogisticsEnvironment()
+
+# Problem structure
+warehouses = env.warehouses        # Dict[str, Warehouse]
+orders = env.orders                # Dict[str, Order] 
+vehicles = env.get_all_vehicles()  # List[Vehicle]
+
+# Road network for pathfinding
+road_data = env.get_road_network_data()
+adjacency_list = road_data['adjacency_list']  # {node_id: [neighbors]}
+
+# Helper queries
+vehicle_ids = env.get_available_vehicles()
+order_ids = env.get_all_order_ids()
+warehouse_inventory = env.get_warehouse_inventory("WH-1")
+```
+
+### **Route & Distance**
+```python
+# Calculate distances
+distance = env.get_distance(node1, node2)
+total_distance = env.get_route_distance([node1, node2, node3])
+
+# Validate routes
+is_valid, msg = env.validate_single_route(vehicle_id, route_nodes)
+```
+
+### **Inventory Operations**
+```python
+# Check what's available
+requirements = env.get_order_requirements("ORD-1")
+warehouses_with_item = env.get_warehouses_with_sku("Light_Item", min_quantity=5)
+
+# Simulate pickup/delivery
+success = env.pickup_sku_from_warehouse(vehicle_id, warehouse_id, sku_id, quantity)
+success = env.deliver_sku_to_order(vehicle_id, order_id, sku_id, quantity)
+```
+
+### **Solution Validation**
+```python
+# Complete validation
+is_valid, error_msg = env.validate_solution_complete(solution)
+
+# Detailed analysis
+fulfillment = env.get_solution_fulfillment_summary(solution)
+statistics = env.get_solution_statistics(solution)
+
+print(f"Fulfillment Rate: {fulfillment['average_fulfillment_rate']:.1f}%")
+print(f"Total Cost: ${statistics['total_cost']:.2f}")
+```
+
+## 🏆 **Advanced Features**
+
+### **Atomic Transactions**
+Ensure pickup/delivery operations succeed or fail together:
+
+```python
+# Create atomic transaction
+transaction = env.create_inventory_transaction()
+
+# Add operations
+transaction.pickup_sku(vehicle_id, "WH-1", "Light_Item", 5)
+transaction.deliver_sku(vehicle_id, "ORD-1", "Light_Item", 3)
+
+# Execute atomically
+success, message = transaction.commit()
+```
+
+### **Complete Route Execution**
+Execute full routes with automatic rollback on failure:
+
+```python
+pickup_ops = [
+    {"warehouse_id": "WH-1", "sku_id": "Light_Item", "quantity": 5},
+    {"warehouse_id": "WH-2", "sku_id": "Heavy_Item", "quantity": 2}
+]
+
+delivery_ops = [
+    {"order_id": "ORD-1", "sku_id": "Light_Item", "quantity": 3},
+    {"order_id": "ORD-2", "sku_id": "Heavy_Item", "quantity": 1}
+]
+
+success, msg = env.execute_route_operations(vehicle_id, pickup_ops, delivery_ops)
+```
+
+### **Scenario Generation**
+```python
+# Fixed seed for reproducible testing
+env.set_random_seed(42)
+env.generate_new_scenario()
+
+# Custom scenario configuration
+config = {
+    "num_warehouses": 5,
+    "num_orders": 50,
+    "distance_control": {
+        "radius_km": 30,
+        "density_strategy": "ring",
+        "ring_count": 3
+    }
+}
+env.generate_scenario_from_config(config)
+```
+
+## 🛠️ **Development Guide**
+
+### **1. Start Simple**
+```python
+def simple_solver(env):
+    """One vehicle per order approach."""
+    solution = {"routes": []}
+    
+    orders = env.get_all_order_ids()
+    vehicles = env.get_available_vehicles()
+    
+    for i, order_id in enumerate(orders):
+        if i < len(vehicles):
+            vehicle_id = vehicles[i]
+            warehouse_node = env.get_vehicle_home_warehouse(vehicle_id)
+            order_node = env.get_order_location(order_id)
+            
+            # Simple round trip
+            route = [warehouse_node, order_node, warehouse_node]
+            
+            solution["routes"].append({
+                "vehicle_id": vehicle_id,
+                "route": route
+            })
+    
+    return solution
+```
+
+### **2. Add Pathfinding**
+```python
+def find_shortest_path(env, start_node, end_node):
+    """BFS pathfinding on road network."""
+    road_data = env.get_road_network_data()
+    adjacency_list = road_data['adjacency_list']
+    
+    if start_node == end_node:
+        return [start_node]
+    
+    queue = [(start_node, [start_node])]
+    visited = {start_node}
+    
+    while queue:
+        current, path = queue.pop(0)
+        
+        for neighbor in adjacency_list.get(current, []):
+            if neighbor == end_node:
+                return path + [neighbor]
+            
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append((neighbor, path + [neighbor]))
+    
+    return None  # No path found
+```
+
+### **3. Handle Inventory**
+```python
+def inventory_aware_solver(env):
+    """Check inventory before creating routes."""
+    solution = {"routes": []}
+    
+    for vehicle_id in env.get_available_vehicles():
+        home_warehouse = env.get_vehicle_home_warehouse(vehicle_id)
+        
+        for order_id in env.get_all_order_ids():
+            requirements = env.get_order_requirements(order_id)
+            
+            # Check if home warehouse has required items
+            warehouse_inventory = env.get_warehouse_inventory(
+                env.get_warehouse_by_node(home_warehouse).id
+            )
+            
+            can_fulfill = all(
+                warehouse_inventory.get(sku_id, 0) >= quantity
+                for sku_id, quantity in requirements.items()
+            )
+            
+            if can_fulfill:
+                # Create route for this order
+                pass
+    
+    return solution
+```
+
+### **4. Validate Continuously**
+```python
+def robust_solver(env):
+    """Validate each route before adding to solution."""
+    solution = {"routes": []}
+    
+    for vehicle_id in env.get_available_vehicles():
+        route = create_route_for_vehicle(env, vehicle_id)
+        
+        # Validate before adding
+        is_valid, error_msg = env.validate_single_route(vehicle_id, route)
+        
+        if is_valid:
+            solution["routes"].append({
+                "vehicle_id": vehicle_id,
+                "route": route
+            })
+        else:
+            print(f"Skipping invalid route for {vehicle_id}: {error_msg}")
+    
+    return solution
+```
+
+## 📊 **Example Results**
+
+```bash
+$ python -m robin_logistics.cli --headless --solver my_solver.py
+
+Robin Logistics - Headless Mode
+Environment: 2 warehouses, 6 vehicles, 15 orders
+Solver execution time: 0.15 seconds
+
+Solution Validation: ✅ VALID
+Routes Generated: 4 of 6 vehicles used
+Total Distance: 156.3 km
+Total Cost: $478.90
+Order Fulfillment: 87.2% average
+Fully Fulfilled Orders: 11 of 15
+
+Results saved to: results/my_solver_run_20241220_143022/
+```
+
+## 🎯 **Tips for Success**
+
+### **Performance**
+- **Start local**: One warehouse at a time
+- **Validate early**: Check constraints before optimizing
+- **Profile bottlenecks**: Use distance cache effectively
+
+### **Quality**
+- **Multi-warehouse**: Leverage inventory across locations  
+- **Vehicle packing**: Combine orders when possible
+- **Partial fulfillment**: Strategic order splitting
+
+### **Debugging**
+- **Use seed control**: `env.set_random_seed(42)` for reproducible tests
+- **Check validation**: Environment provides detailed error messages
+- **Start small**: Test with 5 orders before scaling to 50
+
+## 📁 **Project Structure**
+
+```
+my_logistics_project/
+├── my_solver.py              # Your algorithm
+├── test_my_solver.py         # Local testing
+├── config.json               # Custom scenarios
+├── requirements.txt          # Dependencies
+└── results/                  # Generated outputs
+    └── my_solver_run_*/
+        ├── solution.json
+        ├── metrics_summary.txt
+        └── validation_report.txt
+```
+
+## 🔧 **All CLI Options**
+
+```bash
+# Dashboard modes
+python -m robin_logistics.cli                              # Default dashboard
+python -m robin_logistics.cli --dashboard                  # Explicit dashboard
+python -m robin_logistics.cli --dashboard --solver my.py   # With custom solver
+
+# Headless modes  
+python -m robin_logistics.cli --headless                   # Demo solver
+python -m robin_logistics.cli --headless --solver my.py    # Custom solver
+python -m robin_logistics.cli --headless \                 # Full configuration
+    --solver my_solver.py \
+    --config config.json \
+    --output my_results \
+    --run-id final_v2 \
+    --solver-function my_custom_function_name
+```
+
+## 📦 **Package Information**
+
+- **Package**: `robin-logistics-env` 
+- **Version**: 2.5.1
+- **Author**: Robin
+- **Email**: mario.salama@beltoneholding.com
+- **License**: MIT
+- **Python**: ≥3.8
+- **Dependencies**: `streamlit`, `pandas`, `networkx`, `folium`, `plotly`
+
+## 🆘 **Getting Help**
+
+- **📖 Documentation**: Comprehensive docstrings in all methods
+- **🧪 Examples**: Complete examples in `contestant_example/`
+- **🔍 Validation**: Use `env.validate_*` methods for debugging
+- **🎯 Testing**: Start small and validate continuously
+
+---
+
+**🚀 Ready to revolutionize logistics optimization? Install the package and start building!**
+
+```bash
+pip install robin-logistics-env
+python -m robin_logistics.cli --dashboard
+```
