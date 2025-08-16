@@ -1,0 +1,29 @@
+{% extends "client/base.html" %}
+<!-- Load internationalisation utils-->
+{% load i18n %}
+{% load admin_urls %}
+{% load rules %}
+
+{% block title %}
+
+  {{client}} - {% trans "Orders list" %}
+
+{% endblock %}
+
+{% block subcontent %}
+{% has_perm 'sous_chef.edit' request.user as can_edit_data %}
+
+<div class="ui segment">
+
+    <h2 class="ui header">
+        <div class="content">
+            {% trans 'Orders' %}
+            <div class="sub header">{% trans "List of all orders from" %} {{client}}.</div>
+        </div>
+    </h2>
+
+    <div class="ui divider"></div>
+    {% include 'client/partials/order_list.html' %}
+
+ </div>
+{% endblock %}
