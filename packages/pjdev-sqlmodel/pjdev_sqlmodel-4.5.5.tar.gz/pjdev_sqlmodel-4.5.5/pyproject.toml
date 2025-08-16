@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pjdev-sqlmodel"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Purple Jay LLC", email = "apps+keystone-python-221-issue-@purplejay.io" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "pydantic-settings>=2.6.1",
+  "sqlmodel>=0.0.24",
+  "pandas>=2.2.3",
+  "python-calamine>=0.3.1",
+  "openpyxl>=3.1.5",
+  "loguru",
+  "pyarrow>=18.1.0"
+]
+
+[project.urls]
+Documentation = "https://gitlab.purplejay.net/keystone/python"
+Issues = "https://gitlab.purplejay.net/keystone/python/issues"
+Source = "https://gitlab.purplejay.net/keystone/python"
+
+[tool.hatch.version]
+path = "src/pjdev_sqlmodel/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/pjdev_sqlmodel tests}"
+
+[tool.coverage.run]
+source_pkgs = ["pjdev_sqlmodel", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/pjdev_sqlmodel/__about__.py",
+]
+
+[tool.coverage.paths]
+pjdev_sqlmodel = ["src/pjdev_sqlmodel", "*/pjdev-sqlmodel/src/pjdev_sqlmodel"]
+tests = ["tests", "*/pjdev-sqlmodel/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
