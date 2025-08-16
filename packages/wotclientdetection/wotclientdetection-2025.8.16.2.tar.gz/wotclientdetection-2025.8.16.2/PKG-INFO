@@ -1,0 +1,66 @@
+Metadata-Version: 2.4
+Name: wotclientdetection
+Version: 2025.8.16.2
+Summary: Programatically detect and delegate WoT/MT launchers and clients
+Author: OpenWG.Utils Contributors
+Author-email: Paul Ekshmidt <contact@kurzdor.me>
+Maintainer-email: Paul Ekshmidt <contact@kurzdor.me>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/kurzdor/wot.clientdetection
+Project-URL: Bug Reports, https://github.com/kurzdor/wot.clientdetection/issues
+Project-URL: Source, https://github.com/kurzdor/wot.clientdetection
+Keywords: wot,mt,launcher,client,detection
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Operating System :: Microsoft :: Windows
+Requires-Python: >=3
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: psutil
+Requires-Dist: packaging
+Dynamic: license-file
+
+# wotclientdetection
+
+Programatically detect and delegate WoT/MT launchers and clients.  
+Based on original code from [OpenWG.Utils](https://gitlab.com/openwg/openwg.utils) and rewritten in Python.  
+Currently supports only Windows.
+
+## Installation
+
+```
+pip install wotclientdetection
+```
+
+## Examples
+
+```py
+from wotclientdetection import LauncherManager
+
+manager = LauncherManager()
+launchers = manager.get_launchers()
+for launcher in launchers:
+    clients = launcher.get_clients()
+    for client in clients:
+        print(client.path)
+```
+
+```py
+from wotclientdetection import LauncherManager, LauncherFlavour, ClientBranch, ClientRealm
+
+manager = LauncherManager()
+launcher = manager.get_launcher(LauncherFlavour.WG)
+client = launcher.get_client(realm=ClientRealm.EU)
+```
+
+```py
+from wotclientdetection import LauncherManager, LauncherFlavour, ClientBranch, ClientRealm
+
+STANDALONE_GAME_PATH = 'C:\Games\wot_standalone'
+
+manager = LauncherManager()
+launcher = manager.get_launcher(LauncherFlavour.STANDALONE)
+launcher.register_client(STANDALONE_GAME_PATH)
+```
