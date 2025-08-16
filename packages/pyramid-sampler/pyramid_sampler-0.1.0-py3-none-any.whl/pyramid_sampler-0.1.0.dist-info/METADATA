@@ -1,0 +1,186 @@
+Metadata-Version: 2.4
+Name: pyramid_sampler
+Version: 0.1.0
+Summary: simple tools for creating image pyramids
+Author-email: Chris Havlin <chris.havlin@gmail.com>
+License: BSD 3-Clause License
+        
+        Copyright (c) 2024, Data Exploration Lab, Chris Havlin.
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        * Redistributions of source code must retain the above copyright notice, this
+          list of conditions and the following disclaimer.
+        
+        * Redistributions in binary form must reproduce the above copyright notice,
+          this list of conditions and the following disclaimer in the documentation
+          and/or other materials provided with the distribution.
+        
+        * Neither the name of the vector package developers nor the names of its
+          contributors may be used to endorse or promote products derived from
+          this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Homepage, https://github.com/data-exp-lab/pyramid_sampler
+Project-URL: Bug Tracker, https://github.com/data-exp-lab/pyramid_sampler/issues
+Project-URL: Discussions, https://github.com/data-exp-lab/pyramid_sampler/discussions
+Project-URL: Changelog, https://github.com/data-exp-lab/pyramid_sampler/releases
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numba
+Requires-Dist: dask[array,distributed]
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: zarr
+Provides-Extra: test
+Requires-Dist: pytest>=6; extra == "test"
+Requires-Dist: pytest-cov>=3; extra == "test"
+Provides-Extra: dev
+Requires-Dist: pytest>=6; extra == "dev"
+Requires-Dist: pytest-cov>=3; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=7.0; extra == "docs"
+Requires-Dist: myst_parser>=0.13; extra == "docs"
+Requires-Dist: sphinx_copybutton; extra == "docs"
+Requires-Dist: sphinx_autodoc_typehints; extra == "docs"
+Requires-Dist: furo>=2023.08.17; extra == "docs"
+Provides-Extra: full
+Requires-Dist: matplotlib; extra == "full"
+Dynamic: license-file
+
+# pyramid_sampler
+
+A small utility for taking a 3D zarr image at a single resolution and
+downsampling to create an image pyramid.
+
+## installation
+
+```
+python -m pip install pyramid-sampler
+```
+
+## usage
+
+### create a test base image
+
+```python
+import zarr
+from pyramid_sampler import initialize_test_image
+
+# create an on-disk zarr store
+zarr_file = "test_image.zarr"
+zarr_store = zarr.group(zarr_file)
+
+# write base level 0 image to the specified store and field name
+new_field = "field1"
+base_res = (1024, 1024, 1024)
+chunks = (64, 64, 64)
+initialize_test_image(zarr_store, new_field, base_res, chunks=chunks)
+```
+
+`initialize_test_image` will utilize a `dask.delayed` workflow, so you can
+configure a dask client prior to calling `initilize_test_iamge` if you wish. The
+resulting base image will reside in `zarr_store[new_field][0]`.
+
+### downsampling an image
+
+First initialize a `Downsampler` instance with the path to the zarr store, the
+refinement factor to use between image levels, the base image resolution and
+chunksizes:
+
+```python
+from pyramid_sampler import Downsampler
+
+zarr_file = "test_image.zarr"
+refinement_factor = (2, 2, 2)
+base_res = (1024, 1024, 1024)
+chunks = (64, 64, 64)
+ds = Downsampler(zarr_file, (2, 2, 2), base_res, chunks)
+```
+
+For now, this assumes your base image will reside in `zarr_file/field_name/0`.
+To run the downsampling,
+
+```python
+field_to_downsample = "field1"
+max_levels = 10
+ds.downsample(max_levels, field_to_downsample)
+```
+
+Downsampling will only proceed until a layer is created with a single chunk of
+size set by the `Downsampler` and image chunksize, i.e., until
+`base_resolution / refinement_factor**current_level / chunks` has a value of 1
+in any dimension, or
+`max_levels = log(base_resolution/chunks) / log(refinement_factor)` (giving a
+max level id of `max_levels - 1` to account for 0-indexing).
+
+### assumptions
+
+Some assumptions in the current algorithm:
+
+- exact chunks only! The base image resoultion and `chunks` must perfectly
+  subdivide and downsampling must result in an even number of chunks.
+- the base field exists and is stored at `zarr_store[field][0]`
+- Only tested with on-disk filestores, but should work for any zarr store.
+
+## method
+
+at present, the downsampling simply averages overlapping array elements: for a
+given image level, `L1`, the pixels of the higher resoluiton image level
+`L1 - 1` covered by each pixel in `L1` are found and averaged. Levels are built
+up sequentially (i.e., `L1` is built from `L1 - 1`, not the base resolution).
+
+Calculations and chunk-processing are accelerated with dask delayed objects
+using `numba.jit` compilation for the pixel-averaging.
+
+## developing & contributing
+
+At present, this package is a small utility used for experimentations with zarr
+files. But contributions are welcome! Open up an issue at
+https://github.com/data-exp-lab/pyramid_sampler/issues to discuss ideas.
+
+### cutting a new release
+
+Notes for maintainers on cutting a new release:
+
+1. create and push a new tag
+
+```commandline
+git tag v0.1.0
+git push upstream v0.1.0
+```
+
+2. create new a release on github via the release interface, using the tag you
+   just pushed.
+3. on publishing the new github release, a github action
+   `.github/workflows/cd.yml` runs. This action builds the distribution and
+   pushes to pypi.
+
+Note that the publication to pypi in step 3 uses a
+[Trusted Publisher](https://docs.pypi.org/trusted-publishers/) configured by
+@chris.havlin
