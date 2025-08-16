@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pianocli"
+version = "1.1.0"
+authors = [
+  { name="Manasvi", email="manasvi.bathula@gmail.com" },
+]
+description = "A playable piano in your terminal."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+# --- UPDATED: Added requests and appdirs for downloading ---
+dependencies = [
+    "textual",
+    "pyfluidsynth",
+    "typer",
+    "requests",
+    "appdirs",
+]
+
+[project.scripts]
+pianocli = "pianocli.main:cli"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["pianocli"]
+
+# --- UPDATED: Only include the CSS file, NOT the soundfont ---
+[tool.setuptools.package-data]
+pianocli = ["*.tcss"]
