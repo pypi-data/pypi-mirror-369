@@ -1,0 +1,117 @@
+Metadata-Version: 2.4
+Name: audit-log-client
+Version: 1.4.0
+Summary: Python client for audit logging services
+Home-page: https://github.com/yourusername/audit-log-client
+Author: Your Name
+Author-email: your.email@example.com
+Project-URL: Bug Tracker, https://github.com/yourusername/audit-log-client/issues
+Project-URL: Documentation, https://github.com/yourusername/audit-log-client/wiki
+Keywords: audit logging security monitoring
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx>=0.23.0
+Requires-Dist: pydantic>=1.10.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.20.0; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+Requires-Dist: build>=0.10.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Audit Log Client
+
+Python client for interacting with audit logging services, supporting both synchronous and asynchronous usage.
+
+## Features
+
+- **Dual Mode**: Sync and Async APIs
+- **Buffering**: Configurable memory buffering
+- **Retry Mechanism**: Exponential backoff retries
+- **Fallback Strategy**: Local file storage on failure
+- **Query Support**: Flexible log querying capabilities
+
+## Installation
+
+```bash
+pip install audit-log-client
+```
+
+## Quick Start
+
+### Synchronous Client
+
+```python
+from audit_log_client import SyncAuditLogClient, AuditLog, AuditAction, AuditTarget
+
+client = SyncAuditLogClient(
+    base_url="http://audit.service/api",
+    api_key="your-api-key"
+)
+
+log = AuditLog(
+    action=AuditAction.UPDATE,
+    target_type=AuditTarget.USER,
+    user_id="admin",
+    description="User profile updated",
+    before={"name": "John"},
+    after={"name": "John Doe"}
+)
+
+client.log(log)
+client.close()
+```
+
+### Asynchronous Client
+
+```python
+import asyncio
+from audit_log_client import AsyncAuditLogClient, AuditLog, AuditAction, AuditTarget
+
+async def main():
+    client = AsyncAuditLogClient(
+        base_url="http://audit.service/api",
+        api_key="your-api-key"
+    )
+    await client.initialize()
+    
+    log = AuditLog(
+        action=AuditAction.CREATE,
+        target_type=AuditTarget.ORDER,
+        user_id="sales",
+        description="New order created"
+    )
+    
+    await client.log(log)
+    await client.shutdown()
+
+asyncio.run(main())
+```
+
+## Documentation
+
+Full documentation available at [GitHub Wiki](https://github.com/yourusername/audit-log-client/wiki)
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
