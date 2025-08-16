@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: mcp_invert_image
+Version: 0.1.0
+Summary: 图片反色处理工具
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/mcp_invert_image
+Project-URL: Bug Tracker, https://github.com/yourusername/mcp_invert_image/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: mcp[cli]>=1.13.0
+Requires-Dist: pillow>=10.0.0
+
+# FastMCP 图片反色处理项目
+
+## 项目简介
+这是一个基于FastMCP的图片处理项目，提供图片上传和反色处理功能。通过简单的API调用，您可以轻松地对图片进行反色处理并获取处理结果。
+
+## 功能说明
+- 上传图片文件路径，获取反色处理后的图片文件路径
+- 上传base64编码的图片数据，获取反色处理后的base64编码
+
+## 安装指南
+1. 确保您已安装Python 3.13或更高版本
+2. 克隆此项目到本地
+3. 安装依赖:
+   ```
+   uv install
+   ```
+
+## 使用方法
+1. 启动服务器:
+   ```
+   uv run server main stdio
+   ```
+2. 使用客户端调用API进行图片反色处理
+   - 通过文件路径处理:
+     ```python
+     result = client.call_tool("invert_image", {"image_path": "path/to/your/image.jpg"})
+     ```
+   - 通过base64编码处理:
+     ```python
+     with open("path/to/your/image.jpg", "rb") as f:
+         base64_data = base64.b64encode(f.read()).decode('utf-8')
+     result = client.call_tool("invert_image_base64", {"image_base64": base64_data})
+     ```
+
+## API说明
+### 工具函数
+1. `invert_image(image_path: str) -> str`
+   - 功能: 对指定路径的图片进行反色处理
+   - 参数: `image_path` - 图片文件路径
+   - 返回: 处理后的图片文件路径
+
+2. `invert_image_base64(image_base64: str) -> str`
+   - 功能: 对base64编码的图片进行反色处理
+   - 参数: `image_base64` - base64编码的图片数据
+   - 返回: 处理后的图片base64编码
+
+## 注意事项
+- 确保上传的图片格式支持(PIL支持的格式，如JPG、PNG等)
+- 处理后的图片会保存在项目目录下的`processed_images`文件夹中
