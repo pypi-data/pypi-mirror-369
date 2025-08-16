@@ -1,0 +1,2 @@
+class UniqList:
+    pass
