@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "aica-challenge-1-heuristic-agent"
+version = "1.1.2"
+description = "This is a heuristic agent for AICA challenge 1"
+authors = ["Martin Drasar <drasar@ics.muni.cz>"]
+readme = "README.md"
+
+packages = [
+    { include = "aica-challenge-1-heuristic-agent", from = "src"}
+]
+
+[tool.poetry.dependencies]
+python = "==3.12.*"
+py-flags = "^1.1.4"
+cyst-core = ">=0.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins]
+
+[tool.poetry.plugins."cyst.services"]
+    aica-challenge-1-heuristic-agent="aica-challenge-1-heuristic-agent.main:service_description"
