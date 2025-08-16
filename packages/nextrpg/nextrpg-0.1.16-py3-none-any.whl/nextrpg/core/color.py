@@ -1,0 +1,34 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import override
+
+from nextrpg.core.save import LoadFromSaveList
+
+type Alpha = int
+
+
+@dataclass(frozen=True)
+class Color(LoadFromSaveList):
+    red: int
+    green: int
+    blue: int
+    alpha: Alpha = 255
+
+    @property
+    def tuple(self) -> tuple[int, int, int, Alpha]:
+        return self.red, self.green, self.blue, self.alpha
+
+    @override
+    @property
+    def save_data(self) -> list[int]:
+        return list(self.tuple)
+
+
+BLACK = Color(0, 0, 0)
+WHITE = Color(255, 255, 255)
+TRANSPARENT = Color(0, 0, 0, 0)
+
+
+def alpha_from_percentage(percentage: float) -> Alpha:
+    return int(255 * percentage)
