@@ -1,0 +1,42 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: "Debug: Verify build output 🔎"
+        run: |
+          echo "Checking content of ./docs/docs_site..."
+          ls -lah ./docs/docs_site || echo "❌ Build output directory ./docs/docs_site is missing or empty!"
+
+      - name: Upload GitHub Pages artifact ⬆️
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs/docs_site
+
+      - name: Deploy to GitHub Pages 🚀
+        id: deployment
+        uses: actions/deploy-pages@v4

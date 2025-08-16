@@ -1,0 +1,45 @@
+name: Testing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  Testing-supported-py-versions:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Print the installed uv version
+        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies with uv
+        run: |
+          uv venv .venv
+          uv sync
+        shell: bash
+
+      - name: Run tests with pytest
+        run: |
+          uv run pytest -v tests
+
+      # - name: Lint with ruff (Optional)
+      #   run: |
+      #     uv run ruff check .  # Runs code linting (optional)
