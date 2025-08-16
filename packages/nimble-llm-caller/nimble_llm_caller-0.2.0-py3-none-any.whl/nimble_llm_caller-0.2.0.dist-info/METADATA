@@ -1,0 +1,205 @@
+Metadata-Version: 2.4
+Name: nimble-llm-caller
+Version: 0.2.0
+Summary: A robust, multi-model LLM calling package with intelligent context management, file processing, and advanced prompt handling
+Author-email: Nimble Books LLC <info@nimblebooks.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/nimblebooks/nimble-llm-caller
+Project-URL: Documentation, https://nimble-llm-caller.readthedocs.io
+Project-URL: Repository, https://github.com/nimblebooks/nimble-llm-caller
+Project-URL: Issues, https://github.com/nimblebooks/nimble-llm-caller/issues
+Keywords: llm,ai,openai,anthropic,google,prompt,batch,document,context-management,file-processing,token-estimation,model-upshifting
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: litellm>=1.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: json-repair>=0.25.0
+Requires-Dist: jinja2>=3.1.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: typing-extensions>=4.0.0
+Requires-Dist: tiktoken>=0.5.0
+Requires-Dist: pytest>=8.4.1
+Requires-Dist: pytest-cov>=6.2.1
+Requires-Dist: pandoc>=2.4
+Requires-Dist: tomli>=2.2.1
+Requires-Dist: streamlit>=1.48.1
+Requires-Dist: build>=1.3.0
+Requires-Dist: twine>=6.1.0
+Provides-Extra: enhanced
+Requires-Dist: PyPDF2>=3.0.0; extra == "enhanced"
+Requires-Dist: pdfplumber>=0.9.0; extra == "enhanced"
+Requires-Dist: python-docx>=0.8.11; extra == "enhanced"
+Requires-Dist: striprtf>=0.0.26; extra == "enhanced"
+Requires-Dist: Pillow>=9.0.0; extra == "enhanced"
+Requires-Dist: openpyxl>=3.0.0; extra == "enhanced"
+Requires-Dist: anthropic>=0.25.0; extra == "enhanced"
+Requires-Dist: google-generativeai>=0.3.0; extra == "enhanced"
+Requires-Dist: PyYAML>=6.0.0; extra == "enhanced"
+Provides-Extra: all
+Requires-Dist: nimble-llm-caller[enhanced]; extra == "all"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.10.0; extra == "dev"
+Requires-Dist: pytest-xdist>=3.0.0; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: mkdocs>=1.5.0; extra == "docs"
+Requires-Dist: mkdocs-material>=9.0.0; extra == "docs"
+Requires-Dist: mkdocstrings[python]>=0.22.0; extra == "docs"
+
+# Nimble LLM Caller
+
+A robust, multi-model LLM calling package with advanced prompt management, retry logic, and document assembly capabilities.
+
+## Features
+
+- **Multi-Model Support**: Call multiple LLM providers (OpenAI, Anthropic, Google, etc.) through LiteLLM
+- **Batch Processing**: Submit multiple prompts to multiple models efficiently
+- **Robust JSON Parsing**: Multiple fallback strategies for parsing LLM responses
+- **Retry Logic**: Exponential backoff with jitter for handling rate limits and transient errors
+- **Prompt Management**: JSON-based prompt templates with variable substitution
+- **Document Assembly**: Built-in formatters for text, markdown, and LaTeX output
+- **Reprompting Support**: Use results from previous calls as context for new prompts
+- **Secret Management**: Secure handling of API keys via environment variables
+- **Comprehensive Logging**: Detailed logging for debugging and monitoring
+
+## Installation
+
+### From PyPI (when published)
+```bash
+pip install nimble-llm-caller
+```
+
+### Development Installation
+```bash
+# Clone the repository
+git clone https://github.com/fredzannarbor/nimble-llm-caller.git
+cd nimble-llm-caller
+
+# Install in development mode
+pip install -e .
+
+# Install with development dependencies
+pip install -e .[dev]
+
+# Run setup script
+python setup_dev.py setup
+```
+
+### Verify Installation
+```bash
+# Run the test CLI
+python examples/cli_test.py
+
+# Run specific tests
+python examples/cli_test.py --test install
+```
+
+## Quick Start
+
+### 1. Set up API Keys
+```bash
+export OPENAI_API_KEY="your-openai-key"
+export ANTHROPIC_API_KEY="your-anthropic-key"
+export GOOGLE_API_KEY="your-google-key"
+```
+
+### 2. Basic Usage
+```python
+from nimble_llm_caller import LLMContentGenerator
+
+# Initialize with your prompts file
+generator = LLMContentGenerator("examples/sample_prompts.json")
+
+# Simple single prompt call
+result = generator.call_single(
+    prompt_key="summarize_text",
+    model="gpt-4o",
+    substitutions={"text": "Your text here"}
+)
+
+print(f"Result: {result.content}")
+```
+
+### 3. Batch Processing
+```python
+# Batch processing multiple prompts
+results = generator.call_batch(
+    prompt_keys=["summarize_text", "extract_keywords", "generate_title"],
+    models=["gpt-4o", "claude-3-sonnet"],
+    shared_substitutions={"content": "Your content here"}
+)
+
+print(f"Success rate: {results.success_rate:.1f}%")
+```
+
+### 4. Document Assembly
+```python
+# Assemble results into a document
+document = generator.assemble_document(
+    results, 
+    format="markdown",
+    output_filename="report.md"
+)
+
+print(f"Document created: {document.word_count} words")
+```
+
+## Configuration
+
+Set your API keys in environment variables:
+
+```bash
+export OPENAI_API_KEY="your-openai-key"
+export ANTHROPIC_API_KEY="your-anthropic-key"
+export GOOGLE_API_KEY="your-google-key"
+```
+
+## Prompt Format
+
+Prompts are stored in JSON files with this structure:
+
+```json
+{
+  "prompt_keys": ["summarize_text", "extract_keywords"],
+  "summarize_text": {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a professional summarizer."
+      },
+      {
+        "role": "user", 
+        "content": "Summarize this text: {text}"
+      }
+    ],
+    "params": {
+      "temperature": 0.3,
+      "max_tokens": 1000
+    }
+  }
+}
+```
+
+## Advanced Usage
+
+See the [documentation](docs/) for advanced features including:
+- Custom retry strategies
+- Document templates
+- Reprompting workflows
+- Error handling
+- Performance optimization
