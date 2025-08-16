@@ -1,0 +1,140 @@
+Metadata-Version: 2.4
+Name: kepler-raster-server
+Version: 0.0.11
+Summary: A Python package for serving Kepler raster tiles
+Author-email: Your Name <your@email.com>
+License: MIT License
+        
+        Copyright contributors to the kepler.gl project
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in
+        all copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/igorDykhta/kepler-titiler-tests
+Project-URL: Documentation, https://github.com/igorDykhta/kepler-titiler-tests
+Project-URL: Issues, https://github.com/igorDykhta/kepler-titiler-tests/issues
+Project-URL: Source, https://github.com/igorDykhta/kepler-titiler-tests
+Project-URL: Changelog, https://github.com/igorDykhta/kepler-titiler-tests/changelog
+Keywords: Kepler.gl,Raster Layer
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fastapi<1.0,>=0.100.0
+Requires-Dist: titiler.core==0.22.1
+Requires-Dist: titiler.xarray==0.22.1
+Requires-Dist: titiler.extensions==0.22.1
+Requires-Dist: titiler.mosaic==0.22.1
+Requires-Dist: titiler.application==0.22.1
+Requires-Dist: quantized-mesh-encoder>=0.4.3
+Requires-Dist: pymartini>=0.4.4
+Requires-Dist: pydelatin>=0.2.7
+Requires-Dist: morecantile>=3.2.5
+Requires-Dist: planetary_computer>=0.2.2
+Requires-Dist: numpy==1.26.4
+Dynamic: license-file
+
+# Kepler Raster Server
+
+A raster tile server built on top of [TiTiler](https://github.com/developmentseed/titiler) by Development Seed, providing terrain mesh and STAC mosaic capabilities. All TiTiler licenses and attributions apply to this project.
+
+## Features
+
+- **Terrain Mesh Generation**: Generate quantized mesh terrain tiles for 3D visualization for STAC raster tiles and .pmtiles in raster format
+- **STAC Mosaic Support**: Dynamic STAC API integration for tile serving
+
+## Installation
+
+### Local Development
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/kepler-raster-server.git
+cd kepler-raster-server
+```
+
+2. Build and run with Docker locally:
+
+```bash
+# Enable Docker BuildKit for better caching
+export DOCKER_BUILDKIT=1
+docker-compose up --build titiler
+```
+
+The raster tile server will be available at `http://localhost:8000` and can be used to setup a raster tile layer in kepler.gl during development.
+
+## API Endpoints
+
+The following endpoints are required for raster tile layer in kepler.gl.
+
+### STAC Items
+
+- `/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.npy` - Get stac items in npy format
+
+### STAC Mosaic
+
+- `/stac/mosaic/tiles/{z}/{x}/{y}.npy` - Get mosaic tiles in npy format
+
+### Terrain Mesh
+
+- `/mesh/tiles/{z}/{x}/{y}.terrain` - Get quantized mesh suitable with QuantizedMeshLoader from loaders.gl
+
+## Deployment
+
+### AWS Lambda Deployment
+
+Follow the [TiTiler AWS Lambda deployment guide](https://developmentseed.org/titiler/deployment/aws/lambda/) for serverless deployment. Note that you'll need enough concurrency to support lambda instance per request. In kepler.gl at this moment raster tile layer issues 6 requests per raster server during loading (or 12 when elevation meshes are enabled).
+Make sure to setup enough Lambda concurrency, reserved concurency or provisioned concurrency to prevent 503 Service not available message when there are more requests then available simultaneous Lambda instances.
+Make sure to control your expenses and don't share your server URL publicly unless intended.
+
+If you need to process many requests concurrently more reliably:
+
+- Use AWS Fargate, ECS, or EC2 where multi-threaded or async server logic is supported
+- See the [TiTiler AWS deployment guide](https://developmentseed.org/titiler/deployment/aws/intro/) for more details
+
+### Using in Your Application
+
+To use the server in your Python application:
+
+```python
+from kepler_raster_server import app as kepler_app
+```
+
+### Publishing to PyPI
+
+To publish a new version to PyPI:
+
+1. Update the version in `pyproject.toml`
+2. Run the publish script:
+
+```bash
+./scripts/publish.sh
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Attribution
+
+This project is built on top of [TiTiler](https://github.com/developmentseed/titiler) by Development Seed, which is also licensed under the MIT License. All TiTiler licenses and attributions apply to this project.
+
+## Credits
+
+- [TiTiler](https://github.com/developmentseed/titiler) by Development Seed - The base tile server implementation
+- [Development Seed](https://developmentseed.org/) - For their excellent work on TiTiler and related geospatial tools
