@@ -1,0 +1,95 @@
+Metadata-Version: 2.4
+Name: fx_lib
+Version: 0.5.1
+Summary: FX's personal common lib
+Home-page: https://github.com/frankyxhl/py_fx_lib
+Author: Frank Xu
+Author-email: frank@frankxu.me
+Keywords: fx_lib
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+License-File: LICENSE
+Requires-Dist: PyYAML>=5.4
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+======
+fx-lib
+======
+
+
+Frank Xu(FX)'s personal FX common lib in Python
+
+
+
+Install
+--------
+
+    .. code-block:: bash
+
+        pip install git+https://github.com/frankyxhl/py_fx_lib
+
+    or
+
+    .. code-block:: bash
+
+        pip install fx-lib
+
+
+
+Log Module
+----------
+
+    .. code-block:: python
+
+        import logging
+        from fx_lib.log import setup_logging
+
+        setup_logging(".sync.logging.yaml", default_level=logging.DEBUG)
+        log = logging.getLogger("frank")
+
+        # Usage
+        # log.info("Hello, World")
+
+
+
+Email Module
+------------
+
+    .. code-block:: python
+
+        from fx_lib.zoho_email import Email
+
+        # Usage
+        # with Email.read_config() as e:
+        #     e.send("Email Title", "Content")
+
+
+
+Example
+**********************
+Please check here `Config example file <docs/log_config_example.yaml>`_
+
+
+=======
+History
+=======
+
+0.1.0 (2019-07-28)
+------------------
+
+* First release on PyPI.
