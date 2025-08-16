@@ -1,0 +1,9 @@
+<div class="sequence-view">
+    <ul class="list-group-numbered list-unstyled">
+        {% for item in data %}
+            <li class="list-group-item d-flex gap-2">
+                {% snippet 'resource_docs/view/render.html', data=item, view_type=h.detect_view_type(item), nested=1 %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
