@@ -1,0 +1,216 @@
+[project]
+name = "clearflow"
+version = "0.0.4"  # Version dynamically set by CI/CD pipeline
+description = "Reliable language model orchestration. Type-safe with 100% test coverage."
+authors = [{name = "Richard Beauchamp", email = "rbeauchamp@users.noreply.github.com"}]
+maintainers = [{name = "ClearFlow Contributors"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+keywords = [
+    "language-models", "ai-agents", "orchestration", "agents", "async", 
+    "type-safe", "zero-dependencies", "reliable"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Text Processing :: Linguistic",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/consent-ai/ClearFlow"
+Source = "https://github.com/consent-ai/ClearFlow"
+Issues = "https://github.com/consent-ai/ClearFlow/issues"
+Examples = "https://github.com/consent-ai/ClearFlow/tree/main/examples"
+Inspiration = "https://github.com/The-Pocket/PocketFlow"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "ruff>=0.8.0",
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "pyright>=1.1.390", # Additional type checking
+    "safety>=3.2", # CVE scanner for lock file
+    "typeguard>=4.3.0", # optional runtime type‑checker (use in e2e tests)
+    "pytest-asyncio>=1.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+# Exclude development and session files from package distributions
+exclude = [
+  "/.github",
+  "/.claude",
+  "*.sh",
+  "session-*.md",
+  "continue-*.md",
+  "CLAUDE.md",
+  "GEMINI.md",
+  ".env*",
+  "GitVersion.yml",
+]
+
+[tool.hatch.build.targets.wheel]
+# Wheel only needs the package code
+only-include = ["clearflow", "py.typed"]
+
+[tool.hatch.build.targets.sdist]
+# Source distribution includes more files for development
+include = [
+  "/clearflow",
+  "/tests",
+  "/examples",
+  "/docs",
+  "README.md",
+  "LICENSE",
+  "pyproject.toml",
+  "CONTRIBUTING.md",
+]
+
+#################################### Ruff Configuration ####################################
+[tool.ruff]
+line-length = 88  # Black default for consistency
+target-version = "py313"
+indent-width = 4
+preview = true
+fix = false
+extend-exclude = ["*.ipynb"]  # Notebooks checked separately with relaxed rules
+unsafe-fixes = false
+
+[tool.ruff.lint]
+select = ["ALL"]  # Maximum strictness for mission-critical code
+# Pragmatic ignores focused on productivity while maintaining quality:
+ignore = [
+    # Docstring conflicts
+    "D104",    # Missing docstring in public package (let classes document themselves)
+    "D203",    # 1 blank line required before class docstring (conflicts with D211)
+    "D213",    # Multi-line docstring summary should start at the second line (conflicts with D212)
+    # Formatter conflicts
+    "COM812",  # Missing trailing comma (conflicts with formatter)
+    # Documentation style
+    "DOC201",  # Return not documented - we prefer succinct docstrings
+    # Design choices
+    "PLR6301", # Methods could be static - needed for subclassing pattern
+    "D401",    # First line imperative mood - clearer as descriptions
+    "DOC501",  # Missing raises in docstring - we document inline
+]
+# Never allow fixes for imports that may change execution order
+unfixable = ["F401", "E402", "T201", "PERF401", "C408"]
+
+[tool.ruff.lint.per-file-ignores]
+# Test files have different requirements
+"**/tests/**/*.py" = [
+    "S101",    # Use of assert (required for pytest)
+    "T201",    # Print statements allowed in tests
+    "PLR2004", # Magic values common in test data
+    "RUF029",  # Async functions without await (intentional for flow functions)
+    "C901",    # Complex test scenarios are acceptable in tests
+    "DOC201",  # Return documentation not needed for test functions
+    "PERF401", # Explicit loops needed for pyright type checking
+    "PLR6301", # Methods that could be static (needed for inheritance)
+    "FBT003",  # Boolean literals in function calls (clear in tests)
+]
+# Example files are meant to be educational and practical
+"**/examples/**/*.py" = [
+    "T201",    # Print statements are needed for user interaction
+    "CPY001",  # Copyright notice not required for examples
+    "INP001",  # Examples don't need to be packages
+    "EXE001",  # Shebang presence is fine without executable bit
+]
+
+
+#################################### Mypy Configuration ####################################
+[tool.mypy]
+python_version = "3.13"
+strict = true
+show_error_codes = true
+warn_unreachable = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_no_return = true
+implicit_reexport = false
+strict_equality = true
+strict_concatenate = true      # forbid back‑propagation of *args / **kwargs types :contentReference[oaicite:1]{index=1}
+# Treat specific warning categories as errors
+enable_error_code = [
+  "redundant-expr",             # dead‑code expression
+  "truthy-bool",                # implicit truthiness conversion
+  "ignore-without-code",        # type: ignore without error code
+  "unused-awaitable",           # unused awaitable value
+]
+
+# Type-ignore overrides for external dependencies
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false  # Tests can be less strict
+
+[[tool.mypy.overrides]]
+module = "examples.*"
+ignore_missing_imports = true  # Examples may use external libraries
+
+#################################### Pyright Configuration ####################################
+[tool.pyright]
+typeCheckingMode = "strict"
+pythonVersion = "3.13"
+reportMissingTypeStubs = "error"
+strictListInference       = true  # list[...] inferred as precise union instead of Any :contentReference[oaicite:2]{index=2}
+strictDictionaryInference = true  #     "        dict[…]
+strictSetInference        = true  #     "        set[…]
+analyzeUnannotatedFunctions = true
+# Treat all reportable issues as errors instead of warnings
+reportUnnecessaryTypeIgnoreComment = "error"
+reportMissingParameterType = "error"
+reportUnknownParameterType = "error"
+reportUnknownVariableType = "error"
+reportUnknownMemberType = "error"
+reportImplicitStringConcatenation = "error"
+reportUndefinedVariable = "error"
+reportAssertAlwaysTrue = "error"
+reportSelfClsParameterName = "error"
+reportImplicitOverride = "error"
+exclude = ["**/__pycache__", ".venv"]
+
+# Test-specific overrides
+[tool.pyright.overrides]
+"tests/**/*.py" = { reportUnknownVariableType = "none" }
+"examples/**/*.py" = { reportMissingTypeStubs = "none" }
+
+#################################### Pytest Configuration ####################################
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = [
+  "--cov=clearflow",
+  "--cov-report=term-missing", 
+  "--cov-fail-under=100",
+  "--strict-config",
+  "--strict-markers",
+  "-Werror"
+]

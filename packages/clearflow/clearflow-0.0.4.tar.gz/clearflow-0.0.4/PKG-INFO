@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: clearflow
+Version: 0.0.4
+Summary: Reliable language model orchestration. Type-safe with 100% test coverage.
+Project-URL: Homepage, https://github.com/consent-ai/ClearFlow
+Project-URL: Source, https://github.com/consent-ai/ClearFlow
+Project-URL: Issues, https://github.com/consent-ai/ClearFlow/issues
+Project-URL: Examples, https://github.com/consent-ai/ClearFlow/tree/main/examples
+Project-URL: Inspiration, https://github.com/The-Pocket/PocketFlow
+Author-email: Richard Beauchamp <rbeauchamp@users.noreply.github.com>
+Maintainer: ClearFlow Contributors
+License: MIT
+License-File: LICENSE
+Keywords: agents,ai-agents,async,language-models,orchestration,reliable,type-safe,zero-dependencies
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Typing :: Typed
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+
+# ClearFlow
+
+[![codecov](https://codecov.io/gh/consent-ai/ClearFlow/graph/badge.svg?token=29YHLHUXN3)](https://codecov.io/gh/consent-ai/ClearFlow)
+[![PyPI](https://badge.fury.io/py/clearflow.svg)](https://pypi.org/project/clearflow/)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
+
+Reliable language model orchestration. Type-safe with 100% test coverage.
+
+## Quick Example
+
+```python
+from clearflow import Flow, Node, NodeResult
+
+class ChatNode(Node[dict]):
+    async def exec(self, state: dict) -> NodeResult[dict]:
+        messages = state.get("messages", [])
+        # Call your language model here:
+        # response = await openai_client.chat.completions.create(messages=messages)
+        # content = response.choices[0].message.content
+        content = "Hello!"  # Placeholder response
+        new_messages = [*messages, {"role": "assistant", "content": content}]
+        return NodeResult({**state, "messages": new_messages}, outcome="success")
+
+# Build flow with explicit routing
+chat = ChatNode()
+flow = (
+    Flow[dict]("ChatBot")
+    .start_with(chat)
+    .route(chat, "success", None)  # Single termination
+    .build()
+)
+
+result = await flow({"messages": []})
+```
+
+## Installation
+
+```bash
+pip install clearflow
+```
+
+## Why ClearFlow?
+
+- **<200 lines** - Read the entire source in 5 minutes
+- **Zero dependencies** - No bloat, no conflicts  
+- **100% tested** - Every line covered, no surprises
+- **Type-safe** - Catch errors at compile time, not production
+- **Composable** - Build complex agents from simple pieces
+
+## Examples
+
+- [Chat](examples/chat/) - Language model conversation with state management
+- [Structured Output](examples/structured_output/) - Extract typed data from text
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Acknowledgments
+
+Inspired by [PocketFlow](https://github.com/The-Pocket/PocketFlow)'s Node-Flow-State pattern.
+
+## License
+
+MIT
