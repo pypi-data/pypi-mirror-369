@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mo-mcp"
+version = "0.1.0"
+description = "智能命令行助手 - 基于通义千问的 MCP 协议多工具集成平台"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Mo MCP Team", email = "your-email@example.com"}
+]
+keywords = ["mcp", "ai", "cli", "qwen", "command-line", "tools"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "httpx>=0.24.0",
+    "pandas>=1.5.0",
+    "beautifulsoup4>=4.11.0",
+    "lxml>=4.9.0",
+    "openai>=1.0.0",
+    "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+momcp = "src.mcpai:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/README.md",
+    "/LICENSE",
+    "/example.mcp.config.json",
+    "/example.mcp.config.windows.json",
+    "/.mcp",
+] 
