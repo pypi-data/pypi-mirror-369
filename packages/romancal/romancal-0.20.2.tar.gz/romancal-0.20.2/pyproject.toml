@@ -1,0 +1,374 @@
+[project]
+name = "romancal"
+description = "Library for calibration of science observations from the Nancy Grace Roman Space Telescope"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Roman calibration pipeline developers", email = "help@stsci.edu" },
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "asdf >=4.1.0",
+    "asdf-astropy >=0.8.0",
+    "astropy >=6.0.0",
+    "crds >=11.16.21",
+    "gwcs >=0.25.2",
+    "jsonschema >=4.8",
+    "numpy >=1.25",
+    "photutils >=2.1.0",
+    "requests >=2.26",
+    "roman_datamodels>=0.27.0,<0.28.0",
+    # "roman_datamodels @ git+https://github.com/spacetelescope/roman_datamodels.git",
+    "scipy >=1.14.1",
+    "stcal>=1.15.0,<1.16.0",
+    # "stcal @ git+https://github.com/spacetelescope/stcal.git@main",
+    "stpipe >=0.10.0,<0.11.0",
+    "tweakwcs >=0.8.11",
+    "spherical-geometry >= 1.3.3",
+    "stsci.imagestats >= 1.8.3",
+    "drizzle >= 2.1.1",
+    "pyarrow >= 10.0.1",  # for Table.read(...) support in astropy for parquet files
+    "pandas >= 2.0.0",  # for Table.read(...) support in astropy for parquet files
+]
+license-files = ["LICENSE"]
+dynamic = [
+    "version",
+]
+
+[project.optional-dependencies]
+docs = [
+    "matplotlib",
+    "sphinx",
+    "sphinx-astropy",
+    "sphinx-automodapi",
+    "sphinx-rtd-theme",
+    "stsci-rtd-theme",
+    "sphinx-autobuild",
+]
+test = [
+    "ci-watson >=0.5.0",
+    "pysiaf",
+    "pytest >8.0.0",
+    "pytest-astropy >= 0.11.0",
+    "deepdiff",
+    "stpreview>=0.6.0",
+]
+dev = [
+    "pysiaf",
+    "romancal[docs,test]",
+    "tox > 4",
+    "pre-commit > 3",
+]
+sdp = [
+    "pysiaf",
+    "stpreview>=0.6.0",
+    "roman-photoz",
+]
+
+[project.urls]
+tracker = "https://github.com/spacetelescope/romancal/issues"
+documentation = "https://roman-pipeline.readthedocs.io/en/stable/"
+repository = "https://github.com/spacetelescope/romancal"
+
+[project.entry-points."stpipe.steps"]
+romancal = "romancal.stpipe.integration:get_steps"
+
+[project.scripts]
+asn_from_list = "romancal.associations.asn_from_list:_cli"
+mk_skycell_asn_from_skycell_list= "romancal.associations.mk_skycell_asn_from_skycell_list:_cli"
+mk_skycell_list = "romancal.associations.mk_skycell_list:_cli"
+roman_pointing_summary = "romancal.scripts.pointing_summary:main"
+roman_set_telescope_pointing = "romancal.scripts.set_telescope_pointing:main"
+roman_set_velocity_aberration = "romancal.scripts.set_velocity_aberration:main"
+roman_static_preview = "romancal.scripts.static_preview:command"
+roman_v1_calculate = "romancal.scripts.v1_calculate:main"
+skycell_asn = "romancal.associations.skycell_asn:_cli"
+
+[build-system]
+requires = [
+    "setuptools >=60",
+    "setuptools_scm[toml] >=3.4",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = false
+
+[tool.setuptools.packages.find]
+namespaces = false
+include = ["romancal*"]
+
+[tool.setuptools.package-data]
+# package_data values are glob patterns relative to each specific subpackage.
+"*" = [
+    "**/*.fits",
+    "**/*.txt",
+    "**/*.inc",
+    "**/*.cfg",
+    "**/*.csv",
+    "**/*.yaml",
+    "**/*.json",
+    "**/*.asdf",
+]
+
+[tool.pytest.ini_options]
+minversion = 6.0
+norecursedirs = [
+    "docs/_build",
+    "romancal/scripts",
+    ".tox",
+    ".eggs",
+    "build",
+]
+filterwarnings = [
+    "error::ResourceWarning",
+    "error::DeprecationWarning",
+]
+junit_family = "xunit2"
+inputs_root = "roman-pipeline"
+results_root = "roman-pipeline-results/regression-tests/runs/"
+doctest_plus = "enabled"
+doctest_rst = "enabled"
+text_file_format = "rst"
+log_cli_level = "info"
+xfail_strict = true
+addopts = [
+    "--color=yes",      # color test output
+    "--doctest-rst",    # enable doctests
+    "--doctest-ignore-import-errors",
+    "--strict-config",  # fail on unknown config options
+    "--strict-markers", # fail on unknown markers
+    "-ra",              # Show summary of all failures/errorsproduct_names
+]
+markers = [
+    "soctests: run only the SOC tests in the suite.",
+]
+
+[tool.coverage.run]
+omit = [
+    "romancal/regtest/conftest.py",
+    "romancal/setup.py",
+    "romancal/tests/test*",
+    "romancal/regtest/test*",
+    "romancal/*/tests/*",
+    "docs/*",
+    "*/romancal/regtest/conftest.py",
+    "*/romancal/setup.py",
+    "*/romancal/tests/test*",
+    "*/romancal/regtest/test*",
+    "*/romancal/*/tests/*",
+    "*/docs/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if self.debug:",
+    "except ImportError",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == \"__main__\":",
+]
+
+[tool.ruff]
+line-length = 88
+
+
+[tool.ruff.lint]
+extend-select = [
+    "UP",   # PyUpgrade
+    "I",    # isort
+    "B",    # BugBear
+    "S",    # Bandit
+    "RUF",  # ruff specific
+    "NPY",  # Numpy lint
+]
+exclude = [
+    "jdocs",
+    ".tox",
+    ".eggs",
+    "build",
+]
+ignore = [
+    "E741", # ambiguous variable name
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"romancal/associations/__init__.py" = [
+    "E402",
+]
+"romancal/**/tests/**.py" = [
+    "S101" # Bandit: Use of assert detected (fine in test files)
+]
+"romancal/**/test/**.py" = [
+    "S101" # Bandit: Use of assert detected (fine in test files)
+]
+"romancal/regtest/**.py" = [
+    "S101" # Bandit: Use of assert detected (fine in test files)
+]
+
+[tool.cibuildwheel.macos]
+archs = [
+    "x86_64",
+    "arm64",
+]
+
+[tool.cibuildwheel.linux]
+archs = [
+    "auto",
+    "aarch64",
+]
+
+[tool.towncrier]
+filename = "CHANGES.rst"
+directory = "changes"
+package = "romancal"
+title_format = "{version} ({project_date})"
+ignore = [".gitkeep"]
+wrap = true
+issue_format = "`#{issue} <https://github.com/spacetelescope/romancal/issues/{issue}>`_"
+
+[[tool.towncrier.type]]
+directory = "general"
+name = "General"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "docs"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "stpipe"
+name = "``stpipe``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "associations"
+name = "Associations"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "scripts"
+name = "Scripts"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "exposure_pipeline"
+name = "``exposure_pipeline``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "mosaic_pipeline"
+name = "``mosaic_pipeline``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "skycell"
+name = "``skycell``"
+showcontent = true
+
+# steps
+
+[[tool.towncrier.type]]
+directory = "dq_init"
+name = "``dq_init`` (WFI-Image, WFI-Prism, WFI-Grism)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "saturation"
+name = "``saturation`` (WFI-Image, WFI-Prism, WFI-Grism)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "refpix"
+name = "``refpix`` (WFI-Image, WFI-Prism, WFI-Grism)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "linearity"
+name = "``linearity`` (WFI-Image, WFI-Prism, WFI-Grism)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dark_current"
+name = "``dark_current`` (WFI-Image, WFI-Prism, WFI-Grism)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "jump_detection"
+name = "``jump_detection``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "orientation"
+name = "``orientation``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "ramp_fitting"
+name = "``ramp_fitting`` (WFI-Image, WFI-Prism, WFI-Grism)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "assign_wcs"
+name = "``assign_wcs`` (WFI-Image, WFI-Prism, WFI-Grism)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "flatfield"
+name = "``flatfield`` (WFI-Image)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "photom"
+name = "``photom`` (WFI-Image)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "flux"
+name = "``flux``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "source_detection"
+name = "``source_detection`` (WFI-Image)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "tweakreg"
+name = "``tweakreg`` (WFI-Image)"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "skymatch"
+name = "``skymatch``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "outlier_detection"
+name = "``outlier_detection``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "resample"
+name = "``resample``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "source_catalog"
+name = "``source_catalog``"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "multiband_catalog"
+name = "``multiband_catalog``"
+showcontent = true
