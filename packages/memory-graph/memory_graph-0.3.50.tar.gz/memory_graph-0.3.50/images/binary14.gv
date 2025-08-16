@@ -1,0 +1,30 @@
+digraph memory_graph {
+	node [shape=plaintext]
+	node127621803770688 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" BGCOLOR="#60a5ff" PORT="table">
+    <TR><TD BORDER="0"> </TD></TR>
+</TABLE>
+> xlabel=dict]
+	node127621804114240 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="lightcoral" PORT="table">
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="0"><font color="#505050">2</font></TD><TD BORDER="0"><font color="#505050">3</font></TD><TD BORDER="0"><font color="#505050">4</font></TD><TD BORDER="0"><font color="#505050">5</font></TD><TD BORDER="0"><font color="#505050">6</font></TD></TR>
+    <TR><TD BORDER="1"> 1 </TD><TD BORDER="1"> 1 </TD><TD BORDER="1"> 0 </TD><TD BORDER="1"> 0 </TD><TD BORDER="1"> 1 </TD><TD BORDER="1"> 0 </TD><TD BORDER="1"> 0 </TD></TR>
+</TABLE>
+> xlabel=list]
+	node127621804123776 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="#60a5ff" PORT="table">
+    <TR><TD BORDER="1" STYLE="ROUNDED"> value </TD><TD BORDER="1" STYLE="ROUNDED"> quotient </TD><TD BORDER="1" STYLE="ROUNDED"> remainder </TD><TD BORDER="1" STYLE="ROUNDED"> result </TD></TR>
+    <TR><TD BORDER="1"> 100 </TD><TD BORDER="1"> 50 </TD><TD BORDER="1"> 0 </TD><TD BORDER="1" PORT="ref0"> </TD></TR>
+</TABLE>
+> xlabel=dict]
+	node127621804123776:ref0 -> node127621804114240:table [style=solid]
+	node127621804033920 [label=<
+<TABLE BORDER="3" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="khaki" PORT="table">
+    <TR><TD BORDER="1" STYLE="ROUNDED"> 0: &lt;module&gt; </TD><TD BORDER="1" STYLE="ROUNDED"> 1: binary </TD></TR>
+    <TR><TD BORDER="1" PORT="ref0"> </TD><TD BORDER="1" PORT="ref1"> </TD></TR>
+</TABLE>
+> xlabel=call_stack]
+	node127621804033920:ref0 -> node127621803770688:table [style=solid]
+	node127621804033920:ref1 -> node127621804123776:table [style=solid]
+subgraph { rank=same; node127621803770688 -> node127621804123776[weight=10, style=invis]; }
+}

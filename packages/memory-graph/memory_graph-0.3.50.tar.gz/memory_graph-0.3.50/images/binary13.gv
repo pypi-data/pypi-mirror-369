@@ -1,0 +1,38 @@
+digraph memory_graph {
+	node [shape=plaintext]
+	node127621804123776 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" BGCOLOR="#60a5ff" PORT="table">
+    <TR><TD BORDER="0"> </TD></TR>
+</TABLE>
+> xlabel=dict]
+	node127621804117184 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="#60a5ff" PORT="table">
+    <TR><TD BORDER="1" STYLE="ROUNDED"> value </TD><TD BORDER="1"> 100 </TD></TR>
+    <TR><TD BORDER="1" STYLE="ROUNDED"> quotient </TD><TD BORDER="1"> 50 </TD></TR>
+    <TR><TD BORDER="1" STYLE="ROUNDED"> remainder </TD><TD BORDER="1"> 0 </TD></TR>
+</TABLE>
+> xlabel=dict]
+	node127621804064000 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="lightcoral" PORT="table">
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="0"><font color="#505050">2</font></TD><TD BORDER="0"><font color="#505050">3</font></TD><TD BORDER="0"><font color="#505050">4</font></TD><TD BORDER="0"><font color="#505050">5</font></TD></TR>
+    <TR><TD BORDER="1"> 1 </TD><TD BORDER="1"> 1 </TD><TD BORDER="1"> 0 </TD><TD BORDER="1"> 0 </TD><TD BORDER="1"> 1 </TD><TD BORDER="1"> 0 </TD></TR>
+</TABLE>
+> xlabel=list]
+	node127621803770688 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="#60a5ff" PORT="table">
+    <TR><TD BORDER="1" STYLE="ROUNDED"> value </TD><TD BORDER="1" STYLE="ROUNDED"> quotient </TD><TD BORDER="1" STYLE="ROUNDED"> remainder </TD><TD BORDER="1" STYLE="ROUNDED"> result </TD></TR>
+    <TR><TD BORDER="1"> 50 </TD><TD BORDER="1"> 25 </TD><TD BORDER="1"> 0 </TD><TD BORDER="1" PORT="ref0"> </TD></TR>
+</TABLE>
+> xlabel=dict]
+	node127621803770688:ref0 -> node127621804064000:table [style=solid]
+	node127621804034400 [label=<
+<TABLE BORDER="3" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="khaki" PORT="table">
+    <TR><TD BORDER="1" STYLE="ROUNDED"> 0: &lt;module&gt; </TD><TD BORDER="1" STYLE="ROUNDED"> 1: binary </TD><TD BORDER="1" STYLE="ROUNDED"> 2: binary </TD></TR>
+    <TR><TD BORDER="1" PORT="ref0"> </TD><TD BORDER="1" PORT="ref1"> </TD><TD BORDER="1" PORT="ref2"> </TD></TR>
+</TABLE>
+> xlabel=call_stack]
+	node127621804034400:ref0 -> node127621804123776:table [style=solid]
+	node127621804034400:ref1 -> node127621804117184:table [style=solid]
+	node127621804034400:ref2 -> node127621803770688:table [style=solid]
+subgraph { rank=same; node127621804123776 -> node127621804117184 -> node127621803770688[weight=10, style=invis]; }
+}

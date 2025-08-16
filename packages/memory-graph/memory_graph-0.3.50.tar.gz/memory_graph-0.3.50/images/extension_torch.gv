@@ -1,0 +1,51 @@
+digraph memory_graph {
+	node [shape=plaintext]
+	node137836528467424 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="darkolivegreen1" PORT="table">
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="1"> 0.4962566 </TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="1"> 0.7682218 </TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">2</font></TD><TD BORDER="1"> 0.08847743 </TD></TR>
+</TABLE>
+> xlabel=Tensor]
+	node137832933431072 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="darkolivegreen1" PORT="table">
+    <TR><TD BORDER="0">  </TD><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="1"> 0.13203049 </TD><TD BORDER="1"> 0.30742282 </TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="1"> 0.6340787 </TD><TD BORDER="1"> 0.4900934 </TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">2</font></TD><TD BORDER="1"> 0.89644474 </TD><TD BORDER="1"> 0.45562798 </TD></TR>
+</TABLE>
+> xlabel="Tensor 3⨯2"]
+	node137832940016848 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="hotpink1" PORT="table">
+    <TR><TD BORDER="0">  </TD><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="1"> 0.6323063 </TD><TD BORDER="1"> 0.34889346 </TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="1"> 0.4017173 </TD><TD BORDER="1"> 0.022325754 </TD></TR>
+</TABLE>
+> xlabel="ndarray 2⨯2"]
+	node137832933651248 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="hotpink1" PORT="table">
+    <TR><TD BORDER="0">  </TD><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="1"> 0.16885895 </TD><TD BORDER="1"> 0.29388845 </TD></TR>
+    <TR><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="1"> 0.5185218 </TD><TD BORDER="1"> 0.6976676 </TD></TR>
+</TABLE>
+> xlabel="ndarray 2⨯2"]
+	node137832931971056 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="darkolivegreen1" PORT="table">
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD></TR>
+    <TR><TD BORDER="1" PORT="ref0"> </TD><TD BORDER="1" PORT="ref1"> </TD></TR>
+</TABLE>
+> xlabel=Tensor]
+	node137832931971056:ref0 -> node137832940016848:table [style=solid]
+	node137832931971056:ref1 -> node137832933651248:table [style=solid]
+	node137836532828032 [label=<
+<TABLE BORDER="3" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="#60a5ff" PORT="table">
+    <TR><TD BORDER="1" STYLE="ROUNDED"> tensor_1d </TD><TD BORDER="1" STYLE="ROUNDED"> tensor_2d </TD><TD BORDER="1" STYLE="ROUNDED"> tensor_3d </TD></TR>
+    <TR><TD BORDER="1" PORT="ref0"> </TD><TD BORDER="1" PORT="ref1"> </TD><TD BORDER="1" PORT="ref2"> </TD></TR>
+</TABLE>
+> xlabel=dict]
+	node137836532828032:ref0 -> node137836528467424:table [style=solid]
+	node137836532828032:ref1 -> node137832933431072:table [style=solid]
+	node137836532828032:ref2 -> node137832931971056:table [style=solid]
+subgraph { rank=same; node137836528467424 -> node137832933431072 -> node137832931971056[weight=10, style=invis]; }
+subgraph { rank=same; node137832940016848 -> node137832933651248[weight=10, style=invis]; }
+}

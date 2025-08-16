@@ -1,0 +1,186 @@
+diff --git a/images/avltree.py b/images/avltree.py
+index a8400e8..c984c04 100644
+--- a/images/avltree.py
++++ b/images/avltree.py
+@@ -19,7 +19,7 @@ mg.config.type_to_node[bintrees.avltree.Node] = lambda data: mg.node_linear.Node
+ mg.config.type_to_slicer[bintrees.avltree.Node] = mg.slicer.Slicer()
+ mg.render(locals(), 'avltree_dir.png')
+ 
+-mg.config.type_to_node[bintrees.avltree.Node] = lambda data: mg.node_base.Node_Base(f"key:{data.key} value:{data.value}")
++mg.config.type_to_node[bintrees.avltree.Node] = lambda data: mg.node_leaf.Node_Leaf(data, f"key:{data.key} value:{data.value}")
+ mg.render(locals(), 'avltree_base.png')
+ 
+ mg.config.type_to_node[bintrees.avltree.Node] = lambda data: mg.node_linear.Node_Linear(data,
+diff --git a/images/avltree_base.png b/images/avltree_base.png
+index 324c36d..de59c50 100644
+Binary files a/images/avltree_base.png and b/images/avltree_base.png differ
+diff --git a/images/not_node_types2.png b/images/not_node_types2.png
+index b001e4b..ee6e943 100644
+Binary files a/images/not_node_types2.png and b/images/not_node_types2.png differ
+diff --git a/memory_graph/config_default.py b/memory_graph/config_default.py
+index 4945c75..02877c0 100644
+--- a/memory_graph/config_default.py
++++ b/memory_graph/config_default.py
+@@ -3,7 +3,7 @@
+ # SPDX-License-Identifier: BSD-2-Clause
+ 
+ """ Sets the default configuration values for the memory graph. """
+-from memory_graph.node_base      import Node_Base
++from memory_graph.node_leaf      import Node_Leaf
+ from memory_graph.node_linear    import Node_Linear
+ from memory_graph.node_key_value import Node_Key_Value
+ from memory_graph.node_table     import Node_Table
+@@ -37,14 +37,14 @@ config.not_node_types = {
+ """ Types that will not have references pointing to their children in the graph but instead will have their children visualized in their node. """
+ config.no_child_references_types = {dict, types.MappingProxyType}
+ 
+-""" Conversion from type to Node_Base objects. """
++""" Conversion from type to Node objects. """
+ config.type_to_node = {
+-    str: lambda data: Node_Base(data), # visit as whole string, don't iterate over characters
++    str: lambda data: Node_Leaf(data, data), # visit as whole string, don't iterate over characters
+     call_stack: lambda data: Node_Key_Value(data, data.items()),
+-    types.FunctionType: lambda data: Node_Base(data.__qualname__),
+-    types.MethodType: lambda data: Node_Base(data.__qualname__),
+-    classmethod: lambda data: Node_Base(data.__qualname__),
+-    staticmethod: lambda data: Node_Base(data.__qualname__),
++    types.FunctionType: lambda data: Node_Leaf(data, data.__qualname__),
++    types.MethodType: lambda data: Node_Leaf(data, data.__qualname__),
++    classmethod: lambda data: Node_Leaf(data, data.__qualname__),
++    staticmethod: lambda data: Node_Leaf(data, data.__qualname__),
+     range: lambda data: Node_Key_Value(data, {'start':data.start, 'stop':data.stop, 'step':data.step}.items()),
+     dict: lambda data: (
+         Node_Key_Value(data, utils.filter_dict(data.items()) )
+@@ -79,7 +79,7 @@ config.type_to_color = {
+ }
+ 
+ """ Types that will be visualized in vertical orientation if 'True', or horizontal orientation 
+-if 'False'. Otherwise the Node_Base decides based on it having references."""
++if 'False'. Otherwise the Node decides based on it having references."""
+ config.type_to_vertical_orientation = {
+ }
+ 
+diff --git a/memory_graph/memory_to_nodes.py b/memory_graph/memory_to_nodes.py
+index a67662e..10c559a 100644
+--- a/memory_graph/memory_to_nodes.py
++++ b/memory_graph/memory_to_nodes.py
+@@ -2,7 +2,7 @@
+ # Copyright (c) 2023, Bas Terwijn.
+ # SPDX-License-Identifier: BSD-2-Clause
+ 
+-from memory_graph.node_base import Node_Base
++from memory_graph.node_leaf import Node_Leaf
+ from memory_graph.node_linear import Node_Linear
+ from memory_graph.node_key_value import Node_Key_Value
+ 
+@@ -21,7 +21,7 @@ def read_nodes(data):
+         elif utils.is_finite_iterable(data): # for lists, tuples, sets, ...
+             return Node_Linear(data, data)
+         else:
+-            return Node_Base(data)
++            return Node_Leaf(data, data)
+ 
+     def memory_to_nodes_recursive(nodes, data, parent, parent_index):
+         data_type = type(data)
+diff --git a/memory_graph/node_base.py b/memory_graph/node_base.py
+index 1f46b9a..3d1fbe1 100644
+--- a/memory_graph/node_base.py
++++ b/memory_graph/node_base.py
+@@ -7,7 +7,9 @@ import memory_graph.config as config
+ import memory_graph.config_helpers as config_helpers
+ from memory_graph.sequence import Sequence1D
+ 
+-class Node_Base:
++from abc import ABC, abstractmethod
++
++class Node_Base(ABC):
+     """
+     Node_Base represents a node in the memory graph. This base class has different subclasses for different types of nodes.
+     """
+@@ -99,10 +101,7 @@ class Node_Base:
+         from memory_graph.html_table import HTML_Table
+         import memory_graph.node_base
+         html_table = HTML_Table()
+-        if type(self) is memory_graph.node_base.Node_Base:
+-            html_table.add_string(f'{self.data}')
+-        elif not slices is None:
+-            self.fill_html_table(nodes, html_table, slices, id_to_slices)
++        self.fill_html_table(nodes, html_table, slices, id_to_slices)
+         return html_table
+     
+     def get_slicer(self):
+@@ -123,6 +122,7 @@ class Node_Base:
+ 
+     # -------------------- Node_Base interface, overriden by subclasses --------------------
+ 
++    @abstractmethod
+     def fill_html_table(self, html_table, slices, id_to_slices):
+         """
+         Fill the HTML_Table object with each child of the node.
+@@ -133,4 +133,4 @@ class Node_Base:
+         """
+         Return a label for the node to be shown in the graph next to the HTML table.
+         """
+-        return self.get_type_name()
+\ No newline at end of file
++        return self.get_type_name()
+diff --git a/memory_graph/node_key_value.py b/memory_graph/node_key_value.py
+index 762857e..0c2cd86 100644
+--- a/memory_graph/node_key_value.py
++++ b/memory_graph/node_key_value.py
+@@ -54,6 +54,8 @@ class Node_Key_Value(Node_Base):
+         """
+         Fill the html_table with the children of the Node_Base.
+         """
++        if slices is None:
++            return
+         vertical = self.is_vertical(nodes, slices, id_to_slices)
+         if vertical:
+             self.fill_html_table_vertical(html_table, nodes, slices, id_to_slices)
+@@ -119,4 +121,4 @@ class Node_Key_Value(Node_Base):
+         if len(s) == 1:
+             if s[0][1] - s[0][0] == size:
+                 return f'{type_name}'
+-        return f'{type_name} {size}'
+\ No newline at end of file
++        return f'{type_name} {size}'
+diff --git a/memory_graph/node_linear.py b/memory_graph/node_linear.py
+index c6926f0..38b8cf0 100644
+--- a/memory_graph/node_linear.py
++++ b/memory_graph/node_linear.py
+@@ -45,6 +45,8 @@ class Node_Linear(Node_Base):
+         """
+         Fill the html_table with the children of the Node_Base.
+         """
++        if slices is None:
++            return
+         if self.is_vertical(nodes, slices, id_to_slices):
+             self.fill_html_table_vertical(html_table, nodes, slices, id_to_slices)
+         else:
+@@ -95,4 +97,4 @@ class Node_Linear(Node_Base):
+             if s[0][1] - s[0][0] == size:
+                 return f'{type_name}'
+         return f'{type_name} {size}'
+-        
+\ No newline at end of file
++        
+diff --git a/memory_graph/node_table.py b/memory_graph/node_table.py
+index 67914a9..82279d3 100644
+--- a/memory_graph/node_table.py
++++ b/memory_graph/node_table.py
+@@ -35,7 +35,7 @@ class Node_Table(Node_Base):
+         """
+         Fill the html_table with the children of the Node_Base.
+         """
+-        if slices.is_empty():
++        if slices is None or slices.is_empty():
+             return
+         children = self.children
+         children_size = children.size()
+@@ -80,4 +80,4 @@ class Node_Table(Node_Base):
+         """
+         size = self.get_children().size()
+         return f'{self.get_type_name()} {size[0]}⨯{size[1]}'
+-    
+\ No newline at end of file
++    
