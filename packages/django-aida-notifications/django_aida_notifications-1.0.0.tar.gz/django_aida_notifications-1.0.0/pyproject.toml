@@ -1,0 +1,186 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-aida-notifications"
+version = "1.0.0"
+description = "A comprehensive Django notification extension with email (via Anymail) and SMS (via Twilio) support"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "AIDA Notifications Contributors", email = "support@aida-notifications.org"},
+]
+maintainers = [
+    {name = "AIDA Team", email = "maintainers@aida-notifications.org"},
+]
+keywords = ["django", "notifications", "email", "sms", "twilio", "anymail"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Topic :: Communications :: Email",
+    "Topic :: Communications :: Telephony",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "Django>=3.2,<6.0",
+    "django-anymail>=8.0",
+    "twilio>=7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-django>=4.0",
+    "pytest-cov>=3.0",
+    "ruff>=0.1.0",
+    "mypy>=0.950",
+    "django-stubs>=1.12.0",
+    "pre-commit>=3.0",
+]
+redis = [
+    "redis>=4.0",
+    "django-redis>=5.0",
+]
+celery = [
+    "celery>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/hmesfin/aida-notifications"
+Documentation = "https://github.com/hmesfin/aida-notifications#readme"
+Repository = "https://github.com/hmesfin/aida-notifications.git"
+"Bug Tracker" = "https://github.com/hmesfin/aida-notifications/issues"
+"Changelog" = "https://github.com/hmesfin/aida-notifications/blob/main/CHANGELOG.md"
+
+[tool.ruff]
+target-version = "py38"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "DTZ",    # flake8-datetimez
+    "Q",      # flake8-quotes
+    "TID",    # flake8-tidy-imports
+    "RUF",    # Ruff-specific rules
+    "PT",     # flake8-pytest-style
+    "PIE",    # flake8-pie
+    "RET",    # flake8-return
+    "SLF",    # flake8-self
+    "RSE",    # flake8-raise
+    "T10",    # flake8-debugger
+    "ISC",    # flake8-implicit-str-concat
+    "ICN",    # flake8-import-conventions
+    "G",      # flake8-logging-format
+    "PIE",    # flake8-pie
+    "COM",    # flake8-commas
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # do not perform function calls in argument defaults
+    "C901",   # too complex
+    "W191",   # indentation contains tabs
+    "B904",   # Allow raising exceptions without from
+    "ARG002", # Unused method argument
+    "ARG001", # Unused function argument
+    "G004",   # Allow f-string in logging
+    "TID252", # Allow relative imports in packages
+    "SIM105", # Allow try-except-pass for import checks
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"*/tests/*" = ["ARG", "S101", "S105", "S106", "PT009", "F841"]  # PT009: Allow unittest-style assertions in tests
+"*/migrations/*" = ["E501", "ARG001"]
+"*/admin.py" = ["RUF012"]  # RUF012: Allow mutable class attributes in Django admin
+"*/models.py" = ["RUF012"]  # RUF012: Allow mutable class attributes in Django models  
+"*/apps.py" = ["F401"]  # F401: Allow unused imports in app configs
+"setup.py" = ["T201"]
+
+[tool.ruff.lint.isort]
+known-third-party = ["django", "anymail", "twilio", "redis", "celery"]
+known-first-party = ["aida_notifications"]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+docstring-quotes = "double"
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.8"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "tests.settings"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+addopts = [
+    "--strict-markers",
+    "--tb=short",
+    "--cov=aida_notifications",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-branch",
+]
+
+[tool.coverage.run]
+source = ["aida_notifications"]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/admin.py",
+    "*/apps.py",
+    "*/__init__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "def __str__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "if typing.TYPE_CHECKING:",
+]
