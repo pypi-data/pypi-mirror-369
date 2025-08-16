@@ -1,0 +1,327 @@
+Metadata-Version: 2.4
+Name: whisperx-nemo-pipeline
+Version: 1.0.6
+Summary: Production-ready transcription and diarization pipeline with parallel processing
+Author-email: Paul Borie <paul.borie1@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/PaulBorie/whisperx-nemo-parallel
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Multimedia :: Sound/Audio :: Analysis
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: absl-py==2.3.1
+Requires-Dist: aiohappyeyeballs==2.6.1
+Requires-Dist: aiohttp==3.12.15
+Requires-Dist: aiosignal==1.4.0
+Requires-Dist: alembic==1.16.4
+Requires-Dist: annotated-types==0.7.0
+Requires-Dist: antlr4-python3-runtime==4.9.3
+Requires-Dist: asteroid-filterbanks==0.4.0
+Requires-Dist: asttokens==3.0.0
+Requires-Dist: attrs==25.3.0
+Requires-Dist: audioread==3.0.1
+Requires-Dist: av==15.0.0
+Requires-Dist: braceexpand==0.1.7
+Requires-Dist: certifi==2025.8.3
+Requires-Dist: cffi==1.17.1
+Requires-Dist: charset-normalizer==3.4.3
+Requires-Dist: click==8.2.1
+Requires-Dist: cloudpickle==3.1.1
+Requires-Dist: coloredlogs==15.0.1
+Requires-Dist: colorlog==6.9.0
+Requires-Dist: comm==0.2.3
+Requires-Dist: contourpy==1.3.3
+Requires-Dist: ctranslate2==4.4.0
+Requires-Dist: cycler==0.12.1
+Requires-Dist: cytoolz==1.0.1
+Requires-Dist: datasets==3.2.0
+Requires-Dist: decorator==5.2.1
+Requires-Dist: dill==0.3.8
+Requires-Dist: Distance==0.1.3
+Requires-Dist: docopt==0.6.2
+Requires-Dist: dora_search==0.1.12
+Requires-Dist: editdistance==0.8.1
+Requires-Dist: einops==0.8.1
+Requires-Dist: executing==2.2.0
+Requires-Dist: faster-whisper==1.1.0
+Requires-Dist: fiddle==0.3.0
+Requires-Dist: filelock==3.18.0
+Requires-Dist: flatbuffers==25.2.10
+Requires-Dist: fonttools==4.59.0
+Requires-Dist: frozenlist==1.7.0
+Requires-Dist: fsspec==2024.9.0
+Requires-Dist: future==1.0.0
+Requires-Dist: g2p-en==2.1.0
+Requires-Dist: gitdb==4.0.12
+Requires-Dist: GitPython==3.1.45
+Requires-Dist: graphviz==0.21
+Requires-Dist: greenlet==3.2.4
+Requires-Dist: grpcio==1.74.0
+Requires-Dist: huggingface-hub==0.23.5
+Requires-Dist: humanfriendly==10.0
+Requires-Dist: hydra-core==1.3.2
+Requires-Dist: HyperPyYAML==1.2.2
+Requires-Dist: idna==3.10
+Requires-Dist: inflect==7.5.0
+Requires-Dist: iniconfig==2.1.0
+Requires-Dist: intervaltree==3.1.0
+Requires-Dist: ipython==9.4.0
+Requires-Dist: ipython_pygments_lexers==1.1.1
+Requires-Dist: ipywidgets==8.1.7
+Requires-Dist: jedi==0.19.2
+Requires-Dist: Jinja2==3.1.6
+Requires-Dist: jiwer==4.0.0
+Requires-Dist: joblib==1.5.1
+Requires-Dist: julius==0.2.7
+Requires-Dist: jupyterlab_widgets==3.0.15
+Requires-Dist: kaldi-python-io==1.2.2
+Requires-Dist: kaldiio==2.18.1
+Requires-Dist: kiwisolver==1.4.9
+Requires-Dist: lameenc==1.8.1
+Requires-Dist: lazy_loader==0.4
+Requires-Dist: Levenshtein==0.27.1
+Requires-Dist: lhotse==1.30.3
+Requires-Dist: libcst==1.8.2
+Requires-Dist: librosa==0.11.0
+Requires-Dist: lightning==2.5.3
+Requires-Dist: lightning-utilities==0.15.2
+Requires-Dist: lilcom==1.8.1
+Requires-Dist: llvmlite==0.44.0
+Requires-Dist: loguru==0.7.3
+Requires-Dist: Mako==1.3.10
+Requires-Dist: Markdown==3.8.2
+Requires-Dist: markdown-it-py==4.0.0
+Requires-Dist: MarkupSafe==3.0.2
+Requires-Dist: marshmallow==4.0.0
+Requires-Dist: matplotlib==3.10.5
+Requires-Dist: matplotlib-inline==0.1.7
+Requires-Dist: mdurl==0.1.2
+Requires-Dist: more-itertools==10.7.0
+Requires-Dist: mpmath==1.3.0
+Requires-Dist: msgpack==1.1.1
+Requires-Dist: multidict==6.6.4
+Requires-Dist: multiprocess==0.70.16
+Requires-Dist: nemo_toolkit==2.0.0rc0
+Requires-Dist: networkx==3.5
+Requires-Dist: nltk==3.9.1
+Requires-Dist: numba==0.61.2
+Requires-Dist: numpy==1.26.4
+Requires-Dist: nvidia-cublas-cu12==12.8.4.1
+Requires-Dist: nvidia-cuda-cupti-cu12==12.8.90
+Requires-Dist: nvidia-cuda-nvrtc-cu12==12.8.93
+Requires-Dist: nvidia-cuda-runtime-cu12==12.8.90
+Requires-Dist: nvidia-cudnn-cu12==9.10.2.21
+Requires-Dist: nvidia-cufft-cu12==11.3.3.83
+Requires-Dist: nvidia-cufile-cu12==1.13.1.3
+Requires-Dist: nvidia-curand-cu12==10.3.9.90
+Requires-Dist: nvidia-cusolver-cu12==11.7.3.90
+Requires-Dist: nvidia-cusparse-cu12==12.5.8.93
+Requires-Dist: nvidia-cusparselt-cu12==0.7.1
+Requires-Dist: nvidia-nccl-cu12==2.27.3
+Requires-Dist: nvidia-nvjitlink-cu12==12.8.93
+Requires-Dist: nvidia-nvtx-cu12==12.8.90
+Requires-Dist: omegaconf==2.3.0
+Requires-Dist: onnx==1.18.0
+Requires-Dist: onnxruntime==1.22.1
+Requires-Dist: openunmix==1.3.0
+Requires-Dist: optuna==4.4.0
+Requires-Dist: packaging==25.0
+Requires-Dist: pandas==2.3.1
+Requires-Dist: parso==0.8.4
+Requires-Dist: pexpect==4.9.0
+Requires-Dist: pillow==11.3.0
+Requires-Dist: plac==1.4.5
+Requires-Dist: platformdirs==4.3.8
+Requires-Dist: pluggy==1.6.0
+Requires-Dist: pooch==1.8.2
+Requires-Dist: primePy==1.3
+Requires-Dist: prompt_toolkit==3.0.51
+Requires-Dist: propcache==0.3.2
+Requires-Dist: protobuf==6.31.1
+Requires-Dist: ptyprocess==0.7.0
+Requires-Dist: pure_eval==0.2.3
+Requires-Dist: pyannote.audio==3.3.2
+Requires-Dist: pyannote.core==5.0.0
+Requires-Dist: pyannote.database==5.1.3
+Requires-Dist: pyannote.metrics==3.2.1
+Requires-Dist: pyannote.pipeline==3.0.1
+Requires-Dist: pyarrow==21.0.0
+Requires-Dist: pybind11==3.0.0
+Requires-Dist: pycparser==2.22
+Requires-Dist: pydantic==2.11.7
+Requires-Dist: pydantic_core==2.33.2
+Requires-Dist: pydub==0.25.1
+Requires-Dist: Pygments==2.19.2
+Requires-Dist: pyloudnorm==0.1.1
+Requires-Dist: pyparsing==3.2.3
+Requires-Dist: pytest==8.4.1
+Requires-Dist: python-dateutil==2.9.0.post0
+Requires-Dist: pytorch-lightning==2.5.3
+Requires-Dist: pytorch-metric-learning==2.8.1
+Requires-Dist: pytz==2025.2
+Requires-Dist: PyYAML==6.0.2
+Requires-Dist: RapidFuzz==3.13.0
+Requires-Dist: regex==2025.7.34
+Requires-Dist: requests==2.32.4
+Requires-Dist: resampy==0.4.3
+Requires-Dist: retrying==1.4.2
+Requires-Dist: rich==14.1.0
+Requires-Dist: ruamel.yaml==0.18.14
+Requires-Dist: ruamel.yaml.clib==0.2.12
+Requires-Dist: sacremoses==0.1.1
+Requires-Dist: safetensors==0.6.2
+Requires-Dist: scikit-learn==1.7.1
+Requires-Dist: scipy==1.16.1
+Requires-Dist: semver==3.0.4
+Requires-Dist: sentencepiece==0.2.1
+Requires-Dist: sentry-sdk==2.34.1
+Requires-Dist: setuptools==80.9.0
+Requires-Dist: shellingham==1.5.4
+Requires-Dist: six==1.17.0
+Requires-Dist: smmap==5.0.2
+Requires-Dist: sortedcontainers==2.4.0
+Requires-Dist: soundfile==0.13.1
+Requires-Dist: sox==1.5.0
+Requires-Dist: soxr==0.5.0.post1
+Requires-Dist: speechbrain==1.0.3
+Requires-Dist: SQLAlchemy==2.0.43
+Requires-Dist: stack-data==0.6.3
+Requires-Dist: submitit==1.5.3
+Requires-Dist: sympy==1.14.0
+Requires-Dist: tabulate==0.9.0
+Requires-Dist: tensorboard==2.20.0
+Requires-Dist: tensorboard-data-server==0.7.2
+Requires-Dist: tensorboardX==2.6.4
+Requires-Dist: termcolor==3.1.0
+Requires-Dist: text-unidecode==1.3
+Requires-Dist: texterrors==1.0.9
+Requires-Dist: threadpoolctl==3.6.0
+Requires-Dist: tokenizers==0.19.1
+Requires-Dist: toolz==1.0.0
+Requires-Dist: torch==2.8.0
+Requires-Dist: torch-audiomentations==0.12.0
+Requires-Dist: torch_pitch_shift==1.2.5
+Requires-Dist: torchaudio==2.8.0
+Requires-Dist: torchmetrics==1.8.1
+Requires-Dist: tqdm==4.67.1
+Requires-Dist: traitlets==5.14.3
+Requires-Dist: transformers==4.40.2
+Requires-Dist: treetable==0.2.5
+Requires-Dist: triton==3.4.0
+Requires-Dist: typeguard==4.4.4
+Requires-Dist: typer==0.16.0
+Requires-Dist: typing-inspection==0.4.1
+Requires-Dist: typing_extensions==4.14.1
+Requires-Dist: tzdata==2025.2
+Requires-Dist: Unidecode==1.4.0
+Requires-Dist: urllib3==2.5.0
+Requires-Dist: uroman==1.3.1.1
+Requires-Dist: wandb==0.21.1
+Requires-Dist: wcwidth==0.2.13
+Requires-Dist: webdataset==1.0.2
+Requires-Dist: Werkzeug==3.1.3
+Requires-Dist: wget==3.2
+Requires-Dist: whisperx==3.3.1
+Requires-Dist: widgetsnbextension==4.0.14
+Requires-Dist: wrapt==1.17.3
+Requires-Dist: xxhash==3.5.0
+Requires-Dist: yarl==1.20.1
+Dynamic: license-file
+
+# WhisperX-NeMo Pipeline
+
+A production-ready transcription and diarization pipeline with parallel processing.
+
+## Features
+
+- **Parallel Processing**: Runs Whisper transcription and NeMo diarization simultaneously
+- **Multiple Backends**: Supports both faster-whisper and WhisperX
+- **Speaker Diarization**: Uses NeMo MSDD models for accurate speaker identification
+- **Audio Source Separation**: Optional vocal extraction using Demucs
+- **Punctuation Restoration**: Automatic punctuation using deep learning models
+- **Memory Efficient**: Proper GPU memory management and cleanup
+
+## Installation
+
+```bash
+pip install whisperx-nemo-pipeline
+```
+
+**With constraints (recommended for production):**
+```bash
+pip install whisperx-nemo-pipeline -c constraints.txt
+```
+
+## Quick Start
+
+```python
+from whisperx_nemo_pipeline import create_transcription_pipeline
+
+# Create pipeline
+pipeline = create_transcription_pipeline(
+    audio_path="path/to/your/audio.wav",
+    model_name="large-v2",
+    device="cuda",  # or "cpu"
+    stemming=True,  # Enable source separation
+    backend="faster_whisper"  # or "whisperx"
+)
+
+# Process audio
+transcript_path, srt_path, timing_info = pipeline.process()
+
+print(f"Transcript saved to: {transcript_path}")
+print(f"Subtitles saved to: {srt_path}")
+print(f"Processing took: {timing_info['total_time']:.2f}s")
+```
+
+## Advanced Usage
+
+```python
+from whisperx_nemo_pipeline import TranscriptionPipeline, TranscriptionConfig
+
+# Custom configuration
+config = TranscriptionConfig(
+    audio_path="path/to/audio.wav",
+    model_name="large-v2",
+    device="cuda",
+    batch_size=8,
+    language="en",  # or None for auto-detection
+    stemming=True,
+    suppress_numerals=False,
+    backend="faster_whisper"
+)
+
+# Create pipeline with custom config
+pipeline = TranscriptionPipeline(config)
+
+# Process
+transcript_path, srt_path, timing_info = pipeline.process()
+```
+
+## Configuration Options
+
+- `audio_path`: Path to input audio file
+- `model_name`: Whisper model size ("tiny", "base", "small", "medium", "large-v2")
+- `device`: Computing device ("cuda" or "cpu")
+- `batch_size`: Batch size for inference (default: 4)
+- `language`: Language code or None for auto-detection
+- `stemming`: Enable audio source separation (default: True)
+- `suppress_numerals`: Suppress numerical tokens (default: False)
+- `backend`: "faster_whisper" or "whisperx"
+
+## Requirements
+
+- Python 3.8+
+- CUDA-capable GPU (recommended)
+- See `requirements.txt` for full dependency list
+
+## License
+
+MIT License
