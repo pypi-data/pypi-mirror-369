@@ -1,0 +1,113 @@
+---
+$schema: moz://mozilla.org/schemas/glean/metrics/2-0-0
+
+usage:
+  variant: &common
+    type: string
+    description: >
+      The variant of mozregression used to perform the bisection (gui,
+      console, mach, etc.)
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1581647
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1581647#c9
+    notification_emails: [zeid@mozilla.com]
+    expires: never
+    send_in_pings:
+      - usage
+  app:
+    <<: *common
+    description: >
+      The name of the app being used (firefox, gve, etc.)
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1581647
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1581647#c9
+  build_type:
+    <<: *common
+    description: >
+      The build type being bisected (asan, debug, opt, pgo, shippable, ...)
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401#c5
+  good_date:
+    <<: *common
+    type: datetime
+    time_unit: day
+    description: >
+      The good date parameter used in a bisection, if present and specified
+      as a date
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401#c5
+  bad_date:
+    <<: *common
+    type: datetime
+    time_unit: day
+    description: >
+      The bad date parameter used in a bisection, if present and specified as
+      a date
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401#c5
+  launch_date:
+    <<: *common
+    type: datetime
+    time_unit: day
+    description: >
+      The launch parameter used when running a single build, if present
+      and specified as a date
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1651401#c5
+  mac_version:
+    <<: *common
+    description: >
+      The version of macOS that mozregression is running on (e.g., 13.0). This
+      is fetched using the `platform` module (`platform.mac_ver`).
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534#c2
+  windows_version:
+    <<: *common
+    description: >
+      The version of Windows that mozregression is running on (e.g., 11). This
+      is fetched using the `platform` module (`platform.win32_ver`).
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534#c2
+  linux_version:
+    <<: *common
+    description: >
+      The version of the Linux distribution that mozregression is running on
+      (e.g., 22.04). This is fetched using the `distro` package
+      (`distro.info`).
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534#c2
+  linux_distro:
+    <<: *common
+    description: >
+      The name of the Linux distribution that mozregression is running on
+      (e.g., ubuntu). This is fetched using the `distro` package
+      (`distro.info`).
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534#c2
+  python_version:
+    <<: *common
+    description: >
+      The version of the Python mozregression is running on (e.g., 3.11). This
+      is fetched using the `platform` module (`platform.python_version`).
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1767534#c2
