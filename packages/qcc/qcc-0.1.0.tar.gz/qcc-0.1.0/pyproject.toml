@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "qcc"
+dynamic = ["version"]
+description = "Quick Claude Config - 快速管理Claude Code配置的工具"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.7"
+authors = [
+    { name = "FastCC Team" },
+]
+keywords = ["claude", "config", "cli", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "click>=8.0.0",
+    "requests>=2.25.0",
+    "cryptography>=3.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/fastcc"
+Repository = "https://github.com/your-username/fastcc.git"
+Issues = "https://github.com/your-username/fastcc/issues"
+
+[project.scripts]
+nv = "fastcc.cli:main"
+fastcc = "fastcc.cli:main"
+
+[tool.hatch.version]
+path = "fastcc/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fastcc"]
+
+# uvx 兼容配置
+[tool.uvx]
+# 支持 uvx run fastcc
+default-command = "nv"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black",
+    "flake8",
+    "mypy",
+]
