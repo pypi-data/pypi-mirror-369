@@ -1,0 +1,51 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v*" # Only runs on version tags like v1.0.0
+
+jobs:
+  publish-pypi:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Clone and build React app
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          # Clone the React app repository using GitHub token for private repo access
+          git clone --depth 1 --branch main https://x-access-token:${GH_TOKEN}@github.com/big-help-ai/openbase-react.git ../openbase-react
+
+          # Install dependencies and build
+          cd ../openbase-react
+          npm install
+          npm run build
+          cd ../openbase
+
+      - name: Install build tools
+        run: pip install build twine hatch
+
+      - name: Build PyPI package
+        run: hatch build
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: twine upload dist/*
