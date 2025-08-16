@@ -1,0 +1,193 @@
+Metadata-Version: 2.4
+Name: hv_bie
+Version: 0.3.0
+Summary: HV Battle Intelligence Extractor: parse HentaiVerse battle HTML into structured Python dataclasses
+Author-email: Kuan-Lun Wang <polyphonicared@gmail.com>
+License-Expression: AGPL-3.0-or-later
+Project-URL: Homepage, https://github.com/Kuan-Lun/hv-bie
+Project-URL: Source, https://github.com/Kuan-Lun/hv-bie
+Project-URL: Tracker, https://github.com/Kuan-Lun/hv-bie/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: beautifulsoup4>=4.13.4
+Dynamic: license-file
+
+# HV-BIE（HV Battle Intelligence Extractor）
+
+將 HentaiVerse 戰鬥頁面的 HTML 原始碼字串解析為結構化的 Python 資料類別（dataclasses）。
+
+- 支援環境：Python 3.13+
+- 主要相依：beautifulsoup4>=4.13.4
+- 套件名稱：`hv_bie`
+
+更多介面與資料模型細節，請參考：
+
+- API 規格書：[`API_SPEC.md`](/API_SPEC.md)
+- 軟體需求規格：[`SRS.md`](/SRS.md)
+
+---
+
+## 功能一覽
+
+依據 SRS 的功能需求（FR-1 ~ FR-7），本套件可從單一 HV 戰鬥頁面 HTML 中抽取：
+
+- 玩家資源（HP/MP/SP 百分比與數值、Overcharge 整數值）
+- 玩家 Buff/Debuff（名稱、剩餘時間或永久旗標）
+- 技能與法術清單（可用狀態、成本/冷卻若可推知）
+- 怪物清單（名稱、是否存活、資源百分比、系統怪物類型、怪物 Buff）
+- 戰鬥文字紀錄（由舊到新），含目前/總回合數（若頁面有顯示）
+- 道具與快捷列（名稱、槽位、可用狀態）
+
+解析結果以單一「戰鬥快照」物件回傳，確保同一份 HTML 的各區塊資訊彼此一致。
+
+---
+
+## 安裝
+
+可以透過 PyPI 安裝，或從原始碼安裝：
+
+```powershell
+# 從 PyPI 安裝（若已發布）
+pip install hv_bie
+
+# 或在專案根目錄從原始碼安裝
+pip install -e .
+```
+
+---
+
+## 快速上手
+
+```python
+from hv_bie import parse_snapshot
+from hv_bie.types.models import BattleSnapshot
+from pathlib import Path
+
+# 讀取你的戰鬥頁面 HTML（字串）
+html = Path("tests/fixtures/hv/The HentaiVerse.htm").read_text(encoding="utf-8")
+
+snap: BattleSnapshot = parse_snapshot(html)
+
+# 玩家資訊
+print(snap.player.hp_value, snap.player.hp_percent)
+print("Spirit Stance" in snap.player.buffs)
+
+# 技能/法術
+for name, sk in snap.abilities.skills.items():
+ print(name, sk.available, sk.cost_type, sk.cost, sk.cooldown_turns)
+
+# 怪物清單
+for idx, m in snap.monsters.items():
+ print(idx, m.name, m.alive, m.system_monster_type, m.hp_percent)
+
+# 戰報（由舊到新）與回合資訊
+print(snap.log.current_round, "/", snap.log.total_round)
+print(snap.log.lines[0], "->", snap.log.lines[-1])
+
+# 道具與快捷列
+print("Health Draught" in snap.items.items)
+print(len(snap.items.quickbar))
+
+# 序列化
+print(snap.as_dict())
+print(snap.to_json())
+```
+
+---
+
+## 公開 API（最小穩定面）
+
+```python
+from hv_bie import parse_snapshot
+from hv_bie.types import BattleSnapshot
+
+def parse_snapshot(html: str) -> BattleSnapshot: ...
+```
+
+- `parse_snapshot(html: str) -> BattleSnapshot`
+  - 從單一戰鬥頁面 HTML 產生一次「戰鬥快照」。
+  - 容錯：若頁面某區塊缺漏，不丟例外；以預設值補齊，並在 `BattleSnapshot.warnings` 累積文字告警。
+
+更多說明請參考 [`API_SPEC.md`](/API_SPEC.md)。
+
+---
+
+## 資料模型（概要）
+
+主要 dataclasses 定義於 `hv_bie/types/models.py`，鍵名與型別視為穩定契約：
+
+- `BattleSnapshot`
+  - `player: PlayerState`
+  - `abilities: AbilitiesState`
+  - `monsters: dict[int, Monster]`
+  - `log: CombatLog`
+  - `items: ItemsState`
+  - `warnings: list[str]`
+  - `as_dict() -> dict` / `to_json() -> str`
+- `PlayerState`：HP/MP/SP 百分比與數值、Overcharge 整數值、玩家 Buff
+- `AbilitiesState`：`skills` / `spells`（各為 `dict[str, Ability]`）
+- `Monster`：插槽序號、名稱、是否存活、系統怪物類型、各資源百分比、Buff
+- `CombatLog`：`lines`（由舊到新）、`current_round`、`total_round`
+- `ItemsState`：`items`（道具字典）、`quickbar`（快捷列清單）
+
+系統怪物對照可參考 `hv_bie/types/system_monsters.py` 提供的查詢輔助。
+
+---
+
+## 容錯與告警
+
+- 解析不會因缺漏 DOM 區塊而失敗；以預設值/空集合回傳。
+- 告警文字會累積於 `BattleSnapshot.warnings`（例如：`"pane_vitals not found"`、`"table_skills not found"`）。
+- 呼叫端可依告警採取重試或記錄行為。
+
+---
+
+## 效能與非功能性
+
+- 目標（NFR-P1）：在一般桌機上解析單頁應具互動式體驗（建議目標 ≲ 50ms，實測見 `tests/perf/`）。
+- 相依精簡：僅使用 BeautifulSoup（bs4）。
+- 安全：僅解析字串，不執行頁面腳本、不進行任何網路互動。
+
+更多 NFR 請見 [`SRS.md`](/SRS.md)。
+
+---
+
+## 相容性
+
+- Python 3.13+
+- 作業系統不限（純 Python，OS Independent）
+
+---
+
+## 測試與驗證
+
+本庫提供單元與整合測試，樣本 HTML 置於 `tests/fixtures/hv/`。
+
+```powershell
+# 執行測試
+python -m pytest -q
+```
+
+重要測試：
+
+- 單元測試：`tests/unit/test_parsers.py`
+- 整合測試：`tests/unit/test_snapshot_integration.py`
+- 效能測試：`tests/perf/test_nfr_p1_performance.py`
+
+---
+
+## 版本與文件
+
+- 目前版本：`0.2.0`（見 `pyproject.toml`）
+- 變更紀錄：[`CHANGELOG.md`](/CHANGELOG.md)
+- 規格文件：[`API_SPEC.md`](/API_SPEC.md)、[`SRS.md`](/SRS.md)
+
+---
+
+## LICENSE
+
+本專案以 AGPL-3.0-or-later 授權釋出。詳見檔案：[LICENSE](/LICENSE)。
