@@ -1,0 +1,56 @@
+[project]
+name = "ollama-batch"
+description = "Run text LLM prompts over a list of texts"
+authors = [
+    { name = "Emilio Mariscal", email = "emi.mariscal.dev@gmail.com" },
+]
+dependencies = [
+    "ollama>=0.3.3",
+    "pillow>=11.3.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+keywords = [
+    "ai",
+    "llm",
+    "ollama",
+]
+classifiers = [
+    "Topic :: Utilities",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+version = "0.1.3"
+
+[project.license]
+text = "AGPL"
+
+[project.urls]
+homepage = "https://github.com/emi420/ollama-batch"
+documentation = "https://github.com/emi420/ollama-batch"
+repository = "https://github.com/emi420/ollama-batch"
+
+[project.scripts]
+ollama-batch = "ollama_batch.ollama_batch:main"
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.version]
+from = "ollama_batch/__version__.py"
+
+[tool.pdm.build]
+includes = [
+    "ollama_batch",
+]
+source-includes = [
+    "LICENSE.md",
+    "README.md",
+]
