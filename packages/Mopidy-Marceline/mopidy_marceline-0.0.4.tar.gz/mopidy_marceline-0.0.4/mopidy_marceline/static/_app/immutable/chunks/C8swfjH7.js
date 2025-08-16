@@ -1,0 +1,1 @@
+import"./NZTpNUN0.js";import{n as o}from"./UrJQk2wB.js";import{A as e}from"./CvGzV67w.js";import{V as s}from"./CHRLkBqO.js";function b(m,r){s(m,{get data(){return r.albums},getKey:t=>t.uri,item:(t,i=o)=>{e(t,{get album(){return i()}})},$$slots:{item:!0}})}export{b as A};
