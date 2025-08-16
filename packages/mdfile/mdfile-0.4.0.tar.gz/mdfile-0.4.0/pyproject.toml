@@ -1,0 +1,68 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "mdfile"
+version = "0.4.0"
+author = "chuck"
+author-email = "chuck@acrocad.net"  # Replace with your email
+description = "Process and update Markdown files with embedded file/shell script output."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"  # Minimum Python version
+keywords = ["markdown", "CLI", "markdown-processing"]
+classifiers = [
+    "Development Status :: 4 - Beta", # Change based on the project state
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    "typer",       # Required if your project uses Typer for CLI commands
+]
+
+[project.urls]
+Homepage = "https://github.com/hucker/mdfile"  # URL for your project repo
+
+[project.scripts]
+# Define CLI entry points here
+mdfile = "mdfile.mdfile:app"
+
+
+[tool.setuptools]
+packages = ["mdfile"]  # Replace with the main package(s) name
+
+
+[tool.poetry]
+name = "mdfile"
+version = "0.0.4"
+description = "File Insertion for Markdown"
+authors = ["Chuck Bass <chuck@acrocad.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.10 || ~3.11 || ~3.12 || ~3.13 || ~3.14"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+coverage = "^7.6.1"
+isort = "^6.0.1"
+pylint = "^3.2.7"
+setuptools = "^74.1.1"
+tox = "^4.24.0"
+mypi = "^0.0.3"
+ruff = "^0.9.7"
+uv = "^0.6.2"
+radon = "^6.0.0"
+pytest-xdist = "^3.6.1"
+
