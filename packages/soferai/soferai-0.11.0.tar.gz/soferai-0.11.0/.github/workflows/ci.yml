@@ -1,0 +1,160 @@
+name: ci
+
+
+"on": [push]
+
+env:
+  PYTHON_VERSION: 3.9
+
+jobs:
+  rename-pr:
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Rename PR if needed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_TITLE=$(gh pr view --json title -q .title || echo '')
+          if [[ $PR_TITLE =~ Fern[[:space:]]Regeneration[[:space:]]--[[:space:]]([A-Za-z]+)[[:space:]]([0-9]{1,2}),[[:space:]]([0-9]{4})$ ]]; then
+            MONTH=$(echo ${BASH_REMATCH[1]} | tr '[:upper:]' '[:lower:]')
+            DAY=${BASH_REMATCH[2]}
+            YEAR=${BASH_REMATCH[3]}
+            NEW_TITLE="feat(fern): regeneration $MONTH $DAY, $YEAR"
+            gh pr edit --title "$NEW_TITLE"
+          fi
+
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.SOFERAI_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.SOFERAI_BOT_PRIVATE_SIGNING_KEY }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Lint
+        run: uv run ruff check . --fix
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(lint): fix linting errors"
+
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.SOFERAI_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.SOFERAI_BOT_PRIVATE_SIGNING_KEY }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Format
+        run: uv run ruff format .
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(fmt): format code"
+
+
+  compile:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Compile
+        run: uv run basedpyright .
+
+  test_client:
+    needs: [lint, format, compile]
+    runs-on: ubuntu-24.04
+    env:
+      SOFERAI_API_KEY: ${{ secrets.SOFERAI_API_KEY }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Test
+        run: uv run pytest -vvv -s -rP --disable-warnings .
+
+  test_platforms:
+    needs: [lint, format, compile]
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        os: ["ubuntu-22.04", "macos-14", "windows-2022"]
+    runs-on: ${{ matrix.os }}
+    env:
+      SKIP_CLIENT_TESTS: true
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Test
+        run: uv run pytest -rP --disable-warnings .
