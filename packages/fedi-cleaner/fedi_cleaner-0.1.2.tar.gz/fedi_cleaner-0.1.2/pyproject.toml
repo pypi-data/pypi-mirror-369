@@ -1,0 +1,25 @@
+[project]
+name = "fedi-cleaner"
+version = "0.1.2"
+description = "A tool to help you clean your Fediverse account's following/followers/lists/blocks/mutes/..."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "httpx[http2]>=0.28.1",
+    "mastodon-py>=2.0.1",
+    "tqdm>=4.67.1",
+]
+authors = [ { name = "poesty", email = "poesty7450@gmail.com" } ]
+license = "WTFPL"
+license-files = [ "LICENSE" ]
+keywords = ["mastodon", "fediverse", "cleaner", "followers", "automation"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Communications",
+    "Intended Audience :: End Users/Desktop",
+]
+urls = { "Homepage" = "https://codeberg.org/poesty/Fedi-Cleaner", "Source" = "https://codeberg.org/poesty/Fedi-Cleaner" }
+
+[project.scripts]
+fedi-cleaner = "fedi_cleaner.cleaner:main"
