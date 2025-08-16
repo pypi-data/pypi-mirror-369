@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "isaac-neural-core"
+version = "0.1.1"
+description = "ISAAC Neural Orchestrator core library (planner/routing/generation/verification/reflexion)"
+readme = "README.md"
+authors = [{name = "ISAAC"}]
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = [
+  "pydantic>=2.5,<3",
+  "httpx>=0.24,<1",
+  "pyyaml>=6,<7"
+]
+
+[project.urls]
+Homepage = "https://github.com/pedroMantAmp/isaac-neural-core"
+Repository = "https://github.com/pedroMantAmp/isaac-neural-core"
+
+[tool.setuptools.packages.find]
+include = ["isaac_neural*"]
+
+[tool.setuptools.package-data]
+isaac_neural = ["resources/config/*", "resources/config/schemas/*", "resources/prompts/*"]
