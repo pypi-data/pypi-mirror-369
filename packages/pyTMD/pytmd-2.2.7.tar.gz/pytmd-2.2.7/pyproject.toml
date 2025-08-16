@@ -1,0 +1,160 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyTMD"
+version = "2.2.7"
+description = "Python-based tidal prediction software for estimating ocean, load, solid Earth and pole tides"
+keywords = [
+    "Ocean Tides",
+    "Load Tides",
+    "Pole Tides",
+    "Solid Earth Tides",
+    "Tidal Prediction",
+]
+authors = [
+    {name = "Tyler Sutterley"},
+    {email = "tsutterl@uw.edu"}
+]
+maintainers = [
+    {name = "pyTMD contributors"}
+]
+license = {file = "LICENSE"}
+readme = "README.rst"
+
+requires-python = "~=3.6"
+dependencies = [
+    "lxml",
+    "netCDF4",
+    "numpy",
+    "pyproj",
+    "python-dateutil",
+    "scipy>=1.10.1",
+    "timescale>=0.0.8",
+]
+
+classifiers=[
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Oceanography",
+]
+
+[project.urls]
+Homepage = "https://pytmd.readthedocs.io"
+Documentation = "https://pytmd.readthedocs.io"
+Repository = "https://github.com/pyTMD/pyTMD"
+Issues = "https://github.com/pyTMD/pyTMD/issues"
+
+[project.optional-dependencies]
+doc = ["docutils", "graphviz", "myst-nb", "numpydoc", "sphinx", "sphinx-argparse>=0.4", "sphinxcontrib-bibtex", "sphinx-design", "sphinx_rtd_theme"]
+all = ["cartopy", "ipyleaflet", "ipywidgets", "jplephem", "matplotlib", "notebook", "pandas"]
+dev = ["flake8", "pytest>=4.6", "pytest-cov", "oct2py", "boto3"]
+
+[project.scripts]
+"arcticdata_tides.py" = "pyTMD.scripts.arcticdata_tides:main" 
+"aviso_fes_tides.py" = "pyTMD.scripts.aviso_fes_tides:main" 
+"gsfc_got_tides.py" = "pyTMD.scripts.gsfc_got_tides:main" 
+"reduce_OTIS_files.py" = "pyTMD.scripts.reduce_OTIS_files:main" 
+"verify_box_tpxo.py" = "pyTMD.scripts.verify_box_tpxo:main" 
+
+[tool.setuptools.packages.find]
+exclude = ["providers*", "run*", "test*"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+norecursedirs = ".git"
+python_files = [
+    "test*.py"
+]
+testpaths = [
+    "test"
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+    "pyTMD",
+    "test",
+]
+omit = [
+    "setup.py",
+    "conf.py",
+    "pyTMD/scripts/*",
+    "pyTMD/compute_tide_corrections.py",
+    "test/_coefficients_to_json.py",
+    "test/_def_to_json.py",
+    "providers/*.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+
+[tool.ruff]
+line-length = 80
+
+[tool.pixi.workspace]
+name = "pytmd"
+authors = ["pyTMD contributors"]
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64", "win-64"]
+
+[tool.pixi.pypi-dependencies]
+pyTMD = { path = ".", editable = true }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+all = { features = ["all"], solve-group = "default" }
+dev = { features = ["all", "dev", "doc"], solve-group = "default" }
+doc = { features = ["doc"], solve-group = "default" }
+
+[tool.pixi.tasks]
+start = { cmd = "jupyter lab", cwd = "doc/source/notebooks", description = "Start JupyterLab in the notebooks directory" }
+
+[tool.pixi.dependencies]
+numpy = "*"
+netcdf4 = "*"
+lxml = "*"
+pyproj = "*"
+python-dateutil = "*"
+scipy = ">=1.16.0"
+timescale = ">=0.0.8"
+
+[tool.pixi.feature.all.dependencies]
+cartopy = "*"
+matplotlib = "*"
+ipyleaflet = "*"
+ipywidgets = "*"
+jplephem = "*"
+pandas = "*"
+notebook = "*"
+
+[tool.pixi.feature.dev.dependencies]
+flake8 = "*"
+pytest = "*"
+pytest-cov = "*"
+boto3 = "*"
+oct2py = "*"
+
+[tool.pixi.feature.doc.dependencies]
+docutils = "*"
+graphviz = "*"
+myst-nb = "*"
+numpydoc = "*"
+sphinx = "*"
+sphinx-argparse = "*"
+sphinxcontrib-bibtex = "*"
+sphinx-design = "*"
+sphinx_rtd_theme = "*"
