@@ -1,0 +1,242 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "drim2p"
+dynamic = ["version"]
+description = 'A dreamy 2-photon imaging processing pipeline.'
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = ["2-photon", "two-photon", "imaging", "neuroscience", "processing"]
+authors = [
+  { name = "Olivier Delrée", email = "olivierdelree@protonmail.com" },
+  { name = "Constantinos Eleftheriou", email = "Constantinos.Eleftheriou@ed.ac.uk" },
+  { name = "Sophie Holland", email = "S.G.Holland@sms.ed.ac.uk" },
+  { name = "Michelle Sanchez", email = "michelle.sr11@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+  "click",
+  "dask",
+  "duguidlab-motion-correction",  # SIMA fork
+  "duguidlab-signal-separation",  # FISSA fork
+  "h5py",
+  "napari[pyqt6]",
+  "numpy",
+  "ome-types[lxml]",
+  "pydantic",
+]
+
+[project.urls]
+Documentation = "https://github.com/DuguidLab/drim2p#readme"
+Issues = "https://github.com/DuguidLab/drim2p/issues"
+Source = "https://github.com/DuguidLab/drim2p"
+
+[project.scripts]
+drim2p = "drim2p:drim2p"
+
+[tool.hatch.version]
+path = "src/drim2p/__about__.py"
+
+[dependency-groups]
+dev = [
+  { include-group = "ci" },
+  { include-group = "docs" },
+  { include-group = "lint" },
+  { include-group = "test" },
+  { include-group = "types" },
+]
+ci = [
+  "pre-commit",
+]
+docs = [
+  "griffe-pydantic",
+  "mkdocs",
+  "mkdocs-caption",
+  "mkdocs-click",
+  "mkdocs-gen-files",
+  "mkdocs-literate-nav",
+  "mkdocs-material",
+  "mkdocs-section-index",
+  "mkdocstrings-python",
+]
+lint = [
+  "ruff",
+]
+test = [
+  "pytest",
+  "pytest-cov",
+]
+types = [
+  "mypy[install-types, faster-cache, reports]",
+]
+
+[tool.hatch.envs.default]
+path = ".venv"  # Use the environment provided by uv
+
+[tool.hatch.envs.default.scripts]
+ci-pc-install = "pre-commit install"
+ci-pc-run = "pre-commit run"
+
+docs-build-lax = "mkdocs build --clean"
+docs-build = "docs-build-lax --strict"
+docs-serve = "mkdocs serve --dev-addr localhost:8888"
+
+lint-check = "ruff check"
+lint-fix = "lint-check --fix"
+lint-run = "lint-fix && ruff format {args:src/drim2p/ tests/}"
+
+test-run-coverage = "pytest --cov=src/drim2p --cov-report=term-missing:skip-covered --cov-report=html"
+test-run-coverage-browser = "test-run-coverage; open htmlcov/index.html"
+test-run = "test-run-coverage --no-cov"
+
+types-check = "mypy --install-types --non-interactive {args:src/drim2p/ tests/}"
+types-report = "types-check --html-report mypy-report/"
+
+[tool.ruff]
+line-length = 88
+fix = true
+namespace-packages = ["scripts"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+preview = true
+
+select = [
+  "ERA",     # Disallow commented out code
+  "YTT",     # Prevent misuse of `sys.version`
+  "ANN",     # Force function annotations
+  "S",       # Security testing (flake8-bandit)
+  "BLE",     # Disallow blind except
+  "B",       # Catch common sources of bugs
+  "A",       # Disallow shadowing builtins
+  "COM818",  # Trailing comma rules
+  "C4",      # Ensure correct comprehensions
+  "CPY",     # Force a copyright notice at the top of files
+  "DTZ",     # Disallow naive datetime
+  "T10",     # Disallow debugger traces
+  "EM",      # Disallow strings inside exception constructors
+  "EXE",     # Validate shebangs
+  "FIX",     # Remind about FIXMEs
+  "FA",      # Ensure proper usage of `from __future__ import annotations`
+  "ISC",     # Ensure good practice for implicit string concatenation
+  "ICN",     # Force using conventional aliases for popular packages
+  "LOG",     # Ensure good practice for logging
+  "G",       # Ensure good practice for log formatting
+  "INP",     # Disallow namespace packages
+  "PIE",     # Miscellaenous linting (flake8-pie)
+  "T20",     # Disallow print statements
+  "PT",      # Ensure good practice for pytest-based tests
+  "Q",       # Enforce double quotes style
+  "RSE",     # Disallow empty parentheses after exceptions
+  "RET",     # Ensure proper return values
+  "SLF",     # Disallow use of private members
+  "SIM",     # Ensure code is simplified
+  "TID253",  # Disallow banned imports at the module level
+  "TD",      # Ensure proper use of TODOs
+  "TC",      # Ensure proper typing imports and forward references
+  "ARG",     # Disallow unused arguments
+  "PTH",     # Ensure `pathlib` functions are used where possible
+  "FLY",     # Favour f-strings to `str.join`
+  "I",       # Ensure properly sorted imports
+  "NPY",     # Disallow use of deprecated NumPy functions and type aliases
+  "N",       # Ensure PEP 8 naming conventions
+  "PERF",    # Disallow performance anti-patterns
+  "E", "W",  # Ensure proper adherence to PEP 8
+  "DOC",     # Ensure proper docstrings information
+  "D",       # Ensure proper docstrings style
+  "F",       # Miscellaenous linting (Pyflakes)
+  "PGH",     # Disallow blanket `noqa` and `type: ignore`, and invalid mock access
+  "PL",      # Pylint checks
+  "UP",      # Ensure use of up-to-date syntax
+  "FURB",    # Ensure use of up-to-date syntax
+  "RUF",     # Miscellaneous linting (Ruff)
+  "TRY",     # Ensure good practice for exception handling
+]
+
+ignore = [
+  "ANN401",                # Allow `Any` function parameter
+  "FIX002",                # Allow unsolved TODOs
+  "G001", "G002", "G004",  # Allow formatted strings inside logging calls
+  "RET505", "RET506",      # Avoid false posiives (especially with `if-elif` where the `if` returns or raises)
+  "TD002", "TD003",        # Don't enforce including an author or issue with TODOs
+  "TC003",                 # Don't force the use of `if TYPE_CHECKING` blocks
+  "D100", "D104",          # Allow undocumented modules and packages
+  "D107",                  # Don't force a documented `__init__` since we document it at the class level
+  # Allow too many branches, arguments, locals, statements, and positional arguments
+  "PLR0912", "PLR0913", "PLR0914", "PLR0915", "PLR0917",
+]
+
+unfixable = [
+  "B905",  # Force programmer to decide which strictness to use with `builtins.zip`
+]
+
+[tool.ruff.lint.flake8-copyright]
+notice-rgx = "(?i)SPDX-FileCopyrightText: © ?\\d{4}"
+
+[tool.ruff.lint.flake8-tidy-imports]
+banned-module-level-imports = [
+  "fissa",
+  "ome_types",
+  "sima",
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+# `mypy` config
+[tool.mypy]
+strict = true
+pretty = true
+#allow_redefinition_new = true  # Enable when mypy 1.16 drops
+allow_redefinition = true
+warn_unreachable = true
+show_error_code_links = true
+untyped_calls_exclude = [
+  "dask.array"
+]
+
+[[tool.mypy.overrides]]
+module = [
+  "h5py.*",
+  "fissa.*",
+  "napari.*",
+  "sima.*",
+]
+ignore_missing_imports = true
+
+# `coverage` config
+[tool.coverage.run]
+source_pkgs = ["drim2p", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/drim2p/__about__.py",
+]
+
+[tool.coverage.paths]
+drim2p = ["src/drim2p", "*/drim2p/src/drim2p"]
+tests = ["tests", "*/drim2p/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
