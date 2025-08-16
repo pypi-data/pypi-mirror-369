@@ -1,0 +1,123 @@
+Metadata-Version: 2.4
+Name: ewoks
+Version: 2.0.1
+Summary: Extensible Workflow System
+Author-email: ESRF <dau-pydev@esrf.fr>
+License: # MIT License
+        
+        **Copyright (c) 2021 European Synchrotron Radiation Facility**
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy of
+        this software and associated documentation files (the "Software"), to deal in
+        the Software without restriction, including without limitation the rights to
+        use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+        the Software, and to permit persons to whom the Software is furnished to do so,
+        subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+        FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+        COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+        IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+        CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+        
+Project-URL: Homepage, https://gitlab.esrf.fr/workflow/ewoks/ewoks/
+Project-URL: Documentation, https://ewoks.readthedocs.io/
+Project-URL: Repository, https://gitlab.esrf.fr/workflow/ewoks/ewoks/
+Project-URL: Issues, https://gitlab.esrf.fr/workflow/ewoks/ewoks/issues
+Project-URL: Changelog, https://gitlab.esrf.fr/workflow/ewoks/ewoks/-/blob/main/CHANGELOG.md
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: ewokscore<3,>=2
+Requires-Dist: tabulate
+Requires-Dist: importlib_resources; python_version < "3.9"
+Provides-Extra: dask
+Requires-Dist: ewoksdask<3,>=2; extra == "dask"
+Provides-Extra: ppf
+Requires-Dist: ewoksppf<3,>=2; extra == "ppf"
+Provides-Extra: orange
+Requires-Dist: ewoksorange<3,>=2; extra == "orange"
+Provides-Extra: esrf-data-portal
+Requires-Dist: pyicat-plus; extra == "esrf-data-portal"
+Provides-Extra: notebooks
+Requires-Dist: ewokscore[notebooks]; extra == "notebooks"
+Provides-Extra: test
+Requires-Dist: ewoks[dask]; extra == "test"
+Requires-Dist: ewoks[ppf]; extra == "test"
+Requires-Dist: ewoks[orange]; extra == "test"
+Requires-Dist: ewoks[esrf-data-portal]; extra == "test"
+Requires-Dist: pytest>=7; extra == "test"
+Requires-Dist: testbook; extra == "test"
+Requires-Dist: ipykernel; extra == "test"
+Requires-Dist: importlib_resources; extra == "test"
+Requires-Dist: pyqt5; extra == "test"
+Requires-Dist: pytest-venv; extra == "test"
+Provides-Extra: dev
+Requires-Dist: ewoks[test]; extra == "dev"
+Requires-Dist: black[jupyter]>=25; extra == "dev"
+Requires-Dist: flake8>=4; extra == "dev"
+Requires-Dist: flake8_nb>=0.3.1; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Provides-Extra: doc
+Requires-Dist: ewoks[test]; extra == "doc"
+Requires-Dist: sphinx>=4.5; extra == "doc"
+Requires-Dist: sphinx-autodoc-typehints>=1.16; extra == "doc"
+Requires-Dist: ipykernel; extra == "doc"
+Requires-Dist: nbsphinx; extra == "doc"
+Requires-Dist: nbsphinx_link; extra == "doc"
+Requires-Dist: pydata-sphinx-theme; extra == "doc"
+Requires-Dist: sphinx-argparse; extra == "doc"
+Dynamic: license-file
+
+# Ewoks: Extensible Workflow System
+
+Many [workflow management systems](https://s.apache.org/existing-workflow-systems) exist to deal with data processing problems that can be expressed as a graph of tasks, also referred to as a *computational graph* or *workflow*. The main purpose of a workflow management system is to provide a framework for implementing tasks, creating graphs of tasks and executing these graphs.
+
+The purpose of *ewoks* is to provide an abstraction layer between graph representation and execution. This allows using the same tasks and graphs in different workflow management systems. *ewoks* itself is **not** a workflow management system.
+
+## Install
+
+```bash
+pip install ewoks[orange,dask,ppf,test]
+```
+
+## Test
+
+```bash
+pytest --pyargs ewoks.tests
+```
+
+## Getting started
+
+Workflows can be executed from the command line
+
+```bash
+ewoks execute /path/to/graph.json [--engine dask]
+```
+
+or for an installation with the system python
+
+```bash
+python3 -m ewoks execute /path/to/graph.json [--engine dask]
+```
+
+Workflows can also be executed from python
+
+```python
+from ewoks import execute_graph
+
+result = execute_graph("/path/to/graph.json", engine="dask")
+```
+
+When no engine is specified it will use sequential execution from `ewokscore`.
+
+## Documentation
+
+https://ewoks.readthedocs.io/
