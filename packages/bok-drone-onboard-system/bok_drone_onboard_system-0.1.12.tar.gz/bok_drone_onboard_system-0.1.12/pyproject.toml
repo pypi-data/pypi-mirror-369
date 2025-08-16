@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bok-drone-onboard-system"
+version = "0.1.12"
+description = "A Python package for drone onboard sensor acquisition"
+readme = "README.md"
+requires-python = ">=3.11"
+license="MIT"
+license-files=[
+    "LICENSE"
+]
+authors = [
+    {name = "Alexandre MAselot", email = "alexandre.masselot@gmail.com"}
+]
+keywords = ["drone", "sensor", "bno08x"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "adafruit-circuitpython-bno08x==1.2.10",
+    "lgpio",
+    "numpy==2.3.1",
+    "pandas==2.3.1",
+    "parameterized==0.9.0",
+    "scipy==1.16.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/terra-submersa/bok-drone-onboard-system"
+
+[project.scripts]
+bno08x-acquire = "bok_drone_onboard_system.bno08x_acquire:main"
+survey-acquire = "bok_drone_onboard_system.survey_acquire:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["bok_drone_onboard_system*"]
+
+[tool.bumpver]
+current_version = "0.1.12"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+pre_commit_hook = ""
+post_commit_hook = ""
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'version = "{version}"',
+]
+"README.md" = [
+    "{version}",
+]
+
