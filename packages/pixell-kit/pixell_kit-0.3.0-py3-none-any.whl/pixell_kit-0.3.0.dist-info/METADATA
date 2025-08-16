@@ -1,0 +1,103 @@
+Metadata-Version: 2.4
+Name: pixell-kit
+Version: 0.3.0
+Summary: A lightweight developer kit for packaging AI agents into portable APKG files
+Home-page: https://github.com/pixell-global/pixell-kit
+Author: Pixell Core Team
+Author-email: Pixell Core Team <dev@pixell.global>
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://github.com/pixell-global/pixell-kit
+Project-URL: Bug Tracker, https://github.com/pixell-global/pixell-kit/issues
+Project-URL: Documentation, https://docs.pixell.global/pixell
+Project-URL: Source Code, https://github.com/pixell-global/pixell-kit
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click>=8.0
+Requires-Dist: pydantic>=2.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: jsonschema>=4.0
+Requires-Dist: fastapi>=0.100.0
+Requires-Dist: uvicorn>=0.23.0
+Requires-Dist: watchdog>=3.0
+Requires-Dist: python-dotenv>=1.0
+Requires-Dist: tabulate>=0.9
+Requires-Dist: jinja2>=3.0
+Requires-Dist: requests>=2.28.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: ruff>=0.1; extra == "dev"
+Requires-Dist: build>=1.0; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
+Requires-Dist: types-PyYAML>=6.0; extra == "dev"
+Provides-Extra: signing
+Requires-Dist: python-gnupg>=0.5; extra == "signing"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# Pixell Kit
+
+A lightweight developer kit for packaging AI agents into portable, standardized APKG files.
+
+## Installation
+
+### Using pipx (Recommended)
+```bash
+pipx install pixell-kit
+```
+
+### Using Homebrew
+```bash
+brew install pixell-kit
+```
+
+### Using pip
+```bash
+pip install pixell-kit
+```
+
+## Quick Start
+
+```bash
+# Create a new agent project
+pixell init my_agent
+
+# Run locally for development
+cd my_agent
+pixell run-dev
+
+# Build into APKG package
+pixell build
+
+# Inspect the package
+pixell inspect my_agent-0.1.0.apkg
+```
+
+## Features
+
+- 📦 Package any AI agent into portable APKG files
+- 🚀 Local development server with hot-reload
+- ✅ Manifest validation and package integrity
+- 🔐 Optional package signing with GPG
+- 🐍 Python 3.11+ support (TypeScript coming soon)
+
+## Documentation
+
+See the [full documentation](https://docs.pixell.global/pixell) for detailed usage.
+
+## License
+
+Apache License 2.0
