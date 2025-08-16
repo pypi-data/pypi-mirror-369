@@ -1,0 +1,66 @@
+# kautolog
+
+Auto-log **everything you see** in every terminal tab on Kali/Linux using `script(1)`. Captures prompt, commands, output, ANSI colors, and ncurses apps with optional timing/replay, tmux per-pane logs, logrotate, and rclone cloud sync.
+
+## Install
+
+Recommended:
+
+```bash
+pipx install kautolog
+kautolog install
+```
+
+With extras:
+
+```bash
+kautolog install --with-tmux --with-sync remote:terminal-logs --interval 10
+```
+
+This will:
+
+- Hook into both `~/.bashrc` and `~/.zshrc` for Zsh and Bash auto-logging.
+- Install replay script into `~/.local/bin`.
+
+## Replaying logs
+
+To replay a session with timing:
+
+```bash
+replay ~/terminal-logs/2025/08/10/kali-33608-203123
+```
+
+To instantly dump the log without delay:
+
+```bash
+replay -i ~/terminal-logs/2025/08/10/kali-33608-203123
+```
+
+## Uninstall
+
+```bash
+kautolog uninstall
+```
+
+Removes all shell hooks and scripts cleanly.
+
+If you installed using pipx:
+
+```bash
+pipx uninstall kautolog
+```
+
+## Log Format
+
+Logs are saved to:
+
+```bash
+~/terminal-logs/YYYY/MM/DD/hostname-PID-TIMESTAMP.log
+~/terminal-logs/YYYY/MM/DD/hostname-PID-TIMESTAMP.timing
+```
+
+If `--with-tmux` is used, each tmux pane logs independently.
+
+## License
+
+The scripts and documentation in this project are released under the [MIT License](https://github.com/marksowell/kautolog/blob/main/LICENSE)
