@@ -1,0 +1,243 @@
+Metadata-Version: 2.4
+Name: pantheon-toolsets
+Version: 0.5.2
+Summary: Distributed toolsets for pantheon-agents, provide service via magique message transfer server.
+Author-email: Weize Xu <vet.xwz@gmail.com>
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: magique>=0.6.7
+Requires-Dist: executor-engine>=0.3.3
+Requires-Dist: diskcache
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: fire>=0.7.0
+Requires-Dist: crawl4ai>=0.5.0
+Requires-Dist: loguru>=0.7.3
+Requires-Dist: openai>=1.58.1
+Requires-Dist: matplotlib>=3.10.3
+Requires-Dist: fastmcp>=2.11.0
+Requires-Dist: ddgs>=9.5.2
+Requires-Dist: pandas
+Requires-Dist: hypha_rpc
+Provides-Extra: dev
+Requires-Dist: pytest-asyncio>=0.24.0; extra == "dev"
+Requires-Dist: pytest>=8.3.4; extra == "dev"
+Requires-Dist: pytest-cov>=6.0.0; extra == "dev"
+
+<div align="center">
+  <h1> Pantheon Toolsets </h1>
+
+  <p> Distributed toolsets for Pantheon Agents. </p>
+
+  <p>
+    <a href="https://github.com/aristoteleo/pantheon-toolsets/actions/workflows/test.yml">
+        <img src="https://github.com/aristoteleo/pantheon-toolsets/actions/workflows/test.yml/badge.svg" alt="Build Status">
+    </a>
+    <a href="https://pypi.org/project/pantheon-toolsets/">
+      <img src="https://img.shields.io/pypi/v/pantheon-toolsets.svg" alt="Install with PyPi" />
+    </a>
+    <a href="https://github.com/aristoteleo/pantheon-toolsets/blob/master/LICENSE">
+      <img src="https://img.shields.io/github/license/aristoteleo/pantheon-toolsets" alt="MIT license" />
+    </a>
+  </p>
+</div>
+
+**Work in progress**
+
+Toolsets
+
+- [x] Python Interpreter
+- [x] R Interpreter
+- [x] Web toolset ()
+  * [x] Web fetch with link resolution
+  * [x] Web search using DDGS (DuckDuckGo)
+- [x] Web browse (legacy)
+  * [x] Duckduckgo search
+  * [x] Crawl4ai
+- [x] Code search ()
+  * [x] File pattern search (glob)
+  * [x] Content search (grep)
+  * [x] Directory listing (ls)
+- [x] Notebook toolset (Jupyter)
+  * [x] Read, edit, create notebooks
+  * [x] Cell management (add, delete, move)
+  * [x] Professional templates
+- [x] ScraperAPI
+  * [x] Google search
+  * [x] Web crawl
+- [x] Shell
+- [x] Convert toolset to MCP(Model Context Protocol)
+- [x] File editor/Filesystem access ()
+- [x] File transfer
+- [x] RAG system
+- [x] Todo/Task management (Claude Code style)
+- [x] Code search (glob, grep, ls)
+- [x] Jupyter notebook editing
+- [ ] LaTeX compiler
+- [ ] Browser-use
+
+## Installation
+
+```bash
+git clone https://github.com/aristoteleo/magique-ai.git
+cd magique-ai
+pip install -e ".[dev]"
+```
+
+### Additional Dependencies
+
+For enhanced web functionality:
+```bash
+pip install ddgs  # For reliable web search
+pip install beautifulsoup4  # For better HTML parsing
+```
+
+For notebook functionality:
+```bash
+pip install nbformat  # For Jupyter notebook handling
+```
+
+All  toolsets use Rich for beautiful console output, which is included in the base installation.
+
+## Usage
+
+Built-in toolsets:
+
+| Toolset | Package path | Description |
+|---------|-------------|-------------|
+| Python Interpreter | `pantheon.toolsets.python` | Run Python code in an interpreter. |
+| R Interpreter | `pantheon.toolsets.r` | Run R code in an interpreter. |
+| Shell | `pantheon.toolsets.shell` | Run shell commands. |
+| **Web Toolset** | `pantheon.toolsets.web` | ** web fetch and search with DDGS.** |
+| Code Search | `pantheon.toolsets.code_search` | ** file search with glob, grep, ls.** |
+| Notebook Toolset | `pantheon.toolsets.notebook` | **Edit and manage Jupyter notebooks (no execution).** |
+| File Editor | `pantheon.toolsets.file_editor` | ** file editing with diffs.** |
+| File Manager | `pantheon.toolsets.file_manager` | General filesystem access and management. |
+| Web Browse (legacy) | `pantheon.toolsets.web_browse` | Legacy web search using DuckDuckGo and Crawl4ai. |
+| ScraperAPI | `pantheon.toolsets.scraper` | Use ScraperAPI to perform google search and web crawl. |
+| Vector RAG | `pantheon.toolsets.vector_rag` | Query a vector based RAG database. |
+| File Transfer | `pantheon.toolsets.file_transfer` | Transfer files between different systems. |
+| **Todo Management** | `pantheon.toolsets.todo` | **Claude Code-style task management with status tracking.** |
+| Endpoint Hub | `pantheon.toolsets.endpoint` | Manage and coordinate multiple toolset endpoints. |
+
+###  Toolsets
+
+The following toolsets provide Claude Code-like functionality for enhanced developer experience:
+
+#### Web Toolset (`pantheon.toolsets.web`)
+- **web_fetch**: Fetch web content with intelligent link resolution and markdown conversion
+- **web_search**: Search using DDGS (DuckDuckGo Search) library - reliable and fast
+
+#### Code Search Toolset (`pantheon.toolsets.code_search`) 
+- **glob**: Find files by patterns (e.g., `*.py`, `**/*.ts`)
+- **grep**: Search content across files with regex support
+- **ls**: List directory contents with detailed information
+
+#### Notebook Toolset (`pantheon.toolsets.notebook`)
+- **read_notebook**: Display notebook contents with beautiful formatting
+- **edit_notebook_cell**: Edit specific cells (code/markdown)
+- **add_notebook_cell**: Add new cells at specific positions
+- **create_notebook**: Create new notebooks with professional templates
+
+#### File Editor Toolset (`pantheon.toolsets.file_editor`)
+- **read_file**: Read files with line numbers
+- **edit_file**: Edit files with diff display
+- **write_file**: Create new files
+
+#### Todo Management Toolset (`pantheon.toolsets.todo`)
+- **add_todo**: Add new todo items with status tracking
+- **show_todos**: Display todos in Claude Code style with checkboxes
+- **update_todo_status**: Change status (pending ☐, in_progress ◐, completed ☑)
+- **complete_todo**: Mark todos as completed
+- **start_todo**: Mark todos as in progress
+- **remove_todo**: Delete todos
+- **clear_completed_todos**: Remove all completed tasks
+
+Start a toolset, for example, the python interpreter from the command line:
+
+```bash
+python -m pantheon.toolsets.python
+```
+
+Example usage of new toolsets:
+
+```bash
+# Start web toolset for web fetch and search
+python -m pantheon.toolsets.web
+
+# Start code search toolset for file operations
+python -m pantheon.toolsets.code_search
+
+# Start notebook toolset for Jupyter editing
+python -m pantheon.toolsets.notebook
+```
+
+See help with:
+
+```bash
+python -m pantheon.toolsets.python -- --help
+NAME
+    __main__.py
+
+SYNOPSIS
+    __main__.py <flags>
+
+FLAGS
+    -s, --service_name=SERVICE_NAME
+        Type: str
+        Default: 'python-interpreter'
+    --mcp=MCP
+        Type: bool
+        Default: False
+    --mcp_kwargs=MCP_KWARGS
+        Type: dict
+        Default: {}
+    -t, --toolset_kwargs=TOOLSET_KWARGS
+        Type: dict
+        Default: {}
+```
+
+## Development
+
+Project structure:
+
+1. Built-in Toolsets
+
+
+### Test the package
+
+Please start a magique message transfer server first.
+
+```bash
+python -m magique.server
+```
+
+Then export the server url and run the test:
+
+```bash
+export MAGIQUE_SERVER_URL=ws://localhost:8765/ws
+pytest -s tests/
+```
+
+### Environment configration
+
+Firstly, you need docker and buildx installed. See [docker docs](https://docs.docker.com/engine/install/) and [buildx docs](https://github.com/docker/buildx?tab=readme-ov-file#installing) for installation.
+
+Magique-ai's built-in environments are stored in the `environments` folder.
+And all environments could be managed by the `environment/build_images.py` script:
+```
+$ python environment/build_images.py -h
+usage: build_images.py [-h] [-a] [-l] [-b TARGET] [--registry REGISTRY_PATH] [--push]
+
+Docker image build automation
+
+options:
+  -h, --help            show this help message and exit
+  -a, --all             Build all detected images
+  -l, --list            List available Docker configurations
+  -b TARGET, --build TARGET
+                        Build specific image by target name
+  --registry REGISTRY_PATH
+                        Specify Docker registry path (e.g., ghcr.io/username)
+  --push                Push the image(s) to the specified registry after building
+```
