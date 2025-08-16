@@ -1,0 +1,22 @@
+include README.md
+include LICENSE
+include synth_ai/install_sqld.sh
+recursive-include synth_ai *.py
+# Only include lightweight config/data files from core packages
+recursive-include synth_ai *.toml
+recursive-include synth_ai *.json
+
+# Prune heavy example/demo/test trees from the sdist
+prune tests
+prune private_tests
+prune synth_ai/environments/examples
+prune synth_ai/environments/examples/*
+prune synth_ai/tracing_v3/tests
+recursive-exclude synth_ai **/agent_demos/*
+recursive-exclude synth_ai **/old/*
+recursive-exclude synth_ai **/units/*
+recursive-exclude synth_ai **/test_*.py
+recursive-exclude synth_ai **/tests/*
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .DS_Store
