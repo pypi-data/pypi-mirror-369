@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "koyeb"
+version = '0.3'
+authors = [
+    { name = "Alpha", email = "imr@outlook.in" }
+]
+description = "A Personal Python package to run apps seamlessly on Koyeb."
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "MIT" }
+dependencies = [
+    "flask"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+
+[project.scripts]
+koyeb = 'DA_Koyeb.__main__:main'
