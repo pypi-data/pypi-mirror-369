@@ -1,0 +1,37 @@
+on:
+    push:
+        branches:
+            - main
+            - master
+    pull_request:
+        branches:
+            - main
+            - master
+
+name: test-linux-installation
+jobs:
+    test-linux-installation:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: ["3.12"]
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v6
+              with:
+                  version: "0.4.16"
+                  # enable-cache: true
+
+            - name: Set up Python ${{ matrix.python-version }}
+              run: uv python install ${{ matrix.python-version }}
+
+            - name: Install dependencies
+              run: |
+                  uv venv
+                  uv pip install -e .
+
+            - name: Test import
+              run: uv run python -c "import hypercoast; print('hypercoast import successful')"
