@@ -1,0 +1,105 @@
+Metadata-Version: 2.4
+Name: pybispectra
+Version: 1.2.2
+Summary: A Python signal processing package for computing spectral-domain and time-domain interactions using the bispectrum.
+Project-URL: Bug Tracker, https://github.com/braindatalab/PyBispectra/issues
+Project-URL: Homepage, https://github.com/braindatalab/PyBispectra
+Author-email: "Thomas S. Binns" <t.s.binns@outlook.com>
+License-File: LICENSE.txt
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Requires-Dist: joblib>=1.0.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: mne>=1.7
+Requires-Dist: numba>=0.55.0
+Requires-Dist: numpy>=1.21.2
+Requires-Dist: scikit-learn>=1.0
+Requires-Dist: scipy>=1.7.1
+Provides-Extra: dev
+Requires-Dist: codespell; extra == 'dev'
+Requires-Dist: coverage; extra == 'dev'
+Requires-Dist: ipykernel; extra == 'dev'
+Requires-Dist: ipython; extra == 'dev'
+Requires-Dist: ipywidgets; extra == 'dev'
+Requires-Dist: isort; extra == 'dev'
+Requires-Dist: notebook; extra == 'dev'
+Requires-Dist: numpydoc; extra == 'dev'
+Requires-Dist: pooch>=1.3.0; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: pydata-sphinx-theme; extra == 'dev'
+Requires-Dist: pydocstyle; extra == 'dev'
+Requires-Dist: pydocstyle[toml]; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: rstcheck; extra == 'dev'
+Requires-Dist: ruff; extra == 'dev'
+Requires-Dist: sphinx; extra == 'dev'
+Requires-Dist: sphinx-copybutton; extra == 'dev'
+Requires-Dist: sphinx-gallery>=0.18; extra == 'dev'
+Requires-Dist: sphinxcontrib-bibtex; extra == 'dev'
+Requires-Dist: toml-sort; extra == 'dev'
+Requires-Dist: yamllint; extra == 'dev'
+Provides-Extra: doc
+Requires-Dist: ipykernel; extra == 'doc'
+Requires-Dist: ipython; extra == 'doc'
+Requires-Dist: ipywidgets; extra == 'doc'
+Requires-Dist: notebook; extra == 'doc'
+Requires-Dist: numpydoc; extra == 'doc'
+Requires-Dist: pooch>=1.3.0; extra == 'doc'
+Requires-Dist: pydata-sphinx-theme; extra == 'doc'
+Requires-Dist: sphinx; extra == 'doc'
+Requires-Dist: sphinx-copybutton; extra == 'doc'
+Requires-Dist: sphinx-gallery>=0.18; extra == 'doc'
+Requires-Dist: sphinxcontrib-bibtex; extra == 'doc'
+Provides-Extra: lint
+Requires-Dist: codespell; extra == 'lint'
+Requires-Dist: isort; extra == 'lint'
+Requires-Dist: pre-commit; extra == 'lint'
+Requires-Dist: pydocstyle; extra == 'lint'
+Requires-Dist: pydocstyle[toml]; extra == 'lint'
+Requires-Dist: rstcheck; extra == 'lint'
+Requires-Dist: ruff; extra == 'lint'
+Requires-Dist: toml-sort; extra == 'lint'
+Requires-Dist: yamllint; extra == 'lint'
+Provides-Extra: test
+Requires-Dist: coverage; extra == 'test'
+Requires-Dist: pooch>=1.3.0; extra == 'test'
+Requires-Dist: pytest; extra == 'test'
+Description-Content-Type: text/markdown
+
+![PyBispectra logo](docs/source/_static/logo.gif)
+
+A Python signal processing package for computing spectral- and time-domain interactions using the bispectrum.
+
+This package provides the tools for computing phase-amplitude coupling, time delay estimation, and wave shape features using the bispectrum and bicoherence. Additional tools for computing amplitude-amplitude coupling, phase-phase coupling, and spatio-spectral filters are also provided.
+
+Parallel processing and [Numba](https://numba.pydata.org/) optimisation are implemented to reduce computation times.
+
+Analysis of phase-amplitude coupling, time delays, and non-sinusoidal waveshape provide important insights into electrophysiology data, but traditional analysis methods have critical limitations. In contrast, the bispectrum - the Fourier transform of the third order moment - offers approaches to perform such analyses whilst overcoming many of the limitations of traditional methods.
+
+## Installation & Requirements:
+Install the package into the desired environment using pip `pip install pybispectra`<br/>
+More information on the [installation](https://pybispectra.readthedocs.io/en/main/installation.html) page.
+
+## Use:
+To get started with the toolbox, check out the [documentation](https://pybispectra.readthedocs.io/en/main/) and [examples](https://pybispectra.readthedocs.io/en/main/examples.html).
+
+For instance, given some epoched time series, `data`, phase-amplitude coupling can be computed as:
+
+```python
+from pybispectra import PAC, compute_fft
+
+coeffs, freqs = compute_fft(data, sampling_freq)  # compute spectral coeffs
+pac = PAC(coeffs, freqs, sampling_freq)  # initialise coupling object
+pac.compute()  # compute phase-amplitude coupling
+pac_results = pac.results  # extract results
+pac_results.plot()  # plot results
+```
+
+## Contributing & Development:
+If you encounter issues with the package, want to suggest improvements, or have made any changes which you would like to see officially supported, please refer to the [development](https://pybispectra.readthedocs.io/en/main/development.html) page. A unit test suite is included and must be expanded where necessary to validate any changes.
+
+## Citing:
+If you use this toolbox in your work, please include the following citation:<br/>
+Binns, T. S., Pellegrini, F., Jurhar, T., & Haufe, S. (2023). PyBispectra. DOI: [10.5281/zenodo.8377820](https://doi.org/10.5281/zenodo.8377820)
