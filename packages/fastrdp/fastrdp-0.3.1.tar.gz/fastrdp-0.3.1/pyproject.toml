@@ -1,0 +1,26 @@
+[build-system]
+requires = ["pybind11>=2.10", "setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastrdp"
+version = "0.3.1"
+description = "Implementation of the Ramer-Douglas-Peucker algorithm"
+readme = "README.md"
+authors = [{ name = "Robert Dahl Jacobsen" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=2.0.2",
+]
+
+[project.optional-dependencies]
+dev = ["build", "pytest", "wheel"]
+docs = ["jupyter", "matplotlib", "rdp"]
+
+[project.urls]
+Homepage = "https://github.com/robertdj/fastrdp"
