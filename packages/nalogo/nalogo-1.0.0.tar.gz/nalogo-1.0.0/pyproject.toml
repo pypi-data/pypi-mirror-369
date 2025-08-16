@@ -1,0 +1,116 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nalogo"
+version = "1.0.0"
+authors = [
+    {name = "NaloGO Contributors", email = "contributors@nalogo.com"},
+]
+description = "Asynchronous Python client for Russian self-employed tax service API (Moy Nalog / lknpd.nalog.ru)"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+keywords = [
+    "nalog", "tax", "self-employed", "api", "async", "russia", "moy-nalog", 
+    "freelancer", "invoice", "receipt", "lknpd", "самозанятый"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Typing :: Typed",
+    "Framework :: AsyncIO",
+    "Framework :: Pydantic",
+]
+dependencies = [
+    "httpx>=0.25.0",
+    "pydantic>=2.0.0,<3.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "respx>=0.20.0",
+    "ruff>=0.1.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "coverage>=7.0.0",
+    "bandit[toml]>=1.7.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/your-org/nalogo"
+"Documentation" = "https://github.com/your-org/nalogo#readme"
+"Repository" = "https://github.com/your-org/nalogo"
+"Bug Reports" = "https://github.com/your-org/nalogo/issues"
+"Changelog" = "https://github.com/your-org/nalogo/blob/main/CHANGELOG.md"
+"Original PHP Library" = "https://github.com/shoman4eg/moy-nalog"
+
+[tool.setuptools.packages.find]
+include = ["nalogo*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "ICN", "PIE", "T20", "RET", "SIM", "ARG", "PTH", "ERA", "PL", "RUF"]
+ignore = ["E501", "PLR0913", "PLR0912"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --asyncio-mode=auto"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["nalogo"]
+omit = ["tests/*", "nalogo/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "examples"]
+skips = ["B101"]  # Skip assert_used test
+
+[tool.bandit.assert_used]
+skips = ["*_test.py", "*test_*.py"]
