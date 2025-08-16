@@ -1,0 +1,114 @@
+[project]
+name = "arakawa"
+dynamic = ["version"]
+description = "Build interactive reports in seconds using Python"
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+  "altair~=5.4",
+  "base64io~=1.0",
+  "chardet~=5.2",
+  "dominate~=2.9",
+  'eval_type_backport~=0.2;python_version<"3.10"',
+  "ipynbname~=2024.1",
+  "ipython~=8.13",
+  "jinja2~=3.0",
+  "loguru~=0.7",
+  "micawber~=0.5",
+  "multimethod~=2.0",
+  "pandas~=2.2",
+  "pyarrow~=21.0.0",
+  "pydantic>2.0.1,!=2.1.0,<3.0.0",                 # same as FastAPI
+  "pyhumps~=3.8",
+  "semver~=3.0",
+  'typing-extensions~=4.12;python_version<"3.11"',
+]
+
+[project.optional-dependencies]
+tabling = ["great_tables~=0.16"]
+dataframing = ["polars~=1.0"]
+plotting = [
+  "bokeh>=3.7.3,<3.8.0",
+  "folium~=0.18",
+  "matplotlib~=3.9",
+  "plotly~=6.0",
+]
+network = ["networkx~=3.2"]
+all = [
+  "bokeh>=3.7.3,<3.8.0",
+  "folium~=0.18",
+  "great_tables~=0.16",
+  "matplotlib~=3.9",
+  "networkx~=3.2",
+  "plotly~=6.0",
+  "polars~=1.0",
+]
+
+[project.urls]
+Repository = "https://github.com/ninoseki/arakawa/"
+Homepage = "https://github.com/ninoseki/arakawa/"
+Documentation = "https://ninoseki.github.io/arakawa/"
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.hatch.build.hooks.version]
+path = "src/arakawa/_version.py"
+template = '''
+version = "{version}"
+'''
+
+[tool.hatch.build.targets.sdist]
+exclude = ["images/", ".vscode/", "tests/"]
+artifacts = [
+  "src/arakawa/resources/html_templates/local-report.css",
+  "src/arakawa/resources/html_templates/local-report.js",
+]
+
+[tool.hatch.build.targets.wheel]
+artifacts = [
+  "src/arakawa/resources/html_templates/local-report.css",
+  "src/arakawa/resources/html_templates/local-report.js",
+]
+
+[dependency-groups]
+dev = [
+  "boltons>=25.0.0",
+  "glom>=24.11.0",
+  "pyproject-metadata>=0.9.1",
+  "pytest-datadir~=1.8.0",
+  "pytest-github-actions-annotate-failures>=0.3.0",
+  "pytest-pretty~=1.3.0",
+  "pytest-randomly~=3.16.0",
+  "pytest-timeout~=2.4.0",
+  "pytest~=8.4.1",
+  "ruff~=0.12.9",
+  "tomlkit>=0.13.3",
+  "uv-sort~=0.6.1",
+  "vega-datasets~=0.9.0",
+]
+
+[tool.ruff.lint]
+select = [
+  "ARG",  # flake8-unused-arguments
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "FA",   # flake8-future-annotations
+  "I",    # isort
+  "N",    # pep8-naming
+  "PERF", # Perflint
+  "PT",   # flake8-pytest-style
+  "RET",  # flake8-return
+  "RUF",  # Ruff-specific rules
+  "SIM",  # flake8-simplify
+  "T20",  # flake8-print
+  "UP",   # pyupgrade
+  "W",    # pycodestyle warnings
+]
+ignore = ["E501", "PT012"]
