@@ -1,0 +1,201 @@
+# HoraLog_CLI
+
+A simple, terminal-based journal application that logs sentences with timestamps into per-day YAML files.
+
+## Features
+
+- **Journal Mode**: Type entries with automatic timestamps
+- **Review Mode**: Browse and view past journal entries
+- **Minimal Dependencies**: Only requires `pyyaml`
+- **Termux Optimized**: Perfect for Android Termux
+- **Simple & Fast**: Does one thing well with minimal clutter
+
+## Installation
+
+### Standard Installation
+```bash
+# Install from PyPI (when published)
+pip install horalog-cli
+
+# Or install from local directory
+pip install -e .
+```
+
+### Android Termux Installation
+```bash
+# Install Python and pip if not already installed
+pkg install python
+
+# Install pyyaml
+pip install pyyaml
+
+# Clone or download the project
+git clone <repository-url>
+cd HoraLog_CLI
+
+# Install in development mode
+pip install -e .
+```
+
+## Usage
+
+### Journal Mode (Default)
+Start the application to begin journaling:
+```bash
+horalog-cli
+```
+
+This will:
+- Create a `journal/` folder if it doesn't exist
+- Load today's existing entries
+- Show a prompt like `[14:30:25] > `
+- Save each entry immediately when you press Enter
+- Keep previous entries visible while typing
+
+### Review Mode
+Browse past journal entries:
+```bash
+horalog-cli --review
+# or
+horalog-cli -r
+```
+
+This will show a numbered list of available dates and let you select one to view.
+
+### View Specific Date
+View entries for a specific date:
+```bash
+horalog-cli --date 2025-01-15
+```
+
+## Example Output
+
+### Journal Mode
+```
+HoraLog_CLI - Journal Mode
+Today: 2025-01-17
+
+Previous entries for today:
+[07:45:30] Early start to test the new features
+[09:30:15] Testing journal mode - everything looks good
+[10:15:45] Testing review mode - navigation works perfectly
+
+Type your journal entries (Ctrl+C to exit):
+[12:00:00] > Working on documentation
+[12:00:00] Working on documentation
+[14:30:20] > Final testing and bug fixes
+[14:30:20] Final testing and bug fixes
+```
+
+### Review Mode
+```
+HoraLog_CLI - Review Mode
+
+Available journal files:
+1. 2025-01-17 (6 entries)
+2. 2025-01-16 (6 entries)
+3. 2025-01-15 (5 entries)
+
+Enter number (1-3) or date (YYYY-MM-DD): 2
+
+Entries for 2025-01-16:
+[08:30:15] Morning routine - coffee and planning
+[09:00:00] Started debugging the timestamp issue
+[11:20:45] Fixed the bug, now timestamps are working correctly
+[13:15:20] Team standup meeting
+[15:30:10] Working on the review mode functionality
+[17:00:00] Completed the review mode, ready for testing
+
+Press Enter to return to menu or Ctrl+C to exit
+```
+
+## File Structure
+
+Journal entries are stored in YAML files:
+```
+journal/
+├── 2025-01-15.yaml
+├── 2025-01-16.yaml
+└── 2025-01-17.yaml
+```
+
+Each YAML file contains:
+```yaml
+entries:
+  - time: "09:15:22"
+    text: "Started working on the new project design"
+  - time: "10:30:45"
+    text: "Had a productive meeting with the team"
+```
+
+## Commands
+
+- `horalog-cli` - Start journal mode (default)
+- `horalog-cli --review` or `horalog-cli -r` - Start review mode
+- `horalog-cli --date YYYY-MM-DD` - View specific date
+- `horalog-cli --help` - Show help
+- `horalog-cli --version` - Show version
+
+## Requirements
+
+- Python 3.8+
+- pyyaml>=6.0
+
+## Development
+
+### Quick Start
+```bash
+# Clone the repository
+git clone <repository-url>
+cd HoraLog_CLI
+
+# Install development dependencies
+make install-dev
+
+# Install package in development mode
+make install
+
+# Run tests
+make test
+
+# Build distribution
+make build
+```
+
+### Available Commands
+```bash
+make help          # Show all available commands
+make install       # Install package in development mode
+make install-dev   # Install development dependencies
+make test          # Run test suite
+make build         # Build distribution packages
+make clean         # Clean build artifacts
+make upload-test   # Upload to TestPyPI
+make upload-prod   # Upload to PyPI (production)
+make check         # Check package health
+```
+
+### Manual Development Setup
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+# Install in development mode
+pip install -e .
+
+# Run the application
+python -m horalog_cli.main
+```
+
+## License
+
+MIT License
+
+## Contributing
+
+This is a simple, focused application. The goal is to keep it minimal and robust, especially for mobile use in Termux.
